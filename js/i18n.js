@@ -15,7 +15,7 @@ const I18N = {
     calendarPlaceholder: 'Calendar...',
     calendars: {
       hijri: 'Hijri', julian: 'Julian', gregorian: 'Gregorian',
-      coptic: 'Coptic', ethiopian: 'Ethiopian', yazdgerdi: 'Yazdgerdi',
+      coptic: 'Coptic', ethiopian: 'Ethiopian', yazdgerdi: 'Zoroastrian',
       armenian: 'Armenian', solarHijri: 'Solar Hijri (Iranian)', ilkhani: 'Ilkhanid (Kh\u0101n\u012b)',
       byzantine: 'Byzantine',
       seleucid: 'Seleucid', syriac: 'Syriac', rumi: 'R\u016bm\u012b',
@@ -221,7 +221,7 @@ const I18N = {
     calendarPlaceholder: 'Kalendarz...',
     calendars: {
       hijri: 'Hid\u017cry', julian: 'Julia\u0144ski', gregorian: 'Gregoria\u0144ski',
-      coptic: 'Koptyjski', ethiopian: 'Etiopski', yazdgerdi: 'Jezdegerda',
+      coptic: 'Koptyjski', ethiopian: 'Etiopski', yazdgerdi: 'Zoroastryjski',
       armenian: 'Ormia\u0144ski', solarHijri: 'Ira\u0144ski', ilkhani: 'Ilchanid\u00f3w (Kh\u0101n\u012b)',
       byzantine: 'Bizanty\u0144ski',
       seleucid: 'Seleucydzki', syriac: 'Syryjski', rumi: 'R\u016bm\u012b (osma\u0144ski)',
@@ -427,7 +427,7 @@ const I18N = {
     calendarPlaceholder: '\u0627\u0644\u062a\u0642\u0648\u064a\u0645...',
     calendars: {
       hijri: '\u0647\u062c\u0631\u064a', julian: '\u064a\u0648\u0644\u064a\u0627\u0646\u064a', gregorian: '\u0645\u064a\u0644\u0627\u062f\u064a',
-      coptic: '\u0642\u0628\u0637\u064a', ethiopian: '\u0625\u062b\u064a\u0648\u0628\u064a', yazdgerdi: '\u064a\u0632\u062f\u062c\u0631\u062f\u064a',
+      coptic: '\u0642\u0628\u0637\u064a', ethiopian: '\u0625\u062b\u064a\u0648\u0628\u064a', yazdgerdi: '\u0632\u0631\u0627\u062f\u0634\u062a\u064a',
       armenian: '\u0623\u0631\u0645\u0646\u064a', solarHijri: '\u0647\u062c\u0631\u064a \u0634\u0645\u0633\u064a', ilkhani: '\u0625\u064a\u0644\u062e\u0627\u0646\u064a (\u062e\u0627\u0646\u064a)',
       byzantine: '\u0628\u064a\u0632\u0646\u0637\u064a',
       seleucid: '\u0633\u0644\u0648\u0642\u064a', syriac: '\u0633\u0631\u064a\u0627\u0646\u064a', rumi: '\u0631\u0648\u0645\u064a',
@@ -633,7 +633,7 @@ const I18N = {
     calendarPlaceholder: 'Kalendaro...',
     calendars: {
       hijri: 'Hi\u011dra', julian: 'Julia', gregorian: 'Gregoria',
-      coptic: 'Kopta', ethiopian: 'Etiopa', yazdgerdi: 'Jazdgerda',
+      coptic: 'Kopta', ethiopian: 'Etiopa', yazdgerdi: 'Zoroastra',
       armenian: 'Armena', solarHijri: 'Persa', ilkhani: 'Il\u0125anida (Kh\u0101n\u012b)',
       byzantine: 'Bizanca',
       seleucid: 'Selekida', syriac: 'Siria', rumi: 'Rumia',

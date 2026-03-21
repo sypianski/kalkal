@@ -926,7 +926,7 @@
   function shortCalName(id) {
     const SHORT = {
       hijri: 'AH', julian: 'Jul.', gregorian: 'Greg.', coptic: 'Copt.',
-      ethiopian: 'Eth.', yazdgerdi: 'Yazd.', armenian: 'Arm.',
+      ethiopian: 'Eth.', yazdgerdi: 'Zoro.', armenian: 'Arm.',
       solarHijri: 'SH', byzantine: 'Byz.', alexandrian: 'Alex.',
       seleucid: 'Sel.', syriac: 'Syr.', rumi: 'R\u016bm\u012b',
       egyptian: 'Egypt.', auc: 'AUC', spanish: 'Span.',

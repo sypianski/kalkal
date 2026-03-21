@@ -684,7 +684,8 @@
           if (ecl.noteKey === 'ibrahim632') {
             mapLink.href = 'eklipso.html';
           } else if (ecl.noteKey) {
-            mapLink.href = 'maps/' + ecl.noteKey + '.html';
+            const he = (ecl.year + 10000) + '' + (ecl.month < 10 ? '0' : '') + ecl.month + (ecl.day < 10 ? '0' : '') + ecl.day;
+            mapLink.href = 'maps/' + he + '.html';
           } else {
             mapLink.href = 'eclipses.html';
           }

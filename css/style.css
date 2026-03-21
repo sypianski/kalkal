@@ -286,6 +286,19 @@ html[dir="rtl"] .site-title {
   margin: 0.3em 0;
 }
 
+.cal-card .cal-warning {
+  font-size: 0.82rem;
+  color: var(--ink-600, #555);
+  background: var(--bg-warn, #fef9e7);
+  border-inline-start: 3px solid var(--border-warn, #d4a017);
+  padding: var(--space-xs) var(--space-sm);
+  margin-block: var(--space-xs);
+}
+
+.cal-card .cal-warning:empty {
+  display: none;
+}
+
 .cal-card .cal-source {
   font-size: 0.78rem;
   color: var(--ink-400);
@@ -664,13 +677,24 @@ html[dir="rtl"] .site-title {
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--ink-600);
-  padding: 0.4em var(--space-sm);
+  padding: 0.4em 0.2em;
   border-block-end: var(--border-strong);
   text-align: center;
+  vertical-align: bottom;
+  white-space: nowrap;
+}
+
+.meth-coverage th span {
+  writing-mode: vertical-lr;
+  transform: rotate(180deg);
+  display: inline-block;
+  line-height: 1;
+  height: 7em;
 }
 
 .meth-coverage th:first-child {
   text-align: start;
+  padding: 0.4em var(--space-sm);
 }
 
 .meth-coverage td {
@@ -716,6 +740,13 @@ html[dir="rtl"] .site-title {
 .meth-coverage .cov-p {
   font-size: 0.68rem;
   color: var(--ink-500);
+}
+
+.meth-coverage .cov-var {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--teal);
 }
 
 .meth-coverage thead th:nth-child(2) {
@@ -1354,6 +1385,72 @@ html[dir="rtl"] .btn-convert:hover svg {
   color: var(--ink-800);
   text-decoration: underline;
 }
+
+/* ---- Eclipse map pages ---- */
+
+.ecl-map-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ecl-map-page svg.map {
+  max-width: 960px;
+  width: 95vw;
+  height: auto;
+  margin: 1rem 0;
+}
+
+.ecl-map-note {
+  max-width: 700px;
+  margin: 0.5rem 1rem 2rem;
+  font-size: 0.78rem;
+  color: var(--c-muted);
+  text-align: center;
+  line-height: 1.5;
+  font-family: var(--font-display);
+}
+
+.ecl-map-note a { color: var(--c-accent); }
+
+.ecl-map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  margin: 0.5rem 0;
+  font-size: 0.78rem;
+  color: var(--c-muted);
+  font-family: var(--font-display);
+}
+
+.ecl-map-legend .legend-item { display: flex; align-items: center; gap: 0.4em; }
+.ecl-map-legend .legend-swatch { width: 20px; height: 10px; border-radius: 2px; }
+
+/* ---- Eclipses subpage ---- */
+
+.ecl-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin: 1.5rem 0; }
+.ecl-table th { text-align: left; padding: 0.5rem 0.6rem; border-bottom: 2px solid var(--c-border); font-family: var(--font-display); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--c-muted); }
+.ecl-table td { padding: 0.45rem 0.6rem; border-bottom: 1px solid var(--c-border); vertical-align: top; }
+.ecl-table tr.notable td { background: var(--c-bg-alt, rgba(0,0,0,0.02)); }
+.ecl-table .ecl-date { font-family: var(--font-mono); white-space: nowrap; }
+.ecl-table .ecl-type { font-family: var(--font-mono); text-align: center; }
+.ecl-table .ecl-mag { font-family: var(--font-mono); text-align: right; }
+.ecl-table .ecl-note { font-family: var(--font-display); font-style: italic; color: var(--c-muted); font-size: 0.82rem; }
+.ecl-century { font-family: var(--font-display); font-size: 1rem; font-weight: 700; margin: 2rem 0 0.5rem; padding-bottom: 0.3rem; border-bottom: 1px solid var(--c-border); }
+.ecl-century:first-of-type { margin-top: 1rem; }
+.ecl-map-wrap { margin: 2rem 0; border: 1px solid var(--c-border); border-radius: var(--radius); overflow: hidden; background: #faf6ee; }
+.ecl-map-wrap iframe { width: 100%; height: 620px; border: none; }
+.ecl-intro { font-family: var(--font-display); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem; }
+.ecl-stats { display: flex; gap: 2rem; flex-wrap: wrap; margin: 1rem 0 1.5rem; }
+.ecl-stat { text-align: center; }
+.ecl-stat-num { font-family: var(--font-mono); font-size: 1.5rem; font-weight: 700; display: block; }
+.ecl-stat-label { font-family: var(--font-display); font-size: 0.78rem; color: var(--c-muted); }
+.ecl-convert-link { cursor: pointer; color: var(--c-accent); text-decoration: none; }
+.ecl-convert-link:hover { text-decoration: underline; }
+.ecl-featured { margin: 1.5rem 0; padding: 1.2rem; border: 1px solid var(--c-border); border-radius: var(--radius); background: var(--c-bg-alt, rgba(0,0,0,0.02)); }
+.ecl-featured h3 { font-family: var(--font-display); font-size: 1.05rem; margin: 0 0 0.3rem; }
+.ecl-featured p { margin: 0.3rem 0; font-size: 0.88rem; }
+.ecl-source { margin-top: 2rem; font-size: 0.82rem; color: var(--c-muted); font-family: var(--font-display); }
 
 /* ---- Astronomy results ---- */
 
@@ -2602,6 +2699,10 @@ body[data-theme="brutalist"] .meth-coverage .cov-n::before {
 
 body[data-theme="brutalist"] .meth-coverage .cov-p::before {
   color: #666;
+}
+
+body[data-theme="brutalist"] .meth-coverage .cov-var {
+  color: #000;
 }
 
 body[data-theme="brutalist"] .meth-links {

@@ -110,7 +110,7 @@ Kalendarze oparte na juliańskim (bizantyjski, aleksandryjski, seleucydzki, syry
 - Syryjski = Julian + 311 lat (ten sam miesiąc i dzień)
 - Rumi = Julian − 584 lat
 - Solar Hijri: miesiące 1–6 = 31d, 7–11 = 30d, 12 = 29/30d
-- Kalendarze bez lat przestępnych (yazdgerdi, armeński, egipski): rok = 365d, miesiąc 13 = 5d
+- Kalendarze bez lat przestępnych (yazdgerdi, ormiański, egipski): rok = 365d, miesiąc 13 = 5d
 - Hebrajski: cykl Metona 19-letni, 6 możliwych długości roku (353–385d), Adar II = 0d w roku zwykłym
 
 ## 5. Wyniki zbiorcze

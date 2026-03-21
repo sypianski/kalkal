@@ -2,9 +2,6 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Eclipse Map — 27 January 632 CE</title>
   <link href="https://fonts.googleapis.com/css2?family=Charis+SIL:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -17,7 +14,7 @@
     }
     h1 { font-size: 1.3rem; font-weight: 700; margin: 1.5rem 0 0.2rem; }
     .sub { font-size: 0.95rem; font-style: italic; color: #6b5d48; margin: 0 0 1rem; }
-    svg { max-width: 960px; width: 95vw; height: auto; }
+    svg.map { max-width: 960px; width: 95vw; height: auto; }
     .note {
       max-width: 700px; margin: 0.8rem 1rem 2rem; font-size: 0.78rem;
       color: #8a7a62; text-align: center; line-height: 1.5;
@@ -36,7 +33,7 @@
   <h1>Solar Eclipse of 27 January 632 CE</h1>
   <p class="sub">Annular eclipse at the death of Ibrahim, son of Prophet Muhammad</p>
 
-  <svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+  <svg class="map" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <style>
         .gl { font: 8px 'Charis SIL', Georgia, serif; fill: #8a7a62; opacity: 0.6; }
@@ -204,12 +201,10 @@
     <a href="https://eclipse.gsfc.nasa.gov/SEsearch/SEsearchmap.php?Ecession=06320127" target="_blank">NASA eclipse page</a>
   </p>
 
-  <details style="max-width:960px;width:95vw;margin:0 auto 2rem;">
-    <summary style="cursor:pointer;font-size:0.9rem;color:#6b5d48;margin-bottom:0.5rem;">NASA reference map (0621–0640 CE)</summary>
-    <img src="https://eclipse.gsfc.nasa.gov/SEatlas/SEatlas1/SEatlas0621.GIF"
-         alt="NASA Total and Annular Solar Eclipse Paths: 0621-0640"
-         style="width:100%;border:1px solid #b0a890;">
-  </details>
+  <p style="max-width:960px;width:95vw;margin:0 auto 0.3rem;font-size:0.85rem;color:#6b5d48;">NASA reference map (0621–0640 CE):</p>
+  <img src="https://eclipse.gsfc.nasa.gov/SEatlas/SEatlas1/SEatlas0621.GIF"
+       alt="NASA Total and Annular Solar Eclipse Paths: 0621-0640"
+       style="max-width:960px;width:95vw;border:1px solid #b0a890;margin-bottom:2rem;">
 
 </body>
 </html>

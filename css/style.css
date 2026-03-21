@@ -119,14 +119,6 @@ html[dir="rtl"] .site-title {
 .brand {
   display: flex;
   align-items: center;
-  gap: var(--space-md);
-}
-
-.brand-mark {
-  font-size: 1.8rem;
-  color: var(--rust);
-  line-height: 1;
-  opacity: 0.7;
 }
 
 .site-title {
@@ -265,10 +257,6 @@ html[dir="rtl"] .site-title {
   background: rgba(47, 107, 96, 0.08);
 }
 
-.cal-epoch {
-  color: var(--gold-dim);
-  background: rgba(184, 134, 11, 0.08);
-}
 
 .cal-card p {
   font-family: var(--font-body);
@@ -292,6 +280,92 @@ html[dir="rtl"] .site-title {
   border-block-start: var(--border-subtle);
   padding-block-start: var(--space-sm);
   margin-block-start: var(--space-sm);
+}
+
+/* ---- Seasonal months grid ---- */
+
+.cal-seasons {
+  border-block-start: var(--border-subtle);
+  padding-block-start: var(--space-sm);
+  margin-block-start: var(--space-sm);
+}
+
+.cal-season-band {
+  display: grid;
+  grid-template-columns: 5.5em 1fr;
+  align-items: start;
+  gap: 0;
+  padding-inline-start: var(--space-sm);
+  border-inline-start: 3px solid transparent;
+  margin-block-end: 0.35em;
+}
+
+.cal-season-band[data-season="0"] { border-color: #5a7a4a; }
+.cal-season-band[data-season="1"] { border-color: var(--gold); }
+.cal-season-band[data-season="2"] { border-color: var(--rust); }
+.cal-season-band[data-season="3"] { border-color: #4a6070; }
+
+.cal-season-label {
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  padding-block-start: 0.25em;
+  color: var(--ink-400);
+}
+
+.cal-season-band[data-season="0"] .cal-season-label { color: #5a7a4a; }
+.cal-season-band[data-season="1"] .cal-season-label { color: var(--gold-dim); }
+.cal-season-band[data-season="2"] .cal-season-label { color: var(--rust); }
+.cal-season-band[data-season="3"] .cal-season-label { color: #4a6070; }
+
+.cal-season-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.15em var(--space-md);
+}
+
+.cal-season-row--flat {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.cal-month-item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35em;
+  padding: 0.15em 0;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--ink-700);
+  line-height: 1.5;
+}
+
+.cal-month-num {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: var(--ink-400);
+  min-width: 1.3em;
+  text-align: end;
+}
+
+.cal-month-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cal-month-days {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--ink-400);
+  white-space: nowrap;
+}
+
+.cal-seasons--flat .cal-season-row--flat {
+  padding-inline-start: 0;
 }
 
 /* Calendar variants table */
@@ -335,6 +409,141 @@ html[dir="rtl"] .site-title {
   font-family: var(--font-mono);
   font-size: 0.78rem;
   white-space: nowrap;
+}
+
+/* ---- Table of contents ---- */
+
+.cal-toc {
+  margin-block-end: var(--space-2xl);
+  padding: var(--space-lg) var(--space-xl);
+  background: var(--parchment-200);
+  border: var(--border-subtle);
+  border-radius: var(--radius-lg);
+  border-inline-start: 3px solid var(--rust);
+}
+
+.cal-toc-list {
+  list-style: none;
+  counter-reset: toc;
+  padding: 0;
+  margin: 0;
+  columns: 2;
+  column-gap: var(--space-xl);
+}
+
+.cal-toc-list li {
+  counter-increment: toc;
+  break-inside: avoid;
+  margin-block-end: var(--space-xs);
+}
+
+.cal-toc-link {
+  font-family: var(--font-display);
+  font-size: 0.88rem;
+  color: var(--ink-700);
+  text-decoration: none;
+  display: block;
+  padding: 0.25em 0;
+  transition: color 0.15s;
+}
+
+.cal-toc-link::before {
+  content: counter(toc) ". ";
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--ink-400);
+  margin-inline-end: 0.3em;
+}
+
+.cal-toc-link:hover {
+  color: var(--rust);
+}
+
+/* ---- Formula callouts ---- */
+
+.cal-formula {
+  margin-block: var(--space-md);
+  border: var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--parchment-200);
+  overflow: hidden;
+}
+
+.cal-formula summary {
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-500);
+  padding: var(--space-sm) var(--space-md);
+  user-select: none;
+  transition: color 0.15s, background 0.15s;
+  list-style: none;
+}
+
+.cal-formula summary::-webkit-details-marker {
+  display: none;
+}
+
+.cal-formula summary::before {
+  content: "\25B8";
+  display: inline-block;
+  margin-inline-end: 0.5em;
+  transition: transform 0.2s;
+  font-size: 0.65rem;
+}
+
+.cal-formula[open] summary::before {
+  transform: rotate(90deg);
+}
+
+.cal-formula summary:hover {
+  color: var(--rust);
+  background: var(--parchment-300);
+}
+
+.cal-formula-content {
+  padding: 0 var(--space-md) var(--space-md);
+}
+
+.cal-formula-math {
+  margin-block-end: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--parchment-100);
+  border-radius: var(--radius-sm);
+  border-inline-start: 2px solid var(--gold);
+}
+
+.cal-formula-math p {
+  font-family: var(--font-display);
+  font-size: 0.85rem !important;
+  color: var(--ink-800) !important;
+  line-height: 1.6;
+  margin-block-end: 0.25em !important;
+}
+
+.cal-formula-math p:last-child {
+  margin-block-end: 0 !important;
+}
+
+.cal-formula-code {
+  margin: 0;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--ink-900);
+  color: #d4c5a3;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  line-height: 1.7;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.cal-formula-code code {
+  font-family: inherit;
+  font-size: inherit;
 }
 
 /* ---- Methodology sections ---- */
@@ -436,6 +645,23 @@ html[dir="rtl"] .site-title {
 
   .cal-variants {
     font-size: 0.75rem;
+  }
+
+  .cal-toc-list {
+    columns: 1;
+  }
+
+  .cal-formula-code {
+    font-size: 0.68rem;
+  }
+
+  .cal-season-band {
+    grid-template-columns: 1fr;
+    gap: 0.1em;
+  }
+  .cal-season-row,
+  .cal-season-row--flat {
+    grid-template-columns: 1fr 1fr;
   }
 }
 
@@ -640,16 +866,6 @@ html[dir="rtl"] .ai-input {
   grid-template-columns: 0.8fr 1.2fr 0.6fr;
   gap: var(--space-sm);
   align-items: end;
-}
-
-.form-date-row--to {
-  opacity: 0.4;
-  transition: opacity 0.25s ease;
-}
-
-.form-date-row--to:focus-within,
-.form-date-row--to:hover {
-  opacity: 1;
 }
 
 .form-row {
@@ -913,32 +1129,6 @@ html[dir="rtl"] .btn-convert:hover svg {
   transform: scaleX(-1) translateX(2px);
 }
 
-/* ---- Form options (zodiac toggle etc.) ---- */
-
-.form-options {
-  padding: var(--space-xs) 0;
-  display: flex;
-  gap: var(--space-md);
-}
-
-.option-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4em;
-  font-family: var(--font-display);
-  font-size: 0.82rem;
-  color: var(--ink-600);
-  cursor: pointer;
-  user-select: none;
-}
-
-.option-toggle input[type="checkbox"] {
-  accent-color: var(--rust);
-  width: 14px;
-  height: 14px;
-  cursor: pointer;
-}
-
 /* ---- Zodiac result ---- */
 
 .result-zodiac {
@@ -947,6 +1137,41 @@ html[dir="rtl"] .btn-convert:hover svg {
   color: var(--ink-700);
   margin-block-end: var(--space-md);
   letter-spacing: 0.02em;
+}
+
+.result-zodiac.hidden {
+  display: none;
+}
+
+.zodiac-btn {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  color: var(--ink-500);
+  background: none;
+  border: 1px solid var(--ink-300);
+  border-radius: 4px;
+  padding: 0.25em 0.7em;
+  cursor: pointer;
+  margin-block-start: var(--space-sm);
+  transition: all 0.15s ease;
+}
+
+.zodiac-btn:hover {
+  color: var(--ink-700);
+  border-color: var(--ink-500);
+}
+
+.zodiac-btn.active {
+  color: var(--rust);
+  border-color: var(--rust);
+}
+
+.result-note {
+  font-size: 0.85rem;
+  color: var(--ink-500);
+  font-style: italic;
+  margin-block-end: var(--space-sm);
 }
 
 /* ---- Eclipse result ---- */
@@ -1598,6 +1823,18 @@ body[data-theme="brutalist"] {
   font-family: 'Noto Sans Mono', 'Courier New', monospace;
 }
 
+body[data-theme="brutalist"] .main-content {
+  padding: var(--space-2xl) var(--space-lg) var(--space-2xl);
+}
+
+body[data-theme="brutalist"] .main-content--prose {
+  padding: var(--space-2xl) var(--space-lg);
+}
+
+body[data-theme="brutalist"] .form-date-row {
+  gap: var(--space-md);
+}
+
 body[data-theme="brutalist"] .page-grain {
   display: none;
 }
@@ -1605,7 +1842,7 @@ body[data-theme="brutalist"] .page-grain {
 body[data-theme="brutalist"] .site-header {
   background: #000;
   border-block-end: none;
-  padding: var(--space-md) var(--space-xl);
+  padding: var(--space-lg) var(--space-xl) var(--space-md);
 }
 
 body[data-theme="brutalist"] .site-title {
@@ -1625,12 +1862,6 @@ body[data-theme="brutalist"] .site-subtitle {
   font-size: 0.6rem;
 }
 
-body[data-theme="brutalist"] .brand-mark {
-  color: #fff;
-  opacity: 1;
-  font-size: 1.4rem;
-}
-
 body[data-theme="brutalist"] .lang-switcher {
   background: transparent;
   border: 2px solid #fff;
@@ -1643,7 +1874,7 @@ body[data-theme="brutalist"] .lang-btn {
   border-radius: 0;
   color: #ccc;
   font-size: 0.7rem;
-  padding: 0.4em 0.6em;
+  padding: 0.5em 0.8em;
   border: none;
   border-inline-end: 1px solid #555;
 }
@@ -1671,7 +1902,7 @@ body[data-theme="brutalist"] .converter-card {
 }
 
 body[data-theme="brutalist"] .converter-form {
-  padding: var(--space-lg);
+  padding: var(--space-xl) var(--space-xl) var(--space-lg);
 }
 
 body[data-theme="brutalist"] .form-label {
@@ -1681,6 +1912,11 @@ body[data-theme="brutalist"] .form-label {
   text-transform: uppercase;
   color: #555;
   font-weight: 700;
+  margin-block-end: 6px;
+}
+
+body[data-theme="brutalist"] .form-source > .form-field--cal {
+  margin-block-end: var(--space-lg);
 }
 
 body[data-theme="brutalist"] .form-source > .form-field--cal .form-label {
@@ -1697,6 +1933,7 @@ body[data-theme="brutalist"] .input-cal {
   font-weight: 700;
   border-block-end: 3px solid #000;
   text-transform: uppercase;
+  padding: 0.5em 0;
 }
 
 body[data-theme="brutalist"] .input-cal:focus {
@@ -1707,6 +1944,7 @@ body[data-theme="brutalist"] .input-cal:focus {
 body[data-theme="brutalist"] .input-num {
   font-weight: 700;
   border-block-end: 2px solid #000;
+  padding: 0.5em 0;
 }
 
 body[data-theme="brutalist"] .input-num:focus {
@@ -1718,6 +1956,7 @@ body[data-theme="brutalist"] .input-month {
   font-family: 'Noto Sans Mono', 'Courier New', monospace;
   font-weight: 700;
   border-block-end: 2px solid #000;
+  padding: 0.5em 0;
 }
 
 body[data-theme="brutalist"] .input-month:focus {
@@ -1727,6 +1966,13 @@ body[data-theme="brutalist"] .input-month:focus {
 
 body[data-theme="brutalist"] .form-dates {
   border-inline-start: 3px solid #000;
+  padding-inline-start: var(--space-xl);
+  gap: var(--space-md);
+}
+
+body[data-theme="brutalist"] .variant-bar {
+  gap: 6px;
+  margin-block-start: var(--space-sm);
 }
 
 body[data-theme="brutalist"] .variant-btn {
@@ -1735,6 +1981,7 @@ body[data-theme="brutalist"] .variant-btn {
   font-weight: 700;
   text-transform: uppercase;
   color: #000;
+  padding: 0.35em 0.7em;
 }
 
 body[data-theme="brutalist"] .variant-btn.active {
@@ -1752,7 +1999,7 @@ body[data-theme="brutalist"] .btn-convert {
   color: #fff;
   border: 3px solid #000;
   border-radius: 0;
-  padding: 0.6em 1.6em;
+  padding: 0.7em 2em;
   font-size: 0.85rem;
 }
 
@@ -1763,7 +2010,7 @@ body[data-theme="brutalist"] .btn-convert:hover {
 }
 
 body[data-theme="brutalist"] .divider {
-  padding: var(--space-sm) var(--space-lg);
+  padding: var(--space-md) var(--space-xl);
 }
 
 body[data-theme="brutalist"] .divider::before,
@@ -1778,37 +2025,62 @@ body[data-theme="brutalist"] .divider-ornament {
   font-weight: 700;
 }
 
+body[data-theme="brutalist"] .result-panel {
+  padding: var(--space-xl);
+}
+
 body[data-theme="brutalist"] .result-panel .result-main {
   font-family: 'Noto Sans Mono', 'Courier New', monospace;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  margin-block-end: var(--space-md);
 }
 
 body[data-theme="brutalist"] .result-panel .result-secondary {
   font-family: 'Noto Sans Mono', 'Courier New', monospace;
   font-style: normal;
   color: #555;
+  margin-block-end: var(--space-lg);
 }
 
 body[data-theme="brutalist"] .result-panel .result-label {
   font-family: 'Noto Sans Mono', 'Courier New', monospace;
   letter-spacing: 0.2em;
+  margin-block-start: var(--space-lg);
 }
 
 body[data-theme="brutalist"] .result-panel .year-table {
   border: 2px solid #000;
+  margin-block-start: var(--space-md);
 }
 
 body[data-theme="brutalist"] .result-panel .year-table th {
   background: #000;
   color: #fff;
   border-block-end: none;
-  padding: 0.5em var(--space-sm);
+  padding: 0.6em var(--space-md);
 }
 
 body[data-theme="brutalist"] .result-panel .year-table td {
   border-block-end: 1px solid #000;
+  padding: 0.5em var(--space-md);
+}
+
+body[data-theme="brutalist"] .result-eclipse,
+body[data-theme="brutalist"] .result-astro {
+  padding: var(--space-md) var(--space-lg);
+  margin-block: var(--space-md);
+  border-inline-start-width: 4px;
+}
+
+body[data-theme="brutalist"] .result-panel .result-meta {
+  gap: var(--space-md) var(--space-xl);
+  margin-block-start: var(--space-md);
+}
+
+body[data-theme="brutalist"] .result-zodiac {
+  margin-block-end: var(--space-lg);
 }
 
 body[data-theme="brutalist"] .result-panel .calendar-tag {
@@ -1819,6 +2091,8 @@ body[data-theme="brutalist"] .result-panel .calendar-tag {
 
 body[data-theme="brutalist"] .site-footer {
   border-block-start: 3px solid #000;
+  margin-block-start: var(--space-2xl);
+  padding: var(--space-xl) 0;
 }
 
 body[data-theme="brutalist"] .footer-note {
@@ -1826,6 +2100,22 @@ body[data-theme="brutalist"] .footer-note {
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+}
+
+body[data-theme="brutalist"] .footer-note + .footer-note {
+  margin-block-start: var(--space-sm);
+}
+
+body[data-theme="brutalist"] .history-panel {
+  margin-block-start: var(--space-xl);
+}
+
+body[data-theme="brutalist"] .history-header {
+  margin-block-end: var(--space-md);
+}
+
+body[data-theme="brutalist"] .history-item {
+  padding: var(--space-xs) 0;
 }
 
 body[data-theme="brutalist"] .cal-suggestions {
@@ -1844,9 +2134,21 @@ body[data-theme="brutalist"] .cal-suggestions li.active {
   color: #fff;
 }
 
+body[data-theme="brutalist"] .form-flow {
+  padding: var(--space-lg) 0;
+}
+
 body[data-theme="brutalist"] .flow-arrow {
   color: #000;
   opacity: 1;
+}
+
+body[data-theme="brutalist"] .form-options {
+  padding: var(--space-md) 0 var(--space-xs);
+}
+
+body[data-theme="brutalist"] .form-row--target {
+  gap: var(--space-md);
 }
 
 /* ============================================================
@@ -1856,6 +2158,7 @@ body[data-theme="brutalist"] .flow-arrow {
 
 body[data-theme="brutalist"] .page-nav {
   gap: 0;
+  margin-block-start: var(--space-md);
 }
 
 body[data-theme="brutalist"] .page-nav a {
@@ -1867,6 +2170,7 @@ body[data-theme="brutalist"] .page-nav a {
   font-size: 0.65rem;
   color: #555;
   border: 2px solid transparent;
+  padding: 0.5em 1em;
 }
 
 body[data-theme="brutalist"] .page-nav a:hover {
@@ -1886,6 +2190,8 @@ body[data-theme="brutalist"] .cal-card {
   border: 3px solid #000;
   border-radius: 0;
   box-shadow: 6px 6px 0 #000;
+  padding: var(--space-xl) var(--space-xl);
+  margin-block-end: var(--space-2xl);
 }
 
 body[data-theme="brutalist"] .cal-name {
@@ -1894,9 +2200,19 @@ body[data-theme="brutalist"] .cal-name {
   letter-spacing: 0.08em;
 }
 
+body[data-theme="brutalist"] .cal-header {
+  margin-block-end: var(--space-lg);
+}
+
+body[data-theme="brutalist"] .cal-meta {
+  gap: var(--space-sm);
+  margin-block-start: var(--space-sm);
+}
+
 body[data-theme="brutalist"] .cal-tag {
   border-radius: 0;
   font-weight: 700;
+  padding: 0.25em 0.6em;
 }
 
 body[data-theme="brutalist"] .cal-type {
@@ -1904,14 +2220,77 @@ body[data-theme="brutalist"] .cal-type {
   color: #fff;
 }
 
-body[data-theme="brutalist"] .cal-epoch {
-  background: #000;
-  color: #fff;
+body[data-theme="brutalist"] .cal-toc {
+  background: #f5f5f5;
+  border: 3px solid #000;
+  border-radius: 0;
+  border-inline-start: 6px solid #000;
+  padding: var(--space-lg) var(--space-xl);
+  margin-block-end: var(--space-2xl);
+}
+
+body[data-theme="brutalist"] .cal-toc-link {
+  font-family: 'Noto Sans Mono', 'Courier New', monospace;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #333;
+}
+
+body[data-theme="brutalist"] .cal-toc-link::before {
+  color: #999;
+}
+
+body[data-theme="brutalist"] .cal-toc-link:hover {
+  color: #000;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+body[data-theme="brutalist"] .cal-formula {
+  border: 2px solid #000;
+  border-radius: 0;
+  background: #f5f5f5;
+  margin-block: var(--space-md);
+}
+
+body[data-theme="brutalist"] .cal-formula summary {
+  font-family: 'Noto Sans Mono', 'Courier New', monospace;
+  font-weight: 700;
+  color: #555;
+  padding: var(--space-sm) var(--space-md);
+}
+
+body[data-theme="brutalist"] .cal-formula summary:hover {
+  background: #e8e8e8;
+  color: #000;
+}
+
+body[data-theme="brutalist"] .cal-formula-math {
+  background: #fff;
+  border-radius: 0;
+  border-inline-start: 3px solid #000;
+}
+
+body[data-theme="brutalist"] .cal-formula-math p {
+  font-family: 'Noto Sans Mono', 'Courier New', monospace !important;
+  font-size: 0.78rem !important;
+  color: #000 !important;
+}
+
+body[data-theme="brutalist"] .cal-formula-code {
+  background: #111;
+  color: #ccc;
+  border-radius: 0;
+  border: 1px solid #000;
 }
 
 body[data-theme="brutalist"] .cal-card p {
   font-family: 'Noto Sans Mono', 'Courier New', monospace;
   font-size: 0.82rem;
+  line-height: 1.8;
+  margin-block-end: var(--space-md);
 }
 
 body[data-theme="brutalist"] .cal-card .cal-intro {
@@ -1922,6 +2301,47 @@ body[data-theme="brutalist"] .cal-card .cal-intro {
 
 body[data-theme="brutalist"] .cal-card .cal-months {
   border-block-start: 2px solid #000;
+  padding-block-start: var(--space-md);
+  margin-block-start: var(--space-md);
+}
+
+body[data-theme="brutalist"] .cal-seasons {
+  border-block-start: 2px solid #000;
+  padding-block-start: var(--space-md);
+  margin-block-start: var(--space-md);
+}
+
+body[data-theme="brutalist"] .cal-season-band {
+  border-inline-start: 4px solid;
+  margin-block-end: var(--space-sm);
+}
+
+body[data-theme="brutalist"] .cal-season-band[data-season="0"] { border-color: #2d5a27; }
+body[data-theme="brutalist"] .cal-season-band[data-season="1"] { border-color: #b8860b; }
+body[data-theme="brutalist"] .cal-season-band[data-season="2"] { border-color: #8b2500; }
+body[data-theme="brutalist"] .cal-season-band[data-season="3"] { border-color: #1a3a4a; }
+
+body[data-theme="brutalist"] .cal-season-label {
+  font-family: 'Noto Sans Mono', 'Courier New', monospace;
+  font-style: normal;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.6rem;
+}
+
+body[data-theme="brutalist"] .cal-month-item {
+  font-family: 'Noto Sans Mono', 'Courier New', monospace;
+  font-size: 0.78rem;
+}
+
+body[data-theme="brutalist"] .cal-month-num {
+  font-weight: 700;
+  color: #000;
+}
+
+body[data-theme="brutalist"] .cal-month-days {
+  color: #777;
 }
 
 body[data-theme="brutalist"] .cal-variants {
@@ -1944,24 +2364,35 @@ body[data-theme="brutalist"] .meth-intro {
   font-style: normal;
   font-weight: 700;
   color: #000;
+  margin-block-end: var(--space-2xl);
+  line-height: 1.8;
+}
+
+body[data-theme="brutalist"] .meth-section {
+  margin-block-end: var(--space-xl);
 }
 
 body[data-theme="brutalist"] .meth-title {
   font-family: 'Noto Sans Mono', 'Courier New', monospace;
   text-transform: uppercase;
   letter-spacing: 0.1em;
+  margin-block-end: var(--space-md);
 }
 
 body[data-theme="brutalist"] .meth-body,
 body[data-theme="brutalist"] .meth-body2 {
   font-family: 'Noto Sans Mono', 'Courier New', monospace;
   font-size: 0.82rem;
+  line-height: 1.9;
+  margin-block-end: var(--space-md);
 }
 
 body[data-theme="brutalist"] .meth-aside {
   background: #f0f0f0;
   border-inline-start: 4px solid #000;
   border-radius: 0;
+  padding: var(--space-md) var(--space-lg);
+  margin-block: var(--space-md);
 }
 
 body[data-theme="brutalist"] .meth-aside--warning {
@@ -1976,6 +2407,15 @@ body[data-theme="brutalist"] .meth-warning {
 
 body[data-theme="brutalist"] .meth-sources {
   font-family: 'Noto Sans Mono', 'Courier New', monospace;
+  line-height: 2;
+}
+
+body[data-theme="brutalist"] .meth-sources li {
+  margin-block-end: var(--space-sm);
+}
+
+body[data-theme="brutalist"] .main-content--prose .divider {
+  margin-block: var(--space-xl);
 }
 
 body[data-theme="brutalist"] .back-link {

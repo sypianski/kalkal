@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>kalkal — Calendar Systems</title>
+  <title>kalkal — Kalendarsistemoj</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Charis+SIL:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Sans:wght@400;500;600&family=Noto+Sans+Mono:wght@400;500&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -16,7 +16,6 @@
   <header class="site-header">
     <div class="header-inner">
       <div class="brand">
-        <span class="brand-mark">&#x262A;</span>
         <div class="brand-text">
           <h1 class="site-title" id="page-title">Calendar Systems</h1>
           <p class="site-subtitle" id="page-subtitle">Descriptions of the calendar systems supported by kalkal</p>
@@ -38,132 +37,661 @@
 
   <main class="main-content main-content--prose">
 
+    <!-- Table of Contents -->
+    <nav class="cal-toc" aria-label="Table of contents">
+      <ol class="cal-toc-list">
+        <li><a href="#gregorian" class="cal-toc-link" data-toc="gregorian">Gregorian Calendar</a></li>
+        <li><a href="#julian" class="cal-toc-link" data-toc="julian">Julian Calendar</a></li>
+        <li><a href="#hijri" class="cal-toc-link" data-toc="hijri">Hijri Calendar</a></li>
+        <li><a href="#solarHijri" class="cal-toc-link" data-toc="solarHijri">Solar Hijri Calendar</a></li>
+        <li><a href="#coptic" class="cal-toc-link" data-toc="coptic">Coptic Calendar</a></li>
+        <li><a href="#ethiopian" class="cal-toc-link" data-toc="ethiopian">Ethiopian Calendar</a></li>
+        <li><a href="#yazdgerdi" class="cal-toc-link" data-toc="yazdgerdi">Yazdgerdi Calendar</a></li>
+        <li><a href="#armenian" class="cal-toc-link" data-toc="armenian">Armenian Calendar</a></li>
+        <li><a href="#egyptian" class="cal-toc-link" data-toc="egyptian">Egyptian Calendar</a></li>
+        <li><a href="#byzantine" class="cal-toc-link" data-toc="byzantine">Byzantine Calendar</a></li>
+        <li><a href="#alexandrian" class="cal-toc-link" data-toc="alexandrian">Alexandrian Calendar</a></li>
+        <li><a href="#seleucid" class="cal-toc-link" data-toc="seleucid">Seleucid Calendar</a></li>
+        <li><a href="#syriac" class="cal-toc-link" data-toc="syriac">Syriac Calendar</a></li>
+        <li><a href="#macedonian" class="cal-toc-link" data-toc="macedonian">Macedonian Calendar</a></li>
+        <li><a href="#rumi" class="cal-toc-link" data-toc="rumi">R&#363;m&#299; Calendar</a></li>
+        <li><a href="#auc" class="cal-toc-link" data-toc="auc">Ab Urbe Condita</a></li>
+        <li><a href="#spanish" class="cal-toc-link" data-toc="spanish">Spanish Era</a></li>
+        <li><a href="#olympiad" class="cal-toc-link" data-toc="olympiad">Olympiad Calendar</a></li>
+        <li><a href="#hebrew" class="cal-toc-link" data-toc="hebrew">Hebrew Calendar</a></li>
+        <li><a href="#bp" class="cal-toc-link" data-toc="bp">Before Present</a></li>
+        <li><a href="#human" class="cal-toc-link" data-toc="human">Human Era</a></li>
+      </ol>
+    </nav>
+
     <!-- Gregorian -->
-    <article class="cal-card" data-cal="gregorian">
+    <article class="cal-card" data-cal="gregorian" id="gregorian">
       <header class="cal-header">
         <h2 class="cal-name">Gregorian Calendar</h2>
         <div class="cal-meta">
           <span class="cal-tag cal-type">Solar</span>
-          <span class="cal-tag cal-epoch">January 1, 1 CE</span>
         </div>
       </header>
       <p class="cal-intro">The Gregorian calendar is the internationally accepted civil calendar, introduced by Pope Gregory XIII on 15 October 1582 as a reform of the Julian calendar.</p>
       <p class="cal-body">The reform corrected the accumulated drift of approximately 10 days that had built up since the Council of Nicaea (325 CE), and refined the leap year rule to prevent future drift. A year is a leap year if divisible by 4, unless it is also divisible by 100 — except when divisible by 400. This gives a mean year length of 365.2425 days, very close to the tropical year of ~365.2422 days.</p>
       <p class="cal-adoption">Catholic countries adopted the reform in 1582, but Protestant and Orthodox nations followed much later: the British Empire in 1752, Russia in 1918, Greece in 1923, and Turkey in 1926. Dates before a country's adoption are often given in the Julian calendar ("Old Style").</p>
+      <details class="cal-formula">
+        <summary data-formula-label="formula">Formula</summary>
+        <div class="cal-formula-content">
+          <div class="cal-formula-math">
+            <p>For months M &le; 2, adjust: Y' = Y &minus; 1, M' = M + 12</p>
+            <p>A = &lfloor;Y' / 100&rfloor;, &ensp; B = 2 &minus; A + &lfloor;A / 4&rfloor;</p>
+            <p>JD = &lfloor;365.25 &middot; (Y' + 4716)&rfloor; + &lfloor;30.6001 &middot; (M' + 1)&rfloor; + D + B &minus; 1524.5</p>
+          </div>
+          <pre class="cal-formula-code"><code>def gregorian_to_jd(Y, M, D):
+    if M <= 2:
+        Y, M = Y - 1, M + 12
+    A = Y // 100
+    B = 2 - A + A // 4
+    return int(365.25 * (Y + 4716)) + int(30.6001 * (M + 1)) + D + B - 1524.5</code></pre>
+        </div>
+      </details>
       <p class="cal-months">Twelve months of 28–31 days: January (31), February (28/29), March (31), April (30), May (31), June (30), July (31), August (31), September (30), October (31), November (30), December (31).</p>
     </article>
 
     <!-- Julian -->
-    <article class="cal-card" data-cal="julian">
+    <article class="cal-card" data-cal="julian" id="julian">
       <header class="cal-header">
         <h2 class="cal-name">Julian Calendar</h2>
         <div class="cal-meta">
           <span class="cal-tag cal-type">Solar</span>
-          <span class="cal-tag cal-epoch">January 1, 1 CE (proleptic)</span>
         </div>
       </header>
       <p class="cal-intro">The Julian calendar was introduced by Julius Caesar in 46 BCE, effective from 1 January 45 BCE, replacing the earlier Roman calendar. It was the predominant calendar in Europe and the Mediterranean world for over 1,600 years.</p>
       <p class="cal-body">The Julian calendar established a simple leap year rule: every year divisible by 4 is a leap year, giving a mean year of exactly 365.25 days. This is about 11 minutes longer than the tropical year, leading to an accumulated error of approximately 1 day every 128 years.</p>
       <p class="cal-adoption">By the 16th century, the calendar had drifted about 10 days from the astronomical equinox, prompting the Gregorian reform. The Julian calendar is still used liturgically by some Eastern Orthodox churches (the "Old Calendar"), and it remains the standard for historical dating before 15 October 1582.</p>
+      <details class="cal-formula">
+        <summary data-formula-label="formula">Formula</summary>
+        <div class="cal-formula-content">
+          <div class="cal-formula-math">
+            <p>For months M &le; 2, adjust: Y' = Y &minus; 1, M' = M + 12</p>
+            <p>JD = &lfloor;365.25 &middot; (Y' + 4716)&rfloor; + &lfloor;30.6001 &middot; (M' + 1)&rfloor; + D &minus; 1524.5</p>
+            <p>(Same as Gregorian but without the century correction B)</p>
+          </div>
+          <pre class="cal-formula-code"><code>def julian_to_jd(Y, M, D):
+    if M <= 2:
+        Y, M = Y - 1, M + 12
+    return int(365.25 * (Y + 4716)) + int(30.6001 * (M + 1)) + D - 1524.5</code></pre>
+        </div>
+      </details>
       <p class="cal-months">Twelve months identical in name and length to the Gregorian calendar, differing only in the leap year rule (every 4th year, without exception).</p>
     </article>
 
     <!-- Hijri -->
-    <article class="cal-card" data-cal="hijri">
+    <article class="cal-card" data-cal="hijri" id="hijri">
       <header class="cal-header">
         <h2 class="cal-name">Hijri Calendar (Lunar Islamic)</h2>
         <div class="cal-meta">
           <span class="cal-tag cal-type">Lunar</span>
-          <span class="cal-tag cal-epoch">1 Muharram 1 AH = 16 July 622 CE (Julian)</span>
         </div>
       </header>
       <p class="cal-intro">The Hijri calendar (at-taqwim al-hijri) is a purely lunar calendar of 12 months used throughout the Islamic world for religious observances. Its epoch is the Hijra (emigration) of the Prophet Muhammad from Mecca to Medina.</p>
       <p class="cal-body">Each month begins, in principle, with the sighting of the new crescent moon. The calendar alternates months of 30 and 29 days, with a leap day added to the last month (Dhu al-Hijja) in certain years. The year is approximately 354 days long (355 in leap years), making it about 11 days shorter than the solar year. The calendar therefore cycles through the seasons over a period of roughly 33 years.</p>
       <p class="cal-tabular">The tabular (arithmetic) version of the Hijri calendar — used in kalkal — employs a fixed 30-year cycle in which 11 years are leap years. Four main variants exist, differing only in which years of the cycle are designated as leap:</p>
-      <table class="cal-variants">
-        <thead><tr><th>Variant</th><th>Leap years</th><th>Description</th></tr></thead>
-        <tbody></tbody>
-      </table>
+      <p class="cal-variants-text">The default variant is Wüstenfeld (IIc), the historiographic standard widely adopted in Western scholarship. The East Islamic civil variant (IIa), used in the Mashriq and by the "Kuwaiti algorithm," differs from it in a single leap year (year 18 instead of 19). The West Islamic civil variant (IIIa), used historically in the Maghrib and al-Andalus, shifts three leap years. The fourth variant is attributed to the 9th-century astronomer Ḥabash al-Ḥāsib (IVa).</p>
+      <details class="cal-formula">
+        <summary data-formula-label="formula">Formula</summary>
+        <div class="cal-formula-content">
+          <div class="cal-formula-math">
+            <p>Epoch = 1948439.5 (16 Jul 622 CE Julian)</p>
+            <p>Leap count L(N) = &lfloor;N/30&rfloor; &middot; 11 + count of leap years in remainder</p>
+            <p>JD = Epoch + (Y &minus; 1) &middot; 354 + L(Y &minus; 1) + &lfloor;(M &minus; 1) &middot; 29.5 + 0.99&rfloor; + D &minus; 1</p>
+          </div>
+          <pre class="cal-formula-code"><code>EPOCH = 1948439.5
+LEAPS_IIc = [2, 5, 7, 10, 13, 16, 19, 21, 24, 26, 29]
+
+def leap_count(n, leaps=LEAPS_IIc):
+    full, rem = divmod(n, 30)
+    return full * 11 + sum(1 for l in leaps if l <= rem)
+
+def hijri_to_jd(Y, M, D, leaps=LEAPS_IIc):
+    return (EPOCH + (Y - 1) * 354 + leap_count(Y - 1, leaps)
+            + int((M - 1) * 29.5 + 0.99) + D - 1)</code></pre>
+        </div>
+      </details>
       <p class="cal-months">Twelve months: Muharram (30), Safar (29), Rabi' al-Awwal (30), Rabi' ath-Thani (29), Jumada al-Ula (30), Jumada al-Akhira (29), Rajab (30), Sha'ban (29), Ramadan (30), Shawwal (29), Dhu al-Qa'da (30), Dhu al-Hijja (29 or 30).</p>
     </article>
 
     <!-- Solar Hijri -->
-    <article class="cal-card" data-cal="solarHijri">
+    <article class="cal-card" data-cal="solarHijri" id="solarHijri">
       <header class="cal-header">
         <h2 class="cal-name">Solar Hijri Calendar (Iranian)</h2>
         <div class="cal-meta">
           <span class="cal-tag cal-type">Solar</span>
-          <span class="cal-tag cal-epoch">1 Farvardin 1 AP = 22 March 622 CE (Julian)</span>
         </div>
       </header>
       <p class="cal-intro">The Solar Hijri calendar is the official calendar of Iran and Afghanistan. It is a solar calendar whose epoch coincides with the Hijra, but whose year length tracks the tropical year via the vernal equinox.</p>
       <p class="cal-body">The first six months have 31 days, the next five have 30 days, and the twelfth month (Esfand) has 29 days in common years and 30 in leap years. Officially, the new year (Nowruz) begins at the astronomical vernal equinox as observed from Tehran.</p>
       <p class="cal-arithmetic">For computational purposes, kalkal uses the arithmetic approximation based on a 2820-year cycle (containing exactly 1,029,983 days), which closely matches the astronomical calendar.</p>
+      <details class="cal-formula">
+        <summary data-formula-label="formula">Formula</summary>
+        <div class="cal-formula-content">
+          <div class="cal-formula-math">
+            <p>Epoch = 1948320.5 &ensp;|&ensp; Cycle = 2820 years = 1,029,983 days</p>
+            <p>epbase = Y &minus; 474, &ensp; epyear = 474 + ((epbase mod 2820) + 2820) mod 2820</p>
+            <p>Leap if (epyear &middot; 682 &minus; 110) mod 2816 &lt; 682</p>
+            <p>JD = D + month_offset + &lfloor;(epyear &middot; 682 &minus; 110) / 2816&rfloor; + (epyear &minus; 1) &middot; 365 + &lfloor;epbase / 2820&rfloor; &middot; 1029983 + Epoch &minus; 1</p>
+          </div>
+          <pre class="cal-formula-code"><code>EPOCH = 1948320.5
+
+def solar_hijri_to_jd(Y, M, D):
+    epbase = Y - 474
+    epyear = 474 + ((epbase % 2820) + 2820) % 2820
+    m_off = (M - 1) * 31 if M <= 7 else (M - 1) * 30 + 6
+    return (D + m_off + (epyear * 682 - 110) // 2816
+            + (epyear - 1) * 365
+            + epbase // 2820 * 1029983 + EPOCH - 1)
+
+def is_leap(Y):
+    epbase = Y - 474
+    epyear = 474 + ((epbase % 2820) + 2820) % 2820
+    return (epyear * 682 - 110) % 2816 < 682</code></pre>
+        </div>
+      </details>
       <p class="cal-months">Twelve months: Farvardin (31), Ordibehesht (31), Khordad (31), Tir (31), Mordad (31), Shahrivar (31), Mehr (30), Aban (30), Azar (30), Dey (30), Bahman (30), Esfand (29/30).</p>
     </article>
 
     <!-- Coptic -->
-    <article class="cal-card" data-cal="coptic">
+    <article class="cal-card" data-cal="coptic" id="coptic">
       <header class="cal-header">
         <h2 class="cal-name">Coptic Calendar</h2>
         <div class="cal-meta">
           <span class="cal-tag cal-type">Solar</span>
-          <span class="cal-tag cal-epoch">1 Thout 1 AM = 29 August 284 CE (Julian)</span>
         </div>
       </header>
       <p class="cal-intro">The Coptic calendar (also called the Alexandrian calendar) descends from the ancient Egyptian civil calendar, reformed under Augustus to include a leap year. It counts years from the Era of the Martyrs (Anno Martyrum, AM).</p>
       <p class="cal-body">The calendar consists of 12 months of 30 days each, followed by a short 13th month (Epagomenai) of 5 days in common years or 6 in leap years. Leap years occur every 4 years, when the year number leaves a remainder of 3 when divided by 4.</p>
       <p class="cal-usage">The Coptic calendar is used liturgically by the Coptic Orthodox Church and for agricultural purposes in Egypt. The Ethiopian calendar shares its structure but uses a different epoch.</p>
+      <details class="cal-formula">
+        <summary data-formula-label="formula">Formula</summary>
+        <div class="cal-formula-content">
+          <div class="cal-formula-math">
+            <p>Epoch = 1825029.5 (1 Thout 1 AM = 29 Aug 284 CE Julian)</p>
+            <p>Leap if Y mod 4 = 3</p>
+            <p>JD = Epoch &minus; 1 + 365 &middot; (Y &minus; 1) + &lfloor;Y / 4&rfloor; + 30 &middot; (M &minus; 1) + D</p>
+          </div>
+          <pre class="cal-formula-code"><code>EPOCH = 1825029.5
+
+def coptic_to_jd(Y, M, D):
+    return EPOCH - 1 + 365 * (Y - 1) + Y // 4 + 30 * (M - 1) + D
+
+def jd_to_coptic(jd):
+    Y = (4 * (int(jd + 0.5) - EPOCH) + 1463) // 1461
+    doy = int(jd + 0.5) - coptic_to_jd(Y, 1, 1)
+    M = doy // 30 + 1
+    D = doy - (M - 1) * 30 + 1
+    return Y, M, D</code></pre>
+        </div>
+      </details>
       <p class="cal-months">Thirteen months: Thout, Paopi, Hathor, Koiak, Tobi, Meshir, Paremhat, Parmouti, Pashons, Paoni, Epip, Mesori (each 30 days), Epagomenai (5 or 6 days).</p>
     </article>
 
     <!-- Ethiopian -->
-    <article class="cal-card" data-cal="ethiopian">
+    <article class="cal-card" data-cal="ethiopian" id="ethiopian">
       <header class="cal-header">
         <h2 class="cal-name">Ethiopian Calendar</h2>
         <div class="cal-meta">
           <span class="cal-tag cal-type">Solar</span>
-          <span class="cal-tag cal-epoch">1 M&#228;sk&#228;r&#228;m 1 = 29 August 8 CE (Julian)</span>
         </div>
       </header>
       <p class="cal-intro">The Ethiopian calendar is the official calendar of Ethiopia. It belongs to the same Alexandrian family as the Coptic calendar, sharing its structure of 12 &#215; 30-day months plus a 13th epagomenal month.</p>
       <p class="cal-body">The epoch is approximately 7–8 years behind the Gregorian calendar. Leap years follow the same rule as the Coptic calendar (year % 4 === 3). The Ethiopian New Year (Enkutatash) falls on 11 September in the Gregorian calendar.</p>
       <p class="cal-usage">Ethiopia is one of the few countries to use a non-Gregorian calendar as its official civil calendar. The calendar is deeply embedded in Ethiopian culture, religion, and daily life.</p>
+      <details class="cal-formula">
+        <summary data-formula-label="formula">Formula</summary>
+        <div class="cal-formula-content">
+          <div class="cal-formula-math">
+            <p>Epoch = 1724220.5 (1 M&#228;sk&#228;r&#228;m 1 = 29 Aug 8 CE Julian)</p>
+            <p>Leap if Y mod 4 = 3</p>
+            <p>JD = Epoch &minus; 1 + 365 &middot; (Y &minus; 1) + &lfloor;Y / 4&rfloor; + 30 &middot; (M &minus; 1) + D</p>
+            <p>(Identical structure to Coptic, different epoch)</p>
+          </div>
+          <pre class="cal-formula-code"><code>EPOCH = 1724220.5
+
+def ethiopian_to_jd(Y, M, D):
+    return EPOCH - 1 + 365 * (Y - 1) + Y // 4 + 30 * (M - 1) + D
+
+def jd_to_ethiopian(jd):
+    Y = (4 * (int(jd + 0.5) - EPOCH) + 1463) // 1461
+    doy = int(jd + 0.5) - ethiopian_to_jd(Y, 1, 1)
+    M = doy // 30 + 1
+    D = doy - (M - 1) * 30 + 1
+    return Y, M, D</code></pre>
+        </div>
+      </details>
       <p class="cal-months">Thirteen months: M&#228;sk&#228;r&#228;m, &#7788;&#601;q&#601;mt, &#7716;&#601;dar, Ta&#7723;&#353;a&#353;, &#7788;&#601;r, Y&#228;katit, M&#228;gabit, Miyazya, G&#601;nbot, S&#228;ne, &#7716;amle, N&#228;hase (each 30 days), Pagum&#228;n (5 or 6 days).</p>
     </article>
 
     <!-- Yazdgerdi -->
-    <article class="cal-card" data-cal="yazdgerdi">
+    <article class="cal-card" data-cal="yazdgerdi" id="yazdgerdi">
       <header class="cal-header">
         <h2 class="cal-name">Yazdgerdi Calendar</h2>
         <div class="cal-meta">
           <span class="cal-tag cal-type">Solar (wandering)</span>
-          <span class="cal-tag cal-epoch">1 Farvardin 1 YZ = 16 June 632 CE (Julian)</span>
         </div>
       </header>
       <p class="cal-intro">The Yazdgerdi calendar is the traditional Zoroastrian calendar of Iran, named after Yazdegerd III, the last Sasanian emperor. Its epoch is his coronation in 632 CE.</p>
       <p class="cal-body">The calendar consists of 12 months of 30 days each, followed by 5 epagomenal days (the Gatha days). Crucially, it has no leap year mechanism — the year is always exactly 365 days. This makes it a "wandering" calendar that drifts through the seasons.</p>
       <p class="cal-usage">The Yazdgerdi calendar was used in Iran alongside the Hijri calendar during the early Islamic period. It remains of interest to historians studying Sasanian and early Islamic chronology.</p>
+      <details class="cal-formula">
+        <summary data-formula-label="formula">Formula</summary>
+        <div class="cal-formula-content">
+          <div class="cal-formula-math">
+            <p>Epoch = 1952062.5 (1 Farvardin 1 YZ = 16 Jun 632 CE Julian)</p>
+            <p>No leap years &mdash; every year = 365 days</p>
+            <p>JD = Epoch &minus; 1 + 365 &middot; (Y &minus; 1) + 30 &middot; (M &minus; 1) + D</p>
+          </div>
+          <pre class="cal-formula-code"><code>EPOCH = 1952062.5
+
+def yazdgerdi_to_jd(Y, M, D):
+    return EPOCH - 1 + 365 * (Y - 1) + 30 * (M - 1) + D
+
+def jd_to_yazdgerdi(jd):
+    days = int(jd + 0.5) - EPOCH
+    Y = days // 365 + 1
+    doy = int(jd + 0.5) - yazdgerdi_to_jd(Y, 1, 1)
+    M = min(13, doy // 30 + 1)
+    D = doy - (M - 1) * 30 + 1
+    return Y, M, D</code></pre>
+        </div>
+      </details>
       <p class="cal-months">Thirteen months: Farvardin, Ordibehesht, Khordad, Tir, Mordad, Shahrivar, Mehr, Aban, Azar, Dey, Bahman, Esfand (each 30 days), plus 5 epagomenal days.</p>
     </article>
 
     <!-- Armenian -->
-    <article class="cal-card" data-cal="armenian">
+    <article class="cal-card" data-cal="armenian" id="armenian">
       <header class="cal-header">
         <h2 class="cal-name">Armenian Calendar</h2>
         <div class="cal-meta">
           <span class="cal-tag cal-type">Solar (wandering)</span>
-          <span class="cal-tag cal-epoch">1 Navasard 1 = 11 July 552 CE (Julian)</span>
         </div>
       </header>
       <p class="cal-intro">The traditional Armenian calendar is a fixed 365-day calendar with the same structure as the Egyptian and Yazdgerdi calendars. Its epoch is 11 July 552 CE (Julian).</p>
       <p class="cal-body">Like the Yazdgerdi calendar, it consists of 12 months of 30 days plus 5 epagomenal days (Aweleac&#x2BC;), with no leap year correction. It is therefore a "wandering" calendar that drifts through the seasons.</p>
       <p class="cal-usage">The Armenian calendar was used in Armenia and by Armenian communities for historical and religious purposes. It was largely superseded by the Gregorian calendar, but remains important for historical chronology.</p>
+      <details class="cal-formula">
+        <summary data-formula-label="formula">Formula</summary>
+        <div class="cal-formula-content">
+          <div class="cal-formula-math">
+            <p>Epoch = 1922867.5 (1 Navasard 1 = 11 Jul 552 CE Julian)</p>
+            <p>No leap years &mdash; every year = 365 days</p>
+            <p>JD = Epoch &minus; 1 + 365 &middot; (Y &minus; 1) + 30 &middot; (M &minus; 1) + D</p>
+            <p>(Identical structure to Yazdgerdi, different epoch)</p>
+          </div>
+          <pre class="cal-formula-code"><code>EPOCH = 1922867.5
+
+def armenian_to_jd(Y, M, D):
+    return EPOCH - 1 + 365 * (Y - 1) + 30 * (M - 1) + D
+
+def jd_to_armenian(jd):
+    days = int(jd + 0.5) - EPOCH
+    Y = days // 365 + 1
+    doy = int(jd + 0.5) - armenian_to_jd(Y, 1, 1)
+    M = min(13, doy // 30 + 1)
+    D = doy - (M - 1) * 30 + 1
+    return Y, M, D</code></pre>
+        </div>
+      </details>
       <p class="cal-months">Thirteen months: Navasard, Ho&#7769;i, Sahmi, Tr&#275;, K&#x2019;alo&#269;, Arac&#x2019;, Mehekan, Areg, Ahekan, Mareri, Margac&#x2019;, Hrotic&#x2019; (each 30 days), Aweleac&#x2019; (5 days).</p>
+    </article>
+
+    <!-- Egyptian -->
+    <article class="cal-card" data-cal="egyptian" id="egyptian">
+      <header class="cal-header">
+        <h2 class="cal-name">Egyptian Calendar</h2>
+        <div class="cal-meta">
+          <span class="cal-tag cal-type">Solar (wandering)</span>
+        </div>
+      </header>
+      <p class="cal-intro">The ancient Egyptian civil calendar is one of the oldest known calendar systems. It counts years from the Era of Nabonassar (747 BCE).</p>
+      <p class="cal-body">Like the Yazdgerdi and Armenian calendars, it consists of 12 months of 30 days plus 5 epagomenal days, with no leap year correction. The year is always exactly 365 days, making it a wandering calendar. It served as the prototype for all later 365-day calendars in the region.</p>
+      <details class="cal-formula">
+        <summary data-formula-label="formula">Formula</summary>
+        <div class="cal-formula-content">
+          <div class="cal-formula-math">
+            <p>Epoch = 1448637.5 (1 Thoth 1 Nabonassar = 26 Feb 747 BCE Julian)</p>
+            <p>No leap years &mdash; every year = 365 days</p>
+            <p>JD = Epoch &minus; 1 + 365 &middot; (Y &minus; 1) + 30 &middot; (M &minus; 1) + D</p>
+          </div>
+          <pre class="cal-formula-code"><code>EPOCH = 1448637.5
+
+def egyptian_to_jd(Y, M, D):
+    return EPOCH - 1 + 365 * (Y - 1) + 30 * (M - 1) + D</code></pre>
+        </div>
+      </details>
+      <p class="cal-months">Thirteen months: Thoth, Phaophi, Athyr, Choiak, Tybi, Mechir, Phamenoth, Pharmuthi, Pachons, Payni, Epiphi, Mesore (each 30 days), Epagomenai (5 days).</p>
+    </article>
+
+    <!-- Byzantine -->
+    <article class="cal-card" data-cal="byzantine" id="byzantine">
+      <header class="cal-header">
+        <h2 class="cal-name">Byzantine Calendar</h2>
+        <div class="cal-meta">
+          <span class="cal-tag cal-type">Solar</span>
+        </div>
+      </header>
+      <p class="cal-intro">The Byzantine calendar (Anno Mundi) was the official calendar of the Byzantine Empire and the Eastern Orthodox Church for over a thousand years. It counts years from the calculated creation of the world in 5509 BCE.</p>
+      <p class="cal-body">The calendar uses Julian calendar mechanics but with a September 1 year start and the Byzantine era offset. Month 1 is September, month 12 is August. Leap years follow the Julian rule applied to the underlying Julian year.</p>
+      <details class="cal-formula">
+        <summary data-formula-label="formula">Formula</summary>
+        <div class="cal-formula-content">
+          <div class="cal-formula-math">
+            <p>Julian year via era shift. Sep&ndash;Dec: julYear = Y &minus; 5509; Jan&ndash;Aug: julYear = Y &minus; 5508</p>
+            <p>JD = julianToJD(julYear, julMonth, D)</p>
+          </div>
+          <pre class="cal-formula-code"><code>def byzantine_to_jd(Y, M, D):
+    if M <= 4:   # Sep-Dec
+        return julian_to_jd(Y - 5509, M + 8, D)
+    else:        # Jan-Aug
+        return julian_to_jd(Y - 5508, M - 4, D)</code></pre>
+        </div>
+      </details>
+      <p class="cal-months">Twelve months from September: September, October, November, December, January, February, March, April, May, June, July, August.</p>
+    </article>
+
+    <!-- Alexandrian -->
+    <article class="cal-card" data-cal="alexandrian" id="alexandrian">
+      <header class="cal-header">
+        <h2 class="cal-name">Alexandrian Calendar</h2>
+        <div class="cal-meta">
+          <span class="cal-tag cal-type">Solar</span>
+        </div>
+      </header>
+      <p class="cal-intro">The Alexandrian era (Anno Mundi) is a variant of the creation era used by the Church of Alexandria. It places the creation in 5493 BCE, with the year beginning on March 25 (the Annunciation).</p>
+      <p class="cal-body">Like the Byzantine calendar, it uses Julian calendar mechanics with an era offset and a shifted year start. Month 1 is March, month 12 is February. It was used in early Christian chronography and influenced the Ethiopian calendar tradition.</p>
+      <details class="cal-formula">
+        <summary data-formula-label="formula">Formula</summary>
+        <div class="cal-formula-content">
+          <div class="cal-formula-math">
+            <p>Mar&ndash;Dec: julYear = Y &minus; 5493; Jan&ndash;Feb: julYear = Y &minus; 5492</p>
+            <p>JD = julianToJD(julYear, julMonth, D)</p>
+          </div>
+          <pre class="cal-formula-code"><code>def alexandrian_to_jd(Y, M, D):
+    if M <= 10:  # Mar-Dec
+        return julian_to_jd(Y - 5493, M + 2, D)
+    else:        # Jan-Feb
+        return julian_to_jd(Y - 5492, M - 10, D)</code></pre>
+        </div>
+      </details>
+      <p class="cal-months">Twelve months from March: March, April, May, June, July, August, September, October, November, December, January, February.</p>
+    </article>
+
+    <!-- Seleucid -->
+    <article class="cal-card" data-cal="seleucid" id="seleucid">
+      <header class="cal-header">
+        <h2 class="cal-name">Seleucid Calendar</h2>
+        <div class="cal-meta">
+          <span class="cal-tag cal-type">Solar</span>
+        </div>
+      </header>
+      <p class="cal-intro">The Seleucid era (Anno Graecorum, "Era of the Greeks") counts from the reconquest of Babylon by Seleucus I Nicator in 312 BCE. It was the most widely used era in the eastern Mediterranean and Near East for over a millennium.</p>
+      <p class="cal-body">The calendar uses Julian calendar mechanics with an October 1 year start and the Seleucid era offset. It was used in Syriac, Jewish, and Arab communities well into the Islamic period and is still referenced in some Eastern Christian liturgical traditions.</p>
+      <details class="cal-formula">
+        <summary data-formula-label="formula">Formula</summary>
+        <div class="cal-formula-content">
+          <div class="cal-formula-math">
+            <p>Oct&ndash;Dec: julYear = Y &minus; 312; Jan&ndash;Sep: julYear = Y &minus; 311</p>
+            <p>JD = julianToJD(julYear, julMonth, D)</p>
+          </div>
+          <pre class="cal-formula-code"><code>def seleucid_to_jd(Y, M, D):
+    if M <= 3:   # Oct-Dec
+        return julian_to_jd(Y - 312, M + 9, D)
+    else:        # Jan-Sep
+        return julian_to_jd(Y - 311, M - 3, D)</code></pre>
+        </div>
+      </details>
+      <p class="cal-months">Twelve months from October: October, November, December, January, February, March, April, May, June, July, August, September.</p>
+    </article>
+
+    <!-- Syriac -->
+    <article class="cal-card" data-cal="syriac" id="syriac">
+      <header class="cal-header">
+        <h2 class="cal-name">Syriac Calendar</h2>
+        <div class="cal-meta">
+          <span class="cal-tag cal-type">Solar</span>
+        </div>
+      </header>
+      <p class="cal-intro">The Syriac calendar uses the Seleucid era (year 1 = 312 BCE) with Syriac month names and a January&ndash;December year structure, unlike the October-start Seleucid calendar.</p>
+      <p class="cal-body">It is effectively the Julian calendar with a simple era offset of 311 years. The Syriac month names derive from the Babylonian calendar via Aramaic and remain in use in modern Levantine Arabic dialects.</p>
+      <details class="cal-formula">
+        <summary data-formula-label="formula">Formula</summary>
+        <div class="cal-formula-content">
+          <div class="cal-formula-math">
+            <p>julYear = Y &minus; 311</p>
+            <p>JD = julianToJD(julYear, M, D)</p>
+          </div>
+          <pre class="cal-formula-code"><code>def syriac_to_jd(Y, M, D):
+    return julian_to_jd(Y - 311, M, D)</code></pre>
+        </div>
+      </details>
+      <p class="cal-months">Twelve months: K&#257;n&#363;n &#7788;r&#257;y&#257;n&#257; (Jan), &#352;b&#257;&#7789; (Feb), &#256;&#7693;&#257;r (Mar), N&#299;s&#257;n (Apr), Ayy&#257;r (May), &#7716;z&#299;r&#257;n (Jun), Tamm&#363;z (Jul), &#256;b (Aug), Ayl&#363;l (Sep), Ti&#353;r&#299;n Qd&#299;m (Oct), Ti&#353;r&#299;n &#7716;r&#257;y (Nov), K&#257;n&#363;n Qd&#299;m (Dec).</p>
+    </article>
+
+    <!-- Macedonian -->
+    <article class="cal-card" data-cal="macedonian" id="macedonian">
+      <header class="cal-header">
+        <h2 class="cal-name">Macedonian Calendar</h2>
+        <div class="cal-meta">
+          <span class="cal-tag cal-type">Solar</span>
+        </div>
+      </header>
+      <p class="cal-intro">The Syro-Macedonian calendar uses the Macedonian month names with the Seleucid era and an October year start. It was the standard civil calendar across the Hellenistic East after Alexander&rsquo;s conquests.</p>
+      <p class="cal-body">In its fixed Roman-era form (used in kalkal), each Macedonian month maps directly to a Julian month. Dios = October, Apellaios = November, and so on through Hyperberetaios = September. The conversion is identical to the Seleucid calendar with different month names.</p>
+      <details class="cal-formula">
+        <summary data-formula-label="formula">Formula</summary>
+        <div class="cal-formula-content">
+          <div class="cal-formula-math">
+            <p>Same structure as Seleucid (October start, AG era, Julian mechanics)</p>
+            <p>Dios(1)=Oct, &hellip;, Hyperberetaios(12)=Sep</p>
+          </div>
+          <pre class="cal-formula-code"><code>def macedonian_to_jd(Y, M, D):
+    if M <= 3:   # Dios-Audynaios = Oct-Dec
+        return julian_to_jd(Y - 312, M + 9, D)
+    else:        # Peritios-Hyperberetaios = Jan-Sep
+        return julian_to_jd(Y - 311, M - 3, D)</code></pre>
+        </div>
+      </details>
+      <p class="cal-months">Twelve months from October: Dios, Apellaios, Audynaios, Peritios, Dystros, Xanthikos, Artemisios, Daisios, Panemos, Loos, Gorpiaios, Hyperberetaios.</p>
+    </article>
+
+    <!-- Rumi -->
+    <article class="cal-card" data-cal="rumi" id="rumi">
+      <header class="cal-header">
+        <h2 class="cal-name">R&#363;m&#299; Calendar</h2>
+        <div class="cal-meta">
+          <span class="cal-tag cal-type">Solar</span>
+        </div>
+      </header>
+      <p class="cal-intro">The R&#363;m&#299; calendar was the fiscal and civil calendar of the Ottoman Empire, based on the Julian calendar with an era offset tied to the Hijra. It was used for administrative purposes alongside the lunar Hijri calendar for religious ones.</p>
+      <p class="cal-body">After the 1840s reform (Tanzimat), the R&#363;m&#299; calendar used a January&ndash;December year with year = Julian year &minus; 584. kalkal implements this post-reform version. Turkey abolished the R&#363;m&#299; calendar in 1926 in favour of the Gregorian.</p>
+      <details class="cal-formula">
+        <summary data-formula-label="formula">Formula</summary>
+        <div class="cal-formula-content">
+          <div class="cal-formula-math">
+            <p>julYear = Y + 584</p>
+            <p>JD = julianToJD(julYear, M, D)</p>
+          </div>
+          <pre class="cal-formula-code"><code>def rumi_to_jd(Y, M, D):
+    return julian_to_jd(Y + 584, M, D)</code></pre>
+        </div>
+      </details>
+      <p class="cal-months">Twelve months with Julian names and lengths, January&ndash;December.</p>
+    </article>
+
+    <!-- AUC -->
+    <article class="cal-card" data-cal="auc" id="auc">
+      <header class="cal-header">
+        <h2 class="cal-name">Ab Urbe Condita</h2>
+        <div class="cal-meta">
+          <span class="cal-tag cal-type">Solar</span>
+        </div>
+      </header>
+      <p class="cal-intro">Ab Urbe Condita ("from the founding of the City") counts years from the legendary founding of Rome in 753 BCE, as calculated by Marcus Terentius Varro.</p>
+      <p class="cal-body">The calendar uses Julian calendar mechanics with a simple era offset: year 1 AUC = 753 BCE. It was used sporadically in Roman historiography and is sometimes encountered in classical studies and inscriptions.</p>
+      <details class="cal-formula">
+        <summary data-formula-label="formula">Formula</summary>
+        <div class="cal-formula-content">
+          <div class="cal-formula-math">
+            <p>julYear = Y &minus; 753</p>
+            <p>JD = julianToJD(julYear, M, D)</p>
+          </div>
+          <pre class="cal-formula-code"><code>def auc_to_jd(Y, M, D):
+    return julian_to_jd(Y - 753, M, D)</code></pre>
+        </div>
+      </details>
+      <p class="cal-months">Twelve months with Julian names and lengths, January&ndash;December.</p>
+    </article>
+
+    <!-- Spanish -->
+    <article class="cal-card" data-cal="spanish" id="spanish">
+      <header class="cal-header">
+        <h2 class="cal-name">Spanish Era</h2>
+        <div class="cal-meta">
+          <span class="cal-tag cal-type">Solar</span>
+        </div>
+      </header>
+      <p class="cal-intro">The Spanish Era (Era Hispanica) counts from 38 BCE, traditionally linked to the Roman conquest of Iberia under Augustus. It was the standard dating system in the Iberian Peninsula and southern France for over a thousand years.</p>
+      <p class="cal-body">The calendar uses Julian calendar mechanics with an era offset of 38 years. Aragon abandoned it in 1350, Castile in 1383, and Portugal in 1422. It appears frequently in medieval Iberian charters and chronicles.</p>
+      <details class="cal-formula">
+        <summary data-formula-label="formula">Formula</summary>
+        <div class="cal-formula-content">
+          <div class="cal-formula-math">
+            <p>julYear = Y &minus; 38</p>
+            <p>JD = julianToJD(julYear, M, D)</p>
+          </div>
+          <pre class="cal-formula-code"><code>def spanish_to_jd(Y, M, D):
+    return julian_to_jd(Y - 38, M, D)</code></pre>
+        </div>
+      </details>
+      <p class="cal-months">Twelve months with Julian names and lengths, January&ndash;December.</p>
+    </article>
+
+    <!-- Olympiad -->
+    <article class="cal-card" data-cal="olympiad" id="olympiad">
+      <header class="cal-header">
+        <h2 class="cal-name">Olympiad Calendar</h2>
+        <div class="cal-meta">
+          <span class="cal-tag cal-type">Solar</span>
+        </div>
+      </header>
+      <p class="cal-intro">The Olympiad dating system counts 4-year cycles from the first Olympic Games in 776 BCE. It was the principal chronological framework for Greek historians such as Thucydides, Polybius, and Diodorus Siculus.</p>
+      <p class="cal-body">In kalkal, the Olympiad is implemented as a linear year count from 776 BCE (year 1 = 776 BCE, year 5 = 772 BCE = Olympiad 2 year 1). The display shows both the linear year and the traditional &ldquo;Olympiad N, year K&rdquo; notation.</p>
+      <details class="cal-formula">
+        <summary data-formula-label="formula">Formula</summary>
+        <div class="cal-formula-content">
+          <div class="cal-formula-math">
+            <p>julYear = Y &minus; 776</p>
+            <p>Olympiad = &lfloor;(Y &minus; 1) / 4&rfloor; + 1, &ensp; year in olympiad = ((Y &minus; 1) mod 4) + 1</p>
+          </div>
+          <pre class="cal-formula-code"><code>def olympiad_to_jd(Y, M, D):
+    return julian_to_jd(Y - 776, M, D)
+
+def display(Y):
+    return (Y - 1) // 4 + 1, (Y - 1) % 4 + 1</code></pre>
+        </div>
+      </details>
+      <p class="cal-months">Twelve months with Julian names and lengths, January&ndash;December.</p>
+    </article>
+
+    <!-- Hebrew -->
+    <article class="cal-card" data-cal="hebrew" id="hebrew">
+      <header class="cal-header">
+        <h2 class="cal-name">Hebrew Calendar</h2>
+        <div class="cal-meta">
+          <span class="cal-tag cal-type">Lunisolar</span>
+        </div>
+      </header>
+      <p class="cal-intro">The Hebrew (Jewish) calendar is a lunisolar calendar used for Jewish religious observances and as an official calendar of Israel alongside the Gregorian. Its epoch (Anno Mundi) is the calculated creation of the world in 3761 BCE.</p>
+      <p class="cal-body">The calendar uses a 19-year Metonic cycle in which 7 years are leap years with an added 13th month (Adar II). Year lengths vary between 353&ndash;385 days due to postponement rules (dechiyot) that prevent certain holidays from falling on inconvenient weekdays. Month lengths of Cheshvan and Kislev vary to accommodate these adjustments.</p>
+      <details class="cal-formula">
+        <summary data-formula-label="formula">Formula</summary>
+        <div class="cal-formula-content">
+          <div class="cal-formula-math">
+            <p>Epoch = 347997.5 (1 Tishrei 1 AM)</p>
+            <p>Leap if (7Y + 1) mod 19 &lt; 7</p>
+            <p>New Year JD via molad arithmetic + postponement rules (dechiyot)</p>
+            <p>Year length = NewYear(Y+1) &minus; NewYear(Y) &isin; {353, 354, 355, 383, 384, 385}</p>
+          </div>
+          <pre class="cal-formula-code"><code>EPOCH = 347997.5
+
+def is_leap(Y):
+    return (7 * Y + 1) % 19 < 7
+
+def delay1(Y):
+    months = (235 * Y - 234) // 19
+    parts = 12084 + 13753 * months
+    day = months * 29 + parts // 25920
+    return day + 1 if (3 * (day + 1)) % 7 < 3 else day
+
+def delay2(Y):
+    last, present, nxt = delay1(Y-1), delay1(Y), delay1(Y+1)
+    if nxt - present == 356: return 2
+    if present - last == 382: return 1
+    return 0
+
+def new_year_jd(Y):
+    return EPOCH + delay1(Y) + delay2(Y)</code></pre>
+        </div>
+      </details>
+      <p class="cal-months">Twelve or thirteen months: Tishrei (30), Cheshvan (29/30), Kislev (29/30), Tevet (29), Shevat (30), Adar / Adar I (29/30), [Adar II (29)], Nisan (30), Iyar (29), Sivan (30), Tammuz (29), Av (30), Elul (29).</p>
+    </article>
+
+    <!-- Before Present -->
+    <article class="cal-card" data-cal="bp" id="bp">
+      <header class="cal-header">
+        <h2 class="cal-name">Before Present</h2>
+        <div class="cal-meta">
+          <span class="cal-tag cal-type">Solar</span>
+        </div>
+      </header>
+      <p class="cal-intro">Before Present (BP) is a time scale used in archaeology, geology, and other sciences. By convention, "present" is fixed at 1 January 1950 CE, the reference date for radiocarbon dating.</p>
+      <p class="cal-body">BP years count backward from 1950: BP 0 = 1950 CE, BP 1 = 1949 CE, BP 2000 = 50 BCE. The system uses Gregorian calendar mechanics with the year inverted relative to 1950.</p>
+      <details class="cal-formula">
+        <summary data-formula-label="formula">Formula</summary>
+        <div class="cal-formula-content">
+          <div class="cal-formula-math">
+            <p>gregYear = 1950 &minus; Y</p>
+            <p>JD = gregorianToJD(gregYear, M, D)</p>
+          </div>
+          <pre class="cal-formula-code"><code>def bp_to_jd(Y, M, D):
+    return gregorian_to_jd(1950 - Y, M, D)</code></pre>
+        </div>
+      </details>
+      <p class="cal-months">Twelve months with Gregorian names and lengths.</p>
+    </article>
+
+    <!-- Human Era -->
+    <article class="cal-card" data-cal="human" id="human">
+      <header class="cal-header">
+        <h2 class="cal-name">Human Era</h2>
+        <div class="cal-meta">
+          <span class="cal-tag cal-type">Solar</span>
+        </div>
+      </header>
+      <p class="cal-intro">The Human Era (Holocene Era, HE) adds 10,000 years to the Gregorian calendar, placing its epoch at approximately the start of the Holocene geological epoch and the beginnings of human civilization (~10,000 BCE).</p>
+      <p class="cal-body">Proposed by Cesare Emiliani in 1993, it provides a continuous year count that encompasses all of recorded human history without negative years. Year 1 HE = 10,001 BCE; year 12,024 HE = 2024 CE.</p>
+      <details class="cal-formula">
+        <summary data-formula-label="formula">Formula</summary>
+        <div class="cal-formula-content">
+          <div class="cal-formula-math">
+            <p>gregYear = Y &minus; 10000</p>
+            <p>JD = gregorianToJD(gregYear, M, D)</p>
+          </div>
+          <pre class="cal-formula-code"><code>def human_to_jd(Y, M, D):
+    return gregorian_to_jd(Y - 10000, M, D)</code></pre>
+        </div>
+      </details>
+      <p class="cal-months">Twelve months with Gregorian names and lengths.</p>
     </article>
 
     <footer class="site-footer">
       <p class="footer-note"><a href="index.html" class="back-link" data-nav="converter">&#8592; Converter</a></p>
+      <p class="footer-note">&copy; <a href="https://sypianski.cc">sypianski.cc</a></p>
     </footer>
 
   </main>
@@ -173,6 +701,7 @@
     <span class="theme-label" id="theme-label"></span>
   </button>
 
+  <script src="js/i18n.js"></script>
   <script src="js/pages.js"></script>
   <script>
   (() => {
@@ -193,7 +722,7 @@
 
     const saved = localStorage.getItem('kalkal-theme');
     if (saved && THEMES.includes(saved)) applyTheme(saved);
-    else applyTheme('manuscript');
+    else applyTheme('brutalist');
 
     btn.addEventListener('click', () => {
       const current = localStorage.getItem('kalkal-theme') || 'manuscript';

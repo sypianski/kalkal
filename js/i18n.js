@@ -3,8 +3,8 @@
 
 const I18N = {
   en: {
-    appTitle: 'Calendar Converter',
-    appSubtitle: 'Gregorian / Julian / Hijri',
+    appTitle: 'Kalendar Kalkulator',
+    appSubtitle: 'Multi-calendar date converter',
     navConverter: 'Converter',
     navCalendars: 'Calendars',
     navMethodology: 'Methodology',
@@ -39,6 +39,7 @@ const I18N = {
     totalDays: 'days',
     monthBreakdown: 'Month breakdown',
     calendarNote: 'Dates before Oct 15, 1582 use the Julian calendar.',
+    julianDateNote: 'This date precedes the Gregorian reform (1582). The Gregorian date shown is calculated proleptically — the Julian calendar is used here.',
     tabularNote: 'Tabular Islamic calendar (arithmetic). May differ \u00b11\u20132 days from observation-based calendars.',
     gregorianLabel: 'Gregorian',
     julianLabel: 'Julian',
@@ -200,8 +201,8 @@ const I18N = {
   },
 
   pl: {
-    appTitle: 'Konwerter kalendarzy',
-    appSubtitle: 'Gregoria\u0144ski / Julia\u0144ski / Hid\u017cri',
+    appTitle: 'Kalkulator kalendarzy',
+    appSubtitle: 'Wielokalendarzowy konwerter dat',
     navConverter: 'Konwerter',
     navCalendars: 'Kalendarze',
     navMethodology: 'Metodologia',
@@ -212,7 +213,7 @@ const I18N = {
     calendars: {
       hijri: 'Hid\u017cry', julian: 'Julia\u0144ski', gregorian: 'Gregoria\u0144ski',
       coptic: 'Koptyjski', ethiopian: 'Etiopski', yazdgerdi: 'Jezdegerda',
-      armenian: 'Orme\u0144ski', solarHijri: 'Ira\u0144ski',
+      armenian: 'Ormia\u0144ski', solarHijri: 'Ira\u0144ski',
       byzantine: 'Bizanty\u0144ski', alexandrian: 'Aleksandryjski',
       seleucid: 'Seleucydzki', syriac: 'Syryjski', rumi: 'R\u016bm\u012b (osma\u0144ski)',
       egyptian: 'Egipski',
@@ -236,6 +237,7 @@ const I18N = {
     totalDays: 'dni',
     monthBreakdown: 'Rozk\u0142ad miesi\u0119cy',
     calendarNote: 'Daty przed 15.10.1582 u\u017cywaj\u0105 kalendarza julia\u0144skiego.',
+    julianDateNote: 'Data sprzed reformy gregoria\u0144skiej (1582). Podana data gregoria\u0144ska jest obliczona proleptycznie \u2014 w rzeczywisto\u015bci u\u017cyty jest tu kalendarz julia\u0144ski.',
     tabularNote: 'Tabularyczny kalendarz islamski (arytmetyczny). Mo\u017ce si\u0119 r\u00f3\u017cni\u0107 o \u00b11\u20132 dni od kalendarzy obserwacyjnych.',
     gregorianLabel: 'Gregoria\u0144ski',
     julianLabel: 'Julia\u0144ski',
@@ -397,8 +399,8 @@ const I18N = {
   },
 
   ar: {
-    appTitle: '\u0645\u062d\u0648\u0644 \u0627\u0644\u062a\u0642\u0648\u064a\u0645',
-    appSubtitle: '\u0645\u064a\u0644\u0627\u062f\u064a / \u064a\u0648\u0644\u064a\u0627\u0646\u064a / \u0647\u062c\u0631\u064a',
+    appTitle: '\u062d\u0627\u0633\u0628\u0629 \u0627\u0644\u062a\u0642\u0627\u0648\u064a\u0645',
+    appSubtitle: '\u0645\u062d\u0648\u0651\u0644 \u062a\u0648\u0627\u0631\u064a\u062e \u0645\u062a\u0639\u062f\u062f \u0627\u0644\u062a\u0642\u0627\u0648\u064a\u0645',
     navConverter: '\u0627\u0644\u0645\u062d\u0648\u0651\u0644',
     navCalendars: '\u0627\u0644\u062a\u0642\u0627\u0648\u064a\u0645',
     navMethodology: '\u0627\u0644\u0645\u0646\u0647\u062c\u064a\u0629',
@@ -433,6 +435,7 @@ const I18N = {
     totalDays: '\u064a\u0648\u0645',
     monthBreakdown: '\u062a\u0641\u0635\u064a\u0644 \u0627\u0644\u0623\u0634\u0647\u0631',
     calendarNote: '\u0627\u0644\u062a\u0648\u0627\u0631\u064a\u062e \u0642\u0628\u0644 15 \u0623\u0643\u062a\u0648\u0628\u0631 1582 \u062a\u0633\u062a\u062e\u062f\u0645 \u0627\u0644\u062a\u0642\u0648\u064a\u0645 \u0627\u0644\u064a\u0648\u0644\u064a\u0627\u0646\u064a.',
+    julianDateNote: '\u0647\u0630\u0627 \u0627\u0644\u062a\u0627\u0631\u064a\u062e \u0633\u0627\u0628\u0642 \u0644\u0644\u0625\u0635\u0644\u0627\u062d \u0627\u0644\u063a\u0631\u064a\u063a\u0648\u0631\u064a (1582). \u0627\u0644\u062a\u0627\u0631\u064a\u062e \u0627\u0644\u063a\u0631\u064a\u063a\u0648\u0631\u064a \u0627\u0644\u0645\u0639\u0631\u0648\u0636 \u0645\u062d\u0633\u0648\u0628 \u0627\u0633\u062a\u0628\u0627\u0642\u064a\u064b\u0627 \u2014 \u0627\u0644\u0645\u0633\u062a\u062e\u062f\u0645 \u0647\u0646\u0627 \u0647\u0648 \u0627\u0644\u062a\u0642\u0648\u064a\u0645 \u0627\u0644\u064a\u0648\u0644\u064a\u0627\u0646\u064a.',
     tabularNote: '\u0627\u0644\u062a\u0642\u0648\u064a\u0645 \u0627\u0644\u0625\u0633\u0644\u0627\u0645\u064a \u0627\u0644\u062c\u062f\u0648\u0644\u064a (\u062d\u0633\u0627\u0628\u064a). \u0642\u062f \u064a\u062e\u062a\u0644\u0641 \u0628\u0640\u00b11\u20132 \u064a\u0648\u0645 \u0639\u0646 \u0627\u0644\u062a\u0642\u0627\u0648\u064a\u0645 \u0627\u0644\u0642\u0627\u0626\u0645\u0629 \u0639\u0644\u0649 \u0627\u0644\u0631\u0624\u064a\u0629.',
     gregorianLabel: '\u0645\u064a\u0644\u0627\u062f\u064a',
     julianLabel: '\u064a\u0648\u0644\u064a\u0627\u0646\u064a',
@@ -594,8 +597,8 @@ const I18N = {
   },
 
   eo: {
-    appTitle: 'Kalendara konvertilo',
-    appSubtitle: 'Gregoria / Julia / Hi\u011dra',
+    appTitle: 'Kalendara Kalkulilo',
+    appSubtitle: 'Plurkalendara datkonvertilo',
     navConverter: 'Konvertilo',
     navCalendars: 'Kalendaroj',
     navMethodology: 'Metodologio',
@@ -630,6 +633,7 @@ const I18N = {
     totalDays: 'tagoj',
     monthBreakdown: 'Monata detalo',
     calendarNote: 'Datoj anta\u016d la 15-a de oktobro 1582 uzas la julian kalendaron.',
+    julianDateNote: '\u0108i tiu dato anta\u016das la gregorian reformon (1582). La montrita gregoria dato estas kalkulita proleptike \u2014 \u0109i tie estas uzata la julia kalendaro.',
     tabularNote: 'Tabela islama kalendaro (aritmetika). Povas diferenci je \u00b11\u20132 tagoj de observaj kalendaroj.',
     gregorianLabel: 'Gregoria',
     julianLabel: 'Julia',

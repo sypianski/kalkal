@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>kalkal — Methodology</title>
+  <title>kalkal — Metodologio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Charis+SIL:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Sans:wght@400;500;600&family=Noto+Sans+Mono:wght@400;500&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -16,10 +16,9 @@
   <header class="site-header">
     <div class="header-inner">
       <div class="brand">
-        <span class="brand-mark">&#x262A;</span>
         <div class="brand-text">
           <h1 class="site-title" id="page-title">Methodology</h1>
-          <p class="site-subtitle" id="page-subtitle">Algorithms, conventions, and sources used in kalkal</p>
+          <p class="site-subtitle" id="page-subtitle">How kalkal was built, how it calculates, and how it is verified</p>
         </div>
       </div>
       <nav class="lang-switcher" id="lang-switcher" aria-label="Language">
@@ -38,7 +37,7 @@
 
   <main class="main-content main-content--prose">
 
-    <p class="meth-intro">kalkal converts dates between eight historical and liturgical calendar systems using a unified algorithmic approach. All conversions are deterministic and reproducible.</p>
+    <p class="meth-intro">kalkal is a zero-dependency, client-side date converter built entirely with arithmetic algorithms. All conversions are deterministic, reproducible, and independently verifiable.</p>
 
     <section class="meth-section" data-meth="methJDN">
       <h2 class="meth-title">Julian Day Number as Universal Pivot</h2>
@@ -50,34 +49,28 @@
 
     <div class="divider"><span class="divider-ornament">&#10022;</span></div>
 
-    <section class="meth-section" data-meth="methTabular">
-      <h2 class="meth-title">Tabular Islamic Calendar</h2>
-      <p class="meth-body">The Hijri (lunar) calendar in kalkal uses the tabular/arithmetic method rather than astronomical observation or calculation of lunar phases. The tabular method employs a fixed 30-year cycle in which 11 years are leap years (355 days) and 19 are common years (354 days). This gives a mean lunation of 29.53&#x305; days, very close to the astronomical mean synodic month of 29.53059 days.</p>
-      <p class="meth-body2">Four historical variants of the tabular calendar are supported, differing only in which years of the 30-year cycle are designated as leap. The default variant is W&#252;stenfeld (type IIc), the standard in Western historiography.</p>
+    <section class="meth-section" data-meth="methArchitecture">
+      <h2 class="meth-title">Architecture and Construction</h2>
+      <p class="meth-body">kalkal runs entirely in the browser with zero external dependencies and no build step. The computational engine is a single JavaScript module (Cal) exposing toJD() and fromJD() functions for each of the 20+ supported calendar systems. A separate registry maps each calendar to its Cal functions, handling UI concerns like variant selection (e.g. the 4 tabular Hijri variants) independently from the algorithms. Internationalization covers 4 languages (EN, PL, AR, EO) with full RTL support for Arabic.</p>
+      <p class="meth-body2">All algorithms are purely arithmetic — no astronomical calculations, no external API calls, no lookup tables of observed data. This makes every conversion reproducible: the same input always produces the same output regardless of platform, locale, or network state.</p>
+    </section>
+
+    <div class="divider"><span class="divider-ornament">&#10022;</span></div>
+
+    <section class="meth-section" data-meth="methAlgorithms">
+      <h2 class="meth-title">Algorithm Sources</h2>
+      <p class="meth-body">Gregorian and Julian conversions follow the algorithms in Meeus (1998). The tabular Hijri calendar uses a 30-year cycle with 4 historical leap-year variants (IIc/Wüstenfeld as default). The Solar Hijri uses the 2820-year arithmetic cycle from Birashk, refined by Borkowski. Coptic, Ethiopian, Egyptian, Yazdgerdi, and Armenian calendars use epoch-offset arithmetic from Reingold &amp; Dershowitz (2018). The Hebrew calendar implements the full molad-based rules from the same source. Byzantine, Seleucid, Syriac, Rumi, AUC, Spanish Era, Olympiad, and Macedonian calendars are Julian-based with epoch offsets.</p>
       <aside class="meth-aside meth-aside--warning">
-        <p class="meth-warning">The tabular calendar may differ by &#177;1–2 days from calendars based on lunar observation (used officially in Saudi Arabia and other countries). It is intended for historical research and approximate conversion, not for determining religious observance dates.</p>
+        <p class="meth-warning">The tabular Hijri calendar may differ by ±1–2 days from calendars based on lunar observation (used officially in Saudi Arabia and other countries). It is intended for historical research and approximate conversion, not for determining religious observance dates.</p>
       </aside>
     </section>
 
     <div class="divider"><span class="divider-ornament">&#10022;</span></div>
 
-    <section class="meth-section" data-meth="methSolar">
-      <h2 class="meth-title">Solar Hijri: 2820-Year Cycle</h2>
-      <p class="meth-body">The Solar Hijri (Iranian) calendar is approximated arithmetically using a 2820-year grand cycle containing exactly 683 leap years and 1,029,983 days. This gives a mean year of 365.24220 days, extremely close to the current vernal equinox year. The algorithm, based on work by Ahmad Birashk and refined by K. M. Borkowski, determines leap years through a formula involving the cycle position.</p>
-    </section>
-
-    <div class="divider"><span class="divider-ornament">&#10022;</span></div>
-
-    <section class="meth-section" data-meth="methAlexandrian">
-      <h2 class="meth-title">Coptic and Ethiopian: Alexandrian Calendars</h2>
-      <p class="meth-body">Both the Coptic and Ethiopian calendars follow the Alexandrian calendar structure: 12 months of 30 days plus a short 13th month. They share the same leap year rule (year mod 4 = 3) and differ only in their epoch. Conversion to and from JDN uses straightforward arithmetic based on the fixed year length of 365.25 mean days.</p>
-    </section>
-
-    <div class="divider"><span class="divider-ornament">&#10022;</span></div>
-
-    <section class="meth-section" data-meth="methWandering">
-      <h2 class="meth-title">Yazdgerdi and Armenian: Wandering Calendars</h2>
-      <p class="meth-body">The Yazdgerdi and Armenian calendars are "wandering" or "vague" calendars with a fixed year of exactly 365 days and no intercalation. Conversion is simple arithmetic: the JDN offset from the epoch divided by 365 gives the year, and the remainder gives the day of the year. These calendars drift through the seasons at ~1 day every 4 years.</p>
+    <section class="meth-section" data-meth="methValidation">
+      <h2 class="meth-title">Validation and Verification</h2>
+      <p class="meth-body">Every calendar conversion is validated through three independent methods. First, round-trip testing: for each calendar, a date is converted to JDN and back, confirming that fromJD(toJD(date)) === date across hundreds of test cases spanning epochs, boundaries, and modern dates. Second, cross-verification against independent implementations: the Fourmilab algorithm (public domain), the browser's Intl.DateTimeFormat API, and Python's hijri-converter library. Third, spot-checking known historical dates (e.g. Battle of Badr = 17 Ramadan 2 AH = 13 March 624 CE Julian, Fall of Baghdad = 10 February 1258 CE) against published scholarly sources.</p>
+      <p class="meth-body2">Tests run in Node.js by loading the browser-targeted Cal module. No test framework is used — the verification scripts output pass/fail counts directly, making the test suite itself auditable with zero dependencies.</p>
     </section>
 
     <div class="divider"><span class="divider-ornament">&#10022;</span></div>
@@ -94,8 +87,22 @@
       </ol>
     </section>
 
+    <div class="divider"><span class="divider-ornament">&#10022;</span></div>
+
+    <section class="meth-section" data-meth="methLinks">
+      <h2 class="meth-title">Similar Tools</h2>
+      <ul class="meth-links">
+        <li><a href="https://www.fourmilab.ch/documents/calendar/" target="_blank" rel="noopener">Fourmilab Calendar Converter</a> &mdash; John Walker's classic multi-calendar converter with astronomical algorithms</li>
+        <li><a href="https://www.islamicfinder.org/islamic-calendar/" target="_blank" rel="noopener">IslamicFinder</a> &mdash; Hijri-Gregorian converter with prayer times</li>
+        <li><a href="https://www.hebcal.com/converter/" target="_blank" rel="noopener">Hebcal</a> &mdash; Hebrew-Gregorian date converter</li>
+        <li><a href="https://www.iranchamber.com/calendar/converter/iranian_calendar_converter.php" target="_blank" rel="noopener">Iran Chamber</a> &mdash; Solar Hijri / Iranian calendar converter</li>
+        <li><a href="https://calendarhome.com/" target="_blank" rel="noopener">Calendar Home</a> &mdash; Multi-calendar reference and conversion tools</li>
+      </ul>
+    </section>
+
     <footer class="site-footer">
       <p class="footer-note"><a href="index.html" class="back-link" data-nav="converter">&#8592; Converter</a></p>
+      <p class="footer-note">&copy; <a href="https://sypianski.cc">sypianski.cc</a></p>
     </footer>
 
   </main>
@@ -125,7 +132,7 @@
 
     const saved = localStorage.getItem('kalkal-theme');
     if (saved && THEMES.includes(saved)) applyTheme(saved);
-    else applyTheme('manuscript');
+    else applyTheme('brutalist');
 
     btn.addEventListener('click', () => {
       const current = localStorage.getItem('kalkal-theme') || 'manuscript';

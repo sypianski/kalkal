@@ -261,10 +261,8 @@
   const fromCalInput = $('#from-calendar');
   const toCalInput = $('#to-calendar');
   const fromMonthSelect = $('#from-month');
-  const toMonthSelect = $('#to-month');
   const fromVariantsBar = $('#from-variants');
   const toVariantsBar = $('#to-variants');
-  const zodiacToggle = $('#zodiac-toggle');
 
   // ---- Variant bar ----
 
@@ -334,7 +332,6 @@
   function updateMonthSelects() {
     const srcCal = resolveCalendar(fromCalInput.value);
     populateMonthSelect(fromMonthSelect, srcCal ? srcCal.id : null);
-    populateMonthSelect(toMonthSelect, srcCal ? srcCal.id : null);
   }
 
   // ---- Language ----
@@ -348,7 +345,7 @@
     document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
 
     appTitle.textContent = t.appTitle;
-    appSubtitle.textContent = t.appSubtitle;
+    appSubtitle.innerHTML = t.appSubtitle + ' <span style="color: red; font-weight: bold;">BETA</span>';
 
     $$('[data-i18n]').forEach(node => {
       const key = node.dataset.i18n;
@@ -510,16 +507,10 @@
 
     const fromMonth = parseInt($('#from-month').value, 10) || null;
     const fromDay = parseInt($('#from-day').value, 10) || null;
-    const toYear = parseInt($('#to-year').value, 10) || null;
-    const toMonth = parseInt($('#to-month').value, 10) || null;
-    const toDay = parseInt($('#to-day').value, 10) || null;
 
-    // Validate month range
+    // Validate month
     if (fromMonth && (fromMonth < 1 || fromMonth > srcCal.monthCount)) {
       showError(t.errInvalidMonth, $('#from-month')); return;
-    }
-    if (toMonth && (toMonth < 1 || toMonth > srcCal.monthCount)) {
-      showError(t.errInvalidMonth, $('#to-month')); return;
     }
 
     // Validate day
@@ -530,17 +521,7 @@
       }
     }
 
-    const hasTo = toYear || toMonth || toDay;
-
-    if (hasTo) {
-      const startY = fromYear;
-      const startM = fromMonth || 1;
-      const startD = fromDay || 1;
-      const endY = toYear || fromYear;
-      const endM = toMonth || (toYear ? srcCal.monthCount : (fromMonth || srcCal.monthCount));
-      const endD = toDay || srcCal.monthLength(endY, endM);
-      convertRange(srcCal, tgtCal, startY, startM, startD, endY, endM, endD, t);
-    } else if (fromDay && fromMonth) {
+    if (fromDay && fromMonth) {
       convertDate(srcCal, tgtCal, fromYear, fromMonth, fromDay, t);
     } else if (fromMonth) {
       const startD = 1;
@@ -560,6 +541,7 @@
     const srcNames = src.monthNames(t);
     const tgtNames = tgt.monthNames(t);
 
+    const isProlepticGregorian = tgt.id === 'gregorian' && jd < 2299160.5;
     const elements = [
       el('p', { class: 'result-label', text: t.calendars[src.id] }),
       el('p', { class: 'result-secondary', text: d + ' ' + srcNames[m - 1] + ' ' + y }),
@@ -567,11 +549,14 @@
       el('p', { class: 'result-main', text: result.day + ' ' + tgtNames[result.month - 1] + ' ' + result.year }),
       el('p', { class: 'result-secondary', text: t.weekdays[dow] }),
     ];
-    if (zodiacToggle && zodiacToggle.checked) {
-      const zi = Cal.getZodiacSign(jd);
-      const symbol = '\u2648\u2649\u264A\u264B\u264C\u264D\u264E\u264F\u2650\u2651\u2652\u2653'[zi];
-      elements.push(el('p', { class: 'result-zodiac', text: symbol + ' ' + t.zodiacSigns[zi] }));
+    if (isProlepticGregorian) {
+      elements.push(el('p', { class: 'result-note', text: t.julianDateNote }));
     }
+    // Zodiac (hidden by default, toggled after results)
+    const zi = Cal.getZodiacSign(jd);
+    const zodiacSymbol = '\u2648\u2649\u264A\u264B\u264C\u264D\u264E\u264F\u2650\u2651\u2652\u2653'[zi];
+    const zodiacEl = el('p', { class: 'result-zodiac hidden', text: zodiacSymbol + ' ' + t.zodiacSigns[zi] });
+    elements.push(zodiacEl);
     // Eclipse check
     if (typeof Eclipses !== 'undefined') {
       const ecl = Eclipses.lookup(jd);
@@ -697,6 +682,7 @@
     const srcStartStr = d1 + ' ' + srcNames[m1 - 1] + ' ' + y1;
     const srcEndStr = d2 + ' ' + srcNames[m2 - 1] + ' ' + y2;
 
+    const isProlepticGregorian = tgt.id === 'gregorian' && jdEnd < 2299160.5;
     showResult([
       el('p', { class: 'result-label', text: srcLabel }),
       el('p', { class: 'result-secondary', text: srcStartStr + ' \u2013 ' + srcEndStr }),
@@ -706,6 +692,7 @@
         ' \u2013 ',
         el('span', { class: 'date-val', text: tgtEndStr })
       ),
+      isProlepticGregorian ? el('p', { class: 'result-note', text: t.julianDateNote }) : null,
       monthRows.length > 1 ? el('p', { class: 'result-label', text: t.monthBreakdown }) : null,
       monthRows.length > 1 ? table : null,
       buildMeta([[t.jdn, jdStart + ' \u2013 ' + jdEnd]])
@@ -761,6 +748,7 @@
       ) : null
     );
 
+    const isProlepticGregorian = tgt.id === 'gregorian' && jdEnd < 2299160.5;
     showResult([
       el('p', { class: 'result-label', text: year + ' ' + srcLabel }),
       yearInfo,
@@ -768,6 +756,7 @@
         el('span', { class: 'date-val', text: tgtStartStr }), ' \u2013 ',
         el('span', { class: 'date-val', text: tgtEndStr })
       ),
+      isProlepticGregorian ? el('p', { class: 'result-note', text: t.julianDateNote }) : null,
       el('p', { class: 'result-label', text: t.monthBreakdown }),
       table,
       buildMeta([[t.jdn, jdStart + ' \u2013 ' + jdEnd]])
@@ -798,6 +787,19 @@
       });
     });
     resultPanel.appendChild(copyBtn);
+
+    // Zodiac toggle button (only if there's a zodiac element in results)
+    const zodiacEl = resultPanel.querySelector('.result-zodiac');
+    if (zodiacEl) {
+      const zodiacBtn = el('button', { class: 'zodiac-btn', text: t.zodiacLabel });
+      zodiacBtn.type = 'button';
+      zodiacBtn.addEventListener('click', function () {
+        zodiacEl.classList.toggle('hidden');
+        zodiacBtn.classList.toggle('active');
+      });
+      resultPanel.appendChild(zodiacBtn);
+    }
+
     resultPanel.classList.add('has-result');
   }
 
@@ -820,7 +822,6 @@
     const dominated = hist.findIndex(h =>
       h.fromCal === entry.fromCal && h.toCal === entry.toCal &&
       h.year === entry.year && h.month === entry.month && h.day === entry.day &&
-      h.toYear === entry.toYear && h.toMonth === entry.toMonth && h.toDay === entry.toDay &&
       h.variant === entry.variant
     );
     if (dominated >= 0) hist.splice(dominated, 1);
@@ -865,25 +866,7 @@
 
     // Compute result
     let resStr;
-    const hasTo = entry.toYear || entry.toMonth || entry.toDay;
-    if (hasTo) {
-      const m1 = entry.month || 1;
-      const d1 = entry.day || 1;
-      const y2 = entry.toYear || entry.year;
-      const m2 = entry.toMonth || (entry.toYear ? src.monthCount : (entry.month || src.monthCount));
-      const d2 = entry.toDay || src.monthLength(y2, m2);
-      const r1 = tgt.fromJD(src.toJD(entry.year, m1, d1));
-      const r2 = tgt.fromJD(src.toJD(y2, m2, d2));
-      const s1 = fmtDate(tgt, t, r1.year, r1.month, r1.day);
-      const s2 = fmtDate(tgt, t, r2.year, r2.month, r2.day);
-      resStr = r1.year === r2.year && r1.month === r2.month ? s1 + '\u2013' + r2.day : s1 + ' \u2013 ' + s2;
-      // Also abbreviate source if range
-      const endY = entry.toYear || entry.year;
-      const endM = entry.toMonth || entry.month;
-      const endD = entry.toDay || null;
-      const srcEnd = fmtDate(src, t, endY, endM, endD);
-      if (srcEnd !== srcStr) srcStr += ' \u2013 ' + srcEnd;
-    } else if (entry.day && entry.month) {
+    if (entry.day && entry.month) {
       const r = tgt.fromJD(src.toJD(entry.year, entry.month, entry.day));
       resStr = fmtDate(tgt, t, r.year, r.month, r.day);
     } else if (entry.month) {
@@ -953,9 +936,6 @@
     $('#from-year').value = entry.year;
     $('#from-month').value = entry.month || '';
     $('#from-day').value = entry.day || '';
-    $('#to-year').value = entry.toYear || '';
-    $('#to-month').value = entry.toMonth || '';
-    $('#to-day').value = entry.toDay || '';
 
     convert();
   }
@@ -971,9 +951,6 @@
       year: parseInt($('#from-year').value, 10) || null,
       month: parseInt($('#from-month').value, 10) || null,
       day: parseInt($('#from-day').value, 10) || null,
-      toYear: parseInt($('#to-year').value, 10) || null,
-      toMonth: parseInt($('#to-month').value, 10) || null,
-      toDay: parseInt($('#to-day').value, 10) || null,
       variant: srcCal._variant || null,
       ts: Date.now()
     };

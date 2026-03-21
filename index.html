@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>kalkal — Calendar Converter</title>
+  <title>kalkal — Kalendara Kalkulilo</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Charis+SIL:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Sans:wght@400;500;600&family=Noto+Sans+Mono:wght@400;500&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -16,10 +16,9 @@
   <header class="site-header">
     <div class="header-inner">
       <div class="brand">
-        <span class="brand-mark">&#x262A;</span>
         <div class="brand-text">
-          <h1 class="site-title" id="app-title">Calendar Converter</h1>
-          <p class="site-subtitle" id="app-subtitle">Gregorian / Julian / Hijri</p>
+          <h1 class="site-title" id="app-title">Kalendara Kalkulilo</h1>
+          <p class="site-subtitle" id="app-subtitle">Multi-calendar date converter <span style="color: red; font-weight: bold;">BETA</span></p>
         </div>
       </div>
       <nav class="lang-switcher" id="lang-switcher" aria-label="Language">
@@ -81,22 +80,6 @@
               </div>
             </div>
 
-            <div class="form-date-row form-date-row--to">
-              <div class="form-field form-field--num">
-                <label for="to-year" class="form-label" data-i18n="year">Year</label>
-                <input type="number" id="to-year" min="1" dir="ltr" class="input-num">
-              </div>
-              <div class="form-field form-field--month">
-                <label for="to-month" class="form-label" data-i18n="month">Month</label>
-                <select id="to-month" class="input-month">
-                  <option value=""></option>
-                </select>
-              </div>
-              <div class="form-field form-field--num">
-                <label for="to-day" class="form-label" data-i18n="day">Day</label>
-                <input type="number" id="to-day" min="1" max="31" dir="ltr" class="input-num">
-              </div>
-            </div>
           </div>
         </div>
 
@@ -118,13 +101,6 @@
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
             </button>
           </div>
-        </div>
-
-        <div class="form-options">
-          <label class="option-toggle">
-            <input type="checkbox" id="zodiac-toggle">
-            <span data-i18n="zodiacLabel">Zodiac sign</span>
-          </label>
         </div>
 
       </form>
@@ -152,6 +128,7 @@
     <footer class="site-footer">
       <p class="footer-note" id="calendar-note" data-i18n="calendarNote">Dates before Oct 15, 1582 use the Julian calendar.</p>
       <p class="footer-note" id="tabular-note" data-i18n="tabularNote">Tabular Islamic calendar (arithmetic). May differ &plusmn;1&ndash;2 days from observation-based calendars.</p>
+      <p class="footer-note">&copy; <a href="https://sypianski.cc">sypianski.cc</a></p>
     </footer>
 
   </main>
@@ -186,7 +163,7 @@
 
     const saved = localStorage.getItem('kalkal-theme');
     if (saved && THEMES.includes(saved)) applyTheme(saved);
-    else applyTheme('manuscript');
+    else applyTheme('brutalist');
 
     btn.addEventListener('click', () => {
       const current = localStorage.getItem('kalkal-theme') || 'manuscript';

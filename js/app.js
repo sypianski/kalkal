@@ -190,6 +190,36 @@
       isLeap: (y) => Cal.isMacedonianLeapYear(y),
       monthCount: 12,
       monthNames: (t) => t.macedonianMonths
+    },
+    hebrew: {
+      id: 'hebrew',
+      toJD: (y, m, d) => Cal.hebrewToJD(y, m, d),
+      fromJD: (jd) => Cal.jdToHebrew(jd),
+      monthLength: (y, m) => Cal.hebrewMonthLength(y, m),
+      yearLength: (y) => Cal.hebrewYearLength(y),
+      isLeap: (y) => Cal.isHebrewLeapYear(y),
+      monthCount: 13,
+      monthNames: (t) => t.hebrewMonths
+    },
+    bp: {
+      id: 'bp',
+      toJD: (y, m, d) => Cal.bpToJD(y, m, d),
+      fromJD: (jd) => Cal.jdToBP(jd),
+      monthLength: (y, m) => Cal.bpMonthLength(y, m),
+      yearLength: (y) => Cal.bpYearLength(y),
+      isLeap: (y) => Cal.isBPLeapYear(y),
+      monthCount: 12,
+      monthNames: (t) => t.gregorianMonths
+    },
+    human: {
+      id: 'human',
+      toJD: (y, m, d) => Cal.humanToJD(y, m, d),
+      fromJD: (jd) => Cal.jdToHuman(jd),
+      monthLength: (y, m) => Cal.humanMonthLength(y, m),
+      yearLength: (y) => Cal.humanYearLength(y),
+      isLeap: (y) => Cal.isHumanLeapYear(y),
+      monthCount: 12,
+      monthNames: (t) => t.gregorianMonths
     }
   };
 
@@ -462,16 +492,14 @@
     clearError();
     const t = I18N[currentLang];
 
-    // Validate source calendar
+    // Validate source calendar (default: gregorian)
     const fromCalVal = fromCalInput.value.trim();
-    if (!fromCalVal) { showError(t.errNoFromCal, fromCalInput); return; }
-    const srcCal = resolveCalendar(fromCalVal);
+    const srcCal = fromCalVal ? resolveCalendar(fromCalVal) : CALENDARS.gregorian;
     if (!srcCal) { showError(t.errUnknownCal + fromCalVal, fromCalInput); return; }
 
-    // Validate target calendar
+    // Validate target calendar (default: hebrew)
     const toCalVal = toCalInput.value.trim();
-    if (!toCalVal) { showError(t.errNoToCal, toCalInput); return; }
-    const tgtCal = resolveCalendar(toCalVal);
+    const tgtCal = toCalVal ? resolveCalendar(toCalVal) : CALENDARS.hebrew;
     if (!tgtCal) { showError(t.errUnknownCal + toCalVal, toCalInput); return; }
 
     if (srcCal.id === tgtCal.id) { showError(t.errSameCal); return; }
@@ -521,6 +549,8 @@
     } else {
       convertYearRange(srcCal, tgtCal, fromYear, t);
     }
+
+    recordConversion();
   }
 
   function convertDate(src, tgt, y, m, d, t) {
@@ -541,6 +571,78 @@
       const zi = Cal.getZodiacSign(jd);
       const symbol = '\u2648\u2649\u264A\u264B\u264C\u264D\u264E\u264F\u2650\u2651\u2652\u2653'[zi];
       elements.push(el('p', { class: 'result-zodiac', text: symbol + ' ' + t.zodiacSigns[zi] }));
+    }
+    // Eclipse check
+    if (typeof Eclipses !== 'undefined') {
+      const ecl = Eclipses.lookup(jd);
+      if (ecl) {
+        const typeStr = Eclipses.typeLabel(ecl.type, t);
+        const magStr = ecl.mag ? ' (' + ecl.mag.toFixed(3) + ')' : '';
+        const eclEl = el('div', { class: 'result-eclipse' },
+          el('span', { class: 'eclipse-icon', text: '\u{1F311}' }),
+          el('span', { class: 'eclipse-type', text: (t.eclipseLabel || 'Solar eclipse') + ': ' + typeStr + magStr })
+        );
+        if (ecl.notable && ecl.noteKey && t.eclipseNotes && t.eclipseNotes[ecl.noteKey]) {
+          eclEl.appendChild(el('p', { class: 'eclipse-note', text: t.eclipseNotes[ecl.noteKey] }));
+        }
+        elements.push(eclEl);
+      }
+    }
+    // Astronomy: moon phase, comets, supernovae, conjunctions
+    if (typeof Astronomy !== 'undefined') {
+      // Moon phase
+      const moon = Astronomy.moonPhase(jd);
+      const phaseName = (t.moonPhases && t.moonPhases[moon.name]) || moon.name;
+      const moonEl = el('div', { class: 'result-astro result-moon' },
+        el('span', { class: 'astro-icon', text: moon.icon }),
+        el('span', { class: 'astro-text', text: (t.moonPhaseLabel || 'Moon phase') + ': ' + phaseName }),
+        el('span', { class: 'astro-detail', text: moon.age + ' ' + (t.moonAge || 'day') + ' \u2022 ' + moon.illumination + '% ' + (t.moonIllumination || 'illuminated') })
+      );
+      elements.push(moonEl);
+
+      // Comet check
+      const comet = Astronomy.lookupComet(jd);
+      if (comet) {
+        const cName = (t.cometNames && t.cometNames[comet.id]) || comet.id;
+        const cEl = el('div', { class: 'result-astro result-comet' },
+          el('span', { class: 'astro-icon', text: '\u2604\uFE0F' }),
+          el('span', { class: 'astro-text', text: (t.cometLabel || 'Comet') + ': ' + cName + ' (' + comet.year + ')' })
+        );
+        if (comet.noteKey && t.cometNotes && t.cometNotes[comet.noteKey]) {
+          cEl.appendChild(el('p', { class: 'astro-note', text: t.cometNotes[comet.noteKey] }));
+        }
+        elements.push(cEl);
+      }
+
+      // Supernova check
+      const sn = Astronomy.lookupSupernova(jd);
+      if (sn) {
+        const magStr = sn.peakMag > 0 ? '+' + sn.peakMag : String(sn.peakMag);
+        const snEl = el('div', { class: 'result-astro result-supernova' },
+          el('span', { class: 'astro-icon', text: '\u{1F4A5}' }),
+          el('span', { class: 'astro-text', text: (t.supernovaLabel || 'Supernova') + ': ' + sn.id + ' (' + sn.constellation + ', mag ' + magStr + ')' })
+        );
+        if (sn.noteKey && t.supernovaNotes && t.supernovaNotes[sn.noteKey]) {
+          snEl.appendChild(el('p', { class: 'astro-note', text: t.supernovaNotes[sn.noteKey] }));
+        }
+        elements.push(snEl);
+      }
+
+      // Conjunction check
+      const conj = Astronomy.lookupConjunction(jd);
+      if (conj) {
+        const p1 = Astronomy.planetName(conj.planet1, t);
+        const p2 = Astronomy.planetName(conj.planet2, t);
+        const sepStr = conj.separation < 60 ? conj.separation + '\u2032' : (conj.separation / 60).toFixed(1) + '\u00b0';
+        const conjEl = el('div', { class: 'result-astro result-conjunction' },
+          el('span', { class: 'astro-icon', text: '\u2728' }),
+          el('span', { class: 'astro-text', text: (t.conjunctionLabel || 'Conjunction') + ': ' + p1 + '\u2013' + p2 + ' (' + sepStr + ')' })
+        );
+        if (conj.noteKey && t.conjunctionNotes && t.conjunctionNotes[conj.noteKey]) {
+          conjEl.appendChild(el('p', { class: 'astro-note', text: t.conjunctionNotes[conj.noteKey] }));
+        }
+        elements.push(conjEl);
+      }
     }
     elements.push(buildMeta([[t.jdn, String(jd)]]));
     showResult(elements);
@@ -685,8 +787,203 @@
   function showResult(elements) {
     while (resultPanel.firstChild) resultPanel.removeChild(resultPanel.firstChild);
     elements.forEach(node => { if (node) resultPanel.appendChild(node); });
+    const t = I18N[currentLang] || I18N.en;
+    const copyBtn = el('button', { class: 'copy-btn', text: t.copyResult });
+    copyBtn.type = 'button';
+    copyBtn.addEventListener('click', function () {
+      const text = resultPanel.innerText.replace(copyBtn.textContent, '').trim();
+      navigator.clipboard.writeText(text).then(function () {
+        copyBtn.textContent = t.copied;
+        setTimeout(function () { copyBtn.textContent = t.copyResult; }, 1500);
+      });
+    });
+    resultPanel.appendChild(copyBtn);
     resultPanel.classList.add('has-result');
   }
+
+  // ---- History ----
+
+  const HISTORY_KEY = 'kalkal-history';
+  const HISTORY_MAX = 20;
+  const historyList = $('#history-list');
+  const historyPanel = $('#history-panel');
+  const historyClearBtn = $('#history-clear');
+
+  function getHistory() {
+    try { return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; }
+    catch { return []; }
+  }
+
+  function saveHistory(entry) {
+    const hist = getHistory();
+    // Deduplicate: remove if same params already exist
+    const dominated = hist.findIndex(h =>
+      h.fromCal === entry.fromCal && h.toCal === entry.toCal &&
+      h.year === entry.year && h.month === entry.month && h.day === entry.day &&
+      h.toYear === entry.toYear && h.toMonth === entry.toMonth && h.toDay === entry.toDay &&
+      h.variant === entry.variant
+    );
+    if (dominated >= 0) hist.splice(dominated, 1);
+    hist.unshift(entry);
+    if (hist.length > HISTORY_MAX) hist.length = HISTORY_MAX;
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(hist));
+    renderHistory();
+  }
+
+  function shortCalName(id) {
+    const SHORT = {
+      hijri: 'AH', julian: 'Jul.', gregorian: 'Greg.', coptic: 'Copt.',
+      ethiopian: 'Eth.', yazdgerdi: 'Yazd.', armenian: 'Arm.',
+      solarHijri: 'SH', byzantine: 'Byz.', alexandrian: 'Alex.',
+      seleucid: 'Sel.', syriac: 'Syr.', rumi: 'R\u016bm\u012b',
+      egyptian: 'Egypt.', auc: 'AUC', spanish: 'Span.',
+      olympiad: 'Ol.', macedonian: 'Mac.'
+    };
+    return SHORT[id] || id;
+  }
+
+  function fmtDate(cal, t, y, m, d) {
+    if (!m) return String(y);
+    const names = cal.monthNames(t);
+    const mName = names[m - 1] || String(m);
+    // Abbreviate month to 3 chars if > 5 chars
+    const shortM = mName.length > 5 ? mName.slice(0, 3) + '.' : mName;
+    return d ? (d + ' ' + shortM + ' ' + y) : (shortM + ' ' + y);
+  }
+
+  function buildHistorySummary(entry) {
+    const t = I18N[currentLang];
+    const src = CALENDARS[entry.fromCal];
+    const tgt = CALENDARS[entry.toCal];
+    if (!src || !tgt) return entry.fromCal + ' \u2192 ' + entry.toCal;
+
+    const srcShort = shortCalName(entry.fromCal);
+    const tgtShort = shortCalName(entry.toCal);
+
+    // Source date string
+    let srcStr = fmtDate(src, t, entry.year, entry.month, entry.day);
+
+    // Compute result
+    let resStr;
+    const hasTo = entry.toYear || entry.toMonth || entry.toDay;
+    if (hasTo) {
+      const m1 = entry.month || 1;
+      const d1 = entry.day || 1;
+      const y2 = entry.toYear || entry.year;
+      const m2 = entry.toMonth || (entry.toYear ? src.monthCount : (entry.month || src.monthCount));
+      const d2 = entry.toDay || src.monthLength(y2, m2);
+      const r1 = tgt.fromJD(src.toJD(entry.year, m1, d1));
+      const r2 = tgt.fromJD(src.toJD(y2, m2, d2));
+      const s1 = fmtDate(tgt, t, r1.year, r1.month, r1.day);
+      const s2 = fmtDate(tgt, t, r2.year, r2.month, r2.day);
+      resStr = r1.year === r2.year && r1.month === r2.month ? s1 + '\u2013' + r2.day : s1 + ' \u2013 ' + s2;
+      // Also abbreviate source if range
+      const endY = entry.toYear || entry.year;
+      const endM = entry.toMonth || entry.month;
+      const endD = entry.toDay || null;
+      const srcEnd = fmtDate(src, t, endY, endM, endD);
+      if (srcEnd !== srcStr) srcStr += ' \u2013 ' + srcEnd;
+    } else if (entry.day && entry.month) {
+      const r = tgt.fromJD(src.toJD(entry.year, entry.month, entry.day));
+      resStr = fmtDate(tgt, t, r.year, r.month, r.day);
+    } else if (entry.month) {
+      const r1 = tgt.fromJD(src.toJD(entry.year, entry.month, 1));
+      const last = src.monthLength(entry.year, entry.month);
+      const r2 = tgt.fromJD(src.toJD(entry.year, entry.month, last));
+      resStr = fmtDate(tgt, t, r1.year, r1.month, r1.day) + ' \u2013 ' + fmtDate(tgt, t, r2.year, r2.month, r2.day);
+    } else {
+      const r1 = tgt.fromJD(src.toJD(entry.year, 1, 1));
+      const lastM = src.monthCount;
+      const r2 = tgt.fromJD(src.toJD(entry.year, lastM, src.monthLength(entry.year, lastM)));
+      resStr = r1.year === r2.year ? String(r1.year) : r1.year + '\u2013' + r2.year;
+    }
+
+    return srcStr + ' ' + srcShort + '  \u2192  ' + resStr + ' ' + tgtShort;
+  }
+
+  function renderHistory() {
+    const hist = getHistory();
+    const t = I18N[currentLang];
+    while (historyList.firstChild) historyList.removeChild(historyList.firstChild);
+
+    if (hist.length === 0) {
+      historyPanel.classList.remove('has-items');
+      historyList.appendChild(el('li', { class: 'history-empty', text: t.noHistory }));
+      return;
+    }
+
+    historyPanel.classList.add('has-items');
+    hist.forEach((entry, i) => {
+      const summary = buildHistorySummary(entry);
+      const li = el('li', { class: 'history-item' });
+      const btn = el('button', { class: 'history-entry', text: summary });
+      const removeBtn = el('button', { class: 'history-remove', 'aria-label': 'Remove', text: '\u00d7' });
+
+      btn.addEventListener('click', () => loadHistoryEntry(entry));
+      removeBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        const h = getHistory();
+        h.splice(i, 1);
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(h));
+        renderHistory();
+      });
+
+      li.appendChild(btn);
+      li.appendChild(removeBtn);
+      historyList.appendChild(li);
+    });
+  }
+
+  function loadHistoryEntry(entry) {
+    const t = I18N[currentLang];
+    // Set calendar inputs
+    fromCalInput.value = t.calendars[entry.fromCal] || entry.fromCal;
+    toCalInput.value = t.calendars[entry.toCal] || entry.toCal;
+    onCalendarChange(fromCalInput);
+    onCalendarChange(toCalInput);
+
+    // Set variant if applicable
+    const srcCal = CALENDARS[entry.fromCal];
+    if (srcCal && srcCal.variants && entry.variant) {
+      srcCal._variant = entry.variant;
+      updateVariantBar(fromVariantsBar, fromCalInput);
+    }
+
+    // Set date fields
+    $('#from-year').value = entry.year;
+    $('#from-month').value = entry.month || '';
+    $('#from-day').value = entry.day || '';
+    $('#to-year').value = entry.toYear || '';
+    $('#to-month').value = entry.toMonth || '';
+    $('#to-day').value = entry.toDay || '';
+
+    convert();
+  }
+
+  function recordConversion() {
+    const srcCal = resolveCalendar(fromCalInput.value);
+    const tgtCal = resolveCalendar(toCalInput.value);
+    if (!srcCal || !tgtCal) return;
+
+    const entry = {
+      fromCal: srcCal.id,
+      toCal: tgtCal.id,
+      year: parseInt($('#from-year').value, 10) || null,
+      month: parseInt($('#from-month').value, 10) || null,
+      day: parseInt($('#from-day').value, 10) || null,
+      toYear: parseInt($('#to-year').value, 10) || null,
+      toMonth: parseInt($('#to-month').value, 10) || null,
+      toDay: parseInt($('#to-day').value, 10) || null,
+      variant: srcCal._variant || null,
+      ts: Date.now()
+    };
+    if (entry.year) saveHistory(entry);
+  }
+
+  historyClearBtn.addEventListener('click', () => {
+    localStorage.removeItem(HISTORY_KEY);
+    renderHistory();
+  });
 
   // ---- Events ----
 
@@ -694,6 +991,7 @@
     const btn = e.target.closest('.lang-btn');
     if (!btn) return;
     setLang(btn.dataset.lang);
+    renderHistory();
   });
 
   form.addEventListener('submit', e => {
@@ -709,4 +1007,5 @@
   setupAutocomplete(fromCalInput);
   setupAutocomplete(toCalInput);
   setLang(currentLang);
+  renderHistory();
 })();

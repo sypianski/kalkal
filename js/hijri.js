@@ -951,6 +951,157 @@ const Cal = (() => {
     return indiction;
   }
 
+  // ── Hebrew (Jewish) calendar ──────────────────────────────────────
+  // Lunisolar calendar using Tishrei-based civil month numbering:
+  //   1=Tishrei, 2=Cheshvan, 3=Kislev, 4=Tevet, 5=Shevat,
+  //   6=Adar (or Adar I in leap), 7=Adar II (leap only),
+  //   8=Nisan, 9=Iyar, 10=Sivan, 11=Tammuz, 12=Av, 13=Elul
+  // Based on Reingold & Dershowitz "Calendrical Calculations"
+
+  const HEBREW_EPOCH = 347997.5; // JD of 1 Tishrei 1 AM (proleptic Julian: Oct 7, 3761 BCE)
+
+  function isHebrewLeapYear(year) {
+    return ((7 * year + 1) % 19) < 7;
+  }
+
+  // Days from epoch to 1 Tishrei of year (before postponement adjustment)
+  function hebrewDelay1(year) {
+    const months = Math.floor((235 * year - 234) / 19);
+    const parts = 12084 + 13753 * months;
+    const day = months * 29 + Math.floor(parts / 25920);
+    if ((3 * (day + 1)) % 7 < 3) {
+      return day + 1;
+    }
+    return day;
+  }
+
+  // Additional postponement days for year
+  function hebrewDelay2(year) {
+    const last = hebrewDelay1(year - 1);
+    const present = hebrewDelay1(year);
+    const next = hebrewDelay1(year + 1);
+    if (next - present === 356) return 2;
+    if (present - last === 382) return 1;
+    return 0;
+  }
+
+  function hebrewNewYearJD(year) {
+    return HEBREW_EPOCH + hebrewDelay1(year) + hebrewDelay2(year);
+  }
+
+  function hebrewYearLength(year) {
+    return hebrewNewYearJD(year + 1) - hebrewNewYearJD(year);
+  }
+
+  // Civil month numbering: 1=Tishrei..13=Elul; month 7=Adar II only in leap years
+  function hebrewMonthLength(year, month) {
+    const yearLen = hebrewYearLength(year);
+    switch (month) {
+      case 1: return 30;                                       // Tishrei
+      case 2: return yearLen % 10 === 5 ? 30 : 29;             // Cheshvan (30 in complete)
+      case 3: return yearLen % 10 === 3 ? 29 : 30;             // Kislev (29 in deficient)
+      case 4: return 29;                                       // Tevet
+      case 5: return 30;                                       // Shevat
+      case 6: return isHebrewLeapYear(year) ? 30 : 29;         // Adar I / Adar
+      case 7: return isHebrewLeapYear(year) ? 29 : 0;          // Adar II (0 in common)
+      case 8: return 30;                                       // Nisan
+      case 9: return 29;                                       // Iyar
+      case 10: return 30;                                      // Sivan
+      case 11: return 29;                                      // Tammuz
+      case 12: return 30;                                      // Av
+      case 13: return 29;                                      // Elul
+      default: return 0;
+    }
+  }
+
+  function hebrewToJD(year, month, day) {
+    let jd = hebrewNewYearJD(year) + day - 1;
+    for (let m = 1; m < month; m++) {
+      const ml = hebrewMonthLength(year, m);
+      if (ml > 0) jd += ml;
+    }
+    return jd;
+  }
+
+  function jdToHebrew(jd) {
+    // Approximate year
+    let year = Math.floor((jd - HEBREW_EPOCH) / 365.25) + 1;
+    while (hebrewNewYearJD(year) > jd) year--;
+    while (hebrewNewYearJD(year + 1) <= jd) year++;
+
+    // Find month
+    let month = 1;
+    let remaining = jd - hebrewNewYearJD(year);
+    let ml = hebrewMonthLength(year, month);
+    while (ml > 0 && remaining >= ml && month < 13) {
+      remaining -= ml;
+      month++;
+      ml = hebrewMonthLength(year, month);
+      // Skip 0-length months (Adar II in common years)
+      if (ml === 0 && month < 13) {
+        month++;
+        ml = hebrewMonthLength(year, month);
+      }
+    }
+
+    const day = Math.floor(remaining) + 1;
+    return { year, month, day };
+  }
+
+  // ================================================================
+  // Before Present (BP) — used in archaeology/geology
+  // "Present" = 1950 CE (Gregorian). year BP = 1950 - Gregorian year
+  // BP 0 = 1950 CE, BP 1 = 1949 CE, etc.
+  // ================================================================
+
+  function bpToJD(year, month, day) {
+    return gregorianToJD(1950 - year, month, day);
+  }
+
+  function jdToBP(jd) {
+    const greg = jdToGregorian(jd);
+    return { year: 1950 - greg.year, month: greg.month, day: greg.day };
+  }
+
+  function bpMonthLength(year, month) {
+    return gregorianMonthLength(1950 - year, month);
+  }
+
+  function bpYearLength(year) {
+    return isGregorianLeapYear(1950 - year) ? 366 : 365;
+  }
+
+  function isBPLeapYear(year) {
+    return isGregorianLeapYear(1950 - year);
+  }
+
+  // ================================================================
+  // Human Era (HE) / Holocene Era
+  // year HE = Gregorian year + 10000
+  // 1 HE = 10001 BCE, 10001 HE = 1 CE, 12024 HE = 2024 CE
+  // ================================================================
+
+  function humanToJD(year, month, day) {
+    return gregorianToJD(year - 10000, month, day);
+  }
+
+  function jdToHuman(jd) {
+    const greg = jdToGregorian(jd);
+    return { year: greg.year + 10000, month: greg.month, day: greg.day };
+  }
+
+  function humanMonthLength(year, month) {
+    return gregorianMonthLength(year - 10000, month);
+  }
+
+  function humanYearLength(year) {
+    return isGregorianLeapYear(year - 10000) ? 366 : 365;
+  }
+
+  function isHumanLeapYear(year) {
+    return isGregorianLeapYear(year - 10000);
+  }
+
   return {
     isHijriLeapYear,
     hijriMonthLength,
@@ -1012,6 +1163,12 @@ const Cal = (() => {
     macedonianToJD, jdToMacedonian, macedonianMonthLength, macedonianYearLength, isMacedonianLeapYear,
     // Indiction
     indictionFromJD,
+    // Hebrew
+    isHebrewLeapYear, hebrewMonthLength, hebrewYearLength, hebrewToJD, jdToHebrew,
+    // Before Present
+    bpToJD, jdToBP, bpMonthLength, bpYearLength, isBPLeapYear,
+    // Human Era
+    humanToJD, jdToHuman, humanMonthLength, humanYearLength, isHumanLeapYear,
     HIJRI_VARIANTS, HIJRI_DEFAULT,
     GREGORIAN_CUTOVER_JD
   };

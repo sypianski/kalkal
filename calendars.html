@@ -32,6 +32,7 @@
       <a href="index.html" data-nav="converter">Converter</a>
       <a href="calendars.html" class="active" data-nav="calendars">Calendars</a>
       <a href="methodology.html" data-nav="methodology">Methodology</a>
+      <a href="dynasties.html" data-nav="dynasties">Regnal Tables</a>
     </nav>
   </header>
 
@@ -89,6 +90,7 @@
     A = Y // 100
     B = 2 - A + A // 4
     return int(365.25 * (Y + 4716)) + int(30.6001 * (M + 1)) + D + B - 1524.5</code></pre>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Twelve months of 28–31 days: January (31), February (28/29), March (31), April (30), May (31), June (30), July (31), August (31), September (30), October (31), November (30), December (31).</p>
@@ -117,6 +119,7 @@
     if M <= 2:
         Y, M = Y - 1, M + 12
     return int(365.25 * (Y + 4716)) + int(30.6001 * (M + 1)) + D - 1524.5</code></pre>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Twelve months identical in name and length to the Gregorian calendar, differing only in the leap year rule (every 4th year, without exception).</p>
@@ -152,6 +155,7 @@ def leap_count(n, leaps=LEAPS_IIc):
 def hijri_to_jd(Y, M, D, leaps=LEAPS_IIc):
     return (EPOCH + (Y - 1) * 354 + leap_count(Y - 1, leaps)
             + int((M - 1) * 29.5 + 0.99) + D - 1)</code></pre>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Twelve months: Muharram (30), Safar (29), Rabi' al-Awwal (30), Rabi' ath-Thani (29), Jumada al-Ula (30), Jumada al-Akhira (29), Rajab (30), Sha'ban (29), Ramadan (30), Shawwal (29), Dhu al-Qa'da (30), Dhu al-Hijja (29 or 30).</p>
@@ -191,6 +195,7 @@ def is_leap(Y):
     epbase = Y - 474
     epyear = 474 + ((epbase % 2820) + 2820) % 2820
     return (epyear * 682 - 110) % 2816 < 682</code></pre>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Twelve months: Farvardin (31), Ordibehesht (31), Khordad (31), Tir (31), Mordad (31), Shahrivar (31), Mehr (30), Aban (30), Azar (30), Dey (30), Bahman (30), Esfand (29/30).</p>
@@ -226,6 +231,7 @@ def jd_to_coptic(jd):
     M = doy // 30 + 1
     D = doy - (M - 1) * 30 + 1
     return Y, M, D</code></pre>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Thirteen months: Thout, Paopi, Hathor, Koiak, Tobi, Meshir, Paremhat, Parmouti, Pashons, Paoni, Epip, Mesori (each 30 days), Epagomenai (5 or 6 days).</p>
@@ -262,6 +268,7 @@ def jd_to_ethiopian(jd):
     M = doy // 30 + 1
     D = doy - (M - 1) * 30 + 1
     return Y, M, D</code></pre>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Thirteen months: M&#228;sk&#228;r&#228;m, &#7788;&#601;q&#601;mt, &#7716;&#601;dar, Ta&#7723;&#353;a&#353;, &#7788;&#601;r, Y&#228;katit, M&#228;gabit, Miyazya, G&#601;nbot, S&#228;ne, &#7716;amle, N&#228;hase (each 30 days), Pagum&#228;n (5 or 6 days).</p>
@@ -298,6 +305,7 @@ def jd_to_yazdgerdi(jd):
     M = min(13, doy // 30 + 1)
     D = doy - (M - 1) * 30 + 1
     return Y, M, D</code></pre>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Thirteen months: Farvardin, Ordibehesht, Khordad, Tir, Mordad, Shahrivar, Mehr, Aban, Azar, Dey, Bahman, Esfand (each 30 days), plus 5 epagomenal days.</p>
@@ -335,6 +343,7 @@ def jd_to_armenian(jd):
     M = min(13, doy // 30 + 1)
     D = doy - (M - 1) * 30 + 1
     return Y, M, D</code></pre>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Thirteen months: Navasard, Ho&#7769;i, Sahmi, Tr&#275;, K&#x2019;alo&#269;, Arac&#x2019;, Mehekan, Areg, Ahekan, Mareri, Margac&#x2019;, Hrotic&#x2019; (each 30 days), Aweleac&#x2019; (5 days).</p>
@@ -362,6 +371,7 @@ def jd_to_armenian(jd):
 
 def egyptian_to_jd(Y, M, D):
     return EPOCH - 1 + 365 * (Y - 1) + 30 * (M - 1) + D</code></pre>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Thirteen months: Thoth, Phaophi, Athyr, Choiak, Tybi, Mechir, Phamenoth, Pharmuthi, Pachons, Payni, Epiphi, Mesore (each 30 days), Epagomenai (5 days).</p>
@@ -389,6 +399,7 @@ def egyptian_to_jd(Y, M, D):
         return julian_to_jd(Y - 5509, M + 8, D)
     else:        # Jan-Aug
         return julian_to_jd(Y - 5508, M - 4, D)</code></pre>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Twelve months from September: September, October, November, December, January, February, March, April, May, June, July, August.</p>
@@ -416,6 +427,7 @@ def egyptian_to_jd(Y, M, D):
         return julian_to_jd(Y - 5493, M + 2, D)
     else:        # Jan-Feb
         return julian_to_jd(Y - 5492, M - 10, D)</code></pre>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Twelve months from March: March, April, May, June, July, August, September, October, November, December, January, February.</p>
@@ -443,6 +455,7 @@ def egyptian_to_jd(Y, M, D):
         return julian_to_jd(Y - 312, M + 9, D)
     else:        # Jan-Sep
         return julian_to_jd(Y - 311, M - 3, D)</code></pre>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Twelve months from October: October, November, December, January, February, March, April, May, June, July, August, September.</p>
@@ -467,6 +480,7 @@ def egyptian_to_jd(Y, M, D):
           </div>
           <pre class="cal-formula-code"><code>def syriac_to_jd(Y, M, D):
     return julian_to_jd(Y - 311, M, D)</code></pre>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Twelve months: K&#257;n&#363;n &#7788;r&#257;y&#257;n&#257; (Jan), &#352;b&#257;&#7789; (Feb), &#256;&#7693;&#257;r (Mar), N&#299;s&#257;n (Apr), Ayy&#257;r (May), &#7716;z&#299;r&#257;n (Jun), Tamm&#363;z (Jul), &#256;b (Aug), Ayl&#363;l (Sep), Ti&#353;r&#299;n Qd&#299;m (Oct), Ti&#353;r&#299;n &#7716;r&#257;y (Nov), K&#257;n&#363;n Qd&#299;m (Dec).</p>
@@ -494,6 +508,7 @@ def egyptian_to_jd(Y, M, D):
         return julian_to_jd(Y - 312, M + 9, D)
     else:        # Peritios-Hyperberetaios = Jan-Sep
         return julian_to_jd(Y - 311, M - 3, D)</code></pre>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Twelve months from October: Dios, Apellaios, Audynaios, Peritios, Dystros, Xanthikos, Artemisios, Daisios, Panemos, Loos, Gorpiaios, Hyperberetaios.</p>
@@ -518,6 +533,7 @@ def egyptian_to_jd(Y, M, D):
           </div>
           <pre class="cal-formula-code"><code>def rumi_to_jd(Y, M, D):
     return julian_to_jd(Y + 584, M, D)</code></pre>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Twelve months with Julian names and lengths, January&ndash;December.</p>
@@ -542,6 +558,7 @@ def egyptian_to_jd(Y, M, D):
           </div>
           <pre class="cal-formula-code"><code>def auc_to_jd(Y, M, D):
     return julian_to_jd(Y - 753, M, D)</code></pre>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Twelve months with Julian names and lengths, January&ndash;December.</p>
@@ -566,6 +583,7 @@ def egyptian_to_jd(Y, M, D):
           </div>
           <pre class="cal-formula-code"><code>def spanish_to_jd(Y, M, D):
     return julian_to_jd(Y - 38, M, D)</code></pre>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Twelve months with Julian names and lengths, January&ndash;December.</p>
@@ -593,6 +611,7 @@ def egyptian_to_jd(Y, M, D):
 
 def display(Y):
     return (Y - 1) // 4 + 1, (Y - 1) % 4 + 1</code></pre>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Twelve months with Julian names and lengths, January&ndash;December.</p>
@@ -636,6 +655,7 @@ def delay2(Y):
 
 def new_year_jd(Y):
     return EPOCH + delay1(Y) + delay2(Y)</code></pre>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Twelve or thirteen months: Tishrei (30), Cheshvan (29/30), Kislev (29/30), Tevet (29), Shevat (30), Adar / Adar I (29/30), [Adar II (29)], Nisan (30), Iyar (29), Sivan (30), Tammuz (29), Av (30), Elul (29).</p>
@@ -660,6 +680,7 @@ def new_year_jd(Y):
           </div>
           <pre class="cal-formula-code"><code>def bp_to_jd(Y, M, D):
     return gregorian_to_jd(1950 - Y, M, D)</code></pre>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Twelve months with Gregorian names and lengths.</p>
@@ -684,6 +705,7 @@ def new_year_jd(Y):
           </div>
           <pre class="cal-formula-code"><code>def human_to_jd(Y, M, D):
     return gregorian_to_jd(Y - 10000, M, D)</code></pre>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Twelve months with Gregorian names and lengths.</p>

@@ -282,6 +282,16 @@ html[dir="rtl"] .site-title {
   margin-block-start: var(--space-sm);
 }
 
+.cal-card .cal-source {
+  font-size: 0.78rem;
+  color: var(--ink-400);
+  margin-block-start: var(--space-xs);
+}
+
+.cal-card .cal-source-label {
+  font-weight: 600;
+}
+
 /* ---- Seasonal months grid ---- */
 
 .cal-seasons {
@@ -2631,6 +2641,15 @@ body[data-theme="brutalist"] .back-link {
   border-block-end: var(--border-subtle);
   color: var(--ink-700);
   vertical-align: top;
+}
+
+.dyn-section-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ink-500);
+  padding-block: 0.6em;
+  border-block-end: var(--border-subtle);
+  letter-spacing: 0.03em;
 }
 
 .dyn-table td:first-child {

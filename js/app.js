@@ -651,6 +651,12 @@
       const animalName = (t.ilkhaniAnimals && t.ilkhaniAnimals[animal]) || animal;
       elements.push(el('p', { class: 'result-secondary result-animal', text: (t.animalYearLabel || 'Animal year') + ': ' + animalName }));
     }
+    // Babylonian source note
+    if (tgt.id === 'babylonian') {
+      const isPD = Cal.isBabylonianPD(result.year);
+      const note = isPD ? (t.babylonianPDNote || 'Observational date from Parker & Dubberstein tables (626 BCE \u2013 45 CE).') : (t.babylonianArithNote || 'Arithmetic approximation (outside Parker & Dubberstein range). May differ \u00b11\u20132 days from historical observation.');
+      elements.push(el('p', { class: 'result-note', text: note }));
+    }
     if (isProlepticGregorian) {
       elements.push(el('p', { class: 'result-note', text: t.julianDateNote }));
     }

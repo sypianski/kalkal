@@ -63,11 +63,32 @@
     },
     yazdgerdi: {
       id: 'yazdgerdi',
-      toJD: (y, m, d) => Cal.yazdgerdiToJD(y, m, d),
-      fromJD: (jd) => Cal.jdToYazdgerdi(jd),
-      monthLength: (y, m) => Cal.yazdgerdiMonthLength(y, m),
-      yearLength: () => Cal.yazdgerdiYearLength(),
-      isLeap: () => false,
+      variants: ['Shahenshahi', 'Qadimi', 'Fasli'],
+      defaultVariant: 'Shahenshahi',
+      _variant: 'Shahenshahi',
+      toJD(y, m, d) {
+        if (this._variant === 'Qadimi') return Cal.qadimiToJD(y, m, d);
+        if (this._variant === 'Fasli') return Cal.fasliToJD(y, m, d);
+        return Cal.yazdgerdiToJD(y, m, d);
+      },
+      fromJD(jd) {
+        if (this._variant === 'Qadimi') return Cal.jdToQadimi(jd);
+        if (this._variant === 'Fasli') return Cal.jdToFasli(jd);
+        return Cal.jdToYazdgerdi(jd);
+      },
+      monthLength(y, m) {
+        if (this._variant === 'Qadimi') return Cal.qadimiMonthLength(y, m);
+        if (this._variant === 'Fasli') return Cal.fasliMonthLength(y, m);
+        return Cal.yazdgerdiMonthLength(y, m);
+      },
+      yearLength(y) {
+        if (this._variant === 'Fasli') return Cal.fasliYearLength(y);
+        return Cal.yazdgerdiYearLength();
+      },
+      isLeap(y) {
+        if (this._variant === 'Fasli') return Cal.isFasliLeapYear(y);
+        return false;
+      },
       monthCount: 13,
       monthNames: (t) => t.persianMonths
     },
@@ -88,6 +109,16 @@
       monthLength: (y, m) => Cal.solarHijriMonthLength(y, m),
       yearLength: (y) => Cal.solarHijriYearLength(y),
       isLeap: (y) => Cal.isSolarHijriLeapYear(y),
+      monthCount: 12,
+      monthNames: (t) => t.persianMonths
+    },
+    ilkhani: {
+      id: 'ilkhani',
+      toJD: (y, m, d) => Cal.ilkhaniToJD(y, m, d),
+      fromJD: (jd) => Cal.jdToIlkhani(jd),
+      monthLength: (y, m) => Cal.ilkhaniMonthLength(y, m),
+      yearLength: (y) => Cal.ilkhaniYearLength(y),
+      isLeap: (y) => Cal.isIlkhaniLeapYear(y),
       monthCount: 12,
       monthNames: (t) => t.persianMonths
     },
@@ -275,7 +306,10 @@
     Alexandrian: 'Alexandrian',
     ChronPasch: 'Chron. Paschale',
     Macedonian: 'Macedonian',
-    Babylonian: 'Babylonian'
+    Babylonian: 'Babylonian',
+    Shahenshahi: 'Shahenshahi',
+    Qadimi: 'Qadimi',
+    Fasli: 'Fasli'
   };
 
   // ---- DOM helpers ----
@@ -596,10 +630,16 @@
       el('p', { class: 'result-main', text: result.day + ' ' + tgtNames[result.month - 1] + ' ' + result.year }),
       el('p', { class: 'result-secondary', text: t.weekdays[dow] }),
     ];
-    // Indiction for Byzantine/Alexandrian calendars
-    if (tgt.id === 'byzantine' || tgt.id === 'alexandrian') {
+    // Indiction for Byzantine calendars
+    if (tgt.id === 'byzantine') {
       const ind = Cal.indictionFromJD(jd);
       elements.push(el('p', { class: 'result-secondary result-indiction', text: (t.indictionLabel || 'Indiction') + ' ' + ind }));
+    }
+    // Animal year for Ilkhanid
+    if (tgt.id === 'ilkhani') {
+      const animal = Cal.ilkhaniAnimalYear(result.year);
+      const animalName = (t.ilkhaniAnimals && t.ilkhaniAnimals[animal]) || animal;
+      elements.push(el('p', { class: 'result-secondary result-animal', text: (t.animalYearLabel || 'Animal year') + ': ' + animalName }));
     }
     if (isProlepticGregorian) {
       elements.push(el('p', { class: 'result-note', text: t.julianDateNote }));

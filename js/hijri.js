@@ -421,6 +421,75 @@ const Cal = (() => {
   }
 
   // ================================================================
+  // Qadimi calendar — Parsi variant, 30 days ahead of Shahenshahi
+  // Missed one intercalation in ~8th century, so epoch is 30 days earlier
+  // Same 365-day wandering structure, NO leap years
+  // ================================================================
+
+  const QADIMI_EPOCH = YAZDGERDI_EPOCH - 30; // 17 May 632 CE Julian
+
+  function qadimiMonthLength(year, month) {
+    if (month <= 12) return 30;
+    return 5;
+  }
+
+  function qadimiYearLength() {
+    return 365;
+  }
+
+  function qadimiToJD(year, month, day) {
+    return QADIMI_EPOCH - 1 + 365 * (year - 1) + 30 * (month - 1) + day;
+  }
+
+  function jdToQadimi(jd) {
+    const jd1 = Math.floor(jd) + 0.5;
+    const daysSinceEpoch = jd1 - QADIMI_EPOCH;
+    const year = Math.floor(daysSinceEpoch / 365) + 1;
+    const dayOfYear = jd1 - qadimiToJD(year, 1, 1);
+    const month = Math.min(13, Math.floor(dayOfYear / 30) + 1);
+    const day = dayOfYear - (month - 1) * 30 + 1;
+    return { year, month, day };
+  }
+
+  // ================================================================
+  // Fasli calendar — reformed Zoroastrian calendar with leap years
+  // 1 Farvardin fixed near vernal equinox (21 March)
+  // Leap year every 4 years (year % 4 == 3)
+  // ================================================================
+
+  const FASLI_EPOCH = 1951975.5; // 21 March 632 CE Julian
+
+  function isFasliLeapYear(year) {
+    return year % 4 === 3;
+  }
+
+  function fasliMonthLength(year, month) {
+    if (month <= 12) return 30;
+    return isFasliLeapYear(year) ? 6 : 5;
+  }
+
+  function fasliYearLength(year) {
+    return isFasliLeapYear(year) ? 366 : 365;
+  }
+
+  function fasliToJD(year, month, day) {
+    const y = year - 1;
+    return FASLI_EPOCH - 1 + 365 * y + Math.floor(year / 4) + 30 * (month - 1) + day;
+  }
+
+  function jdToFasli(jd) {
+    const jd1 = Math.floor(jd) + 0.5;
+    const approx = Math.floor((jd1 - FASLI_EPOCH) / 365.25) + 1;
+    let year = approx;
+    while (fasliToJD(year + 1, 1, 1) <= jd1) year++;
+    while (fasliToJD(year, 1, 1) > jd1) year--;
+    const dayOfYear = jd1 - fasliToJD(year, 1, 1);
+    const month = Math.min(13, Math.floor(dayOfYear / 30) + 1);
+    const day = dayOfYear - (month - 1) * 30 + 1;
+    return { year, month, day };
+  }
+
+  // ================================================================
   // Egyptian civil calendar (Era of Nabonassar, epoch 26 Feb 747 BCE Julian)
   // 12 months × 30 days + 5 epagomenal, NO leap years (drifts)
   // ================================================================
@@ -557,6 +626,45 @@ const Cal = (() => {
     const month = yday <= 186 ? Math.ceil(yday / 31) : Math.ceil((yday - 6) / 30);
     const day = jd1 - solarHijriToJD(year, month, 1) + 1;
     return { year, month, day };
+  }
+
+  // ================================================================
+  // Ilkhanid (Khani) calendar
+  // Solar Hijri with epoch offset: year 1 = 1 Farvardin 681 SH (13 Mar 1302 CE Julian)
+  // Established by Ghazan Khan. Structurally identical to Solar Hijri.
+  // ================================================================
+
+  const ILKHANI_OFFSET = 680;
+
+  function ilkhaniToJD(year, month, day) {
+    return solarHijriToJD(year + ILKHANI_OFFSET, month, day);
+  }
+
+  function jdToIlkhani(jd) {
+    const sh = jdToSolarHijri(jd);
+    return { year: sh.year - ILKHANI_OFFSET, month: sh.month, day: sh.day };
+  }
+
+  function ilkhaniMonthLength(year, month) {
+    return solarHijriMonthLength(year + ILKHANI_OFFSET, month);
+  }
+
+  function ilkhaniYearLength(year) {
+    return solarHijriYearLength(year + ILKHANI_OFFSET);
+  }
+
+  function isIlkhaniLeapYear(year) {
+    return isSolarHijriLeapYear(year + ILKHANI_OFFSET);
+  }
+
+  // 12-year Turkic-Mongol animal cycle
+  const ILKHANI_ANIMALS = [
+    'Sichqan', 'Ud', 'Bars', 'Tavishqan', 'Luy', 'Yilan',
+    'Yund', 'Qoy', 'Bichin', 'Takigu', 'It', 'Tonguz'
+  ];
+
+  function ilkhaniAnimalYear(year) {
+    return ILKHANI_ANIMALS[((year - 1) % 12 + 12) % 12];
   }
 
   // ================================================================
@@ -1269,12 +1377,19 @@ const Cal = (() => {
     isCopticLeapYear, copticMonthLength, copticYearLength, copticToJD, jdToCoptic,
     // Ethiopian
     isEthiopianLeapYear, ethiopianMonthLength, ethiopianYearLength, ethiopianToJD, jdToEthiopian,
-    // Yazdgerdi
+    // Yazdgerdi (Shahenshahi)
     yazdgerdiMonthLength, yazdgerdiYearLength, yazdgerdiToJD, jdToYazdgerdi,
+    // Qadimi
+    qadimiMonthLength, qadimiYearLength, qadimiToJD, jdToQadimi,
+    // Fasli
+    isFasliLeapYear, fasliMonthLength, fasliYearLength, fasliToJD, jdToFasli,
     // Armenian
     armenianMonthLength, armenianYearLength, armenianToJD, jdToArmenian,
     // Solar Hijri
     isSolarHijriLeapYear, solarHijriMonthLength, solarHijriYearLength, solarHijriToJD, jdToSolarHijri,
+    // Ilkhanid
+    ilkhaniToJD, jdToIlkhani, ilkhaniMonthLength, ilkhaniYearLength, isIlkhaniLeapYear,
+    ilkhaniAnimalYear, ILKHANI_ANIMALS,
     // Byzantine
     byzantineToJD, jdToByzantine, byzantineMonthLength, byzantineYearLength, isByzantineLeapYear,
     // Alexandrian

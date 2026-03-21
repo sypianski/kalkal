@@ -125,6 +125,36 @@ massRoundTrip('Yazdgerdi', Cal.yazdgerdiToJD, Cal.jdToYazdgerdi, 13, Cal.yazdger
 console.log();
 
 // ═══════════════════════════════════════════════════════
+// 3b. QADIMI (Parsi variant, 30 days ahead of Shahenshahi)
+// ═══════════════════════════════════════════════════════
+console.log('═══ QADIMI ═══');
+// Qadimi epoch is 30 days before Shahenshahi: 17 May 632 CE Julian
+dateEq('Qadimi epoch → Julian', Cal.jdToJulian(Cal.qadimiToJD(1, 1, 1)), 632, 5, 17);
+console.log('   Epoch: 1 Farvardin 1 QD = 17 May 632 Julian ✓');
+eq('Qadimi year = 365d', Cal.qadimiYearLength(), 365);
+eq('Qadimi month 13 = 5d', Cal.qadimiMonthLength(1, 13), 5);
+// Qadimi and Shahenshahi same date should differ by 30 JDN
+eq('Qadimi-Shah offset = 30d', Cal.yazdgerdiToJD(1, 1, 1) - Cal.qadimiToJD(1, 1, 1), 30);
+massRoundTrip('Qadimi', Cal.qadimiToJD, Cal.jdToQadimi, 13, Cal.qadimiMonthLength, [1, 1400, 3]);
+console.log();
+
+// ═══════════════════════════════════════════════════════
+// 3c. FASLI (reformed Zoroastrian with leap years)
+// ═══════════════════════════════════════════════════════
+console.log('═══ FASLI ═══');
+// Fasli epoch: 1 Farvardin 1 = 21 March 632 CE Julian
+dateEq('Fasli epoch → Julian', Cal.jdToJulian(Cal.fasliToJD(1, 1, 1)), 632, 3, 21);
+console.log('   Epoch: 1 Farvardin 1 Fasli = 21 Mar 632 Julian ✓');
+eq('Fasli non-leap year = 365d', Cal.fasliYearLength(1), 365);
+eq('Fasli leap year = 366d', Cal.fasliYearLength(3), 366);
+eq('Fasli leap: y%4==3', Cal.isFasliLeapYear(3), true);
+eq('Fasli non-leap: y%4!=3', Cal.isFasliLeapYear(4), false);
+eq('Fasli month 13 non-leap = 5d', Cal.fasliMonthLength(1, 13), 5);
+eq('Fasli month 13 leap = 6d', Cal.fasliMonthLength(3, 13), 6);
+massRoundTrip('Fasli', Cal.fasliToJD, Cal.jdToFasli, 13, Cal.fasliMonthLength, [1, 1400, 3]);
+console.log();
+
+// ═══════════════════════════════════════════════════════
 // 4. ARMENIAN
 // ═══════════════════════════════════════════════════════
 console.log('═══ ARMENIAN ═══');
@@ -379,6 +409,8 @@ const calFuncs = [
   { name: 'Coptic', toJD: Cal.copticToJD, fromJD: Cal.jdToCoptic },
   { name: 'Ethiopian', toJD: Cal.ethiopianToJD, fromJD: Cal.jdToEthiopian },
   { name: 'Yazdgerdi', toJD: Cal.yazdgerdiToJD, fromJD: Cal.jdToYazdgerdi },
+  { name: 'Qadimi', toJD: Cal.qadimiToJD, fromJD: Cal.jdToQadimi },
+  { name: 'Fasli', toJD: Cal.fasliToJD, fromJD: Cal.jdToFasli },
   { name: 'Armenian', toJD: Cal.armenianToJD, fromJD: Cal.jdToArmenian },
   { name: 'SolarHijri', toJD: Cal.solarHijriToJD, fromJD: Cal.jdToSolarHijri },
   { name: 'Byzantine', toJD: Cal.byzantineToJD, fromJD: Cal.jdToByzantine },

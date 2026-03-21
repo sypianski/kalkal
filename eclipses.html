@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>kalkal — Solar Eclipses</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Charis+SIL:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Sans:wght@400;500;600&family=Noto+Sans+Mono:wght@400;500&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=3">
+</head>
+<body data-page="eclipses">
+
+  <div class="page-grain"></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-text">
+          <h1 class="site-title" id="page-title">Solar Eclipses</h1>
+          <p class="site-subtitle" id="page-subtitle">Historical solar eclipses visible from the Middle East, 1–1500 CE</p>
+        </div>
+      </div>
+      <nav class="lang-switcher" id="lang-switcher" aria-label="Language">
+        <button class="lang-btn active" data-lang="en">EN</button>
+        <button class="lang-btn" data-lang="pl">PL</button>
+        <button class="lang-btn" data-lang="ar">AR</button>
+        <button class="lang-btn" data-lang="eo">EO</button>
+      </nav>
+    </div>
+    <nav class="page-nav" aria-label="Pages">
+      <a href="index.html" data-nav="converter">Converter</a>
+      <a href="calendars.html" data-nav="calendars">Calendars</a>
+      <a href="methodology.html" data-nav="methodology">Methodology</a>
+      <a href="eclipses.html" class="active" data-nav="eclipses">Eclipses</a>
+    </nav>
+  </header>
+
+  <main class="main-content main-content--prose">
+
+    <p class="ecl-intro" id="ecl-intro">A catalogue of major solar eclipses visible from the Middle East and Eastern Mediterranean between 1 and 1500 CE. Eclipse data is sourced from NASA's Five Millennium Canon of Solar Eclipses. Notable eclipses — those documented in historical chronicles or coinciding with major events — are highlighted. Click any date to convert it in the main calculator.</p>
+
+    <div class="ecl-stats">
+      <div class="ecl-stat">
+        <span class="ecl-stat-num" id="ecl-count-total">0</span>
+        <span class="ecl-stat-label" data-stat="total">Total eclipses</span>
+      </div>
+      <div class="ecl-stat">
+        <span class="ecl-stat-num" id="ecl-count-notable">0</span>
+        <span class="ecl-stat-label" data-stat="notable">Historically documented</span>
+      </div>
+      <div class="ecl-stat">
+        <span class="ecl-stat-num" id="ecl-count-total-type">0</span>
+        <span class="ecl-stat-label" data-stat="totalType">Total (type)</span>
+      </div>
+      <div class="ecl-stat">
+        <span class="ecl-stat-num" id="ecl-count-annular">0</span>
+        <span class="ecl-stat-label" data-stat="annular">Annular</span>
+      </div>
+      <div class="ecl-stat">
+        <span class="ecl-stat-num" id="ecl-count-hybrid">0</span>
+        <span class="ecl-stat-label" data-stat="hybrid">Hybrid</span>
+      </div>
+    </div>
+
+    <div id="ecl-table-container"></div>
+
+    <p class="ecl-source" id="ecl-source"></p>
+
+  </main>
+
+  <script src="js/hijri.js"></script>
+  <script src="js/eclipses.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/pages.js"></script>
+  <script>
+  (function() {
+    'use strict';
+
+    var RAW = [
+      [17,2,15,'H',1.005,false,null],[20,12,3,'H',1.010,false,null],[26,2,6,'A',0.989,false,null],
+      [29,11,24,'T',1.022,true,'crucifixion29'],[34,9,1,'A',0.959,false,null],
+      [45,8,1,'T',1.072,false,null],[49,5,20,'A',0.958,false,null],
+      [59,4,30,'T',1.019,true,'pliny59'],[71,3,20,'H',1.007,true,'jerusalem71'],
+      [80,3,10,'A',0.986,false,null],[83,12,27,'T',1.029,false,null],
+      [110,8,3,'A',0.981,false,null],[118,9,3,'T',1.037,false,null],
+      [121,7,2,'A',0.967,false,null],[125,4,21,'H',1.006,false,null],
+      [132,6,1,'T',1.078,false,null],[135,4,1,'A',0.946,false,null],
+      [164,9,4,'A',0.963,false,null],[165,2,28,'T',1.047,false,null],
+      [172,10,5,'T',1.020,false,null],[174,2,19,'T',1.047,false,null],
+      [197,6,3,'A',0.998,false,null],
+      [219,4,2,'T',1.063,true,'elagabalus219'],
+      [247,3,24,'T',1.054,false,null],[251,7,6,'A',0.986,false,null],
+      [262,6,4,'A',0.969,false,null],[284,4,3,'A',0.998,false,null],
+      [301,4,25,'T',1.053,false,null],
+      [320,10,18,'T',1.026,false,null],[334,7,17,'A',0.976,false,null],
+      [338,5,6,'A',0.995,false,null],[345,6,16,'T',1.081,false,null],
+      [349,4,4,'A',0.954,false,null],[364,6,16,'T',1.057,true,'julian364'],
+      [371,7,28,'T',1.036,false,null],[378,9,8,'A',0.932,false,null],
+      [381,1,12,'A',0.926,false,null],[388,8,18,'A',0.976,false,null],
+      [393,11,20,'T',1.037,true,'theon393'],[399,7,19,'T',1.076,false,null],
+      [402,11,11,'T',1.040,false,null],[410,6,18,'A',0.984,false,null],
+      [418,7,19,'T',1.046,true,'theon418'],[425,3,6,'A',0.989,false,null],
+      [432,4,16,'T',1.073,false,null],[433,9,29,'A',0.955,false,null],
+      [435,2,14,'A',0.929,false,null],[456,12,13,'T',1.034,false,null],
+      [464,7,20,'A',0.969,false,null],[472,8,20,'T',1.030,false,null],
+      [484,1,14,'T',1.037,true,'proclus484'],[486,5,19,'T',1.081,false,null],
+      [487,11,1,'A',0.957,false,null],
+      [512,6,29,'T',1.042,false,null],[534,4,29,'A',0.944,false,null],
+      [536,9,1,'A',0.947,false,null],[538,2,15,'T',1.041,false,null],
+      [540,6,20,'T',1.080,false,null],[541,12,3,'A',0.963,false,null],
+      [547,2,6,'T',1.033,false,null],[550,11,24,'A',0.979,false,null],
+      [559,6,21,'T',1.049,false,null],[562,4,19,'A',0.968,false,null],
+      [563,10,3,'A',0.944,false,null],[573,3,19,'T',1.066,false,null],
+      [590,10,4,'A',0.930,true,'arabia590'],[592,3,19,'T',1.047,false,null],
+      [601,3,10,'T',1.033,false,null],[604,12,26,'A',0.988,false,null],
+      [606,6,11,'A',0.948,false,null],[617,11,4,'A',0.931,false,null],
+      [627,4,21,'T',1.076,false,null],[632,1,27,'A',0.984,true,'ibrahim632'],
+      [644,11,5,'A',0.918,false,null],[646,4,21,'T',1.050,false,null],
+      [659,1,28,'H',1.002,false,null],[671,12,7,'A',0.924,false,null],
+      [678,7,24,'A',0.946,false,null],[686,2,28,'H',1.003,false,null],
+      [692,4,22,'A',0.977,false,null],[693,10,5,'T',1.052,true,null],
+      [698,12,8,'A',0.912,false,null],
+      [718,6,3,'T',1.046,true,'constantinople718'],[725,7,14,'T',1.054,false,null],
+      [726,1,8,'A',0.922,false,null],[733,8,14,'A',0.978,false,null],
+      [740,4,1,'T',1.023,false,null],[747,11,7,'T',1.042,false,null],
+      [753,1,9,'A',0.912,false,null],[772,7,5,'T',1.035,false,null],
+      [779,8,16,'T',1.054,false,null],[780,2,10,'A',0.926,false,null],
+      [787,9,16,'A',0.980,false,null],
+      [809,7,16,'A',0.968,true,'harun809'],[810,11,30,'T',1.014,false,null],
+      [812,5,14,'T',1.046,false,null],[819,6,26,'A',0.950,false,null],
+      [826,8,7,'T',1.018,false,null],[833,9,17,'T',1.051,false,null],
+      [834,3,14,'A',0.933,false,null],[840,5,5,'T',1.076,true,'louis840'],
+      [841,10,18,'A',0.981,false,null],[862,3,4,'A',0.959,false,null],
+      [866,6,16,'T',1.057,false,null],[891,8,8,'A',0.946,true,null],
+      [892,2,2,'T',1.032,false,null],
+      [906,4,26,'A',0.944,false,null],[913,6,7,'T',1.035,false,null],
+      [916,4,5,'A',0.975,false,null],[920,7,18,'T',1.062,false,null],
+      [938,2,3,'A',0.958,false,null],[939,7,19,'T',1.075,false,null],
+      [946,3,6,'T',1.034,false,null],[953,4,16,'T',1.042,false,null],
+      [961,5,17,'A',0.975,true,null],[968,12,22,'T',1.030,true,'biruni968'],
+      [977,12,13,'T',1.044,false,null],[992,3,7,'A',0.958,false,null],
+      [993,8,20,'T',1.065,false,null],[1000,4,7,'T',1.035,false,null],
+      [1007,5,19,'T',1.057,false,null],[1033,6,29,'A',0.993,true,'crucifixion1033'],
+      [1039,8,22,'A',0.998,false,null],[1044,11,22,'A',0.921,false,null],
+      [1054,5,10,'T',1.032,false,null],[1079,7,1,'T',1.066,false,null],
+      [1084,10,2,'A',0.989,false,null],[1087,8,1,'A',1.000,false,null],
+      [1093,9,23,'A',0.978,false,null],[1098,12,25,'A',0.926,true,'crusade1098'],
+      [1113,3,19,'T',1.060,false,null],[1119,5,11,'A',0.948,false,null],
+      [1133,8,2,'T',1.065,true,'henry1133'],[1147,10,26,'A',0.960,false,null],
+      [1153,1,26,'A',0.937,false,null],[1162,1,17,'A',0.950,false,null],
+      [1163,7,3,'A',0.962,false,null],[1176,4,11,'T',1.063,true,null],
+      [1178,9,13,'T',1.050,false,null],[1187,9,4,'T',1.059,true,'hattin1187'],
+      [1201,11,27,'A',0.946,false,null],[1207,2,28,'A',0.953,false,null],
+      [1213,4,22,'T',1.024,false,null],[1216,2,19,'A',0.964,false,null],
+      [1228,12,28,'A',0.956,false,null],[1230,5,14,'T',1.060,true,null],
+      [1232,10,15,'T',1.047,false,null],[1239,6,3,'T',1.077,true,null],
+      [1241,10,6,'T',1.049,true,'mongols1241'],[1255,12,30,'A',0.939,false,null],
+      [1261,4,1,'A',0.972,false,null],[1267,5,25,'T',1.018,false,null],
+      [1283,1,30,'A',0.953,false,null],[1290,9,5,'A',0.942,false,null],
+      [1293,7,5,'T',1.073,false,null],[1300,8,15,'H',1.012,false,null],
+      [1307,4,3,'T',1.050,false,null],[1310,1,31,'A',0.936,true,null],
+      [1315,5,4,'A',0.991,false,null],[1331,11,30,'T',1.038,false,null],
+      [1337,3,3,'A',0.954,false,null],[1354,9,17,'H',1.012,true,null],
+      [1361,5,5,'T',1.064,false,null],[1376,7,17,'A',0.953,false,null],
+      [1384,8,17,'A',1.000,false,null],[1386,1,1,'T',1.037,false,null],
+      [1387,6,16,'H',1.010,false,null],[1391,4,5,'A',0.957,false,null],
+      [1419,3,26,'A',0.938,false,null],[1431,2,12,'T',1.053,true,null],
+      [1434,6,7,'T',1.074,false,null],[1438,9,19,'A',0.983,false,null],
+      [1448,8,29,'A',0.939,true,'constantinople1453'],
+      [1463,5,18,'A',0.958,false,null],[1478,7,29,'T',1.068,false,null]
+    ];
+
+    var MONTHS_EN = ['','January','February','March','April','May','June','July','August','September','October','November','December'];
+    var MONTHS_PL = ['','stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','wrze\u015bnia','pa\u017adziernika','listopada','grudnia'];
+    var MONTHS_EO = ['','januaro','februaro','marto','aprilo','majo','junio','julio','a\u016dgusto','septembro','oktobro','novembro','decembro'];
+
+    var TYPE_LABELS = {
+      en: { T: 'Total', A: 'Annular', H: 'Hybrid' },
+      pl: { T: 'Ca\u0142kowite', A: 'Obr\u0105czkowe', H: 'Hybrydowe' },
+      ar: { T: '\u0643\u0644\u064a', A: '\u062d\u0644\u0642\u064a', H: '\u0647\u062c\u064a\u0646' },
+      eo: { T: 'Totala', A: 'Anula', H: 'Hibrida' }
+    };
+
+    var PAGE_I18N = {
+      en: {
+        title: 'Solar Eclipses',
+        subtitle: 'Historical solar eclipses visible from the Middle East, 1\u20131500 CE',
+        intro: 'A catalogue of major solar eclipses visible from the Middle East and Eastern Mediterranean between 1 and 1500 CE. Eclipse data is sourced from NASA\u2019s Five Millennium Canon of Solar Eclipses. Notable eclipses \u2014 those documented in historical chronicles or coinciding with major events \u2014 are highlighted. Click any date to convert it in the main calculator.',
+        featuredTitle: 'Featured: Eclipse of 27 January 632 CE',
+        featuredDesc: 'Annular eclipse at the death of Ibrahim, son of Prophet Muhammad. This is the only eclipse in the catalogue for which we have computed the full eclipse path from Besselian elements.',
+        colDate: 'Date (Julian)', colType: 'Type', colMag: 'Mag.', colNote: 'Historical note', colNasa: 'NASA', colMap: 'Map', mapLabel: 'Map',
+        statTotal: 'Total eclipses', statNotable: 'Historically documented', statTotalType: 'Total (type)', statAnnular: 'Annular', statHybrid: 'Hybrid',
+        centuryLabel: ' Century CE',
+        source: 'Eclipse data: Fred Espenak, NASA/GSFC, Five Millennium Canon of Solar Eclipses: \u22121999 to +3000. Only eclipses whose central path or partial shadow covered the Middle East region (approximately 20\u00b0E\u201360\u00b0E, 10\u00b0N\u201345\u00b0N) are included.'
+      },
+      pl: {
+        title: 'Za\u0107mienia S\u0142o\u0144ca',
+        subtitle: 'Historyczne za\u0107mienia s\u0142oneczne widoczne z Bliskiego Wschodu, 1\u20131500 n.e.',
+        intro: 'Katalog g\u0142\u00f3wnych za\u0107mie\u0144 s\u0142onecznych widocznych z Bliskiego Wschodu i wschodniego Morza \u015ar\u00f3dziemnego w latach 1\u20131500 n.e. Dane za\u0107mie\u0144 pochodz\u0105 z NASA Five Millennium Canon of Solar Eclipses. Za\u0107mienia udokumentowane w kronikach historycznych lub zbiegaj\u0105ce si\u0119 z wa\u017cnymi wydarzeniami s\u0105 wyr\u00f3\u017cnione. Kliknij dowoln\u0105 dat\u0119, aby przeliczy\u0107 j\u0105 w kalkulatorze.',
+        featuredTitle: 'Wyr\u00f3\u017cnione: Za\u0107mienie 27 stycznia 632 n.e.',
+        featuredDesc: 'Za\u0107mienie obr\u0105czkowe w dniu \u015bmierci Ibrahima, syna Proroka Mahometa. Jest to jedyne za\u0107mienie w katalogu, dla kt\u00f3rego obliczono pe\u0142n\u0105 \u015bcie\u017ck\u0119 za\u0107mienia z element\u00f3w Besselowskich.',
+        colDate: 'Data (julia\u0144ska)', colType: 'Typ', colMag: 'Mag.', colNote: 'Nota historyczna', colNasa: 'NASA', colMap: 'Mapa', mapLabel: 'Mapa',
+        statTotal: 'Za\u0107mie\u0144 \u0142\u0105cznie', statNotable: 'Udokumentowanych', statTotalType: 'Ca\u0142kowitych', statAnnular: 'Obr\u0105czkowych', statHybrid: 'Hybrydowych',
+        centuryLabel: '. wiek n.e.',
+        source: 'Dane za\u0107mie\u0144: Fred Espenak, NASA/GSFC, Five Millennium Canon of Solar Eclipses: \u22121999 to +3000. Uwzgl\u0119dniono tylko za\u0107mienia, kt\u00f3rych \u015bcie\u017cka centralna lub cie\u0144 cz\u0119\u015bciowy obejmowa\u0142 region Bliskiego Wschodu (ok. 20\u00b0E\u201360\u00b0E, 10\u00b0N\u201345\u00b0N).'
+      },
+      ar: {
+        title: '\u0643\u0633\u0648\u0641 \u0627\u0644\u0634\u0645\u0633',
+        subtitle: '\u0643\u0633\u0648\u0641\u0627\u062a \u0634\u0645\u0633\u064a\u0629 \u062a\u0627\u0631\u064a\u062e\u064a\u0629 \u0645\u0631\u0626\u064a\u0629 \u0645\u0646 \u0627\u0644\u0634\u0631\u0642 \u0627\u0644\u0623\u0648\u0633\u0637\u060c 1\u20131500 \u0645',
+        intro: '\u0641\u0647\u0631\u0633 \u0644\u0643\u0633\u0648\u0641\u0627\u062a \u0627\u0644\u0634\u0645\u0633 \u0627\u0644\u0643\u0628\u0631\u0649 \u0627\u0644\u0645\u0631\u0626\u064a\u0629 \u0645\u0646 \u0627\u0644\u0634\u0631\u0642 \u0627\u0644\u0623\u0648\u0633\u0637 \u0648\u0634\u0631\u0642 \u0627\u0644\u0645\u062a\u0648\u0633\u0637 \u0628\u064a\u0646 1 \u06481500 \u0645. \u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u0643\u0633\u0648\u0641 \u0645\u0635\u062f\u0631\u0647\u0627 \u0642\u0627\u0646\u0648\u0646 \u0646\u0627\u0633\u0627 \u0644\u062e\u0645\u0633\u0629 \u0622\u0644\u0627\u0641 \u0633\u0646\u0629 \u0645\u0646 \u0643\u0633\u0648\u0641 \u0627\u0644\u0634\u0645\u0633. \u0627\u0644\u0643\u0633\u0648\u0641\u0627\u062a \u0627\u0644\u0645\u064f\u0648\u062b\u0651\u0642\u0629 \u0641\u064a \u0627\u0644\u0633\u062c\u0644\u0627\u062a \u0627\u0644\u062a\u0627\u0631\u064a\u062e\u064a\u0629 \u0645\u064f\u0638\u0644\u0651\u0644\u0629. \u0627\u0646\u0642\u0631 \u0639\u0644\u0649 \u0623\u064a \u062a\u0627\u0631\u064a\u062e \u0644\u062a\u062d\u0648\u064a\u0644\u0647 \u0641\u064a \u0627\u0644\u062d\u0627\u0633\u0628\u0629.',
+        featuredTitle: '\u0645\u0645\u064a\u0632: \u0643\u0633\u0648\u0641 27 \u064a\u0646\u0627\u064a\u0631 632 \u0645',
+        featuredDesc: '\u0643\u0633\u0648\u0641 \u062d\u0644\u0642\u064a \u064a\u0648\u0645 \u0648\u0641\u0627\u0629 \u0625\u0628\u0631\u0627\u0647\u064a\u0645 \u0628\u0646 \u0627\u0644\u0646\u0628\u064a \u0645\u062d\u0645\u062f \uFDFA. \u0647\u0630\u0627 \u0627\u0644\u0643\u0633\u0648\u0641 \u0627\u0644\u0648\u062d\u064a\u062f \u0641\u064a \u0627\u0644\u0641\u0647\u0631\u0633 \u0627\u0644\u0630\u064a \u062d\u064f\u0633\u0628 \u0645\u0633\u0627\u0631 \u0627\u0644\u0643\u0633\u0648\u0641 \u0627\u0644\u0643\u0627\u0645\u0644 \u0644\u0647 \u0645\u0646 \u0639\u0646\u0627\u0635\u0631 \u0628\u0633\u0644.',
+        colDate: '\u0627\u0644\u062a\u0627\u0631\u064a\u062e (\u064a\u0648\u0644\u064a\u0627\u0646\u064a)', colType: '\u0627\u0644\u0646\u0648\u0639', colMag: '\u0627\u0644\u0642\u062f\u0631', colNote: '\u0645\u0644\u0627\u062d\u0638\u0629 \u062a\u0627\u0631\u064a\u062e\u064a\u0629', colNasa: '\u0646\u0627\u0633\u0627', colMap: '\u062e\u0631\u064a\u0637\u0629', mapLabel: '\u062e\u0631\u064a\u0637\u0629',
+        statTotal: '\u0625\u062c\u0645\u0627\u0644\u064a \u0627\u0644\u0643\u0633\u0648\u0641\u0627\u062a', statNotable: '\u0645\u064f\u0648\u062b\u0651\u0642\u0629 \u062a\u0627\u0631\u064a\u062e\u064a\u0627\u064b', statTotalType: '\u0643\u0644\u064a\u0629', statAnnular: '\u062d\u0644\u0642\u064a\u0629', statHybrid: '\u0647\u062c\u064a\u0646\u0629',
+        centuryLabel: ' \u0627\u0644\u0642\u0631\u0646 \u0645',
+        source: '\u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u0643\u0633\u0648\u0641: \u0641\u0631\u064a\u062f \u0625\u0633\u0628\u064a\u0646\u0627\u0643\u060c \u0646\u0627\u0633\u0627/GSFC\u060c \u0642\u0627\u0646\u0648\u0646 \u062e\u0645\u0633\u0629 \u0622\u0644\u0627\u0641 \u0633\u0646\u0629 \u0645\u0646 \u0643\u0633\u0648\u0641 \u0627\u0644\u0634\u0645\u0633: \u22121999 \u0625\u0644\u0649 +3000.'
+      },
+      eo: {
+        title: 'Sunaj Eklipsoj',
+        subtitle: 'Historiaj sunaj eklipsoj videblaj el Proksima Oriento, 1\u20131500 p.K.',
+        intro: 'Katalogo de gravaj sunaj eklipsoj videblaj el Proksima Oriento kaj orienta Mediteraneo inter 1 kaj 1500 p.K. Eklipso-datumoj devenas de la NASA-a Kvinmiljara Kanono de Sunaj Eklipsoj. Notindaj eklipsoj \u2014 tiuj dokumentitaj en historiaj kronikoj a\u016d koincidantaj kun gravaj eventoj \u2014 estas emfazitaj. Alklaku iun daton por konverti \u011din en la kalkulilo.',
+        featuredTitle: 'Elstarita: Eklipso de 27-a de januaro 632 p.K.',
+        featuredDesc: 'Anula eklipso je la morto de Ibrahim, filo de Profeto Mahometo. Tiu \u0109i estas la sola eklipso en la katalogo por kiu ni kalkulis la plenan eklipso-vojon el Besel-elementoj.',
+        colDate: 'Dato (juliana)', colType: 'Tipo', colMag: 'Mag.', colNote: 'Historia noto', colNasa: 'NASA', colMap: 'Mapo', mapLabel: 'Mapo',
+        statTotal: 'Eklipsoj entute', statNotable: 'Historie dokumentitaj', statTotalType: 'Totalaj', statAnnular: 'Anulaj', statHybrid: 'Hibridaj',
+        centuryLabel: '-a jarcento p.K.',
+        source: 'Eklipso-datumoj: Fred Espenak, NASA/GSFC, Kvinmiljara Kanono de Sunaj Eklipsoj: \u22121999 \u011dis +3000.'
+      }
+    };
+
+    function pad2(n) { return n < 10 ? '0' + n : '' + n; }
+    function pad4(n) { var s = '' + n; while (s.length < 4) s = '0' + s; return s; }
+    function nasaUrl(y, m, d) { return 'https://eclipse.gsfc.nasa.gov/SEsearch/SEsearchmap.php?Ecession=' + pad4(y) + pad2(m) + pad2(d); }
+    function converterUrl(y, m, d) { return 'index.html?cal=julian&y=' + y + '&m=' + m + '&d=' + d; }
+
+    function formatDate(y, m, d, lang) {
+      if (lang === 'ar') return d + ' / ' + m + ' / ' + y;
+      if (lang === 'pl') return d + ' ' + MONTHS_PL[m] + ' ' + y;
+      if (lang === 'eo') return d + '-a de ' + MONTHS_EO[m] + ' ' + y;
+      return d + ' ' + MONTHS_EN[m] + ' ' + y;
+    }
+
+    function ordSuffix(n) {
+      if (n % 100 >= 11 && n % 100 <= 13) return n + 'th';
+      switch (n % 10) { case 1: return n + 'st'; case 2: return n + 'nd'; case 3: return n + 'rd'; default: return n + 'th'; }
+    }
+
+    function getCentury(y) { return Math.floor((y - 1) / 100) + 1; }
+
+    function mkEl(tag, attrs) {
+      var el = document.createElement(tag);
+      if (attrs) {
+        if (attrs.cls) el.className = attrs.cls;
+        if (attrs.text) el.textContent = attrs.text;
+        if (attrs.href) el.href = attrs.href;
+        if (attrs.target) el.target = attrs.target;
+        if (attrs.rel) el.rel = attrs.rel;
+      }
+      return el;
+    }
+
+    function render(lang) {
+      var t = PAGE_I18N[lang] || PAGE_I18N.en;
+      var notes = (typeof I18N !== 'undefined' && I18N[lang]) ? I18N[lang].eclipseNotes || {} : {};
+      var types = TYPE_LABELS[lang] || TYPE_LABELS.en;
+
+      document.getElementById('page-title').textContent = t.title;
+      document.getElementById('page-subtitle').textContent = t.subtitle;
+      document.title = 'kalkal \u2014 ' + t.title;
+      document.getElementById('ecl-intro').textContent = t.intro;
+      document.getElementById('ecl-source').textContent = t.source;
+
+      document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+      document.documentElement.lang = lang;
+
+      // Stats
+      var nTotal = RAW.length, nNotable = 0, nT = 0, nA = 0, nH = 0;
+      RAW.forEach(function(e) {
+        if (e[5]) nNotable++;
+        if (e[3] === 'T') nT++; else if (e[3] === 'A') nA++; else nH++;
+      });
+      document.getElementById('ecl-count-total').textContent = nTotal;
+      document.getElementById('ecl-count-notable').textContent = nNotable;
+      document.getElementById('ecl-count-total-type').textContent = nT;
+      document.getElementById('ecl-count-annular').textContent = nA;
+      document.getElementById('ecl-count-hybrid').textContent = nH;
+      document.querySelector('[data-stat="total"]').textContent = t.statTotal;
+      document.querySelector('[data-stat="notable"]').textContent = t.statNotable;
+      document.querySelector('[data-stat="totalType"]').textContent = t.statTotalType;
+      document.querySelector('[data-stat="annular"]').textContent = t.statAnnular;
+      document.querySelector('[data-stat="hybrid"]').textContent = t.statHybrid;
+
+      // Build table
+      var container = document.getElementById('ecl-table-container');
+      while (container.firstChild) container.removeChild(container.firstChild);
+      var currentCentury = 0;
+      var tbody = null;
+
+      RAW.forEach(function(e) {
+        var century = getCentury(e[0]);
+        if (century !== currentCentury) {
+          currentCentury = century;
+          var h = mkEl('h3', { cls: 'ecl-century' });
+          if (lang === 'pl') h.textContent = century + t.centuryLabel;
+          else if (lang === 'ar') h.textContent = century + t.centuryLabel;
+          else if (lang === 'eo') h.textContent = century + t.centuryLabel;
+          else h.textContent = ordSuffix(century) + t.centuryLabel;
+          container.appendChild(h);
+
+          var table = mkEl('table', { cls: 'ecl-table' });
+          var thead = document.createElement('thead');
+          var headerRow = document.createElement('tr');
+          [t.colDate, t.colType, t.colMag, t.colNote, t.colMap, t.colNasa].forEach(function(txt) {
+            var th = document.createElement('th');
+            th.textContent = txt;
+            headerRow.appendChild(th);
+          });
+          thead.appendChild(headerRow);
+          table.appendChild(thead);
+          tbody = document.createElement('tbody');
+          table.appendChild(tbody);
+          container.appendChild(table);
+        }
+
+        var tr = document.createElement('tr');
+        if (e[5]) tr.className = 'notable';
+
+        // Date cell
+        var tdDate = mkEl('td', { cls: 'ecl-date' });
+        var dateLink = mkEl('a', { cls: 'ecl-convert-link', text: formatDate(e[0], e[1], e[2], lang), href: converterUrl(e[0], e[1], e[2]) });
+        tdDate.appendChild(dateLink);
+        tr.appendChild(tdDate);
+
+        // Type cell
+        tr.appendChild(mkEl('td', { cls: 'ecl-type', text: types[e[3]] || e[3] }));
+
+        // Mag cell
+        tr.appendChild(mkEl('td', { cls: 'ecl-mag', text: e[4].toFixed(3) }));
+
+        // Note cell
+        var noteText = (e[6] && notes[e[6]]) ? notes[e[6]] : (e[5] ? '\u2022' : '');
+        tr.appendChild(mkEl('td', { cls: 'ecl-note', text: noteText }));
+
+        // Map link cell
+        var tdMap = document.createElement('td');
+        if (e[6]) {
+          var he = (e[0] + 10000) + '' + pad2(e[1]) + pad2(e[2]);
+          var mapHref = e[6] === 'ibrahim632' ? 'eklipso.html' : ('maps/' + he + '.html');
+          var mapLink = mkEl('a', { cls: 'ecl-nasa', text: t.mapLabel || 'Map', href: mapHref });
+          tdMap.appendChild(mapLink);
+        }
+        tr.appendChild(tdMap);
+
+        // NASA link cell
+        var tdNasa = document.createElement('td');
+        var nasaLink = mkEl('a', { cls: 'ecl-nasa', text: '\u21d7', href: nasaUrl(e[0], e[1], e[2]), target: '_blank', rel: 'noopener' });
+        tdNasa.appendChild(nasaLink);
+        tr.appendChild(tdNasa);
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Language switching
+    var currentLang = localStorage.getItem('kalkal-lang') || 'en';
+
+    function setLang(lang) {
+      currentLang = lang;
+      localStorage.setItem('kalkal-lang', lang);
+      document.querySelectorAll('.lang-btn').forEach(function(b) {
+        b.classList.toggle('active', b.dataset.lang === lang);
+      });
+      var navData = (typeof PageI18N !== 'undefined' && PageI18N[lang]) ? PageI18N[lang].nav : null;
+      if (navData) {
+        document.querySelectorAll('[data-nav]').forEach(function(a) {
+          var key = a.dataset.nav;
+          if (key === 'eclipses') a.textContent = PAGE_I18N[lang] ? PAGE_I18N[lang].title : 'Eclipses';
+          else if (navData[key]) a.textContent = navData[key];
+        });
+      }
+      render(lang);
+    }
+
+    var switcher = document.getElementById('lang-switcher');
+    if (switcher) {
+      switcher.addEventListener('click', function(e) {
+        var btn = e.target.closest('.lang-btn');
+        if (!btn) return;
+        setLang(btn.dataset.lang);
+      });
+    }
+
+    setLang(currentLang);
+  })();
+  </script>
+
+  <button class="theme-switcher" id="theme-switcher" aria-label="Switch theme">
+    &#x1F3A8;
+    <span class="theme-label" id="theme-label"></span>
+  </button>
+  <script>
+  (() => {
+    const THEMES = ['manuscript', 'brutalist'];
+    const LABELS = { manuscript: 'Manuscript', brutalist: 'Brutalist' };
+    const btn = document.getElementById('theme-switcher');
+    const label = document.getElementById('theme-label');
+    function applyTheme(theme) {
+      if (theme === 'manuscript') document.body.removeAttribute('data-theme');
+      else document.body.setAttribute('data-theme', theme);
+      label.textContent = LABELS[theme];
+      localStorage.setItem('kalkal-theme', theme);
+    }
+    const saved = localStorage.getItem('kalkal-theme');
+    if (saved && THEMES.includes(saved)) applyTheme(saved);
+    else applyTheme('brutalist');
+    btn.addEventListener('click', () => {
+      const current = localStorage.getItem('kalkal-theme') || 'manuscript';
+      const next = THEMES[(THEMES.indexOf(current) + 1) % THEMES.length];
+      applyTheme(next);
+    });
+  })();
+  </script>
+</body>
+</html>

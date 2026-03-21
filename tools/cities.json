@@ -1,0 +1,1546 @@
+[
+  {
+    "name": "Rome",
+    "lat": 41.9,
+    "lon": 12.5,
+    "from": null,
+    "to": null,
+    "major": true
+  },
+  {
+    "name": "Constantinople",
+    "lat": 41.01,
+    "lon": 28.98,
+    "from": 330,
+    "to": null,
+    "major": true
+  },
+  {
+    "name": "Byzantium",
+    "lat": 41.01,
+    "lon": 28.98,
+    "from": null,
+    "to": 330,
+    "major": false
+  },
+  {
+    "name": "Jerusalem",
+    "lat": 31.77,
+    "lon": 35.23,
+    "from": null,
+    "to": null,
+    "major": true
+  },
+  {
+    "name": "Damascus",
+    "lat": 33.51,
+    "lon": 36.29,
+    "from": null,
+    "to": null,
+    "major": true
+  },
+  {
+    "name": "Alexandria",
+    "lat": 31.2,
+    "lon": 29.92,
+    "from": null,
+    "to": null,
+    "major": true
+  },
+  {
+    "name": "Mecca",
+    "lat": 21.43,
+    "lon": 39.83,
+    "from": null,
+    "to": null,
+    "major": true
+  },
+  {
+    "name": "Baghdad",
+    "lat": 33.31,
+    "lon": 44.37,
+    "from": 762,
+    "to": null,
+    "major": true
+  },
+  {
+    "name": "Ctesiphon",
+    "lat": 33.09,
+    "lon": 44.58,
+    "from": null,
+    "to": 762,
+    "major": true
+  },
+  {
+    "name": "Isfahan",
+    "lat": 32.65,
+    "lon": 51.68,
+    "from": null,
+    "to": null,
+    "major": true
+  },
+  {
+    "name": "Athens",
+    "lat": 37.98,
+    "lon": 23.73,
+    "from": null,
+    "to": null,
+    "major": true
+  },
+  {
+    "name": "Medina",
+    "lat": 24.47,
+    "lon": 39.61,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Cairo",
+    "lat": 30.04,
+    "lon": 31.24,
+    "from": 969,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Fustat",
+    "lat": 30.01,
+    "lon": 31.23,
+    "from": 641,
+    "to": 969,
+    "major": false
+  },
+  {
+    "name": "Antioch",
+    "lat": 36.2,
+    "lon": 36.16,
+    "from": null,
+    "to": 1268,
+    "major": false
+  },
+  {
+    "name": "Aleppo",
+    "lat": 36.2,
+    "lon": 37.16,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Basra",
+    "lat": 30.51,
+    "lon": 47.81,
+    "from": 636,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Mosul",
+    "lat": 36.34,
+    "lon": 43.14,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Edessa",
+    "lat": 37.16,
+    "lon": 38.79,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Thessalonica",
+    "lat": 40.64,
+    "lon": 22.94,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Trebizond",
+    "lat": 41,
+    "lon": 39.72,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Sanaa",
+    "lat": 15.35,
+    "lon": 44.21,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Aden",
+    "lat": 12.78,
+    "lon": 45.04,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Tabriz",
+    "lat": 38.08,
+    "lon": 46.29,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Shiraz",
+    "lat": 29.59,
+    "lon": 52.58,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Córdoba",
+    "lat": 37.88,
+    "lon": -4.78,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Toledo",
+    "lat": 39.86,
+    "lon": -4.02,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Palermo",
+    "lat": 38.12,
+    "lon": 13.36,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Tunis",
+    "lat": 36.81,
+    "lon": 10.17,
+    "from": 698,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Carthage",
+    "lat": 36.85,
+    "lon": 10.33,
+    "from": null,
+    "to": 698,
+    "major": false
+  },
+  {
+    "name": "Seleucia",
+    "lat": 33.1,
+    "lon": 44.52,
+    "from": null,
+    "to": 165,
+    "major": false
+  },
+  {
+    "name": "Kufa",
+    "lat": 32.03,
+    "lon": 44.4,
+    "from": 638,
+    "to": 1100,
+    "major": false
+  },
+  {
+    "name": "Fez",
+    "lat": 34.03,
+    "lon": -5,
+    "from": 789,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Marrakesh",
+    "lat": 31.63,
+    "lon": -8,
+    "from": 1062,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Qayrawan",
+    "lat": 35.68,
+    "lon": 10.1,
+    "from": 670,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Rayy",
+    "lat": 35.6,
+    "lon": 51.45,
+    "from": null,
+    "to": 1220,
+    "major": false
+  },
+  {
+    "name": "Merv",
+    "lat": 37.66,
+    "lon": 62.17,
+    "from": null,
+    "to": 1221,
+    "major": false
+  },
+  {
+    "name": "Bukhara",
+    "lat": 39.77,
+    "lon": 64.42,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Samarkand",
+    "lat": 39.65,
+    "lon": 66.96,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Nishapur",
+    "lat": 36.21,
+    "lon": 58.8,
+    "from": null,
+    "to": 1221,
+    "major": false
+  },
+  {
+    "name": "Persepolis",
+    "lat": 29.93,
+    "lon": 52.89,
+    "from": null,
+    "to": 330,
+    "major": false
+  },
+  {
+    "name": "Homs",
+    "lat": 34.73,
+    "lon": 36.72,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Hama",
+    "lat": 35.13,
+    "lon": 36.75,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Tyre",
+    "lat": 33.27,
+    "lon": 35.2,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Sidon",
+    "lat": 33.56,
+    "lon": 35.37,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Acre",
+    "lat": 32.93,
+    "lon": 35.08,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Tripoli",
+    "lat": 34.44,
+    "lon": 35.84,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Beirut",
+    "lat": 33.89,
+    "lon": 35.5,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Gaza",
+    "lat": 31.5,
+    "lon": 34.47,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Caesarea",
+    "lat": 32.5,
+    "lon": 34.89,
+    "from": null,
+    "to": 640,
+    "major": false
+  },
+  {
+    "name": "Jaffa",
+    "lat": 32.05,
+    "lon": 34.75,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Palmyra",
+    "lat": 34.55,
+    "lon": 38.27,
+    "from": null,
+    "to": 634,
+    "major": false
+  },
+  {
+    "name": "Petra",
+    "lat": 30.33,
+    "lon": 35.44,
+    "from": null,
+    "to": 663,
+    "major": false
+  },
+  {
+    "name": "Bosra",
+    "lat": 32.52,
+    "lon": 36.48,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Raqqa",
+    "lat": 35.95,
+    "lon": 39.01,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Harran",
+    "lat": 36.86,
+    "lon": 39.03,
+    "from": null,
+    "to": 1260,
+    "major": false
+  },
+  {
+    "name": "Amida",
+    "lat": 37.91,
+    "lon": 40.22,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Nisibis",
+    "lat": 37.07,
+    "lon": 41.22,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Samarra",
+    "lat": 34.2,
+    "lon": 43.88,
+    "from": 836,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Wasit",
+    "lat": 32.19,
+    "lon": 46.33,
+    "from": 702,
+    "to": 1262,
+    "major": false
+  },
+  {
+    "name": "Tikrit",
+    "lat": 34.6,
+    "lon": 43.68,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Hira",
+    "lat": 31.88,
+    "lon": 44.43,
+    "from": null,
+    "to": 633,
+    "major": false
+  },
+  {
+    "name": "Najaf",
+    "lat": 32,
+    "lon": 44.34,
+    "from": 633,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Susa",
+    "lat": 32.19,
+    "lon": 48.26,
+    "from": null,
+    "to": 640,
+    "major": false
+  },
+  {
+    "name": "Jundishapur",
+    "lat": 32.25,
+    "lon": 48.51,
+    "from": null,
+    "to": 900,
+    "major": false
+  },
+  {
+    "name": "Hamadan",
+    "lat": 34.8,
+    "lon": 48.51,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Kerman",
+    "lat": 30.28,
+    "lon": 57.08,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Yazd",
+    "lat": 31.9,
+    "lon": 54.37,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Qom",
+    "lat": 34.64,
+    "lon": 50.88,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Gorgan",
+    "lat": 36.84,
+    "lon": 54.44,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Balkh",
+    "lat": 36.76,
+    "lon": 66.9,
+    "from": null,
+    "to": 1220,
+    "major": false
+  },
+  {
+    "name": "Ghazna",
+    "lat": 33.55,
+    "lon": 68.42,
+    "from": null,
+    "to": 1221,
+    "major": false
+  },
+  {
+    "name": "Herat",
+    "lat": 34.35,
+    "lon": 62.2,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Sistan",
+    "lat": 30.9,
+    "lon": 61.5,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Kabul",
+    "lat": 34.53,
+    "lon": 69.17,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Maragha",
+    "lat": 37.39,
+    "lon": 46.24,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Ardabil",
+    "lat": 38.25,
+    "lon": 48.29,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Dvin",
+    "lat": 40.01,
+    "lon": 44.58,
+    "from": null,
+    "to": 1236,
+    "major": false
+  },
+  {
+    "name": "Ani",
+    "lat": 40.51,
+    "lon": 43.57,
+    "from": 961,
+    "to": 1319,
+    "major": false
+  },
+  {
+    "name": "Tbilisi",
+    "lat": 41.69,
+    "lon": 44.8,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Derbent",
+    "lat": 42.06,
+    "lon": 48.29,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Van",
+    "lat": 38.5,
+    "lon": 43.38,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Erzurum",
+    "lat": 39.91,
+    "lon": 41.28,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Nicaea",
+    "lat": 40.43,
+    "lon": 29.72,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Ephesus",
+    "lat": 37.94,
+    "lon": 27.34,
+    "from": null,
+    "to": 614,
+    "major": false
+  },
+  {
+    "name": "Smyrna",
+    "lat": 38.42,
+    "lon": 27.14,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Iconium",
+    "lat": 37.87,
+    "lon": 32.49,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Ankara",
+    "lat": 39.93,
+    "lon": 32.85,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Tarsus",
+    "lat": 36.92,
+    "lon": 34.9,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Sinope",
+    "lat": 42.03,
+    "lon": 35.15,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Caesarea Maz.",
+    "lat": 38.73,
+    "lon": 35.49,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Sardis",
+    "lat": 38.49,
+    "lon": 28.04,
+    "from": null,
+    "to": 616,
+    "major": false
+  },
+  {
+    "name": "Pergamon",
+    "lat": 39.12,
+    "lon": 27.18,
+    "from": null,
+    "to": 400,
+    "major": false
+  },
+  {
+    "name": "Adrianople",
+    "lat": 41.67,
+    "lon": 26.56,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Philippopolis",
+    "lat": 42.15,
+    "lon": 24.75,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Dyrrachium",
+    "lat": 41.32,
+    "lon": 19.45,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Corinth",
+    "lat": 37.91,
+    "lon": 22.88,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Sparta",
+    "lat": 37.07,
+    "lon": 22.43,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Crete",
+    "lat": 35.24,
+    "lon": 24.9,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Rhodes",
+    "lat": 36.43,
+    "lon": 28.22,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Cyprus",
+    "lat": 35.17,
+    "lon": 33.38,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Syracuse",
+    "lat": 37.07,
+    "lon": 15.29,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Naples",
+    "lat": 40.85,
+    "lon": 14.27,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Ravenna",
+    "lat": 44.42,
+    "lon": 12.2,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Milan",
+    "lat": 45.46,
+    "lon": 9.19,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Venice",
+    "lat": 45.44,
+    "lon": 12.34,
+    "from": 697,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Genoa",
+    "lat": 44.41,
+    "lon": 8.93,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Pisa",
+    "lat": 43.72,
+    "lon": 10.4,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Bari",
+    "lat": 41.13,
+    "lon": 16.87,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Seville",
+    "lat": 37.39,
+    "lon": -5.98,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Granada",
+    "lat": 37.18,
+    "lon": -3.6,
+    "from": 711,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Valencia",
+    "lat": 39.47,
+    "lon": -0.38,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Zaragoza",
+    "lat": 41.65,
+    "lon": -0.88,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Barcelona",
+    "lat": 41.39,
+    "lon": 2.17,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Lisbon",
+    "lat": 38.72,
+    "lon": -9.14,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Tangier",
+    "lat": 35.78,
+    "lon": -5.81,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Ceuta",
+    "lat": 35.89,
+    "lon": -5.31,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Algiers",
+    "lat": 36.75,
+    "lon": 3.04,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Tlemcen",
+    "lat": 34.88,
+    "lon": -1.32,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Sijilmasa",
+    "lat": 31.28,
+    "lon": -4.28,
+    "from": 757,
+    "to": 1393,
+    "major": false
+  },
+  {
+    "name": "Aswan",
+    "lat": 24.09,
+    "lon": 32.9,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Luxor",
+    "lat": 25.69,
+    "lon": 32.64,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Memphis",
+    "lat": 29.85,
+    "lon": 31.25,
+    "from": null,
+    "to": 641,
+    "major": false
+  },
+  {
+    "name": "Pelusium",
+    "lat": 31.05,
+    "lon": 32.56,
+    "from": null,
+    "to": 640,
+    "major": false
+  },
+  {
+    "name": "Damietta",
+    "lat": 31.42,
+    "lon": 31.81,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Rosetta",
+    "lat": 31.4,
+    "lon": 30.42,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Qus",
+    "lat": 25.9,
+    "lon": 32.77,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Aydhab",
+    "lat": 22.33,
+    "lon": 36.43,
+    "from": 500,
+    "to": 1426,
+    "major": false
+  },
+  {
+    "name": "Axum",
+    "lat": 14.13,
+    "lon": 38.72,
+    "from": null,
+    "to": 960,
+    "major": false
+  },
+  {
+    "name": "Adulis",
+    "lat": 15.27,
+    "lon": 39.77,
+    "from": null,
+    "to": 640,
+    "major": false
+  },
+  {
+    "name": "Zeila",
+    "lat": 11.35,
+    "lon": 43.48,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Mogadishu",
+    "lat": 2.05,
+    "lon": 45.32,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Socotra",
+    "lat": 12.47,
+    "lon": 53.87,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Najran",
+    "lat": 17.49,
+    "lon": 44.13,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Taif",
+    "lat": 21.27,
+    "lon": 40.42,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Bahrain",
+    "lat": 26.23,
+    "lon": 50.59,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Muscat",
+    "lat": 23.59,
+    "lon": 58.59,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Sohar",
+    "lat": 24.36,
+    "lon": 56.75,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Hormuz",
+    "lat": 27.1,
+    "lon": 56.46,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Siraf",
+    "lat": 27.67,
+    "lon": 52.34,
+    "from": null,
+    "to": 1070,
+    "major": false
+  },
+  {
+    "name": "Tus",
+    "lat": 36.58,
+    "lon": 59.17,
+    "from": null,
+    "to": 1389,
+    "major": false
+  },
+  {
+    "name": "Istakhr",
+    "lat": 29.98,
+    "lon": 52.88,
+    "from": null,
+    "to": 950,
+    "major": false
+  },
+  {
+    "name": "Darabjird",
+    "lat": 28.75,
+    "lon": 54.55,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Arrajan",
+    "lat": 30.83,
+    "lon": 50.83,
+    "from": null,
+    "to": 1100,
+    "major": false
+  },
+  {
+    "name": "Ahvaz",
+    "lat": 31.32,
+    "lon": 48.67,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Shushtar",
+    "lat": 32.05,
+    "lon": 48.86,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Baku",
+    "lat": 40.41,
+    "lon": 49.87,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Shamakhi",
+    "lat": 40.63,
+    "lon": 48.64,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Miletus",
+    "lat": 37.53,
+    "lon": 27.28,
+    "from": null,
+    "to": 400,
+    "major": false
+  },
+  {
+    "name": "Antioch Pis.",
+    "lat": 38.3,
+    "lon": 31.19,
+    "from": null,
+    "to": 700,
+    "major": false
+  },
+  {
+    "name": "Myra",
+    "lat": 36.26,
+    "lon": 29.98,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Antalya",
+    "lat": 36.9,
+    "lon": 30.69,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Amasya",
+    "lat": 40.65,
+    "lon": 35.83,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Sivas",
+    "lat": 39.75,
+    "lon": 37.01,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Malatya",
+    "lat": 38.35,
+    "lon": 38.31,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Split",
+    "lat": 43.51,
+    "lon": 16.44,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Dubrovnik",
+    "lat": 42.65,
+    "lon": 18.09,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Sofia",
+    "lat": 42.7,
+    "lon": 23.32,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Belgrade",
+    "lat": 44.82,
+    "lon": 20.46,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Niš",
+    "lat": 43.32,
+    "lon": 21.9,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Ohrid",
+    "lat": 41.12,
+    "lon": 20.8,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Marseille",
+    "lat": 43.3,
+    "lon": 5.37,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Lyon",
+    "lat": 45.76,
+    "lon": 4.84,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Montpellier",
+    "lat": 43.61,
+    "lon": 3.88,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Narbonne",
+    "lat": 43.18,
+    "lon": 3,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Dongola",
+    "lat": 19.18,
+    "lon": 30.48,
+    "from": null,
+    "to": 1365,
+    "major": false
+  },
+  {
+    "name": "Suakin",
+    "lat": 19.11,
+    "lon": 37.33,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Samosata",
+    "lat": 37.53,
+    "lon": 38.5,
+    "from": null,
+    "to": 1200,
+    "major": false
+  },
+  {
+    "name": "Manbij",
+    "lat": 36.53,
+    "lon": 37.95,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Mardin",
+    "lat": 37.31,
+    "lon": 40.73,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Sinjar",
+    "lat": 36.32,
+    "lon": 41.83,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Arbil",
+    "lat": 36.19,
+    "lon": 44.01,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Kirkuk",
+    "lat": 35.47,
+    "lon": 44.39,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Sulaymaniyya",
+    "lat": 35.56,
+    "lon": 45.44,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Hebron",
+    "lat": 31.53,
+    "lon": 35.1,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Nablus",
+    "lat": 32.22,
+    "lon": 35.26,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Ramla",
+    "lat": 31.93,
+    "lon": 34.87,
+    "from": 716,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Ascalon",
+    "lat": 31.67,
+    "lon": 34.55,
+    "from": null,
+    "to": 1270,
+    "major": false
+  },
+  {
+    "name": "Kerak",
+    "lat": 31.18,
+    "lon": 35.7,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Ajlun",
+    "lat": 32.33,
+    "lon": 35.75,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Tiberias",
+    "lat": 32.79,
+    "lon": 35.53,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Baalbek",
+    "lat": 34.01,
+    "lon": 36.21,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Latakia",
+    "lat": 35.52,
+    "lon": 35.78,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Zabid",
+    "lat": 14.2,
+    "lon": 43.32,
+    "from": 820,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Jeddah",
+    "lat": 21.49,
+    "lon": 39.19,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Yanbu",
+    "lat": 24.09,
+    "lon": 38.06,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Tabuk",
+    "lat": 28.38,
+    "lon": 36.57,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Aqaba",
+    "lat": 29.53,
+    "lon": 35,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Tayma",
+    "lat": 27.62,
+    "lon": 38.55,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Khiva",
+    "lat": 41.38,
+    "lon": 60.36,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Kashgar",
+    "lat": 39.47,
+    "lon": 75.99,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Multan",
+    "lat": 30.2,
+    "lon": 71.47,
+    "from": null,
+    "to": null,
+    "major": false
+  },
+  {
+    "name": "Lahore",
+    "lat": 31.55,
+    "lon": 74.35,
+    "from": null,
+    "to": null,
+    "major": false
+  }
+]

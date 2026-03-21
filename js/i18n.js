@@ -9,6 +9,7 @@ const I18N = {
     navCalendars: 'Calendars',
     navMethodology: 'Methodology',
     navDynasties: 'Regnal Tables',
+    navEclipses: 'Eclipses',
     fromCalendar: 'From',
     toDate: 'To (optional)',
     targetCalendar: 'Convert to',
@@ -22,7 +23,7 @@ const I18N = {
       egyptian: 'Egyptian',
       auc: 'Ab Urbe Condita', spanish: 'Spanish Era', antiochene: 'Antiochene Era',
       olympiad: 'Olympiad', macedonian: 'Macedonian',
-      hebrew: 'Hebrew',
+      hebrew: 'Hebrew', babylonian: 'Babylonian',
       bp: 'Before Present', human: 'Human Era'
     },
     year: 'Year',
@@ -105,12 +106,18 @@ const I18N = {
       'Tishrei', 'Cheshvan', 'Kislev', 'Tevet', 'Shevat',
       'Adar', 'Adar II', 'Nisan', 'Iyar', 'Sivan', 'Tammuz', 'Av', 'Elul'
     ],
+    babylonianMonths: [
+      'Nisannu', 'Ayaru', 'Simanu', 'Du\u02bbuzu', 'Abu', 'Ul\u016blu',
+      'Tashr\u012btu', 'Ara\u1e2bsamna', 'Kislimu', 'T\u0323ebetu', 'Shaba\u1e6du', 'Addaru', 'Addaru II'
+    ],
     zodiacSigns: [
       'Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo',
       'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'
     ],
     zodiacLabel: 'Zodiac sign',
     eclipseLabel: 'Solar eclipse',
+    eclipseViewMap: 'View eclipse map',
+    eclipseViewCatalogue: 'Eclipse catalogue',
     eclipseTypes: { T: 'Total', A: 'Annular', H: 'Hybrid' },
     eclipseNotes: {
       crucifixion29: 'Total eclipse over the Near East \u2014 discussed in dating the Crucifixion',
@@ -215,6 +222,7 @@ const I18N = {
     navCalendars: 'Kalendarze',
     navMethodology: 'Metodologia',
     navDynasties: 'Tablice panowa\u0144',
+    navEclipses: 'Za\u0107mienia',
     fromCalendar: 'Z',
     toDate: 'Do (opcjonalnie)',
     targetCalendar: 'Przelicz na',
@@ -228,7 +236,7 @@ const I18N = {
       egyptian: 'Egipski',
       auc: 'Ab Urbe Condita', spanish: 'Era hiszpa\u0144ska', antiochene: 'Era antioche\u0144ska',
       olympiad: 'Olimpiady', macedonian: 'Macedo\u0144ski',
-      hebrew: 'Hebrajski',
+      hebrew: 'Hebrajski', babylonian: 'Babilo\u0144ski',
       bp: 'Przed tera\u017aniejszo\u015bci\u0105', human: 'Era ludzka'
     },
     year: 'Rok',
@@ -311,12 +319,18 @@ const I18N = {
       'Tiszri', 'Cheszwan', 'Kislew', 'Tewet', 'Szwat',
       'Adar', 'Adar II', 'Nisan', 'Ijar', 'Siwan', 'Tamuz', 'Aw', 'Elul'
     ],
+    babylonianMonths: [
+      'Nisannu', 'Ajaru', 'Simanu', 'Du\u02bbuzu', 'Abu', 'Ul\u016blu',
+      'Tashritu', 'Arachsamna', 'Kislimu', 'Tebetu', 'Szabatu', 'Addaru', 'Addaru II'
+    ],
     zodiacSigns: [
       'Baran', 'Byk', 'Bli\u017ani\u0119ta', 'Rak', 'Lew', 'Panna',
       'Waga', 'Skorpion', 'Strzelec', 'Kozioro\u017cec', 'Wodnik', 'Ryby'
     ],
     zodiacLabel: 'Znak zodiaku',
     eclipseLabel: 'Za\u0107mienie S\u0142o\u0144ca',
+    eclipseViewMap: 'Zobacz map\u0119 za\u0107mienia',
+    eclipseViewCatalogue: 'Katalog za\u0107mie\u0144',
     eclipseTypes: { T: 'Ca\u0142kowite', A: 'Obr\u0105czkowe', H: 'Hybrydowe' },
     eclipseNotes: {
       crucifixion29: 'Ca\u0142kowite nad Bliskim Wschodem \u2014 omawiane przy datowaniu Ukrzy\u017cowania',
@@ -421,6 +435,7 @@ const I18N = {
     navCalendars: '\u0627\u0644\u062a\u0642\u0627\u0648\u064a\u0645',
     navMethodology: '\u0627\u0644\u0645\u0646\u0647\u062c\u064a\u0629',
     navDynasties: '\u062c\u062f\u0627\u0648\u0644 \u0627\u0644\u062d\u0643\u0645',
+    navEclipses: '\u0643\u0633\u0648\u0641\u0627\u062a',
     fromCalendar: '\u0645\u0646',
     toDate: '\u0625\u0644\u0649 (\u0627\u062e\u062a\u064a\u0627\u0631\u064a)',
     targetCalendar: '\u062a\u062d\u0648\u064a\u0644 \u0625\u0644\u0649',
@@ -434,7 +449,7 @@ const I18N = {
       egyptian: '\u0645\u0635\u0631\u064a',
       auc: '\u0645\u0646\u0630 \u062a\u0623\u0633\u064a\u0633 \u0631\u0648\u0645\u0627', spanish: '\u0627\u0644\u062a\u0642\u0648\u064a\u0645 \u0627\u0644\u0625\u0633\u0628\u0627\u0646\u064a', antiochene: '\u0627\u0644\u062a\u0642\u0648\u064a\u0645 \u0627\u0644\u0623\u0646\u0637\u0627\u0643\u064a',
       olympiad: '\u0627\u0644\u0623\u0648\u0644\u0645\u0628\u064a\u0627\u062f', macedonian: '\u0645\u0642\u062f\u0648\u0646\u064a',
-      hebrew: '\u0639\u0628\u0631\u064a',
+      hebrew: '\u0639\u0628\u0631\u064a', babylonian: '\u0628\u0627\u0628\u0644\u064a',
       bp: '\u0642\u0628\u0644 \u0627\u0644\u062d\u0627\u0636\u0631', human: '\u0627\u0644\u062a\u0642\u0648\u064a\u0645 \u0627\u0644\u0628\u0634\u0631\u064a'
     },
     year: '\u0627\u0644\u0633\u0646\u0629',
@@ -517,12 +532,18 @@ const I18N = {
       '\u062a\u0634\u0631\u064a\u0646', '\u062d\u0634\u0648\u0627\u0646', '\u0643\u0633\u0644\u0648', '\u0637\u064a\u0628\u064a\u062a', '\u0634\u0628\u0627\u0637',
       '\u0623\u0630\u0627\u0631 \u0627\u0644\u0623\u0648\u0644', '\u0623\u0630\u0627\u0631 \u0627\u0644\u062b\u0627\u0646\u064a', '\u0646\u064a\u0633\u0627\u0646', '\u0625\u064a\u0627\u0631', '\u0633\u064a\u0648\u0627\u0646', '\u062a\u0645\u0648\u0632', '\u0622\u0628', '\u0623\u064a\u0644\u0648\u0644'
     ],
+    babylonianMonths: [
+      '\u0646\u064a\u0633\u0627\u0646\u0648', '\u0623\u064a\u0627\u0631\u0648', '\u0633\u064a\u0645\u0627\u0646\u0648', '\u062f\u0648\u0639\u0648\u0632\u0648', '\u0622\u0628\u0648', '\u0623\u0648\u0644\u0648\u0644\u0648',
+      '\u062a\u0634\u0631\u064a\u062a\u0648', '\u0623\u0631\u062e\u0633\u0645\u0646\u0627', '\u0643\u0633\u0644\u064a\u0645\u0648', '\u0637\u064a\u0628\u064a\u062a\u0648', '\u0634\u0628\u0627\u0637\u0648', '\u0623\u062f\u0627\u0631\u0648', '\u0623\u062f\u0627\u0631\u0648 \u0627\u0644\u062b\u0627\u0646\u064a'
+    ],
     zodiacSigns: [
       '\u0627\u0644\u062d\u0645\u0644', '\u0627\u0644\u062b\u0648\u0631', '\u0627\u0644\u062c\u0648\u0632\u0627\u0621', '\u0627\u0644\u0633\u0631\u0637\u0627\u0646', '\u0627\u0644\u0623\u0633\u062f', '\u0627\u0644\u0639\u0630\u0631\u0627\u0621',
       '\u0627\u0644\u0645\u064a\u0632\u0627\u0646', '\u0627\u0644\u0639\u0642\u0631\u0628', '\u0627\u0644\u0642\u0648\u0633', '\u0627\u0644\u062c\u062f\u064a', '\u0627\u0644\u062f\u0644\u0648', '\u0627\u0644\u062d\u0648\u062a'
     ],
     zodiacLabel: '\u0628\u0631\u062c \u0627\u0644\u0641\u0644\u0643',
     eclipseLabel: '\u0643\u0633\u0648\u0641 \u0627\u0644\u0634\u0645\u0633',
+    eclipseViewMap: '\u0639\u0631\u0636 \u062e\u0631\u064a\u0637\u0629 \u0627\u0644\u0643\u0633\u0648\u0641',
+    eclipseViewCatalogue: '\u0641\u0647\u0631\u0633 \u0627\u0644\u0643\u0633\u0648\u0641\u0627\u062a',
     eclipseTypes: { T: '\u0643\u0644\u064a', A: '\u062d\u0644\u0642\u064a', H: '\u0647\u062c\u064a\u0646' },
     eclipseNotes: {
       crucifixion29: '\u0643\u0633\u0648\u0641 \u0643\u0644\u064a \u0641\u0648\u0642 \u0627\u0644\u0634\u0631\u0642 \u0627\u0644\u0623\u062f\u0646\u0649 \u2014 \u064a\u064f\u0646\u0627\u0642\u0634 \u0641\u064a \u062a\u0623\u0631\u064a\u062e \u0627\u0644\u0635\u0644\u0628',
@@ -627,6 +648,7 @@ const I18N = {
     navCalendars: 'Kalendaroj',
     navMethodology: 'Metodologio',
     navDynasties: 'Regnotabeloj',
+    navEclipses: 'Eklipsoj',
     fromCalendar: 'De',
     toDate: '\u011cis (nedevige)',
     targetCalendar: 'Konverti al',
@@ -640,7 +662,7 @@ const I18N = {
       egyptian: 'Egipta',
       auc: 'Ab Urbe Condita', spanish: 'Hispana Erao', antiochene: 'Antio\u0125ia Erao',
       olympiad: 'Olimpiado', macedonian: 'Makedona',
-      hebrew: 'Hebrea',
+      hebrew: 'Hebrea', babylonian: 'Babilona',
       bp: 'Anta\u016d la nuno', human: 'Homara Erao'
     },
     year: 'Jaro',
@@ -723,12 +745,18 @@ const I18N = {
       'ti\u015drio', '\u0125e\u015dvano', 'kislevo', 'teveto', '\u015devato',
       'adaro', 'adaro II', 'nisano', 'ijaro', 'sivano', 'tamuzo', 'abo', 'elulo'
     ],
+    babylonianMonths: [
+      'nisanuo', 'ajaruo', 'simanuo', 'du\u02bbuzuo', 'abuo', 'ululuo',
+      'ta\u015drituo', 'ara\u0125samnao', 'kislimuo', 'tebituo', '\u015dabatuo', 'adaruo', 'adaruo II'
+    ],
     zodiacSigns: [
       '\u015cafisto', 'Ta\u016dro', '\u011cemeloj', 'Kankro', 'Leono', 'Virgulino',
       'Pesilo', 'Skorpio', 'Sagitario', 'Kaprikorno', 'Akvario', 'Fi\u015doj'
     ],
     zodiacLabel: 'Zodiaka signo',
     eclipseLabel: 'Suna eklipso',
+    eclipseViewMap: 'Vidi eklipso-mapon',
+    eclipseViewCatalogue: 'Eklipso-katalogo',
     eclipseTypes: { T: 'Totala', A: 'Anula', H: 'Hibrida' },
     eclipseNotes: {
       crucifixion29: 'Totala eklipso super Proksima Oriento \u2014 diskutata pri datado de la Krucumo',

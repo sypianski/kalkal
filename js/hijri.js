@@ -1294,6 +1294,85 @@ const Cal = (() => {
   }
 
   // ================================================================
+  // Babylonian calendar (arithmetic approximation)
+  // Lunisolar calendar using the Hebrew calendar's molad-based arithmetic
+  // as an approximation. The Babylonian calendar is the historical
+  // ancestor of the Hebrew calendar; both share the 19-year Metonic cycle.
+  //
+  // Month numbering starts from Nisannu (spring), unlike Hebrew (Tishrei/autumn).
+  // Babylonian months map to Hebrew months:
+  //   Bab 1 Nisannu = Heb 8 Nisan, Bab 2 Ayaru = Heb 9 Iyar, ...
+  //   Bab 7 Tashritu = Heb 1 Tishrei (next Hebrew year), ...
+  //   Bab 12 Addaru = Heb 6 Adar, Bab 13 Addaru II = Heb 7 Adar II
+  //
+  // Era: Nabonassar (NE), year 1 = 747 BCE
+  // Hebrew Nisan of year 3015 AM ≈ Babylonian Nisannu 1 NE
+  // So: Hebrew year = Babylonian year + 3014 (for Nisan-half)
+  //
+  // NOTE: This is an arithmetic approximation. Historical Babylonian
+  // month starts depended on observed first lunar crescent visibility
+  // and may differ by ±1 day from this calculation.
+  // ================================================================
+
+  const BABYLONIAN_OFFSET = 3014;
+
+  // Map Babylonian month (1-13) to {hebrewYear, hebrewMonth}
+  function _babToHebMonth(babYear, babMonth) {
+    const hYear = babYear + BABYLONIAN_OFFSET;
+    if (babMonth <= 6) {
+      // Nisannu(1)->Nisan(8), Ayaru(2)->Iyar(9), ..., Ululu(6)->Elul(13)
+      return { hy: hYear, hm: babMonth + 7 };
+    } else if (babMonth <= 12) {
+      // Tashritu(7)->Tishrei(1), Arahsamna(8)->Cheshvan(2), ..., Addaru(12)->Adar(6)
+      return { hy: hYear + 1, hm: babMonth - 6 };
+    } else {
+      // Addaru II (13) -> Adar II (7)
+      return { hy: hYear + 1, hm: 7 };
+    }
+  }
+
+  // Map Hebrew {year, month} back to Babylonian {year, month}
+  function _hebToBabMonth(hYear, hMonth) {
+    if (hMonth >= 8) {
+      // Nisan(8)->Nisannu(1), ..., Elul(13)->Ululu(6)
+      return { by: hYear - BABYLONIAN_OFFSET, bm: hMonth - 7 };
+    } else if (hMonth <= 6) {
+      // Tishrei(1)->Tashritu(7), ..., Adar(6)->Addaru(12)
+      return { by: hYear - BABYLONIAN_OFFSET - 1, bm: hMonth + 6 };
+    } else {
+      // Adar II (7) -> Addaru II (13)
+      return { by: hYear - BABYLONIAN_OFFSET - 1, bm: 13 };
+    }
+  }
+
+  function babylonianToJD(year, month, day) {
+    const { hy, hm } = _babToHebMonth(year, month);
+    return hebrewToJD(hy, hm, day);
+  }
+
+  function jdToBabylonian(jd) {
+    const heb = jdToHebrew(jd);
+    const { by, bm } = _hebToBabMonth(heb.year, heb.month);
+    return { year: by, month: bm, day: heb.day };
+  }
+
+  function babylonianMonthLength(year, month) {
+    const { hy, hm } = _babToHebMonth(year, month);
+    return hebrewMonthLength(hy, hm);
+  }
+
+  function babylonianYearLength(year) {
+    // From 1 Nisannu this year to 1 Nisannu next year
+    return babylonianToJD(year + 1, 1, 1) - babylonianToJD(year, 1, 1);
+  }
+
+  function isBabylonianLeapYear(year) {
+    // A Babylonian year is leap if it has 13 months (Addaru II exists)
+    // This corresponds to the Hebrew year starting at the following Tishrei
+    return isHebrewLeapYear(year + BABYLONIAN_OFFSET + 1);
+  }
+
+  // ================================================================
   // Before Present (BP) — used in archaeology/geology
   // "Present" = 1950 CE (Gregorian). year BP = 1950 - Gregorian year
   // BP 0 = 1950 CE, BP 1 = 1949 CE, etc.
@@ -1422,6 +1501,8 @@ const Cal = (() => {
     indictionFromJD,
     // Hebrew
     isHebrewLeapYear, hebrewMonthLength, hebrewYearLength, hebrewToJD, jdToHebrew,
+    // Babylonian
+    babylonianToJD, jdToBabylonian, babylonianMonthLength, babylonianYearLength, isBabylonianLeapYear,
     // Before Present
     bpToJD, jdToBP, bpMonthLength, bpYearLength, isBPLeapYear,
     // Human Era

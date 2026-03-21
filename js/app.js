@@ -274,6 +274,16 @@
       monthCount: 13,
       monthNames: (t) => t.hebrewMonths
     },
+    babylonian: {
+      id: 'babylonian',
+      toJD: (y, m, d) => Cal.babylonianToJD(y, m, d),
+      fromJD: (jd) => Cal.jdToBabylonian(jd),
+      monthLength: (y, m) => Cal.babylonianMonthLength(y, m),
+      yearLength: (y) => Cal.babylonianYearLength(y),
+      isLeap: (y) => Cal.isBabylonianLeapYear(y),
+      monthCount: 13,
+      monthNames: (t) => t.babylonianMonths
+    },
     bp: {
       id: 'bp',
       toJD: (y, m, d) => Cal.bpToJD(y, m, d),
@@ -661,6 +671,13 @@
         );
         if (ecl.notable && ecl.noteKey && t.eclipseNotes && t.eclipseNotes[ecl.noteKey]) {
           eclEl.appendChild(el('p', { class: 'eclipse-note', text: t.eclipseNotes[ecl.noteKey] }));
+        }
+        if (ecl.notable) {
+          const mapLink = document.createElement('a');
+          mapLink.className = 'eclipse-map-link';
+          mapLink.href = ecl.noteKey === 'ibrahim632' ? 'eklipso.html' : 'eclipses.html';
+          mapLink.textContent = ecl.noteKey === 'ibrahim632' ? (t.eclipseViewMap || 'View eclipse map') : (t.eclipseViewCatalogue || 'Eclipse catalogue');
+          eclEl.appendChild(mapLink);
         }
         elements.push(eclEl);
       }
@@ -1077,4 +1094,18 @@
   setupAutocomplete(toCalInput);
   setLang(currentLang);
   renderHistory();
+
+  // Handle URL parameters (e.g. ?cal=julian&y=632&m=1&d=27)
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('y')) {
+    var calId = params.get('cal') || 'julian';
+    var t = I18N[currentLang] || I18N.en;
+    fromCalInput.value = t.calendars[calId] || calId;
+    updateVariantBar(fromVariantsBar, fromCalInput);
+    updateMonthSelects();
+    $('#from-year').value = params.get('y');
+    if (params.get('m')) $('#from-month').value = params.get('m');
+    if (params.get('d')) $('#from-day').value = params.get('d');
+    convert();
+  }
 })();

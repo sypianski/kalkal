@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Charis+SIL:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Sans:wght@400;500;600&family=Noto+Sans+Mono:wght@400;500&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
 </head>
 <body data-page="calendars">
 
@@ -32,7 +33,7 @@
       <a href="index.html" data-nav="converter">Converter</a>
       <a href="calendars.html" class="active" data-nav="calendars">Calendars</a>
       <a href="methodology.html" data-nav="methodology">Methodology</a>
-      <a href="dynasties.html" data-nav="dynasties">Regnal Tables</a>
+      <a href="eclipses.html" data-nav="eclipses">Eclipses</a>
     </nav>
   </header>
 
@@ -80,9 +81,13 @@
         <summary data-formula-label="formula">Formula</summary>
         <div class="cal-formula-content">
           <div class="cal-formula-math">
-            <p>For months M &le; 2, adjust: Y' = Y &minus; 1, M' = M + 12</p>
-            <p>A = &lfloor;Y' / 100&rfloor;, &ensp; B = 2 &minus; A + &lfloor;A / 4&rfloor;</p>
-            <p>JD = &lfloor;365.25 &middot; (Y' + 4716)&rfloor; + &lfloor;30.6001 &middot; (M' + 1)&rfloor; + D + B &minus; 1524.5</p>
+            <p>January and February are treated as months 13 and 14 of the preceding year:</p>
+            <p>$$M \le 2 \implies Y\prime = Y - 1,\; M\prime = M + 12$$</p>
+            <p>The Gregorian correction compensates for the over-counting of leap years in centuries not divisible by 400:</p>
+            <p>$$A = \left\lfloor \frac{Y\prime}{100} \right\rfloor \qquad B = 2 - A + \left\lfloor \frac{A}{4} \right\rfloor$$</p>
+            <p>The full conversion to Julian Day Number:</p>
+            <p>$$\mathrm{JD} = \left\lfloor 365.25\,(Y\prime\!+4716) \right\rfloor + \left\lfloor 30.6001\,(M\prime\!+1) \right\rfloor + D + B - 1524.5$$</p>
+            <p>The constant 4716 shifts the year into the Julian Period; 30.6001 approximates the irregular month lengths; 1524.5 adjusts the epoch.</p>
           </div>
           <pre class="cal-formula-code"><code>def gregorian_to_jd(Y, M, D):
     if M <= 2:
@@ -90,7 +95,7 @@
     A = Y // 100
     B = 2 - A + A // 4
     return int(365.25 * (Y + 4716)) + int(30.6001 * (M + 1)) + D + B - 1524.5</code></pre>
-          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong><span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Twelve months of 28–31 days: January (31), February (28/29), March (31), April (30), May (31), June (30), July (31), August (31), September (30), October (31), November (30), December (31).</p>
@@ -111,15 +116,15 @@
         <summary data-formula-label="formula">Formula</summary>
         <div class="cal-formula-content">
           <div class="cal-formula-math">
-            <p>For months M &le; 2, adjust: Y' = Y &minus; 1, M' = M + 12</p>
-            <p>JD = &lfloor;365.25 &middot; (Y' + 4716)&rfloor; + &lfloor;30.6001 &middot; (M' + 1)&rfloor; + D &minus; 1524.5</p>
-            <p>(Same as Gregorian but without the century correction B)</p>
+            <p>Same structure as Gregorian, but with no century correction ($B = 0$). Every 4th year is a leap year without exception, giving a mean year of exactly 365.25 days.</p>
+            <p>$$M \le 2 \implies Y\prime = Y - 1,\; M\prime = M + 12$$</p>
+            <p>$$\mathrm{JD} = \left\lfloor 365.25\,(Y\prime\!+4716) \right\rfloor + \left\lfloor 30.6001\,(M\prime\!+1) \right\rfloor + D - 1524.5$$</p>
           </div>
           <pre class="cal-formula-code"><code>def julian_to_jd(Y, M, D):
     if M <= 2:
         Y, M = Y - 1, M + 12
     return int(365.25 * (Y + 4716)) + int(30.6001 * (M + 1)) + D - 1524.5</code></pre>
-          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong><span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Twelve months identical in name and length to the Gregorian calendar, differing only in the leap year rule (every 4th year, without exception).</p>
@@ -141,9 +146,11 @@
         <summary data-formula-label="formula">Formula</summary>
         <div class="cal-formula-content">
           <div class="cal-formula-math">
-            <p>Epoch = 1948439.5 (16 Jul 622 CE Julian)</p>
-            <p>Leap count L(N) = &lfloor;N/30&rfloor; &middot; 11 + count of leap years in remainder</p>
-            <p>JD = Epoch + (Y &minus; 1) &middot; 354 + L(Y &minus; 1) + &lfloor;(M &minus; 1) &middot; 29.5 + 0.99&rfloor; + D &minus; 1</p>
+            <p>The tabular Hijri calendar uses a fixed 30-year cycle in which 11 years are leap (355 days) and 19 are common (354 days). The epoch is 16 July 622 CE (Julian).</p>
+            <p>$L(N)$ counts how many leap years have occurred up to year $N$:</p>
+            <p>$$L(N) = \left\lfloor \frac{N}{30} \right\rfloor \cdot 11 + \#\{l \in \mathrm{leaps} : l \le N \bmod 30\}$$</p>
+            <p>The term $\lfloor (M\!-\!1) \cdot 29.5 + 0.99 \rfloor$ accumulates alternating 30/29-day months:</p>
+            <p>$$\mathrm{JD} = 1\,948\,439.5 + (Y\!-\!1) \cdot 354 + L(Y\!-\!1) + \left\lfloor (M\!-\!1) \cdot 29.5 + 0.99 \right\rfloor + D - 1$$</p>
           </div>
           <pre class="cal-formula-code"><code>EPOCH = 1948439.5
 LEAPS_IIc = [2, 5, 7, 10, 13, 16, 19, 21, 24, 26, 29]
@@ -155,7 +162,7 @@ def leap_count(n, leaps=LEAPS_IIc):
 def hijri_to_jd(Y, M, D, leaps=LEAPS_IIc):
     return (EPOCH + (Y - 1) * 354 + leap_count(Y - 1, leaps)
             + int((M - 1) * 29.5 + 0.99) + D - 1)</code></pre>
-          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong><span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Twelve months: Muharram (30), Safar (29), Rabi' al-Awwal (30), Rabi' ath-Thani (29), Jumada al-Ula (30), Jumada al-Akhira (29), Rajab (30), Sha'ban (29), Ramadan (30), Shawwal (29), Dhu al-Qa'da (30), Dhu al-Hijja (29 or 30).</p>
@@ -176,10 +183,12 @@ def hijri_to_jd(Y, M, D, leaps=LEAPS_IIc):
         <summary data-formula-label="formula">Formula</summary>
         <div class="cal-formula-content">
           <div class="cal-formula-math">
-            <p>Epoch = 1948320.5 &ensp;|&ensp; Cycle = 2820 years = 1,029,983 days</p>
-            <p>epbase = Y &minus; 474, &ensp; epyear = 474 + ((epbase mod 2820) + 2820) mod 2820</p>
-            <p>Leap if (epyear &middot; 682 &minus; 110) mod 2816 &lt; 682</p>
-            <p>JD = D + month_offset + &lfloor;(epyear &middot; 682 &minus; 110) / 2816&rfloor; + (epyear &minus; 1) &middot; 365 + &lfloor;epbase / 2820&rfloor; &middot; 1029983 + Epoch &minus; 1</p>
+            <p>The arithmetic Solar Hijri uses a 2820-year grand cycle containing exactly 1,029,983 days (683 leap years). The year is normalised to a base year within this cycle:</p>
+            <p>$$e_b = Y - 474 \qquad e_y = 474 + \bigl((e_b \bmod 2820) + 2820\bigr) \bmod 2820$$</p>
+            <p>The leap year test uses a modular condition on $e_y$:</p>
+            <p>$$(e_y \cdot 682 - 110) \bmod 2816 < 682 \implies \text{leap}$$</p>
+            <p>Month offset $m_{\text{off}}$: months 1–6 have 31 days, 7–11 have 30 days. The full JD:</p>
+            <p>$$\mathrm{JD} = D + m_{\text{off}} + \left\lfloor \frac{e_y \cdot 682 - 110}{2816} \right\rfloor + (e_y\!-\!1) \cdot 365 + \left\lfloor \frac{e_b}{2820} \right\rfloor \!\cdot\! 1\,029\,983 + 1\,948\,320.5 - 1$$</p>
           </div>
           <pre class="cal-formula-code"><code>EPOCH = 1948320.5
 
@@ -195,7 +204,7 @@ def is_leap(Y):
     epbase = Y - 474
     epyear = 474 + ((epbase % 2820) + 2820) % 2820
     return (epyear * 682 - 110) % 2816 < 682</code></pre>
-          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong><span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Twelve months: Farvardin (31), Ordibehesht (31), Khordad (31), Tir (31), Mordad (31), Shahrivar (31), Mehr (30), Aban (30), Azar (30), Dey (30), Bahman (30), Esfand (29/30).</p>
@@ -216,9 +225,9 @@ def is_leap(Y):
         <summary data-formula-label="formula">Formula</summary>
         <div class="cal-formula-content">
           <div class="cal-formula-math">
-            <p>Epoch = 1825029.5 (1 Thout 1 AM = 29 Aug 284 CE Julian)</p>
-            <p>Leap if Y mod 4 = 3</p>
-            <p>JD = Epoch &minus; 1 + 365 &middot; (Y &minus; 1) + &lfloor;Y / 4&rfloor; + 30 &middot; (M &minus; 1) + D</p>
+            <p>Twelve months of 30 days plus a 13th epagomenal month (5 or 6 days). Leap year every 4 years when $Y \bmod 4 = 3$. Epoch: 29 August 284 CE (Julian).</p>
+            <p>$$\mathrm{JD} = 1\,825\,029.5 - 1 + 365\,(Y\!-\!1) + \left\lfloor \frac{Y}{4} \right\rfloor + 30\,(M\!-\!1) + D$$</p>
+            <p>The $\lfloor Y/4 \rfloor$ term adds one leap day every 4th year. The $30(M-1)$ works because all 12 regular months have exactly 30 days.</p>
           </div>
           <pre class="cal-formula-code"><code>EPOCH = 1825029.5
 
@@ -231,7 +240,7 @@ def jd_to_coptic(jd):
     M = doy // 30 + 1
     D = doy - (M - 1) * 30 + 1
     return Y, M, D</code></pre>
-          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong><span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Thirteen months: Thout, Paopi, Hathor, Koiak, Tobi, Meshir, Paremhat, Parmouti, Pashons, Paoni, Epip, Mesori (each 30 days), Epagomenai (5 or 6 days).</p>
@@ -252,10 +261,8 @@ def jd_to_coptic(jd):
         <summary data-formula-label="formula">Formula</summary>
         <div class="cal-formula-content">
           <div class="cal-formula-math">
-            <p>Epoch = 1724220.5 (1 M&#228;sk&#228;r&#228;m 1 = 29 Aug 8 CE Julian)</p>
-            <p>Leap if Y mod 4 = 3</p>
-            <p>JD = Epoch &minus; 1 + 365 &middot; (Y &minus; 1) + &lfloor;Y / 4&rfloor; + 30 &middot; (M &minus; 1) + D</p>
-            <p>(Identical structure to Coptic, different epoch)</p>
+            <p>Identical structure to the Coptic calendar (12 × 30 + epagomenal month, same leap rule), but with a different epoch: 29 August 8 CE (Julian).</p>
+            <p>$$\mathrm{JD} = 1\,724\,220.5 - 1 + 365\,(Y\!-\!1) + \left\lfloor \frac{Y}{4} \right\rfloor + 30\,(M\!-\!1) + D$$</p>
           </div>
           <pre class="cal-formula-code"><code>EPOCH = 1724220.5
 
@@ -268,30 +275,31 @@ def jd_to_ethiopian(jd):
     M = doy // 30 + 1
     D = doy - (M - 1) * 30 + 1
     return Y, M, D</code></pre>
-          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong><span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Thirteen months: M&#228;sk&#228;r&#228;m, &#7788;&#601;q&#601;mt, &#7716;&#601;dar, Ta&#7723;&#353;a&#353;, &#7788;&#601;r, Y&#228;katit, M&#228;gabit, Miyazya, G&#601;nbot, S&#228;ne, &#7716;amle, N&#228;hase (each 30 days), Pagum&#228;n (5 or 6 days).</p>
     </article>
 
-    <!-- Yazdgerdi -->
+    <!-- Zoroastrian -->
     <article class="cal-card" data-cal="yazdgerdi" id="yazdgerdi">
       <header class="cal-header">
-        <h2 class="cal-name">Yazdgerdi Calendar</h2>
+        <h2 class="cal-name">Zoroastrian Calendar</h2>
         <div class="cal-meta">
           <span class="cal-tag cal-type">Solar (wandering)</span>
         </div>
       </header>
       <p class="cal-intro">The Yazdgerdi calendar is the traditional Zoroastrian calendar of Iran, named after Yazdegerd III, the last Sasanian emperor. Its epoch is his coronation in 632 CE.</p>
       <p class="cal-body">The calendar consists of 12 months of 30 days each, followed by 5 epagomenal days (the Gatha days). Crucially, it has no leap year mechanism — the year is always exactly 365 days. This makes it a "wandering" calendar that drifts through the seasons.</p>
-      <p class="cal-usage">The Yazdgerdi calendar was used in Iran alongside the Hijri calendar during the early Islamic period. It remains of interest to historians studying Sasanian and early Islamic chronology.</p>
+      <p class="cal-usage">Shahenshahi was the standard reckoning in Iran and among Zoroastrians. Qadimi is used by Parsi communities in India. Fasli was reformed in the modern era to stay seasonal.</p>
+      <p class="cal-variants-text">Shahenshahi: wandering 365-day calendar, the historical default. Qadimi: same structure but 30 days earlier, used by Indian Parsis. Fasli: reformed with leap years (every 4th year), Nawruz fixed near 21 March.</p>
       <details class="cal-formula">
         <summary data-formula-label="formula">Formula</summary>
         <div class="cal-formula-content">
           <div class="cal-formula-math">
-            <p>Epoch = 1952062.5 (1 Farvardin 1 YZ = 16 Jun 632 CE Julian)</p>
-            <p>No leap years &mdash; every year = 365 days</p>
-            <p>JD = Epoch &minus; 1 + 365 &middot; (Y &minus; 1) + 30 &middot; (M &minus; 1) + D</p>
+            <p>Three variants exist, differing only in epoch. Shahenshahi and Qadimi have no leap year — every year is exactly 365 days, making the calendar drift through the seasons. Fasli adds a leap day when $Y \bmod 4 = 3$.</p>
+            <p>$$\mathrm{Epoch_S} = 1\,952\,062.5 \qquad \mathrm{Epoch_Q} = 1\,952\,032.5 \qquad \mathrm{Epoch_F} = 1\,951\,975.5$$</p>
+            <p>$$\mathrm{JD} = \mathrm{Epoch} - 1 + 365\,(Y\!-\!1) + 30\,(M\!-\!1) + D$$</p>
           </div>
           <pre class="cal-formula-code"><code>EPOCH = 1952062.5
 
@@ -305,7 +313,7 @@ def jd_to_yazdgerdi(jd):
     M = min(13, doy // 30 + 1)
     D = doy - (M - 1) * 30 + 1
     return Y, M, D</code></pre>
-          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong><span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Thirteen months: Farvardin, Ordibehesht, Khordad, Tir, Mordad, Shahrivar, Mehr, Aban, Azar, Dey, Bahman, Esfand (each 30 days), plus 5 epagomenal days.</p>
@@ -326,10 +334,8 @@ def jd_to_yazdgerdi(jd):
         <summary data-formula-label="formula">Formula</summary>
         <div class="cal-formula-content">
           <div class="cal-formula-math">
-            <p>Epoch = 1922867.5 (1 Navasard 1 = 11 Jul 552 CE Julian)</p>
-            <p>No leap years &mdash; every year = 365 days</p>
-            <p>JD = Epoch &minus; 1 + 365 &middot; (Y &minus; 1) + 30 &middot; (M &minus; 1) + D</p>
-            <p>(Identical structure to Yazdgerdi, different epoch)</p>
+            <p>A wandering calendar: 12 × 30 days + 5 epagomenal days, no leap year correction. Drifts one day every ~4 years. Same formula as Egyptian, different epoch (11 July 552 CE Julian).</p>
+            <p>$$\mathrm{JD} = 1\,922\,867.5 - 1 + 365\,(Y\!-\!1) + 30\,(M\!-\!1) + D$$</p>
           </div>
           <pre class="cal-formula-code"><code>EPOCH = 1922867.5
 
@@ -343,7 +349,7 @@ def jd_to_armenian(jd):
     M = min(13, doy // 30 + 1)
     D = doy - (M - 1) * 30 + 1
     return Y, M, D</code></pre>
-          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong><span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Thirteen months: Navasard, Ho&#7769;i, Sahmi, Tr&#275;, K&#x2019;alo&#269;, Arac&#x2019;, Mehekan, Areg, Ahekan, Mareri, Margac&#x2019;, Hrotic&#x2019; (each 30 days), Aweleac&#x2019; (5 days).</p>
@@ -363,15 +369,14 @@ def jd_to_armenian(jd):
         <summary data-formula-label="formula">Formula</summary>
         <div class="cal-formula-content">
           <div class="cal-formula-math">
-            <p>Epoch = 1448637.5 (1 Thoth 1 Nabonassar = 26 Feb 747 BCE Julian)</p>
-            <p>No leap years &mdash; every year = 365 days</p>
-            <p>JD = Epoch &minus; 1 + 365 &middot; (Y &minus; 1) + 30 &middot; (M &minus; 1) + D</p>
+            <p>The prototype of all wandering calendars: 12 × 30 days + 5 epagomenal days, always exactly 365 days. Epoch: 26 February 747 BCE Julian (era of Nabonassar).</p>
+            <p>$$\mathrm{JD} = 1\,448\,637.5 - 1 + 365\,(Y\!-\!1) + 30\,(M\!-\!1) + D$$</p>
           </div>
           <pre class="cal-formula-code"><code>EPOCH = 1448637.5
 
 def egyptian_to_jd(Y, M, D):
     return EPOCH - 1 + 365 * (Y - 1) + 30 * (M - 1) + D</code></pre>
-          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong><span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Thirteen months: Thoth, Phaophi, Athyr, Choiak, Tybi, Mechir, Phamenoth, Pharmuthi, Pachons, Payni, Epiphi, Mesore (each 30 days), Epagomenai (5 days).</p>
@@ -391,15 +396,17 @@ def egyptian_to_jd(Y, M, D):
         <summary data-formula-label="formula">Formula</summary>
         <div class="cal-formula-content">
           <div class="cal-formula-math">
-            <p>Julian year via era shift. Sep&ndash;Dec: julYear = Y &minus; 5509; Jan&ndash;Aug: julYear = Y &minus; 5508</p>
-            <p>JD = julianToJD(julYear, julMonth, D)</p>
+            <p>The Byzantine year starts 1 September. The date is converted to a Julian year and month, then passed to the Julian→JD formula (Meeus, eq. 7.1 with $B = 0$):</p>
+            <p>$$\text{Sep–Dec:}\; Y_J = Y - 5509,\; M_J = M + 8$$</p>
+            <p>$$\text{Jan–Aug:}\; Y_J = Y - 5508,\; M_J = M - 4$$</p>
+            <p>$$\mathrm{JD} = \mathrm{julianToJD}(Y_J,\, M_J,\, D)$$</p>
           </div>
           <pre class="cal-formula-code"><code>def byzantine_to_jd(Y, M, D):
     if M <= 4:   # Sep-Dec
         return julian_to_jd(Y - 5509, M + 8, D)
     else:        # Jan-Aug
         return julian_to_jd(Y - 5508, M - 4, D)</code></pre>
-          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong><span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Twelve months from September: September, October, November, December, January, February, March, April, May, June, July, August.</p>
@@ -419,15 +426,17 @@ def egyptian_to_jd(Y, M, D):
         <summary data-formula-label="formula">Formula</summary>
         <div class="cal-formula-content">
           <div class="cal-formula-math">
-            <p>Mar&ndash;Dec: julYear = Y &minus; 5493; Jan&ndash;Feb: julYear = Y &minus; 5492</p>
-            <p>JD = julianToJD(julYear, julMonth, D)</p>
+            <p>The Alexandrian year starts 25 March. Era offset from the Alexandrian creation epoch (5493 BCE). Converted to Julian coordinates then to JD:</p>
+            <p>$$\text{Mar–Dec:}\; Y_J = Y - 5493,\; M_J = M + 2$$</p>
+            <p>$$\text{Jan–Feb:}\; Y_J = Y - 5492,\; M_J = M - 10$$</p>
+            <p>$$\mathrm{JD} = \mathrm{julianToJD}(Y_J,\, M_J,\, D)$$</p>
           </div>
           <pre class="cal-formula-code"><code>def alexandrian_to_jd(Y, M, D):
     if M <= 10:  # Mar-Dec
         return julian_to_jd(Y - 5493, M + 2, D)
     else:        # Jan-Feb
         return julian_to_jd(Y - 5492, M - 10, D)</code></pre>
-          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong><span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Twelve months from March: March, April, May, June, July, August, September, October, November, December, January, February.</p>
@@ -447,15 +456,17 @@ def egyptian_to_jd(Y, M, D):
         <summary data-formula-label="formula">Formula</summary>
         <div class="cal-formula-content">
           <div class="cal-formula-math">
-            <p>Oct&ndash;Dec: julYear = Y &minus; 312; Jan&ndash;Sep: julYear = Y &minus; 311</p>
-            <p>JD = julianToJD(julYear, julMonth, D)</p>
+            <p>The Seleucid year starts 1 October. Era offset of 312/311 years from the Macedonian reckoning of the Seleucid era (312 BCE). Converted to Julian, then to JD:</p>
+            <p>$$\text{Oct–Dec:}\; Y_J = Y - 312,\; M_J = M + 9$$</p>
+            <p>$$\text{Jan–Sep:}\; Y_J = Y - 311,\; M_J = M - 3$$</p>
+            <p>$$\mathrm{JD} = \mathrm{julianToJD}(Y_J,\, M_J,\, D)$$</p>
           </div>
           <pre class="cal-formula-code"><code>def seleucid_to_jd(Y, M, D):
     if M <= 3:   # Oct-Dec
         return julian_to_jd(Y - 312, M + 9, D)
     else:        # Jan-Sep
         return julian_to_jd(Y - 311, M - 3, D)</code></pre>
-          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong><span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Twelve months from October: October, November, December, January, February, March, April, May, June, July, August, September.</p>
@@ -475,12 +486,13 @@ def egyptian_to_jd(Y, M, D):
         <summary data-formula-label="formula">Formula</summary>
         <div class="cal-formula-content">
           <div class="cal-formula-math">
-            <p>julYear = Y &minus; 311</p>
-            <p>JD = julianToJD(julYear, M, D)</p>
+            <p>The Syriac calendar uses the Seleucid era but with a January–December year (unlike the October-start Seleucid). Simple era offset of 311 years applied to a Julian year:</p>
+            <p>$$Y_J = Y - 311$$</p>
+            <p>$$\mathrm{JD} = \mathrm{julianToJD}(Y_J,\, M,\, D)$$</p>
           </div>
           <pre class="cal-formula-code"><code>def syriac_to_jd(Y, M, D):
     return julian_to_jd(Y - 311, M, D)</code></pre>
-          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong><span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Twelve months: K&#257;n&#363;n &#7788;r&#257;y&#257;n&#257; (Jan), &#352;b&#257;&#7789; (Feb), &#256;&#7693;&#257;r (Mar), N&#299;s&#257;n (Apr), Ayy&#257;r (May), &#7716;z&#299;r&#257;n (Jun), Tamm&#363;z (Jul), &#256;b (Aug), Ayl&#363;l (Sep), Ti&#353;r&#299;n Qd&#299;m (Oct), Ti&#353;r&#299;n &#7716;r&#257;y (Nov), K&#257;n&#363;n Qd&#299;m (Dec).</p>
@@ -500,15 +512,16 @@ def egyptian_to_jd(Y, M, D):
         <summary data-formula-label="formula">Formula</summary>
         <div class="cal-formula-content">
           <div class="cal-formula-math">
-            <p>Same structure as Seleucid (October start, AG era, Julian mechanics)</p>
-            <p>Dios(1)=Oct, &hellip;, Hyperberetaios(12)=Sep</p>
+            <p>Same mechanics as the Seleucid calendar (October year start, AG era) but with Macedonian month names. Each Macedonian month maps 1:1 to a Julian month: Dios = Oct, Apellaios = Nov, …, Hyperberetaios = Sep.</p>
+            <p>$$\text{Oct–Dec:}\; Y_J = Y - 312 \qquad \text{Jan–Sep:}\; Y_J = Y - 311$$</p>
+            <p>$$\mathrm{JD} = \mathrm{julianToJD}(Y_J,\, M_J,\, D)$$</p>
           </div>
           <pre class="cal-formula-code"><code>def macedonian_to_jd(Y, M, D):
     if M <= 3:   # Dios-Audynaios = Oct-Dec
         return julian_to_jd(Y - 312, M + 9, D)
     else:        # Peritios-Hyperberetaios = Jan-Sep
         return julian_to_jd(Y - 311, M - 3, D)</code></pre>
-          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong><span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Twelve months from October: Dios, Apellaios, Audynaios, Peritios, Dystros, Xanthikos, Artemisios, Daisios, Panemos, Loos, Gorpiaios, Hyperberetaios.</p>
@@ -528,12 +541,13 @@ def egyptian_to_jd(Y, M, D):
         <summary data-formula-label="formula">Formula</summary>
         <div class="cal-formula-content">
           <div class="cal-formula-math">
-            <p>julYear = Y + 584</p>
-            <p>JD = julianToJD(julYear, M, D)</p>
+            <p>After the 1840 reform, the Rūmī calendar uses January–December months with Julian lengths. The year number is the Julian year minus 584 (a Hijra-era offset):</p>
+            <p>$$Y_J = Y + 584$$</p>
+            <p>$$\mathrm{JD} = \mathrm{julianToJD}(Y_J,\, M,\, D)$$</p>
           </div>
           <pre class="cal-formula-code"><code>def rumi_to_jd(Y, M, D):
     return julian_to_jd(Y + 584, M, D)</code></pre>
-          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong><span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Twelve months with Julian names and lengths, January&ndash;December.</p>
@@ -553,12 +567,13 @@ def egyptian_to_jd(Y, M, D):
         <summary data-formula-label="formula">Formula</summary>
         <div class="cal-formula-content">
           <div class="cal-formula-math">
-            <p>julYear = Y &minus; 753</p>
-            <p>JD = julianToJD(julYear, M, D)</p>
+            <p>Ab Urbe Condita year 1 corresponds to 753 BCE (Varronian reckoning). Julian calendar with era offset:</p>
+            <p>$$Y_J = Y - 753$$</p>
+            <p>$$\mathrm{JD} = \mathrm{julianToJD}(Y_J,\, M,\, D)$$</p>
           </div>
           <pre class="cal-formula-code"><code>def auc_to_jd(Y, M, D):
     return julian_to_jd(Y - 753, M, D)</code></pre>
-          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong><span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Twelve months with Julian names and lengths, January&ndash;December.</p>
@@ -578,12 +593,13 @@ def egyptian_to_jd(Y, M, D):
         <summary data-formula-label="formula">Formula</summary>
         <div class="cal-formula-content">
           <div class="cal-formula-math">
-            <p>julYear = Y &minus; 38</p>
-            <p>JD = julianToJD(julYear, M, D)</p>
+            <p>The Era Hispanica begins 1 January 38 BCE, marking the Roman pacification of Iberia. Julian calendar with era offset:</p>
+            <p>$$Y_J = Y - 38$$</p>
+            <p>$$\mathrm{JD} = \mathrm{julianToJD}(Y_J,\, M,\, D)$$</p>
           </div>
           <pre class="cal-formula-code"><code>def spanish_to_jd(Y, M, D):
     return julian_to_jd(Y - 38, M, D)</code></pre>
-          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong><span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Twelve months with Julian names and lengths, January&ndash;December.</p>
@@ -603,15 +619,16 @@ def egyptian_to_jd(Y, M, D):
         <summary data-formula-label="formula">Formula</summary>
         <div class="cal-formula-content">
           <div class="cal-formula-math">
-            <p>julYear = Y &minus; 776</p>
-            <p>Olympiad = &lfloor;(Y &minus; 1) / 4&rfloor; + 1, &ensp; year in olympiad = ((Y &minus; 1) mod 4) + 1</p>
+            <p>Linear year count from 776 BCE (the first Olympic Games). Julian calendar with era offset. Olympiad numbering divides the linear count into 4-year cycles:</p>
+            <p>$$Y_J = Y - 776$$</p>
+            <p>$$\mathrm{Olympiad} = \left\lfloor \frac{Y-1}{4} \right\rfloor + 1 \qquad \mathrm{year} = ((Y\!-\!1) \bmod 4) + 1$$</p>
           </div>
           <pre class="cal-formula-code"><code>def olympiad_to_jd(Y, M, D):
     return julian_to_jd(Y - 776, M, D)
 
 def display(Y):
     return (Y - 1) // 4 + 1, (Y - 1) % 4 + 1</code></pre>
-          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong><span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Twelve months with Julian names and lengths, January&ndash;December.</p>
@@ -631,10 +648,11 @@ def display(Y):
         <summary data-formula-label="formula">Formula</summary>
         <div class="cal-formula-content">
           <div class="cal-formula-math">
-            <p>Epoch = 347997.5 (1 Tishrei 1 AM)</p>
-            <p>Leap if (7Y + 1) mod 19 &lt; 7</p>
-            <p>New Year JD via molad arithmetic + postponement rules (dechiyot)</p>
-            <p>Year length = NewYear(Y+1) &minus; NewYear(Y) &isin; {353, 354, 355, 383, 384, 385}</p>
+            <p>The Hebrew calendar determines New Year (1 Tishrei) via the molad — the mean lunar conjunction. From the year number, the number of elapsed months and fractional day parts are computed:</p>
+            <p>$$\mathrm{months} = \left\lfloor \frac{235Y - 234}{19} \right\rfloor \qquad \mathrm{parts} = 12\,084 + 13\,753 \cdot \mathrm{months}$$</p>
+            <p>The raw molad day is then adjusted by four postponement rules (dechiyot) that prevent Rosh Hashana from falling on Sunday, Wednesday, or Friday, and handle year-length constraints:</p>
+            <p>$$\mathrm{day} = \mathrm{months} \cdot 29 + \left\lfloor \frac{\mathrm{parts}}{25\,920} \right\rfloor$$</p>
+            <p>A year is leap (13 months, with Adar II) when $(7Y + 1) \bmod 19 < 7$. Year length ranges from 353 to 385 days.</p>
           </div>
           <pre class="cal-formula-code"><code>EPOCH = 347997.5
 
@@ -655,7 +673,7 @@ def delay2(Y):
 
 def new_year_jd(Y):
     return EPOCH + delay1(Y) + delay2(Y)</code></pre>
-          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong><span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Twelve or thirteen months: Tishrei (30), Cheshvan (29/30), Kislev (29/30), Tevet (29), Shevat (30), Adar / Adar I (29/30), [Adar II (29)], Nisan (30), Iyar (29), Sivan (30), Tammuz (29), Av (30), Elul (29).</p>
@@ -675,12 +693,13 @@ def new_year_jd(Y):
         <summary data-formula-label="formula">Formula</summary>
         <div class="cal-formula-content">
           <div class="cal-formula-math">
-            <p>gregYear = 1950 &minus; Y</p>
-            <p>JD = gregorianToJD(gregYear, M, D)</p>
+            <p>Before Present counts backward from 1950 CE (the radiocarbon dating reference). BP 0 = 1950, BP 1 = 1949, etc. Gregorian conversion with inverted year:</p>
+            <p>$$Y_G = 1950 - Y$$</p>
+            <p>$$\mathrm{JD} = \mathrm{gregorianToJD}(Y_G,\, M,\, D)$$</p>
           </div>
           <pre class="cal-formula-code"><code>def bp_to_jd(Y, M, D):
     return gregorian_to_jd(1950 - Y, M, D)</code></pre>
-          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong><span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Twelve months with Gregorian names and lengths.</p>
@@ -700,12 +719,13 @@ def new_year_jd(Y):
         <summary data-formula-label="formula">Formula</summary>
         <div class="cal-formula-content">
           <div class="cal-formula-math">
-            <p>gregYear = Y &minus; 10000</p>
-            <p>JD = gregorianToJD(gregYear, M, D)</p>
+            <p>The Holocene Era adds 10,000 years to the Gregorian calendar, placing the epoch at the approximate start of human civilisation. Year 1 HE = 10,001 BCE:</p>
+            <p>$$Y_G = Y - 10\,000$$</p>
+            <p>$$\mathrm{JD} = \mathrm{gregorianToJD}(Y_G,\, M,\, D)$$</p>
           </div>
           <pre class="cal-formula-code"><code>def human_to_jd(Y, M, D):
     return gregorian_to_jd(Y - 10000, M, D)</code></pre>
-          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong> <span class="cal-source-text"></span></p>
+          <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong><span class="cal-source-text"></span></p>
         </div>
       </details>
       <p class="cal-months">Twelve months with Gregorian names and lengths.</p>
@@ -753,5 +773,8 @@ def new_year_jd(Y):
     });
   })();
   </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+    onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})"></script>
 </body>
 </html>

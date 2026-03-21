@@ -282,14 +282,24 @@ html[dir="rtl"] .site-title {
   margin-block-start: var(--space-sm);
 }
 
+.cal-formula-math .katex-display {
+  margin: 0.3em 0;
+}
+
 .cal-card .cal-source {
   font-size: 0.78rem;
   color: var(--ink-400);
-  margin-block-start: var(--space-xs);
+  margin-block-start: var(--space-sm);
+  border-block-start: 1px dashed var(--ink-200, #ccc);
+  padding-block-start: var(--space-xs);
 }
 
 .cal-card .cal-source-label {
   font-weight: 600;
+}
+
+.cal-card .cal-source-label::after {
+  content: ': ';
 }
 
 /* ---- Seasonal months grid ---- */
@@ -1328,6 +1338,21 @@ html[dir="rtl"] .btn-convert:hover svg {
   font-style: italic;
   color: var(--ink-600);
   margin-block-start: 0.2em;
+}
+
+.eclipse-map-link {
+  display: inline-block;
+  width: 100%;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-600);
+  text-decoration: none;
+  margin-block-start: 0.3em;
+}
+
+.eclipse-map-link:hover {
+  color: var(--ink-800);
+  text-decoration: underline;
 }
 
 /* ---- Astronomy results ---- */

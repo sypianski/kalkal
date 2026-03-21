@@ -1,0 +1,2296 @@
+{
+  "hijriResults": [
+    {
+      "desc": "Hijri epoch (1 Muharram 1 AH)",
+      "conversions": {
+        "IIc": {
+          "hijri": {
+            "y": 1,
+            "m": 1,
+            "d": 1
+          },
+          "jd": 1948439.5,
+          "gregorian": {
+            "year": 622,
+            "month": 7,
+            "day": 19
+          },
+          "julian": {
+            "year": 622,
+            "month": 7,
+            "day": 16
+          },
+          "dow": 5,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1,
+              "month": 1,
+              "day": 1
+            },
+            "match": true
+          },
+          "fromJulian": {
+            "julian": {
+              "y": 622,
+              "m": 7,
+              "d": 16
+            },
+            "jd": 1948439.5,
+            "hijri": {
+              "year": 1,
+              "month": 1,
+              "day": 1
+            },
+            "dow": 5
+          }
+        },
+        "IIa": {
+          "hijri": {
+            "y": 1,
+            "m": 1,
+            "d": 1
+          },
+          "jd": 1948439.5,
+          "gregorian": {
+            "year": 622,
+            "month": 7,
+            "day": 19
+          },
+          "julian": {
+            "year": 622,
+            "month": 7,
+            "day": 16
+          },
+          "dow": 5,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1,
+              "month": 1,
+              "day": 1
+            },
+            "match": true
+          },
+          "fromJulian": {
+            "julian": {
+              "y": 622,
+              "m": 7,
+              "d": 16
+            },
+            "jd": 1948439.5,
+            "hijri": {
+              "year": 1,
+              "month": 1,
+              "day": 1
+            },
+            "dow": 5
+          }
+        },
+        "IIIa": {
+          "hijri": {
+            "y": 1,
+            "m": 1,
+            "d": 1
+          },
+          "jd": 1948439.5,
+          "gregorian": {
+            "year": 622,
+            "month": 7,
+            "day": 19
+          },
+          "julian": {
+            "year": 622,
+            "month": 7,
+            "day": 16
+          },
+          "dow": 5,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1,
+              "month": 1,
+              "day": 1
+            },
+            "match": true
+          },
+          "fromJulian": {
+            "julian": {
+              "y": 622,
+              "m": 7,
+              "d": 16
+            },
+            "jd": 1948439.5,
+            "hijri": {
+              "year": 1,
+              "month": 1,
+              "day": 1
+            },
+            "dow": 5
+          }
+        },
+        "IVa": {
+          "hijri": {
+            "y": 1,
+            "m": 1,
+            "d": 1
+          },
+          "jd": 1948439.5,
+          "gregorian": {
+            "year": 622,
+            "month": 7,
+            "day": 19
+          },
+          "julian": {
+            "year": 622,
+            "month": 7,
+            "day": 16
+          },
+          "dow": 5,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1,
+              "month": 1,
+              "day": 1
+            },
+            "match": true
+          },
+          "fromJulian": {
+            "julian": {
+              "y": 622,
+              "m": 7,
+              "d": 16
+            },
+            "jd": 1948439.5,
+            "hijri": {
+              "year": 1,
+              "month": 1,
+              "day": 1
+            },
+            "dow": 5
+          }
+        }
+      }
+    },
+    {
+      "desc": "Battle of Badr (17 Ramadan 2)",
+      "conversions": {
+        "IIc": {
+          "hijri": {
+            "y": 2,
+            "m": 9,
+            "d": 17
+          },
+          "jd": 1949045.5,
+          "gregorian": {
+            "year": 624,
+            "month": 3,
+            "day": 16
+          },
+          "julian": {
+            "year": 624,
+            "month": 3,
+            "day": 13
+          },
+          "dow": 2,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 2,
+              "month": 9,
+              "day": 17
+            },
+            "match": true
+          },
+          "fromJulian": {
+            "julian": {
+              "y": 624,
+              "m": 3,
+              "d": 13
+            },
+            "jd": 1949045.5,
+            "hijri": {
+              "year": 2,
+              "month": 9,
+              "day": 17
+            },
+            "dow": 2
+          }
+        },
+        "IIa": {
+          "hijri": {
+            "y": 2,
+            "m": 9,
+            "d": 17
+          },
+          "jd": 1949045.5,
+          "gregorian": {
+            "year": 624,
+            "month": 3,
+            "day": 16
+          },
+          "julian": {
+            "year": 624,
+            "month": 3,
+            "day": 13
+          },
+          "dow": 2,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 2,
+              "month": 9,
+              "day": 17
+            },
+            "match": true
+          },
+          "fromJulian": {
+            "julian": {
+              "y": 624,
+              "m": 3,
+              "d": 13
+            },
+            "jd": 1949045.5,
+            "hijri": {
+              "year": 2,
+              "month": 9,
+              "day": 17
+            },
+            "dow": 2
+          }
+        },
+        "IIIa": {
+          "hijri": {
+            "y": 2,
+            "m": 9,
+            "d": 17
+          },
+          "jd": 1949045.5,
+          "gregorian": {
+            "year": 624,
+            "month": 3,
+            "day": 16
+          },
+          "julian": {
+            "year": 624,
+            "month": 3,
+            "day": 13
+          },
+          "dow": 2,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 2,
+              "month": 9,
+              "day": 17
+            },
+            "match": true
+          },
+          "fromJulian": {
+            "julian": {
+              "y": 624,
+              "m": 3,
+              "d": 13
+            },
+            "jd": 1949045.5,
+            "hijri": {
+              "year": 2,
+              "month": 9,
+              "day": 17
+            },
+            "dow": 2
+          }
+        },
+        "IVa": {
+          "hijri": {
+            "y": 2,
+            "m": 9,
+            "d": 17
+          },
+          "jd": 1949045.5,
+          "gregorian": {
+            "year": 624,
+            "month": 3,
+            "day": 16
+          },
+          "julian": {
+            "year": 624,
+            "month": 3,
+            "day": 13
+          },
+          "dow": 2,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 2,
+              "month": 9,
+              "day": 17
+            },
+            "match": true
+          },
+          "fromJulian": {
+            "julian": {
+              "y": 624,
+              "m": 3,
+              "d": 13
+            },
+            "jd": 1949045.5,
+            "hijri": {
+              "year": 2,
+              "month": 9,
+              "day": 17
+            },
+            "dow": 2
+          }
+        }
+      }
+    },
+    {
+      "desc": "Fall of Baghdad (1258 CE)",
+      "conversions": {
+        "IIc": {
+          "fromGregorian": {
+            "gregorian": {
+              "y": 1258,
+              "m": 2,
+              "d": 10
+            },
+            "jd": 2180575.5,
+            "hijri": {
+              "year": 656,
+              "month": 1,
+              "day": 27
+            },
+            "dow": 0,
+            "roundTripJD": 2180575.5,
+            "roundTripMatch": true
+          }
+        },
+        "IIa": {
+          "fromGregorian": {
+            "gregorian": {
+              "y": 1258,
+              "m": 2,
+              "d": 10
+            },
+            "jd": 2180575.5,
+            "hijri": {
+              "year": 656,
+              "month": 1,
+              "day": 27
+            },
+            "dow": 0,
+            "roundTripJD": 2180575.5,
+            "roundTripMatch": true
+          }
+        },
+        "IIIa": {
+          "fromGregorian": {
+            "gregorian": {
+              "y": 1258,
+              "m": 2,
+              "d": 10
+            },
+            "jd": 2180575.5,
+            "hijri": {
+              "year": 656,
+              "month": 1,
+              "day": 27
+            },
+            "dow": 0,
+            "roundTripJD": 2180575.5,
+            "roundTripMatch": true
+          }
+        },
+        "IVa": {
+          "fromGregorian": {
+            "gregorian": {
+              "y": 1258,
+              "m": 2,
+              "d": 10
+            },
+            "jd": 2180575.5,
+            "hijri": {
+              "year": 656,
+              "month": 1,
+              "day": 27
+            },
+            "dow": 0,
+            "roundTripJD": 2180575.5,
+            "roundTripMatch": true
+          }
+        }
+      },
+      "expected": {
+        "y": 656,
+        "m": 2
+      }
+    },
+    {
+      "desc": "Ottoman conquest of Constantinople",
+      "conversions": {
+        "IIc": {
+          "fromJulian": {
+            "julian": {
+              "y": 1453,
+              "m": 5,
+              "d": 29
+            },
+            "jd": 2251914.5,
+            "hijri": {
+              "year": 857,
+              "month": 5,
+              "day": 20
+            },
+            "dow": 2
+          }
+        },
+        "IIa": {
+          "fromJulian": {
+            "julian": {
+              "y": 1453,
+              "m": 5,
+              "d": 29
+            },
+            "jd": 2251914.5,
+            "hijri": {
+              "year": 857,
+              "month": 5,
+              "day": 20
+            },
+            "dow": 2
+          }
+        },
+        "IIIa": {
+          "fromJulian": {
+            "julian": {
+              "y": 1453,
+              "m": 5,
+              "d": 29
+            },
+            "jd": 2251914.5,
+            "hijri": {
+              "year": 857,
+              "month": 5,
+              "day": 20
+            },
+            "dow": 2
+          }
+        },
+        "IVa": {
+          "fromJulian": {
+            "julian": {
+              "y": 1453,
+              "m": 5,
+              "d": 29
+            },
+            "jd": 2251914.5,
+            "hijri": {
+              "year": 857,
+              "month": 5,
+              "day": 20
+            },
+            "dow": 2
+          }
+        }
+      },
+      "expected": {
+        "y": 857,
+        "m": 6
+      }
+    },
+    {
+      "desc": "1 Jan 2000",
+      "conversions": {
+        "IIc": {
+          "fromGregorian": {
+            "gregorian": {
+              "y": 2000,
+              "m": 1,
+              "d": 1
+            },
+            "jd": 2451544.5,
+            "hijri": {
+              "year": 1420,
+              "month": 9,
+              "day": 24
+            },
+            "dow": 6,
+            "roundTripJD": 2451544.5,
+            "roundTripMatch": true
+          }
+        },
+        "IIa": {
+          "fromGregorian": {
+            "gregorian": {
+              "y": 2000,
+              "m": 1,
+              "d": 1
+            },
+            "jd": 2451544.5,
+            "hijri": {
+              "year": 1420,
+              "month": 9,
+              "day": 24
+            },
+            "dow": 6,
+            "roundTripJD": 2451544.5,
+            "roundTripMatch": true
+          }
+        },
+        "IIIa": {
+          "fromGregorian": {
+            "gregorian": {
+              "y": 2000,
+              "m": 1,
+              "d": 1
+            },
+            "jd": 2451544.5,
+            "hijri": {
+              "year": 1420,
+              "month": 9,
+              "day": 24
+            },
+            "dow": 6,
+            "roundTripJD": 2451544.5,
+            "roundTripMatch": true
+          }
+        },
+        "IVa": {
+          "fromGregorian": {
+            "gregorian": {
+              "y": 2000,
+              "m": 1,
+              "d": 1
+            },
+            "jd": 2451544.5,
+            "hijri": {
+              "year": 1420,
+              "month": 9,
+              "day": 24
+            },
+            "dow": 6,
+            "roundTripJD": 2451544.5,
+            "roundTripMatch": true
+          }
+        }
+      }
+    },
+    {
+      "desc": "1 Jan 2024",
+      "conversions": {
+        "IIc": {
+          "fromGregorian": {
+            "gregorian": {
+              "y": 2024,
+              "m": 1,
+              "d": 1
+            },
+            "jd": 2460310.5,
+            "hijri": {
+              "year": 1445,
+              "month": 6,
+              "day": 19
+            },
+            "dow": 1,
+            "roundTripJD": 2460310.5,
+            "roundTripMatch": true
+          }
+        },
+        "IIa": {
+          "fromGregorian": {
+            "gregorian": {
+              "y": 2024,
+              "m": 1,
+              "d": 1
+            },
+            "jd": 2460310.5,
+            "hijri": {
+              "year": 1445,
+              "month": 6,
+              "day": 19
+            },
+            "dow": 1,
+            "roundTripJD": 2460310.5,
+            "roundTripMatch": true
+          }
+        },
+        "IIIa": {
+          "fromGregorian": {
+            "gregorian": {
+              "y": 2024,
+              "m": 1,
+              "d": 1
+            },
+            "jd": 2460310.5,
+            "hijri": {
+              "year": 1445,
+              "month": 6,
+              "day": 19
+            },
+            "dow": 1,
+            "roundTripJD": 2460310.5,
+            "roundTripMatch": true
+          }
+        },
+        "IVa": {
+          "fromGregorian": {
+            "gregorian": {
+              "y": 2024,
+              "m": 1,
+              "d": 1
+            },
+            "jd": 2460310.5,
+            "hijri": {
+              "year": 1445,
+              "month": 6,
+              "day": 19
+            },
+            "dow": 1,
+            "roundTripJD": 2460310.5,
+            "roundTripMatch": true
+          }
+        }
+      }
+    },
+    {
+      "desc": "21 Mar 2026 (today)",
+      "conversions": {
+        "IIc": {
+          "fromGregorian": {
+            "gregorian": {
+              "y": 2026,
+              "m": 3,
+              "d": 21
+            },
+            "jd": 2461120.5,
+            "hijri": {
+              "year": 1447,
+              "month": 10,
+              "day": 2
+            },
+            "dow": 6,
+            "roundTripJD": 2461120.5,
+            "roundTripMatch": true
+          }
+        },
+        "IIa": {
+          "fromGregorian": {
+            "gregorian": {
+              "y": 2026,
+              "m": 3,
+              "d": 21
+            },
+            "jd": 2461120.5,
+            "hijri": {
+              "year": 1447,
+              "month": 10,
+              "day": 2
+            },
+            "dow": 6,
+            "roundTripJD": 2461120.5,
+            "roundTripMatch": true
+          }
+        },
+        "IIIa": {
+          "fromGregorian": {
+            "gregorian": {
+              "y": 2026,
+              "m": 3,
+              "d": 21
+            },
+            "jd": 2461120.5,
+            "hijri": {
+              "year": 1447,
+              "month": 10,
+              "day": 2
+            },
+            "dow": 6,
+            "roundTripJD": 2461120.5,
+            "roundTripMatch": true
+          }
+        },
+        "IVa": {
+          "fromGregorian": {
+            "gregorian": {
+              "y": 2026,
+              "m": 3,
+              "d": 21
+            },
+            "jd": 2461120.5,
+            "hijri": {
+              "year": 1447,
+              "month": 10,
+              "day": 2
+            },
+            "dow": 6,
+            "roundTripJD": 2461120.5,
+            "roundTripMatch": true
+          }
+        }
+      }
+    },
+    {
+      "desc": "1 Muharram 1446",
+      "conversions": {
+        "IIc": {
+          "hijri": {
+            "y": 1446,
+            "m": 1,
+            "d": 1
+          },
+          "jd": 2460499.5,
+          "gregorian": {
+            "year": 2024,
+            "month": 7,
+            "day": 8
+          },
+          "julian": {
+            "year": 2024,
+            "month": 6,
+            "day": 25
+          },
+          "dow": 1,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1446,
+              "month": 1,
+              "day": 1
+            },
+            "match": true
+          }
+        },
+        "IIa": {
+          "hijri": {
+            "y": 1446,
+            "m": 1,
+            "d": 1
+          },
+          "jd": 2460499.5,
+          "gregorian": {
+            "year": 2024,
+            "month": 7,
+            "day": 8
+          },
+          "julian": {
+            "year": 2024,
+            "month": 6,
+            "day": 25
+          },
+          "dow": 1,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1446,
+              "month": 1,
+              "day": 1
+            },
+            "match": true
+          }
+        },
+        "IIIa": {
+          "hijri": {
+            "y": 1446,
+            "m": 1,
+            "d": 1
+          },
+          "jd": 2460499.5,
+          "gregorian": {
+            "year": 2024,
+            "month": 7,
+            "day": 8
+          },
+          "julian": {
+            "year": 2024,
+            "month": 6,
+            "day": 25
+          },
+          "dow": 1,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1446,
+              "month": 1,
+              "day": 1
+            },
+            "match": true
+          }
+        },
+        "IVa": {
+          "hijri": {
+            "y": 1446,
+            "m": 1,
+            "d": 1
+          },
+          "jd": 2460499.5,
+          "gregorian": {
+            "year": 2024,
+            "month": 7,
+            "day": 8
+          },
+          "julian": {
+            "year": 2024,
+            "month": 6,
+            "day": 25
+          },
+          "dow": 1,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1446,
+              "month": 1,
+              "day": 1
+            },
+            "match": true
+          }
+        }
+      }
+    },
+    {
+      "desc": "1 Muharram 1447",
+      "conversions": {
+        "IIc": {
+          "hijri": {
+            "y": 1447,
+            "m": 1,
+            "d": 1
+          },
+          "jd": 2460853.5,
+          "gregorian": {
+            "year": 2025,
+            "month": 6,
+            "day": 27
+          },
+          "julian": {
+            "year": 2025,
+            "month": 6,
+            "day": 14
+          },
+          "dow": 5,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1447,
+              "month": 1,
+              "day": 1
+            },
+            "match": true
+          }
+        },
+        "IIa": {
+          "hijri": {
+            "y": 1447,
+            "m": 1,
+            "d": 1
+          },
+          "jd": 2460853.5,
+          "gregorian": {
+            "year": 2025,
+            "month": 6,
+            "day": 27
+          },
+          "julian": {
+            "year": 2025,
+            "month": 6,
+            "day": 14
+          },
+          "dow": 5,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1447,
+              "month": 1,
+              "day": 1
+            },
+            "match": true
+          }
+        },
+        "IIIa": {
+          "hijri": {
+            "y": 1447,
+            "m": 1,
+            "d": 1
+          },
+          "jd": 2460853.5,
+          "gregorian": {
+            "year": 2025,
+            "month": 6,
+            "day": 27
+          },
+          "julian": {
+            "year": 2025,
+            "month": 6,
+            "day": 14
+          },
+          "dow": 5,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1447,
+              "month": 1,
+              "day": 1
+            },
+            "match": true
+          }
+        },
+        "IVa": {
+          "hijri": {
+            "y": 1447,
+            "m": 1,
+            "d": 1
+          },
+          "jd": 2460853.5,
+          "gregorian": {
+            "year": 2025,
+            "month": 6,
+            "day": 27
+          },
+          "julian": {
+            "year": 2025,
+            "month": 6,
+            "day": 14
+          },
+          "dow": 5,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1447,
+              "month": 1,
+              "day": 1
+            },
+            "match": true
+          }
+        }
+      }
+    },
+    {
+      "desc": "1 Ramadan 1445",
+      "conversions": {
+        "IIc": {
+          "hijri": {
+            "y": 1445,
+            "m": 9,
+            "d": 1
+          },
+          "jd": 2460380.5,
+          "gregorian": {
+            "year": 2024,
+            "month": 3,
+            "day": 11
+          },
+          "julian": {
+            "year": 2024,
+            "month": 2,
+            "day": 27
+          },
+          "dow": 1,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1445,
+              "month": 9,
+              "day": 1
+            },
+            "match": true
+          }
+        },
+        "IIa": {
+          "hijri": {
+            "y": 1445,
+            "m": 9,
+            "d": 1
+          },
+          "jd": 2460380.5,
+          "gregorian": {
+            "year": 2024,
+            "month": 3,
+            "day": 11
+          },
+          "julian": {
+            "year": 2024,
+            "month": 2,
+            "day": 27
+          },
+          "dow": 1,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1445,
+              "month": 9,
+              "day": 1
+            },
+            "match": true
+          }
+        },
+        "IIIa": {
+          "hijri": {
+            "y": 1445,
+            "m": 9,
+            "d": 1
+          },
+          "jd": 2460380.5,
+          "gregorian": {
+            "year": 2024,
+            "month": 3,
+            "day": 11
+          },
+          "julian": {
+            "year": 2024,
+            "month": 2,
+            "day": 27
+          },
+          "dow": 1,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1445,
+              "month": 9,
+              "day": 1
+            },
+            "match": true
+          }
+        },
+        "IVa": {
+          "hijri": {
+            "y": 1445,
+            "m": 9,
+            "d": 1
+          },
+          "jd": 2460380.5,
+          "gregorian": {
+            "year": 2024,
+            "month": 3,
+            "day": 11
+          },
+          "julian": {
+            "year": 2024,
+            "month": 2,
+            "day": 27
+          },
+          "dow": 1,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1445,
+              "month": 9,
+              "day": 1
+            },
+            "match": true
+          }
+        }
+      }
+    },
+    {
+      "desc": "End of leap year 2 AH",
+      "conversions": {
+        "IIc": {
+          "hijri": {
+            "y": 2,
+            "m": 12,
+            "d": 30
+          },
+          "jd": 1949147.5,
+          "gregorian": {
+            "year": 624,
+            "month": 6,
+            "day": 26
+          },
+          "julian": {
+            "year": 624,
+            "month": 6,
+            "day": 23
+          },
+          "dow": 6,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 2,
+              "month": 12,
+              "day": 30
+            },
+            "match": true
+          }
+        },
+        "IIa": {
+          "hijri": {
+            "y": 2,
+            "m": 12,
+            "d": 30
+          },
+          "jd": 1949147.5,
+          "gregorian": {
+            "year": 624,
+            "month": 6,
+            "day": 26
+          },
+          "julian": {
+            "year": 624,
+            "month": 6,
+            "day": 23
+          },
+          "dow": 6,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 2,
+              "month": 12,
+              "day": 30
+            },
+            "match": true
+          }
+        },
+        "IIIa": {
+          "hijri": {
+            "y": 2,
+            "m": 12,
+            "d": 30
+          },
+          "jd": 1949147.5,
+          "gregorian": {
+            "year": 624,
+            "month": 6,
+            "day": 26
+          },
+          "julian": {
+            "year": 624,
+            "month": 6,
+            "day": 23
+          },
+          "dow": 6,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 2,
+              "month": 12,
+              "day": 30
+            },
+            "match": true
+          }
+        },
+        "IVa": {
+          "hijri": {
+            "y": 2,
+            "m": 12,
+            "d": 30
+          },
+          "jd": 1949147.5,
+          "gregorian": {
+            "year": 624,
+            "month": 6,
+            "day": 26
+          },
+          "julian": {
+            "year": 624,
+            "month": 6,
+            "day": 23
+          },
+          "dow": 6,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 2,
+              "month": 12,
+              "day": 30
+            },
+            "match": true
+          }
+        }
+      }
+    },
+    {
+      "desc": "End of non-leap year 1 AH",
+      "conversions": {
+        "IIc": {
+          "hijri": {
+            "y": 1,
+            "m": 12,
+            "d": 29
+          },
+          "jd": 1948792.5,
+          "gregorian": {
+            "year": 623,
+            "month": 7,
+            "day": 7
+          },
+          "julian": {
+            "year": 623,
+            "month": 7,
+            "day": 4
+          },
+          "dow": 1,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1,
+              "month": 12,
+              "day": 29
+            },
+            "match": true
+          }
+        },
+        "IIa": {
+          "hijri": {
+            "y": 1,
+            "m": 12,
+            "d": 29
+          },
+          "jd": 1948792.5,
+          "gregorian": {
+            "year": 623,
+            "month": 7,
+            "day": 7
+          },
+          "julian": {
+            "year": 623,
+            "month": 7,
+            "day": 4
+          },
+          "dow": 1,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1,
+              "month": 12,
+              "day": 29
+            },
+            "match": true
+          }
+        },
+        "IIIa": {
+          "hijri": {
+            "y": 1,
+            "m": 12,
+            "d": 29
+          },
+          "jd": 1948792.5,
+          "gregorian": {
+            "year": 623,
+            "month": 7,
+            "day": 7
+          },
+          "julian": {
+            "year": 623,
+            "month": 7,
+            "day": 4
+          },
+          "dow": 1,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1,
+              "month": 12,
+              "day": 29
+            },
+            "match": true
+          }
+        },
+        "IVa": {
+          "hijri": {
+            "y": 1,
+            "m": 12,
+            "d": 29
+          },
+          "jd": 1948792.5,
+          "gregorian": {
+            "year": 623,
+            "month": 7,
+            "day": 7
+          },
+          "julian": {
+            "year": 623,
+            "month": 7,
+            "day": 4
+          },
+          "dow": 1,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1,
+              "month": 12,
+              "day": 29
+            },
+            "match": true
+          }
+        }
+      }
+    },
+    {
+      "desc": "Last Julian day (4 Oct 1582)",
+      "conversions": {
+        "IIc": {
+          "fromJulian": {
+            "julian": {
+              "y": 1582,
+              "m": 10,
+              "d": 4
+            },
+            "jd": 2299159.5,
+            "hijri": {
+              "year": 990,
+              "month": 9,
+              "day": 16
+            },
+            "dow": 4
+          }
+        },
+        "IIa": {
+          "fromJulian": {
+            "julian": {
+              "y": 1582,
+              "m": 10,
+              "d": 4
+            },
+            "jd": 2299159.5,
+            "hijri": {
+              "year": 990,
+              "month": 9,
+              "day": 16
+            },
+            "dow": 4
+          }
+        },
+        "IIIa": {
+          "fromJulian": {
+            "julian": {
+              "y": 1582,
+              "m": 10,
+              "d": 4
+            },
+            "jd": 2299159.5,
+            "hijri": {
+              "year": 990,
+              "month": 9,
+              "day": 16
+            },
+            "dow": 4
+          }
+        },
+        "IVa": {
+          "fromJulian": {
+            "julian": {
+              "y": 1582,
+              "m": 10,
+              "d": 4
+            },
+            "jd": 2299159.5,
+            "hijri": {
+              "year": 990,
+              "month": 9,
+              "day": 17
+            },
+            "dow": 4
+          }
+        }
+      }
+    },
+    {
+      "desc": "First Gregorian day (15 Oct 1582)",
+      "conversions": {
+        "IIc": {
+          "fromGregorian": {
+            "gregorian": {
+              "y": 1582,
+              "m": 10,
+              "d": 15
+            },
+            "jd": 2299160.5,
+            "hijri": {
+              "year": 990,
+              "month": 9,
+              "day": 17
+            },
+            "dow": 5,
+            "roundTripJD": 2299160.5,
+            "roundTripMatch": true
+          }
+        },
+        "IIa": {
+          "fromGregorian": {
+            "gregorian": {
+              "y": 1582,
+              "m": 10,
+              "d": 15
+            },
+            "jd": 2299160.5,
+            "hijri": {
+              "year": 990,
+              "month": 9,
+              "day": 17
+            },
+            "dow": 5,
+            "roundTripJD": 2299160.5,
+            "roundTripMatch": true
+          }
+        },
+        "IIIa": {
+          "fromGregorian": {
+            "gregorian": {
+              "y": 1582,
+              "m": 10,
+              "d": 15
+            },
+            "jd": 2299160.5,
+            "hijri": {
+              "year": 990,
+              "month": 9,
+              "day": 17
+            },
+            "dow": 5,
+            "roundTripJD": 2299160.5,
+            "roundTripMatch": true
+          }
+        },
+        "IVa": {
+          "fromGregorian": {
+            "gregorian": {
+              "y": 1582,
+              "m": 10,
+              "d": 15
+            },
+            "jd": 2299160.5,
+            "hijri": {
+              "year": 990,
+              "month": 9,
+              "day": 18
+            },
+            "dow": 5,
+            "roundTripJD": 2299160.5,
+            "roundTripMatch": true
+          }
+        }
+      }
+    },
+    {
+      "desc": "1 Muharram 100",
+      "conversions": {
+        "IIc": {
+          "hijri": {
+            "y": 100,
+            "m": 1,
+            "d": 1
+          },
+          "jd": 1983521.5,
+          "gregorian": {
+            "year": 718,
+            "month": 8,
+            "day": 7
+          },
+          "julian": {
+            "year": 718,
+            "month": 8,
+            "day": 3
+          },
+          "dow": 3,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 100,
+              "month": 1,
+              "day": 1
+            },
+            "match": true
+          }
+        },
+        "IIa": {
+          "hijri": {
+            "y": 100,
+            "m": 1,
+            "d": 1
+          },
+          "jd": 1983521.5,
+          "gregorian": {
+            "year": 718,
+            "month": 8,
+            "day": 7
+          },
+          "julian": {
+            "year": 718,
+            "month": 8,
+            "day": 3
+          },
+          "dow": 3,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 100,
+              "month": 1,
+              "day": 1
+            },
+            "match": true
+          }
+        },
+        "IIIa": {
+          "hijri": {
+            "y": 100,
+            "m": 1,
+            "d": 1
+          },
+          "jd": 1983521.5,
+          "gregorian": {
+            "year": 718,
+            "month": 8,
+            "day": 7
+          },
+          "julian": {
+            "year": 718,
+            "month": 8,
+            "day": 3
+          },
+          "dow": 3,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 100,
+              "month": 1,
+              "day": 1
+            },
+            "match": true
+          }
+        },
+        "IVa": {
+          "hijri": {
+            "y": 100,
+            "m": 1,
+            "d": 1
+          },
+          "jd": 1983521.5,
+          "gregorian": {
+            "year": 718,
+            "month": 8,
+            "day": 7
+          },
+          "julian": {
+            "year": 718,
+            "month": 8,
+            "day": 3
+          },
+          "dow": 3,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 100,
+              "month": 1,
+              "day": 1
+            },
+            "match": true
+          }
+        }
+      }
+    },
+    {
+      "desc": "1 Muharram 500",
+      "conversions": {
+        "IIc": {
+          "hijri": {
+            "y": 500,
+            "m": 1,
+            "d": 1
+          },
+          "jd": 2125268.5,
+          "gregorian": {
+            "year": 1106,
+            "month": 9,
+            "day": 9
+          },
+          "julian": {
+            "year": 1106,
+            "month": 9,
+            "day": 2
+          },
+          "dow": 0,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 500,
+              "month": 1,
+              "day": 1
+            },
+            "match": true
+          }
+        },
+        "IIa": {
+          "hijri": {
+            "y": 500,
+            "m": 1,
+            "d": 1
+          },
+          "jd": 2125268.5,
+          "gregorian": {
+            "year": 1106,
+            "month": 9,
+            "day": 9
+          },
+          "julian": {
+            "year": 1106,
+            "month": 9,
+            "day": 2
+          },
+          "dow": 0,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 500,
+              "month": 1,
+              "day": 1
+            },
+            "match": true
+          }
+        },
+        "IIIa": {
+          "hijri": {
+            "y": 500,
+            "m": 1,
+            "d": 1
+          },
+          "jd": 2125268.5,
+          "gregorian": {
+            "year": 1106,
+            "month": 9,
+            "day": 9
+          },
+          "julian": {
+            "year": 1106,
+            "month": 9,
+            "day": 2
+          },
+          "dow": 0,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 500,
+              "month": 1,
+              "day": 1
+            },
+            "match": true
+          }
+        },
+        "IVa": {
+          "hijri": {
+            "y": 500,
+            "m": 1,
+            "d": 1
+          },
+          "jd": 2125268.5,
+          "gregorian": {
+            "year": 1106,
+            "month": 9,
+            "day": 9
+          },
+          "julian": {
+            "year": 1106,
+            "month": 9,
+            "day": 2
+          },
+          "dow": 0,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 500,
+              "month": 1,
+              "day": 1
+            },
+            "match": true
+          }
+        }
+      }
+    },
+    {
+      "desc": "1 Muharram 1000",
+      "conversions": {
+        "IIc": {
+          "hijri": {
+            "y": 1000,
+            "m": 1,
+            "d": 1
+          },
+          "jd": 2302451.5,
+          "gregorian": {
+            "year": 1591,
+            "month": 10,
+            "day": 19
+          },
+          "julian": {
+            "year": 1591,
+            "month": 10,
+            "day": 9
+          },
+          "dow": 6,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1000,
+              "month": 1,
+              "day": 1
+            },
+            "match": true
+          }
+        },
+        "IIa": {
+          "hijri": {
+            "y": 1000,
+            "m": 1,
+            "d": 1
+          },
+          "jd": 2302451.5,
+          "gregorian": {
+            "year": 1591,
+            "month": 10,
+            "day": 19
+          },
+          "julian": {
+            "year": 1591,
+            "month": 10,
+            "day": 9
+          },
+          "dow": 6,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1000,
+              "month": 1,
+              "day": 1
+            },
+            "match": true
+          }
+        },
+        "IIIa": {
+          "hijri": {
+            "y": 1000,
+            "m": 1,
+            "d": 1
+          },
+          "jd": 2302451.5,
+          "gregorian": {
+            "year": 1591,
+            "month": 10,
+            "day": 19
+          },
+          "julian": {
+            "year": 1591,
+            "month": 10,
+            "day": 9
+          },
+          "dow": 6,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1000,
+              "month": 1,
+              "day": 1
+            },
+            "match": true
+          }
+        },
+        "IVa": {
+          "hijri": {
+            "y": 1000,
+            "m": 1,
+            "d": 1
+          },
+          "jd": 2302451.5,
+          "gregorian": {
+            "year": 1591,
+            "month": 10,
+            "day": 19
+          },
+          "julian": {
+            "year": 1591,
+            "month": 10,
+            "day": 9
+          },
+          "dow": 6,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1000,
+              "month": 1,
+              "day": 1
+            },
+            "match": true
+          }
+        }
+      }
+    },
+    {
+      "desc": "1 Muharram 1200",
+      "conversions": {
+        "IIc": {
+          "hijri": {
+            "y": 1200,
+            "m": 1,
+            "d": 1
+          },
+          "jd": 2373325.5,
+          "gregorian": {
+            "year": 1785,
+            "month": 11,
+            "day": 4
+          },
+          "julian": {
+            "year": 1785,
+            "month": 10,
+            "day": 24
+          },
+          "dow": 5,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1200,
+              "month": 1,
+              "day": 1
+            },
+            "match": true
+          }
+        },
+        "IIa": {
+          "hijri": {
+            "y": 1200,
+            "m": 1,
+            "d": 1
+          },
+          "jd": 2373325.5,
+          "gregorian": {
+            "year": 1785,
+            "month": 11,
+            "day": 4
+          },
+          "julian": {
+            "year": 1785,
+            "month": 10,
+            "day": 24
+          },
+          "dow": 5,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1200,
+              "month": 1,
+              "day": 1
+            },
+            "match": true
+          }
+        },
+        "IIIa": {
+          "hijri": {
+            "y": 1200,
+            "m": 1,
+            "d": 1
+          },
+          "jd": 2373325.5,
+          "gregorian": {
+            "year": 1785,
+            "month": 11,
+            "day": 4
+          },
+          "julian": {
+            "year": 1785,
+            "month": 10,
+            "day": 24
+          },
+          "dow": 5,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1200,
+              "month": 1,
+              "day": 1
+            },
+            "match": true
+          }
+        },
+        "IVa": {
+          "hijri": {
+            "y": 1200,
+            "m": 1,
+            "d": 1
+          },
+          "jd": 2373324.5,
+          "gregorian": {
+            "year": 1785,
+            "month": 11,
+            "day": 3
+          },
+          "julian": {
+            "year": 1785,
+            "month": 10,
+            "day": 23
+          },
+          "dow": 4,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1200,
+              "month": 1,
+              "day": 1
+            },
+            "match": true
+          }
+        }
+      }
+    },
+    {
+      "desc": "1 Muharram 1400",
+      "conversions": {
+        "IIc": {
+          "hijri": {
+            "y": 1400,
+            "m": 1,
+            "d": 1
+          },
+          "jd": 2444198.5,
+          "gregorian": {
+            "year": 1979,
+            "month": 11,
+            "day": 21
+          },
+          "julian": {
+            "year": 1979,
+            "month": 11,
+            "day": 8
+          },
+          "dow": 3,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1400,
+              "month": 1,
+              "day": 1
+            },
+            "match": true
+          }
+        },
+        "IIa": {
+          "hijri": {
+            "y": 1400,
+            "m": 1,
+            "d": 1
+          },
+          "jd": 2444198.5,
+          "gregorian": {
+            "year": 1979,
+            "month": 11,
+            "day": 21
+          },
+          "julian": {
+            "year": 1979,
+            "month": 11,
+            "day": 8
+          },
+          "dow": 3,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1400,
+              "month": 1,
+              "day": 1
+            },
+            "match": true
+          }
+        },
+        "IIIa": {
+          "hijri": {
+            "y": 1400,
+            "m": 1,
+            "d": 1
+          },
+          "jd": 2444198.5,
+          "gregorian": {
+            "year": 1979,
+            "month": 11,
+            "day": 21
+          },
+          "julian": {
+            "year": 1979,
+            "month": 11,
+            "day": 8
+          },
+          "dow": 3,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1400,
+              "month": 1,
+              "day": 1
+            },
+            "match": true
+          }
+        },
+        "IVa": {
+          "hijri": {
+            "y": 1400,
+            "m": 1,
+            "d": 1
+          },
+          "jd": 2444198.5,
+          "gregorian": {
+            "year": 1979,
+            "month": 11,
+            "day": 21
+          },
+          "julian": {
+            "year": 1979,
+            "month": 11,
+            "day": 8
+          },
+          "dow": 3,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1400,
+              "month": 1,
+              "day": 1
+            },
+            "match": true
+          }
+        }
+      }
+    },
+    {
+      "desc": "15 Shaban 1443",
+      "conversions": {
+        "IIc": {
+          "hijri": {
+            "y": 1443,
+            "m": 8,
+            "d": 15
+          },
+          "jd": 2459657.5,
+          "gregorian": {
+            "year": 2022,
+            "month": 3,
+            "day": 19
+          },
+          "julian": {
+            "year": 2022,
+            "month": 3,
+            "day": 6
+          },
+          "dow": 6,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1443,
+              "month": 8,
+              "day": 15
+            },
+            "match": true
+          }
+        },
+        "IIa": {
+          "hijri": {
+            "y": 1443,
+            "m": 8,
+            "d": 15
+          },
+          "jd": 2459657.5,
+          "gregorian": {
+            "year": 2022,
+            "month": 3,
+            "day": 19
+          },
+          "julian": {
+            "year": 2022,
+            "month": 3,
+            "day": 6
+          },
+          "dow": 6,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1443,
+              "month": 8,
+              "day": 15
+            },
+            "match": true
+          }
+        },
+        "IIIa": {
+          "hijri": {
+            "y": 1443,
+            "m": 8,
+            "d": 15
+          },
+          "jd": 2459657.5,
+          "gregorian": {
+            "year": 2022,
+            "month": 3,
+            "day": 19
+          },
+          "julian": {
+            "year": 2022,
+            "month": 3,
+            "day": 6
+          },
+          "dow": 6,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1443,
+              "month": 8,
+              "day": 15
+            },
+            "match": true
+          }
+        },
+        "IVa": {
+          "hijri": {
+            "y": 1443,
+            "m": 8,
+            "d": 15
+          },
+          "jd": 2459657.5,
+          "gregorian": {
+            "year": 2022,
+            "month": 3,
+            "day": 19
+          },
+          "julian": {
+            "year": 2022,
+            "month": 3,
+            "day": 6
+          },
+          "dow": 6,
+          "roundTrip": {
+            "hijriBack": {
+              "year": 1443,
+              "month": 8,
+              "day": 15
+            },
+            "match": true
+          }
+        }
+      }
+    }
+  ],
+  "calendarResults": [
+    {
+      "calendar": "coptic",
+      "desc": "Coptic 1 Thout 1 AM",
+      "input": {
+        "y": 1,
+        "m": 1,
+        "d": 1
+      },
+      "jd": 1825029.5,
+      "gregorian": {
+        "year": 284,
+        "month": 8,
+        "day": 29
+      },
+      "julian": {
+        "year": 284,
+        "month": 8,
+        "day": 29
+      },
+      "roundTrip": {
+        "year": 1,
+        "month": 1,
+        "day": 1
+      },
+      "match": true,
+      "julianExpected": [
+        284,
+        8,
+        29
+      ]
+    },
+    {
+      "calendar": "coptic",
+      "desc": "Coptic Christmas 1740",
+      "input": {
+        "y": 1740,
+        "m": 4,
+        "d": 29
+      },
+      "jd": 2460317.5,
+      "gregorian": {
+        "year": 2024,
+        "month": 1,
+        "day": 8
+      },
+      "julian": {
+        "year": 2023,
+        "month": 12,
+        "day": 26
+      },
+      "roundTrip": {
+        "year": 1740,
+        "month": 4,
+        "day": 29
+      },
+      "match": true
+    },
+    {
+      "calendar": "ethiopian",
+      "desc": "Ethiopian 1 Mäskäräm 1",
+      "input": {
+        "y": 1,
+        "m": 1,
+        "d": 1
+      },
+      "jd": 1724220.5,
+      "gregorian": {
+        "year": 8,
+        "month": 8,
+        "day": 27
+      },
+      "roundTrip": {
+        "year": 1,
+        "month": 1,
+        "day": 1
+      },
+      "match": true
+    },
+    {
+      "calendar": "ethiopian",
+      "desc": "Ethiopian New Year 2016",
+      "input": {
+        "y": 2016,
+        "m": 1,
+        "d": 1
+      },
+      "jd": 2460199.5,
+      "gregorian": {
+        "year": 2023,
+        "month": 9,
+        "day": 12
+      },
+      "roundTrip": {
+        "year": 2016,
+        "month": 1,
+        "day": 1
+      },
+      "match": true
+    },
+    {
+      "calendar": "solarHijri",
+      "desc": "Nowruz 1404",
+      "input": {
+        "y": 1404,
+        "m": 1,
+        "d": 1
+      },
+      "jd": 2460754.5,
+      "gregorian": {
+        "year": 2025,
+        "month": 3,
+        "day": 20
+      },
+      "julian": {
+        "year": 2025,
+        "month": 3,
+        "day": 7
+      },
+      "roundTrip": {
+        "year": 1404,
+        "month": 1,
+        "day": 1
+      },
+      "match": true
+    },
+    {
+      "calendar": "solarHijri",
+      "desc": "Nowruz 1405",
+      "input": {
+        "y": 1405,
+        "m": 1,
+        "d": 1
+      },
+      "jd": 2461120.5,
+      "gregorian": {
+        "year": 2026,
+        "month": 3,
+        "day": 21
+      },
+      "julian": {
+        "year": 2026,
+        "month": 3,
+        "day": 8
+      },
+      "roundTrip": {
+        "year": 1405,
+        "month": 1,
+        "day": 1
+      },
+      "match": true
+    },
+    {
+      "calendar": "solarHijri",
+      "desc": "1 Farvardin 1",
+      "input": {
+        "y": 1,
+        "m": 1,
+        "d": 1
+      },
+      "jd": 1948320.5,
+      "gregorian": {
+        "year": 622,
+        "month": 3,
+        "day": 22
+      },
+      "julian": {
+        "year": 622,
+        "month": 3,
+        "day": 19
+      },
+      "roundTrip": {
+        "year": 1,
+        "month": 1,
+        "day": 1
+      },
+      "match": true
+    }
+  ],
+  "timestamp": "2026-03-21T15:33:51.582Z"
+}

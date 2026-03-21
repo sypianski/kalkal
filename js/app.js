@@ -497,9 +497,9 @@
     const srcCal = fromCalVal ? resolveCalendar(fromCalVal) : CALENDARS.gregorian;
     if (!srcCal) { showError(t.errUnknownCal + fromCalVal, fromCalInput); return; }
 
-    // Validate target calendar (default: hebrew)
+    // Validate target calendar (default: human era)
     const toCalVal = toCalInput.value.trim();
-    const tgtCal = toCalVal ? resolveCalendar(toCalVal) : CALENDARS.hebrew;
+    const tgtCal = toCalVal ? resolveCalendar(toCalVal) : CALENDARS.human;
     if (!tgtCal) { showError(t.errUnknownCal + toCalVal, toCalInput); return; }
 
     if (srcCal.id === tgtCal.id) { showError(t.errSameCal); return; }

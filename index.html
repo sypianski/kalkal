@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Charis+SIL:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Sans:wght@400;500;600&family=Noto+Sans+Mono:wght@400;500&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=2">
 </head>
 <body>
 
@@ -29,6 +29,11 @@
         <button class="lang-btn" data-lang="eo">EO</button>
       </nav>
     </div>
+    <nav class="page-nav" aria-label="Pages">
+      <a href="index.html" class="active" data-i18n="navConverter">Converter</a>
+      <a href="calendars.html" data-i18n="navCalendars">Calendars</a>
+      <a href="methodology.html" data-i18n="navMethodology">Methodology</a>
+    </nav>
   </header>
 
   <main class="main-content">
@@ -136,6 +141,14 @@
 
     </div>
 
+    <section class="history-panel" id="history-panel">
+      <div class="history-header">
+        <h2 class="history-title" data-i18n="history">History</h2>
+        <button class="history-clear" id="history-clear" data-i18n="clearHistory">Clear</button>
+      </div>
+      <ul class="history-list" id="history-list"></ul>
+    </section>
+
     <footer class="site-footer">
       <p class="footer-note" id="calendar-note" data-i18n="calendarNote">Dates before Oct 15, 1582 use the Julian calendar.</p>
       <p class="footer-note" id="tabular-note" data-i18n="tabularNote">Tabular Islamic calendar (arithmetic). May differ &plusmn;1&ndash;2 days from observation-based calendars.</p>
@@ -149,6 +162,8 @@
   </button>
 
   <script src="js/hijri.js"></script>
+  <script src="js/eclipses.js"></script>
+  <script src="js/astronomy.js"></script>
   <script src="js/i18n.js"></script>
   <script src="js/app.js"></script>
   <script src="js/ai.js"></script>

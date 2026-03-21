@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eclipse Map — 27 January 632 CE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Charis+SIL:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0; background: #faf6ee;
+      display: flex; flex-direction: column; align-items: center;
+      min-height: 100vh;
+      font-family: 'Charis SIL', Georgia, serif; color: #1a1612;
+    }
+    h1 { font-size: 1.3rem; font-weight: 700; margin: 1.5rem 0 0.2rem; }
+    .subtitle { font-size: 0.95rem; font-style: italic; color: #6b5d48; margin: 0 0 1rem; }
+    .map-wrap {
+      position: relative; display: inline-block;
+      max-width: 960px; width: 95vw;
+      border: 1px solid #b0a890;
+    }
+    .map-wrap img { display: block; width: 100%; height: auto; }
+    .map-wrap svg {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+    }
+    .city-dot { pointer-events: all; cursor: default; }
+    .city-dot:hover + text { opacity: 1; }
+    .note {
+      max-width: 700px; margin: 1rem 1rem 2rem;
+      font-size: 0.82rem; color: #6b5d48; text-align: center; line-height: 1.5;
+    }
+    .note a { color: #8b4513; }
+  </style>
+</head>
+<body>
+
+  <h1>Solar Eclipse of 27 January 632 CE</h1>
+  <p class="subtitle">Annular eclipse at the death of Ibrahim, son of Prophet Muhammad</p>
+
+  <div class="map-wrap">
+    <!-- NASA eclipse atlas map: 0621-0640 CE -->
+    <img src="https://eclipse.gsfc.nasa.gov/SEatlas/SEatlas1/SEatlas0621.GIF"
+         alt="NASA Total and Annular Solar Eclipse Paths: 0621-0640">
+
+    <!-- City overlay — coordinates mapped to NASA image grid -->
+    <!-- Image is equirectangular: 180W-180E (x), ~75N-80S (y) -->
+    <!-- x% = (lon + 180) / 360 * 100 -->
+    <!-- y% needs to account for image margins; map area is roughly -->
+    <!-- top=3.5% (75N) to bottom=91.5% (80S), left=1.5% (180W) to right=98.5% (180E) -->
+    <svg viewBox="0 0 1000 1000" preserveAspectRatio="none">
+      <defs>
+        <filter id="shadow">
+          <feDropShadow dx="0" dy="0" stdDeviation="1.5" flood-color="#000" flood-opacity="0.6"/>
+        </filter>
+      </defs>
+      <style>
+        .cl { font-family: 'Charis SIL', Georgia, serif; font-size: 11px; fill: #1a1612; filter: url(#shadow); font-weight: 700; }
+        .cd { fill: #faf6ee; stroke: #1a1612; stroke-width: 1.5; }
+      </style>
+      <!--
+        Calibrated from image pixel analysis:
+        Map frame: x=161..1862 (180W..180E), y=1..1459 (75N..75S)
+        Image: 1942 x 1465 px. Plate carree projection.
+        vx = (161 + (lon+180)/360 * 1701) / 1942 * 1000
+        vy = (1 + (75-lat)/150 * 1458) / 1465 * 1000
+      -->
+
+      <!-- Mecca: 39.826E, 21.423N -->
+      <circle class="cd city-dot" cx="618" cy="356" r="5"/>
+      <text class="cl" x="628" y="360">Mecca</text>
+
+      <!-- Medina: 39.612E, 24.471N -->
+      <circle class="cd city-dot" cx="617" cy="336" r="5"/>
+      <text class="cl" x="627" y="340">Medina</text>
+
+      <!-- Baghdad: 44.366E, 33.315N -->
+      <circle class="cd city-dot" cx="629" cy="277" r="4"/>
+      <text class="cl" x="639" y="281">Baghdad</text>
+
+      <!-- Damascus: 36.292E, 33.513N -->
+      <circle class="cd city-dot" cx="609" cy="276" r="4"/>
+      <text class="cl" x="580" y="270">Damascus</text>
+
+      <!-- Jerusalem: 35.233E, 31.768N -->
+      <circle class="cd city-dot" cx="607" cy="288" r="4"/>
+      <text class="cl" x="573" y="292">Jerusalem</text>
+
+      <!-- Constantinople: 28.979E, 41.009N -->
+      <circle class="cd city-dot" cx="591" cy="226" r="4"/>
+      <text class="cl" x="545" y="222">Constantinople</text>
+
+      <!-- Isfahan: 51.678E, 32.652N -->
+      <circle class="cd city-dot" cx="647" cy="282" r="4"/>
+      <text class="cl" x="657" y="286">Isfahan</text>
+
+      <!-- Alexandria: 29.919E, 31.200N -->
+      <circle class="cd city-dot" cx="594" cy="291" r="4"/>
+      <text class="cl" x="555" y="302">Alexandria</text>
+
+      <!-- Sanaa: 44.206E, 15.355N -->
+      <circle class="cd city-dot" cx="628" cy="396" r="4"/>
+      <text class="cl" x="638" y="400">Sanaa</text>
+    </svg>
+  </div>
+
+  <p class="note">
+    Eclipse paths from NASA Five Millennium Canon of Solar Eclipses
+    (Fred Espenak, NASA/GSFC).
+    <span style="color:#cc0000;">Red</span> = annular,
+    <span style="color:#0000cc;">blue</span> = total,
+    <span style="color:#cc00cc;">pink</span> = hybrid.
+    <br>
+    <a href="https://eclipse.gsfc.nasa.gov/SEatlas/SEatlas.html" target="_blank">eclipse.gsfc.nasa.gov</a>
+    — Map: 0621–0640 CE
+  </p>
+
+</body>
+</html>

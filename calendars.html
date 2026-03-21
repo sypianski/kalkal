@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>kalkal — Calendar Systems</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Charis+SIL:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Sans:wght@400;500;600&family=Noto+Sans+Mono:wght@400;500&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="calendars">
+
+  <div class="page-grain"></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-mark">&#x262A;</span>
+        <div class="brand-text">
+          <h1 class="site-title" id="page-title">Calendar Systems</h1>
+          <p class="site-subtitle" id="page-subtitle">Descriptions of the calendar systems supported by kalkal</p>
+        </div>
+      </div>
+      <nav class="lang-switcher" id="lang-switcher" aria-label="Language">
+        <button class="lang-btn active" data-lang="en">EN</button>
+        <button class="lang-btn" data-lang="pl">PL</button>
+        <button class="lang-btn" data-lang="ar">AR</button>
+        <button class="lang-btn" data-lang="eo">EO</button>
+      </nav>
+    </div>
+    <nav class="page-nav" aria-label="Pages">
+      <a href="index.html" data-nav="converter">Converter</a>
+      <a href="calendars.html" class="active" data-nav="calendars">Calendars</a>
+      <a href="methodology.html" data-nav="methodology">Methodology</a>
+    </nav>
+  </header>
+
+  <main class="main-content main-content--prose">
+
+    <!-- Gregorian -->
+    <article class="cal-card" data-cal="gregorian">
+      <header class="cal-header">
+        <h2 class="cal-name">Gregorian Calendar</h2>
+        <div class="cal-meta">
+          <span class="cal-tag cal-type">Solar</span>
+          <span class="cal-tag cal-epoch">January 1, 1 CE</span>
+        </div>
+      </header>
+      <p class="cal-intro">The Gregorian calendar is the internationally accepted civil calendar, introduced by Pope Gregory XIII on 15 October 1582 as a reform of the Julian calendar.</p>
+      <p class="cal-body">The reform corrected the accumulated drift of approximately 10 days that had built up since the Council of Nicaea (325 CE), and refined the leap year rule to prevent future drift. A year is a leap year if divisible by 4, unless it is also divisible by 100 — except when divisible by 400. This gives a mean year length of 365.2425 days, very close to the tropical year of ~365.2422 days.</p>
+      <p class="cal-adoption">Catholic countries adopted the reform in 1582, but Protestant and Orthodox nations followed much later: the British Empire in 1752, Russia in 1918, Greece in 1923, and Turkey in 1926. Dates before a country's adoption are often given in the Julian calendar ("Old Style").</p>
+      <p class="cal-months">Twelve months of 28–31 days: January (31), February (28/29), March (31), April (30), May (31), June (30), July (31), August (31), September (30), October (31), November (30), December (31).</p>
+    </article>
+
+    <!-- Julian -->
+    <article class="cal-card" data-cal="julian">
+      <header class="cal-header">
+        <h2 class="cal-name">Julian Calendar</h2>
+        <div class="cal-meta">
+          <span class="cal-tag cal-type">Solar</span>
+          <span class="cal-tag cal-epoch">January 1, 1 CE (proleptic)</span>
+        </div>
+      </header>
+      <p class="cal-intro">The Julian calendar was introduced by Julius Caesar in 46 BCE, effective from 1 January 45 BCE, replacing the earlier Roman calendar. It was the predominant calendar in Europe and the Mediterranean world for over 1,600 years.</p>
+      <p class="cal-body">The Julian calendar established a simple leap year rule: every year divisible by 4 is a leap year, giving a mean year of exactly 365.25 days. This is about 11 minutes longer than the tropical year, leading to an accumulated error of approximately 1 day every 128 years.</p>
+      <p class="cal-adoption">By the 16th century, the calendar had drifted about 10 days from the astronomical equinox, prompting the Gregorian reform. The Julian calendar is still used liturgically by some Eastern Orthodox churches (the "Old Calendar"), and it remains the standard for historical dating before 15 October 1582.</p>
+      <p class="cal-months">Twelve months identical in name and length to the Gregorian calendar, differing only in the leap year rule (every 4th year, without exception).</p>
+    </article>
+
+    <!-- Hijri -->
+    <article class="cal-card" data-cal="hijri">
+      <header class="cal-header">
+        <h2 class="cal-name">Hijri Calendar (Lunar Islamic)</h2>
+        <div class="cal-meta">
+          <span class="cal-tag cal-type">Lunar</span>
+          <span class="cal-tag cal-epoch">1 Muharram 1 AH = 16 July 622 CE (Julian)</span>
+        </div>
+      </header>
+      <p class="cal-intro">The Hijri calendar (at-taqwim al-hijri) is a purely lunar calendar of 12 months used throughout the Islamic world for religious observances. Its epoch is the Hijra (emigration) of the Prophet Muhammad from Mecca to Medina.</p>
+      <p class="cal-body">Each month begins, in principle, with the sighting of the new crescent moon. The calendar alternates months of 30 and 29 days, with a leap day added to the last month (Dhu al-Hijja) in certain years. The year is approximately 354 days long (355 in leap years), making it about 11 days shorter than the solar year. The calendar therefore cycles through the seasons over a period of roughly 33 years.</p>
+      <p class="cal-tabular">The tabular (arithmetic) version of the Hijri calendar — used in kalkal — employs a fixed 30-year cycle in which 11 years are leap years. Four main variants exist, differing only in which years of the cycle are designated as leap:</p>
+      <table class="cal-variants">
+        <thead><tr><th>Variant</th><th>Leap years</th><th>Description</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <p class="cal-months">Twelve months: Muharram (30), Safar (29), Rabi' al-Awwal (30), Rabi' ath-Thani (29), Jumada al-Ula (30), Jumada al-Akhira (29), Rajab (30), Sha'ban (29), Ramadan (30), Shawwal (29), Dhu al-Qa'da (30), Dhu al-Hijja (29 or 30).</p>
+    </article>
+
+    <!-- Solar Hijri -->
+    <article class="cal-card" data-cal="solarHijri">
+      <header class="cal-header">
+        <h2 class="cal-name">Solar Hijri Calendar (Iranian)</h2>
+        <div class="cal-meta">
+          <span class="cal-tag cal-type">Solar</span>
+          <span class="cal-tag cal-epoch">1 Farvardin 1 AP = 22 March 622 CE (Julian)</span>
+        </div>
+      </header>
+      <p class="cal-intro">The Solar Hijri calendar is the official calendar of Iran and Afghanistan. It is a solar calendar whose epoch coincides with the Hijra, but whose year length tracks the tropical year via the vernal equinox.</p>
+      <p class="cal-body">The first six months have 31 days, the next five have 30 days, and the twelfth month (Esfand) has 29 days in common years and 30 in leap years. Officially, the new year (Nowruz) begins at the astronomical vernal equinox as observed from Tehran.</p>
+      <p class="cal-arithmetic">For computational purposes, kalkal uses the arithmetic approximation based on a 2820-year cycle (containing exactly 1,029,983 days), which closely matches the astronomical calendar.</p>
+      <p class="cal-months">Twelve months: Farvardin (31), Ordibehesht (31), Khordad (31), Tir (31), Mordad (31), Shahrivar (31), Mehr (30), Aban (30), Azar (30), Dey (30), Bahman (30), Esfand (29/30).</p>
+    </article>
+
+    <!-- Coptic -->
+    <article class="cal-card" data-cal="coptic">
+      <header class="cal-header">
+        <h2 class="cal-name">Coptic Calendar</h2>
+        <div class="cal-meta">
+          <span class="cal-tag cal-type">Solar</span>
+          <span class="cal-tag cal-epoch">1 Thout 1 AM = 29 August 284 CE (Julian)</span>
+        </div>
+      </header>
+      <p class="cal-intro">The Coptic calendar (also called the Alexandrian calendar) descends from the ancient Egyptian civil calendar, reformed under Augustus to include a leap year. It counts years from the Era of the Martyrs (Anno Martyrum, AM).</p>
+      <p class="cal-body">The calendar consists of 12 months of 30 days each, followed by a short 13th month (Epagomenai) of 5 days in common years or 6 in leap years. Leap years occur every 4 years, when the year number leaves a remainder of 3 when divided by 4.</p>
+      <p class="cal-usage">The Coptic calendar is used liturgically by the Coptic Orthodox Church and for agricultural purposes in Egypt. The Ethiopian calendar shares its structure but uses a different epoch.</p>
+      <p class="cal-months">Thirteen months: Thout, Paopi, Hathor, Koiak, Tobi, Meshir, Paremhat, Parmouti, Pashons, Paoni, Epip, Mesori (each 30 days), Epagomenai (5 or 6 days).</p>
+    </article>
+
+    <!-- Ethiopian -->
+    <article class="cal-card" data-cal="ethiopian">
+      <header class="cal-header">
+        <h2 class="cal-name">Ethiopian Calendar</h2>
+        <div class="cal-meta">
+          <span class="cal-tag cal-type">Solar</span>
+          <span class="cal-tag cal-epoch">1 M&#228;sk&#228;r&#228;m 1 = 29 August 8 CE (Julian)</span>
+        </div>
+      </header>
+      <p class="cal-intro">The Ethiopian calendar is the official calendar of Ethiopia. It belongs to the same Alexandrian family as the Coptic calendar, sharing its structure of 12 &#215; 30-day months plus a 13th epagomenal month.</p>
+      <p class="cal-body">The epoch is approximately 7–8 years behind the Gregorian calendar. Leap years follow the same rule as the Coptic calendar (year % 4 === 3). The Ethiopian New Year (Enkutatash) falls on 11 September in the Gregorian calendar.</p>
+      <p class="cal-usage">Ethiopia is one of the few countries to use a non-Gregorian calendar as its official civil calendar. The calendar is deeply embedded in Ethiopian culture, religion, and daily life.</p>
+      <p class="cal-months">Thirteen months: M&#228;sk&#228;r&#228;m, &#7788;&#601;q&#601;mt, &#7716;&#601;dar, Ta&#7723;&#353;a&#353;, &#7788;&#601;r, Y&#228;katit, M&#228;gabit, Miyazya, G&#601;nbot, S&#228;ne, &#7716;amle, N&#228;hase (each 30 days), Pagum&#228;n (5 or 6 days).</p>
+    </article>
+
+    <!-- Yazdgerdi -->
+    <article class="cal-card" data-cal="yazdgerdi">
+      <header class="cal-header">
+        <h2 class="cal-name">Yazdgerdi Calendar</h2>
+        <div class="cal-meta">
+          <span class="cal-tag cal-type">Solar (wandering)</span>
+          <span class="cal-tag cal-epoch">1 Farvardin 1 YZ = 16 June 632 CE (Julian)</span>
+        </div>
+      </header>
+      <p class="cal-intro">The Yazdgerdi calendar is the traditional Zoroastrian calendar of Iran, named after Yazdegerd III, the last Sasanian emperor. Its epoch is his coronation in 632 CE.</p>
+      <p class="cal-body">The calendar consists of 12 months of 30 days each, followed by 5 epagomenal days (the Gatha days). Crucially, it has no leap year mechanism — the year is always exactly 365 days. This makes it a "wandering" calendar that drifts through the seasons.</p>
+      <p class="cal-usage">The Yazdgerdi calendar was used in Iran alongside the Hijri calendar during the early Islamic period. It remains of interest to historians studying Sasanian and early Islamic chronology.</p>
+      <p class="cal-months">Thirteen months: Farvardin, Ordibehesht, Khordad, Tir, Mordad, Shahrivar, Mehr, Aban, Azar, Dey, Bahman, Esfand (each 30 days), plus 5 epagomenal days.</p>
+    </article>
+
+    <!-- Armenian -->
+    <article class="cal-card" data-cal="armenian">
+      <header class="cal-header">
+        <h2 class="cal-name">Armenian Calendar</h2>
+        <div class="cal-meta">
+          <span class="cal-tag cal-type">Solar (wandering)</span>
+          <span class="cal-tag cal-epoch">1 Navasard 1 = 11 July 552 CE (Julian)</span>
+        </div>
+      </header>
+      <p class="cal-intro">The traditional Armenian calendar is a fixed 365-day calendar with the same structure as the Egyptian and Yazdgerdi calendars. Its epoch is 11 July 552 CE (Julian).</p>
+      <p class="cal-body">Like the Yazdgerdi calendar, it consists of 12 months of 30 days plus 5 epagomenal days (Aweleac&#x2BC;), with no leap year correction. It is therefore a "wandering" calendar that drifts through the seasons.</p>
+      <p class="cal-usage">The Armenian calendar was used in Armenia and by Armenian communities for historical and religious purposes. It was largely superseded by the Gregorian calendar, but remains important for historical chronology.</p>
+      <p class="cal-months">Thirteen months: Navasard, Ho&#7769;i, Sahmi, Tr&#275;, K&#x2019;alo&#269;, Arac&#x2019;, Mehekan, Areg, Ahekan, Mareri, Margac&#x2019;, Hrotic&#x2019; (each 30 days), Aweleac&#x2019; (5 days).</p>
+    </article>
+
+    <footer class="site-footer">
+      <p class="footer-note"><a href="index.html" class="back-link" data-nav="converter">&#8592; Converter</a></p>
+    </footer>
+
+  </main>
+
+  <script src="js/pages.js"></script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>kalkal — Methodology</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Charis+SIL:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Sans:wght@400;500;600&family=Noto+Sans+Mono:wght@400;500&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="methodology">
+
+  <div class="page-grain"></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-mark">&#x262A;</span>
+        <div class="brand-text">
+          <h1 class="site-title" id="page-title">Methodology</h1>
+          <p class="site-subtitle" id="page-subtitle">Algorithms, conventions, and sources used in kalkal</p>
+        </div>
+      </div>
+      <nav class="lang-switcher" id="lang-switcher" aria-label="Language">
+        <button class="lang-btn active" data-lang="en">EN</button>
+        <button class="lang-btn" data-lang="pl">PL</button>
+        <button class="lang-btn" data-lang="ar">AR</button>
+        <button class="lang-btn" data-lang="eo">EO</button>
+      </nav>
+    </div>
+    <nav class="page-nav" aria-label="Pages">
+      <a href="index.html" data-nav="converter">Converter</a>
+      <a href="calendars.html" data-nav="calendars">Calendars</a>
+      <a href="methodology.html" class="active" data-nav="methodology">Methodology</a>
+    </nav>
+  </header>
+
+  <main class="main-content main-content--prose">
+
+    <p class="meth-intro">kalkal converts dates between eight historical and liturgical calendar systems using a unified algorithmic approach. All conversions are deterministic and reproducible.</p>
+
+    <section class="meth-section" data-meth="methJDN">
+      <h2 class="meth-title">Julian Day Number as Universal Pivot</h2>
+      <p class="meth-body">All date conversions in kalkal pass through the Julian Day Number (JDN) — a continuous count of days since the beginning of the Julian Period on 1 January 4713 BCE (Julian proleptic calendar). Each calendar system implements two functions: one to convert a date into a JDN, and one to convert a JDN back into a date in that calendar. To convert from calendar A to calendar B, we compute A → JDN → B. This approach avoids the combinatorial explosion of writing direct conversion functions between every pair of calendars.</p>
+      <aside class="meth-aside">
+        <p class="meth-note">The Julian Day Number is a tool of astronomical chronology unrelated to the Julian calendar, despite the shared name. It was introduced by Joseph Justus Scaliger in 1583.</p>
+      </aside>
+    </section>
+
+    <div class="divider"><span class="divider-ornament">&#10022;</span></div>
+
+    <section class="meth-section" data-meth="methTabular">
+      <h2 class="meth-title">Tabular Islamic Calendar</h2>
+      <p class="meth-body">The Hijri (lunar) calendar in kalkal uses the tabular/arithmetic method rather than astronomical observation or calculation of lunar phases. The tabular method employs a fixed 30-year cycle in which 11 years are leap years (355 days) and 19 are common years (354 days). This gives a mean lunation of 29.53&#x305; days, very close to the astronomical mean synodic month of 29.53059 days.</p>
+      <p class="meth-body2">Four historical variants of the tabular calendar are supported, differing only in which years of the 30-year cycle are designated as leap. The default variant is W&#252;stenfeld (type IIc), the standard in Western historiography.</p>
+      <aside class="meth-aside meth-aside--warning">
+        <p class="meth-warning">The tabular calendar may differ by &#177;1–2 days from calendars based on lunar observation (used officially in Saudi Arabia and other countries). It is intended for historical research and approximate conversion, not for determining religious observance dates.</p>
+      </aside>
+    </section>
+
+    <div class="divider"><span class="divider-ornament">&#10022;</span></div>
+
+    <section class="meth-section" data-meth="methSolar">
+      <h2 class="meth-title">Solar Hijri: 2820-Year Cycle</h2>
+      <p class="meth-body">The Solar Hijri (Iranian) calendar is approximated arithmetically using a 2820-year grand cycle containing exactly 683 leap years and 1,029,983 days. This gives a mean year of 365.24220 days, extremely close to the current vernal equinox year. The algorithm, based on work by Ahmad Birashk and refined by K. M. Borkowski, determines leap years through a formula involving the cycle position.</p>
+    </section>
+
+    <div class="divider"><span class="divider-ornament">&#10022;</span></div>
+
+    <section class="meth-section" data-meth="methAlexandrian">
+      <h2 class="meth-title">Coptic and Ethiopian: Alexandrian Calendars</h2>
+      <p class="meth-body">Both the Coptic and Ethiopian calendars follow the Alexandrian calendar structure: 12 months of 30 days plus a short 13th month. They share the same leap year rule (year mod 4 = 3) and differ only in their epoch. Conversion to and from JDN uses straightforward arithmetic based on the fixed year length of 365.25 mean days.</p>
+    </section>
+
+    <div class="divider"><span class="divider-ornament">&#10022;</span></div>
+
+    <section class="meth-section" data-meth="methWandering">
+      <h2 class="meth-title">Yazdgerdi and Armenian: Wandering Calendars</h2>
+      <p class="meth-body">The Yazdgerdi and Armenian calendars are "wandering" or "vague" calendars with a fixed year of exactly 365 days and no intercalation. Conversion is simple arithmetic: the JDN offset from the epoch divided by 365 gives the year, and the remainder gives the day of the year. These calendars drift through the seasons at ~1 day every 4 years.</p>
+    </section>
+
+    <div class="divider"><span class="divider-ornament">&#10022;</span></div>
+
+    <section class="meth-section" data-meth="methSources">
+      <h2 class="meth-title">Sources and References</h2>
+      <ol class="meth-sources">
+        <li>Richards, E. G. <em>Mapping Time: The Calendar and its History</em>. Oxford University Press, 1998.</li>
+        <li>Reingold, Edward M. &amp; Dershowitz, Nachum. <em>Calendrical Calculations: The Ultimate Edition</em>. Cambridge University Press, 2018.</li>
+        <li>Meeus, Jean. <em>Astronomical Algorithms</em>. 2nd ed. Willmann-Bell, 1998.</li>
+        <li>Borkowski, K. M. "ELP2000-85 and the Dynamical Time – Universal Time relation." <em>Astronomy and Astrophysics</em>, 205 (1988), L8–L10.</li>
+        <li>de Blois, Fran&#231;ois. "Ta&#x2BF;r&#x12B;kh" (chronology section) in <em>Encyclopaedia of Islam</em>, 2nd ed.</li>
+        <li>Birashk, Ahmad. <em>A Comparative Calendar of the Iranian, Muslim Lunar, and Christian Eras for Three Thousand Years</em>. Mazda Publishers, 1993.</li>
+      </ol>
+    </section>
+
+    <footer class="site-footer">
+      <p class="footer-note"><a href="index.html" class="back-link" data-nav="converter">&#8592; Converter</a></p>
+    </footer>
+
+  </main>
+
+  <script src="js/pages.js"></script>
+</body>
+</html>

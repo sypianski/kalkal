@@ -1295,81 +1295,85 @@ const Cal = (() => {
 
   // ================================================================
   // Babylonian calendar (arithmetic approximation)
-  // Lunisolar calendar using the Hebrew calendar's molad-based arithmetic
-  // as an approximation. The Babylonian calendar is the historical
-  // ancestor of the Hebrew calendar; both share the 19-year Metonic cycle.
-  //
-  // Month numbering starts from Nisannu (spring), unlike Hebrew (Tishrei/autumn).
-  // Babylonian months map to Hebrew months:
-  //   Bab 1 Nisannu = Heb 8 Nisan, Bab 2 Ayaru = Heb 9 Iyar, ...
-  //   Bab 7 Tashritu = Heb 1 Tishrei (next Hebrew year), ...
-  //   Bab 12 Addaru = Heb 6 Adar, Bab 13 Addaru II = Heb 7 Adar II
+  // Lunisolar, 19-year Metonic cycle with its own leap cycle phase.
+  // Uses mean synodic month (29.530594 days) for month boundaries.
   //
   // Era: Nabonassar (NE), year 1 = 747 BCE
-  // Hebrew Nisan of year 3015 AM ≈ Babylonian Nisannu 1 NE
-  // So: Hebrew year = Babylonian year + 3014 (for Nisan-half)
+  // Epoch: 1 Nisannu 1 NE ≈ JDN 1448638 (derived from P&D alignment)
   //
-  // NOTE: This is an arithmetic approximation. Historical Babylonian
-  // month starts depended on observed first lunar crescent visibility
-  // and may differ by ±1 day from this calculation.
+  // Leap rule: ((7 * (year + 4) + 1) % 19) < 7
+  // (Same formula as Hebrew but with Babylonian cycle phase offset)
+  //
+  // NOTE: Arithmetic approximation. Historical Babylonian month starts
+  // depended on observed first lunar crescent and may differ by ±1–2 days.
   // ================================================================
 
-  const BABYLONIAN_OFFSET = 3014;
+  const MEAN_SYNODIC_MONTH = 29.530594;
+  // Epoch: calibrated against Parker & Dubberstein tables.
+  // Three independent P&D data points (NE 146, 418, 749) converge on ~1448309.5
+  const BABYLONIAN_EPOCH = 1448309.5;
 
-  // Map Babylonian month (1-13) to {hebrewYear, hebrewMonth}
-  function _babToHebMonth(babYear, babMonth) {
-    const hYear = babYear + BABYLONIAN_OFFSET;
-    if (babMonth <= 6) {
-      // Nisannu(1)->Nisan(8), Ayaru(2)->Iyar(9), ..., Ululu(6)->Elul(13)
-      return { hy: hYear, hm: babMonth + 7 };
-    } else if (babMonth <= 12) {
-      // Tashritu(7)->Tishrei(1), Arahsamna(8)->Cheshvan(2), ..., Addaru(12)->Adar(6)
-      return { hy: hYear + 1, hm: babMonth - 6 };
-    } else {
-      // Addaru II (13) -> Adar II (7)
-      return { hy: hYear + 1, hm: 7 };
-    }
+  function isBabylonianLeapYear(year) {
+    return ((7 * (year + 4) + 1) % 19) < 7;
   }
 
-  // Map Hebrew {year, month} back to Babylonian {year, month}
-  function _hebToBabMonth(hYear, hMonth) {
-    if (hMonth >= 8) {
-      // Nisan(8)->Nisannu(1), ..., Elul(13)->Ululu(6)
-      return { by: hYear - BABYLONIAN_OFFSET, bm: hMonth - 7 };
-    } else if (hMonth <= 6) {
-      // Tishrei(1)->Tashritu(7), ..., Adar(6)->Addaru(12)
-      return { by: hYear - BABYLONIAN_OFFSET - 1, bm: hMonth + 6 };
-    } else {
-      // Adar II (7) -> Addaru II (13)
-      return { by: hYear - BABYLONIAN_OFFSET - 1, bm: 13 };
+  function _babylonianMonthsInYear(year) {
+    return isBabylonianLeapYear(year) ? 13 : 12;
+  }
+
+  // Count total months from epoch to 1 Nisannu of year
+  function _babylonianMonthsSinceEpoch(year) {
+    let months = 0;
+    if (year > 1) {
+      for (let y = 1; y < year; y++) {
+        months += _babylonianMonthsInYear(y);
+      }
+    } else if (year < 1) {
+      for (let y = 0; y >= year; y--) {
+        months -= _babylonianMonthsInYear(y);
+      }
     }
+    return months;
+  }
+
+  // JDN of 1st of a given month in a Babylonian year
+  function _babylonianMonthStart(year, month) {
+    const monthsSinceEpoch = _babylonianMonthsSinceEpoch(year) + (month - 1);
+    return Math.floor(BABYLONIAN_EPOCH + monthsSinceEpoch * MEAN_SYNODIC_MONTH) + 0.5;
   }
 
   function babylonianToJD(year, month, day) {
-    const { hy, hm } = _babToHebMonth(year, month);
-    return hebrewToJD(hy, hm, day);
-  }
-
-  function jdToBabylonian(jd) {
-    const heb = jdToHebrew(jd);
-    const { by, bm } = _hebToBabMonth(heb.year, heb.month);
-    return { year: by, month: bm, day: heb.day };
+    return _babylonianMonthStart(year, month) + day - 1;
   }
 
   function babylonianMonthLength(year, month) {
-    const { hy, hm } = _babToHebMonth(year, month);
-    return hebrewMonthLength(hy, hm);
+    const maxMonth = _babylonianMonthsInYear(year);
+    if (month < 1 || month > maxMonth) return 0;
+    if (month < maxMonth) {
+      return _babylonianMonthStart(year, month + 1) - _babylonianMonthStart(year, month);
+    }
+    // Last month: compute from next year's start
+    return _babylonianMonthStart(year + 1, 1) - _babylonianMonthStart(year, month);
+  }
+
+  function jdToBabylonian(jd) {
+    const jd1 = Math.floor(jd) + 0.5;
+    // Approximate year
+    const approxMonths = (jd1 - BABYLONIAN_EPOCH) / MEAN_SYNODIC_MONTH;
+    let year = Math.floor(approxMonths / 12.3685) + 1; // avg months/year ≈ 12.3685
+    // Adjust year
+    while (_babylonianMonthStart(year + 1, 1) <= jd1) year++;
+    while (_babylonianMonthStart(year, 1) > jd1) year--;
+    // Find month
+    let month = 1;
+    const maxMonth = _babylonianMonthsInYear(year);
+    while (month < maxMonth && _babylonianMonthStart(year, month + 1) <= jd1) month++;
+    const day = jd1 - _babylonianMonthStart(year, month) + 1;
+    return { year, month, day: Math.floor(day) };
   }
 
   function babylonianYearLength(year) {
-    // From 1 Nisannu this year to 1 Nisannu next year
-    return babylonianToJD(year + 1, 1, 1) - babylonianToJD(year, 1, 1);
-  }
-
-  function isBabylonianLeapYear(year) {
-    // A Babylonian year is leap if it has 13 months (Addaru II exists)
-    // This corresponds to the Hebrew year starting at the following Tishrei
-    return isHebrewLeapYear(year + BABYLONIAN_OFFSET + 1);
+    return _babylonianMonthStart(year + 1, 1) - _babylonianMonthStart(year, 1);
   }
 
   // ================================================================

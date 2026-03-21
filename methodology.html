@@ -32,6 +32,7 @@
       <a href="index.html" data-nav="converter">Converter</a>
       <a href="calendars.html" data-nav="calendars">Calendars</a>
       <a href="methodology.html" class="active" data-nav="methodology">Methodology</a>
+      <a href="dynasties.html" data-nav="dynasties">Dynasties</a>
     </nav>
   </header>
 
@@ -51,7 +52,7 @@
 
     <section class="meth-section" data-meth="methArchitecture">
       <h2 class="meth-title">Architecture and Construction</h2>
-      <p class="meth-body">kalkal runs entirely in the browser with zero external dependencies and no build step. The computational engine is a single JavaScript module (Cal) exposing toJD() and fromJD() functions for each of the 20+ supported calendar systems. A separate registry maps each calendar to its Cal functions, handling UI concerns like variant selection (e.g. the 4 tabular Hijri variants) independently from the algorithms. Internationalization covers 4 languages (EN, PL, AR, EO) with full RTL support for Arabic.</p>
+      <p class="meth-body">kalkal runs entirely in the browser with zero external dependencies and no build step. The computational engine is a single JavaScript module (Cal) exposing toJD() and fromJD() functions for each of the 22 supported calendar systems. A separate registry maps each calendar to its Cal functions, handling UI concerns like variant selection (e.g. the 4 tabular Hijri variants, 3 Byzantine Anno Mundi variants, 2 Seleucid reckonings) independently from the algorithms. Internationalization covers 4 languages (EN, PL, AR, EO) with full RTL support for Arabic.</p>
       <p class="meth-body2">All algorithms are purely arithmetic — no astronomical calculations, no external API calls, no lookup tables of observed data. This makes every conversion reproducible: the same input always produces the same output regardless of platform, locale, or network state.</p>
     </section>
 
@@ -59,7 +60,7 @@
 
     <section class="meth-section" data-meth="methAlgorithms">
       <h2 class="meth-title">Algorithm Sources</h2>
-      <p class="meth-body">Gregorian and Julian conversions follow the algorithms in Meeus (1998). The tabular Hijri calendar uses a 30-year cycle with 4 historical leap-year variants (IIc/Wüstenfeld as default). The Solar Hijri uses the 2820-year arithmetic cycle from Birashk, refined by Borkowski. Coptic, Ethiopian, Egyptian, Yazdgerdi, and Armenian calendars use epoch-offset arithmetic from Reingold &amp; Dershowitz (2018). The Hebrew calendar implements the full molad-based rules from the same source. Byzantine, Seleucid, Syriac, Rumi, AUC, Spanish Era, Olympiad, and Macedonian calendars are Julian-based with epoch offsets.</p>
+      <p class="meth-body">Gregorian and Julian conversions follow the algorithms in Meeus (1998). The tabular Hijri calendar uses a 30-year cycle with 4 historical leap-year variants (IIc/Wüstenfeld as default). The Solar Hijri uses the 2820-year arithmetic cycle from Birashk, refined by Borkowski. Coptic, Ethiopian, Egyptian, Yazdgerdi, and Armenian calendars use epoch-offset arithmetic from Reingold &amp; Dershowitz (2018). The Hebrew calendar implements the full molad-based rules from the same source. Byzantine (3 Anno Mundi variants: Constantinople, Alexandrian, Chronicon Paschale), Seleucid (Macedonian and Babylonian reckonings), Antiochene, Syriac, Rumi, AUC, Spanish Era, Olympiad, and Macedonian calendars are Julian-based with epoch offsets. The 15-year Indiction cycle is displayed alongside Byzantine dates.</p>
       <aside class="meth-aside meth-aside--warning">
         <p class="meth-warning">The tabular Hijri calendar may differ by ±1–2 days from calendars based on lunar observation (used officially in Saudi Arabia and other countries). It is intended for historical research and approximate conversion, not for determining religious observance dates.</p>
       </aside>
@@ -91,7 +92,7 @@
 
     <section class="meth-section" data-meth="methLinks">
       <h2 class="meth-title">Coverage and Similar Tools</h2>
-      <p class="meth-body">kalkal supports 21 calendar systems, with a particular focus on historical Near Eastern and ancient calendars absent from other multi-calendar converters. Among the surveyed tools below, none include the Byzantine, Alexandrian, Seleucid, Syriac, Rumi (Ottoman fiscal), Macedonian, ancient Egyptian (wandering), AUC (Ab Urbe Condita), Spanish Era, or Olympiad calendars. kalkal also offers 4 tabular Hijri variants (IIc, IIa, IIIa, IVa), whereas most tools provide only one; only the Utrecht University converter offers more (8).</p>
+      <p class="meth-body">kalkal supports 22 calendar systems, with a particular focus on historical Near Eastern and ancient calendars absent from other multi-calendar converters. Among the surveyed tools below, none include the Byzantine, Seleucid, Syriac, Rumi (Ottoman fiscal), Macedonian, Antiochene, ancient Egyptian (wandering), AUC (Ab Urbe Condita), Spanish Era, or Olympiad calendars. kalkal also offers 4 tabular Hijri variants, 3 Byzantine Anno Mundi variants (Constantinople, Alexandrian, Chronicon Paschale), and 2 Seleucid variants (Macedonian, Babylonian). Among surveyed tools, only the Utrecht University converter offers more Hijri variants (8).</p>
 
       <div class="meth-table-wrap">
         <table class="meth-coverage">
@@ -117,15 +118,15 @@
             <tr><td>Ethiopian</td>          <td class="cov-y"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-y"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-y"></td></tr>
             <tr><td>Armenian</td>           <td class="cov-y"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-y"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td></tr>
             <tr><td>Yazdgerdi</td>          <td class="cov-y"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-y"></td><td class="cov-n"></td><td class="cov-n"></td></tr>
-            <tr><td>Byzantine</td>          <td class="cov-y"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td></tr>
-            <tr><td>Alexandrian</td>        <td class="cov-y"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td></tr>
-            <tr><td>Seleucid</td>           <td class="cov-y"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td></tr>
+            <tr><td>Byzantine (AM)</td>     <td class="cov-y">3 var.</td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td></tr>
+            <tr><td>Seleucid</td>           <td class="cov-y">2 var.</td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td></tr>
             <tr><td>Syriac</td>             <td class="cov-y"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td></tr>
             <tr><td>Rumi</td>               <td class="cov-y"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-y"></td><td class="cov-y"></td><td class="cov-n"></td></tr>
             <tr><td>Macedonian</td>         <td class="cov-y"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td></tr>
             <tr><td>Egyptian (ancient)</td> <td class="cov-y"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-y"></td><td class="cov-n"></td><td class="cov-n"></td></tr>
             <tr><td>AUC</td>                <td class="cov-y"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td></tr>
             <tr><td>Spanish Era</td>        <td class="cov-y"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td></tr>
+            <tr><td>Antiochene Era</td>    <td class="cov-y"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td></tr>
             <tr><td>Olympiad</td>           <td class="cov-y"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td></tr>
             <tr><td>Before Present</td>     <td class="cov-y"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td></tr>
             <tr><td>Human Era</td>          <td class="cov-y"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td><td class="cov-n"></td></tr>

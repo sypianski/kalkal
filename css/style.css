@@ -446,6 +446,8 @@ html[dir="rtl"] .site-title {
   text-decoration: none;
   display: block;
   padding: 0.25em 0;
+  padding-inline-start: 1.8em;
+  text-indent: -1.8em;
   transition: color 0.15s;
 }
 
@@ -2586,4 +2588,133 @@ body[data-theme="brutalist"] .back-link {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-weight: 700;
+}
+
+/* ── DYNASTY TABLES ── */
+
+.dyn-intro {
+  margin-block-end: var(--space-lg);
+}
+
+.dyn-table-wrap {
+  overflow-x: auto;
+  margin-block: var(--space-md);
+  -webkit-overflow-scrolling: touch;
+}
+
+.dyn-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.dyn-table th {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-600);
+  padding: 0.5em var(--space-sm);
+  border-block-end: var(--border-strong);
+  text-align: start;
+  white-space: nowrap;
+}
+
+.dyn-table th:first-child {
+  width: 2em;
+  text-align: center;
+}
+
+.dyn-table td {
+  padding: 0.4em var(--space-sm);
+  border-block-end: var(--border-subtle);
+  color: var(--ink-700);
+  vertical-align: top;
+}
+
+.dyn-table td:first-child {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--ink-500);
+}
+
+.dyn-table tr:last-child td {
+  border-block-end: none;
+}
+
+.dyn-table tr:hover td {
+  background: var(--bg-100, rgba(0,0,0,0.02));
+}
+
+.dyn-ruler {
+  white-space: nowrap;
+}
+
+.dyn-name {
+  font-weight: 600;
+  color: var(--ink-900);
+  font-family: var(--font-display);
+}
+
+.dyn-laqab {
+  font-style: italic;
+  color: var(--ink-500);
+  font-size: 0.8em;
+}
+
+.dyn-date-ah {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.dyn-date-ce {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.dyn-date-link {
+  color: var(--accent, var(--ink-700));
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 0.15em;
+}
+
+.dyn-date-link:hover {
+  text-decoration-style: solid;
+}
+
+.dyn-note {
+  font-size: 0.8rem;
+  color: var(--ink-500);
+  max-width: 20em;
+}
+
+.dyn-source {
+  font-size: 0.75rem;
+  color: var(--ink-400);
+  font-style: italic;
+  margin-block-start: var(--space-xs);
+}
+
+/* Brutalist dynasty overrides */
+body[data-theme="brutalist"] .dyn-table th {
+  font-family: 'Noto Sans Mono', 'Courier New', monospace;
+  border-block-end: 3px solid #000;
+}
+
+body[data-theme="brutalist"] .dyn-table td {
+  border-block-end: 1px solid #000;
+}
+
+body[data-theme="brutalist"] .dyn-name {
+  font-family: 'Noto Sans Mono', 'Courier New', monospace;
+  font-weight: 700;
+}
+
+body[data-theme="brutalist"] .dyn-date-link {
+  color: #000;
 }

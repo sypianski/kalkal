@@ -93,33 +93,65 @@
     },
     byzantine: {
       id: 'byzantine',
-      toJD: (y, m, d) => Cal.byzantineToJD(y, m, d),
-      fromJD: (jd) => Cal.jdToByzantine(jd),
-      monthLength: (y, m) => Cal.byzantineMonthLength(y, m),
-      yearLength: (y) => Cal.byzantineYearLength(y),
-      isLeap: (y) => Cal.isByzantineLeapYear(y),
+      variants: ['Constantinople', 'Alexandrian', 'ChronPasch'],
+      defaultVariant: 'Constantinople',
+      _variant: 'Constantinople',
+      toJD(y, m, d) {
+        if (this._variant === 'Alexandrian') return Cal.alexandrianToJD(y, m, d);
+        if (this._variant === 'ChronPasch') return Cal.chronPaschToJD(y, m, d);
+        return Cal.byzantineToJD(y, m, d);
+      },
+      fromJD(jd) {
+        if (this._variant === 'Alexandrian') return Cal.jdToAlexandrian(jd);
+        if (this._variant === 'ChronPasch') return Cal.jdToChronPasch(jd);
+        return Cal.jdToByzantine(jd);
+      },
+      monthLength(y, m) {
+        if (this._variant === 'Alexandrian') return Cal.alexandrianMonthLength(y, m);
+        if (this._variant === 'ChronPasch') return Cal.chronPaschMonthLength(y, m);
+        return Cal.byzantineMonthLength(y, m);
+      },
+      yearLength(y) {
+        if (this._variant === 'Alexandrian') return Cal.alexandrianYearLength(y);
+        if (this._variant === 'ChronPasch') return Cal.chronPaschYearLength(y);
+        return Cal.byzantineYearLength(y);
+      },
+      isLeap(y) {
+        if (this._variant === 'Alexandrian') return Cal.isAlexandrianLeapYear(y);
+        if (this._variant === 'ChronPasch') return Cal.isChronPaschLeapYear(y);
+        return Cal.isByzantineLeapYear(y);
+      },
       monthCount: 12,
-      monthNames: (t) => t.byzantineMonths
-    },
-    alexandrian: {
-      id: 'alexandrian',
-      toJD: (y, m, d) => Cal.alexandrianToJD(y, m, d),
-      fromJD: (jd) => Cal.jdToAlexandrian(jd),
-      monthLength: (y, m) => Cal.alexandrianMonthLength(y, m),
-      yearLength: (y) => Cal.alexandrianYearLength(y),
-      isLeap: (y) => Cal.isAlexandrianLeapYear(y),
-      monthCount: 12,
-      monthNames: (t) => t.alexandrianMonths
+      monthNames(t) {
+        if (this._variant === 'Alexandrian') return t.alexandrianMonths;
+        if (this._variant === 'ChronPasch') return t.alexandrianMonths;
+        return t.byzantineMonths;
+      }
     },
     seleucid: {
       id: 'seleucid',
-      toJD: (y, m, d) => Cal.seleucidToJD(y, m, d),
-      fromJD: (jd) => Cal.jdToSeleucid(jd),
-      monthLength: (y, m) => Cal.seleucidMonthLength(y, m),
-      yearLength: (y) => Cal.seleucidYearLength(y),
-      isLeap: (y) => Cal.isSeleucidLeapYear(y),
+      variants: ['Macedonian', 'Babylonian'],
+      defaultVariant: 'Macedonian',
+      _variant: 'Macedonian',
+      toJD(y, m, d) {
+        return this._variant === 'Babylonian' ? Cal.seleucidBabToJD(y, m, d) : Cal.seleucidToJD(y, m, d);
+      },
+      fromJD(jd) {
+        return this._variant === 'Babylonian' ? Cal.jdToSeleucidBab(jd) : Cal.jdToSeleucid(jd);
+      },
+      monthLength(y, m) {
+        return this._variant === 'Babylonian' ? Cal.seleucidBabMonthLength(y, m) : Cal.seleucidMonthLength(y, m);
+      },
+      yearLength(y) {
+        return this._variant === 'Babylonian' ? Cal.seleucidBabYearLength(y) : Cal.seleucidYearLength(y);
+      },
+      isLeap(y) {
+        return this._variant === 'Babylonian' ? Cal.isSeleucidBabLeapYear(y) : Cal.isSeleucidLeapYear(y);
+      },
       monthCount: 12,
-      monthNames: (t) => t.seleucidMonths
+      monthNames(t) {
+        return this._variant === 'Babylonian' ? t.seleucidBabMonths : t.seleucidMonths;
+      }
     },
     syriac: {
       id: 'syriac',
@@ -170,6 +202,16 @@
       isLeap: (y) => Cal.isSpanishLeapYear(y),
       monthCount: 12,
       monthNames: (t) => t.gregorianMonths
+    },
+    antiochene: {
+      id: 'antiochene',
+      toJD: (y, m, d) => Cal.antiocheneToJD(y, m, d),
+      fromJD: (jd) => Cal.jdToAntiochene(jd),
+      monthLength: (y, m) => Cal.antiocheneMonthLength(y, m),
+      yearLength: (y) => Cal.antiocheneYearLength(y),
+      isLeap: (y) => Cal.isAntiocheneLeapYear(y),
+      monthCount: 12,
+      monthNames: (t) => t.seleucidMonths
     },
     olympiad: {
       id: 'olympiad',
@@ -228,7 +270,12 @@
     IIc: 'W\u00fcstenfeld',
     IIa: 'East civil',
     IIIa: 'West civil',
-    IVa: '\u1e24abash'
+    IVa: '\u1e24abash',
+    Constantinople: 'Constantinople',
+    Alexandrian: 'Alexandrian',
+    ChronPasch: 'Chron. Paschale',
+    Macedonian: 'Macedonian',
+    Babylonian: 'Babylonian'
   };
 
   // ---- DOM helpers ----
@@ -549,6 +596,11 @@
       el('p', { class: 'result-main', text: result.day + ' ' + tgtNames[result.month - 1] + ' ' + result.year }),
       el('p', { class: 'result-secondary', text: t.weekdays[dow] }),
     ];
+    // Indiction for Byzantine/Alexandrian calendars
+    if (tgt.id === 'byzantine' || tgt.id === 'alexandrian') {
+      const ind = Cal.indictionFromJD(jd);
+      elements.push(el('p', { class: 'result-secondary result-indiction', text: (t.indictionLabel || 'Indiction') + ' ' + ind }));
+    }
     if (isProlepticGregorian) {
       elements.push(el('p', { class: 'result-note', text: t.julianDateNote }));
     }

@@ -664,6 +664,51 @@ const Cal = (() => {
   }
 
   // ================================================================
+  // Chronicon Paschale (Anno Mundi variant)
+  // Same epoch as Constantinople (5509 BC) but year starts March 21
+  // ================================================================
+
+  function chronPaschToJD(year, month, day) {
+    // M1=Mar, M2=Apr, ... M10=Dec, M11=Jan, M12=Feb
+    let julYear, julMonth;
+    if (month <= 10) {
+      julMonth = month + 2;
+      julYear = year - 5509;
+    } else {
+      julMonth = month - 10;
+      julYear = year - 5508;
+    }
+    return julianToJD(julYear, julMonth, day);
+  }
+
+  function jdToChronPasch(jd) {
+    const jul = jdToJulian(jd);
+    let cpYear, cpMonth;
+    if (jul.month >= 3) {
+      cpMonth = jul.month - 2;
+      cpYear = jul.year + 5509;
+    } else {
+      cpMonth = jul.month + 10;
+      cpYear = jul.year + 5508;
+    }
+    return { year: cpYear, month: cpMonth, day: jul.day };
+  }
+
+  function chronPaschMonthLength(year, month) {
+    const julMonth = month <= 10 ? month + 2 : month - 10;
+    const julYear = month <= 10 ? year - 5509 : year - 5508;
+    return julianMonthLength(julYear, julMonth);
+  }
+
+  function chronPaschYearLength(year) {
+    return isJulianLeapYear(year - 5508) ? 366 : 365;
+  }
+
+  function isChronPaschLeapYear(year) {
+    return isJulianLeapYear(year - 5508);
+  }
+
+  // ================================================================
   // Seleucid calendar (Anno Graecorum / Era of the Greeks)
   // Julian calendar with era offset: year 1 AG = 312 BC
   // Greek variant starts October 1, Babylonian/Syriac variant starts April 1
@@ -711,6 +756,49 @@ const Cal = (() => {
 
   function isSeleucidLeapYear(year) {
     return isJulianLeapYear(year - 311);
+  }
+
+  // Seleucid Babylonian reckoning: year starts April (Nisannu)
+  // Epoch: 1 Nisannu SE 1 = April 311 BCE
+
+  function seleucidBabToJD(year, month, day) {
+    // M1=Apr, M2=May, ..., M9=Dec, M10=Jan, M11=Feb, M12=Mar
+    let julYear, julMonth;
+    if (month <= 9) {
+      julMonth = month + 3; // Apr=4, May=5, ..., Dec=12
+      julYear = year - 311;
+    } else {
+      julMonth = month - 9; // Jan=1, Feb=2, Mar=3
+      julYear = year - 310;
+    }
+    return julianToJD(julYear, julMonth, day);
+  }
+
+  function jdToSeleucidBab(jd) {
+    const jul = jdToJulian(jd);
+    let selYear, selMonth;
+    if (jul.month >= 4) {
+      selMonth = jul.month - 3; // Apr=1, May=2, ..., Dec=9
+      selYear = jul.year + 311;
+    } else {
+      selMonth = jul.month + 9; // Jan=10, Feb=11, Mar=12
+      selYear = jul.year + 310;
+    }
+    return { year: selYear, month: selMonth, day: jul.day };
+  }
+
+  function seleucidBabMonthLength(year, month) {
+    const julMonth = month <= 9 ? month + 3 : month - 9;
+    const julYear = month <= 9 ? year - 311 : year - 310;
+    return julianMonthLength(julYear, julMonth);
+  }
+
+  function seleucidBabYearLength(year) {
+    return isJulianLeapYear(year - 310) ? 366 : 365;
+  }
+
+  function isSeleucidBabLeapYear(year) {
+    return isJulianLeapYear(year - 310);
   }
 
   // ================================================================
@@ -835,6 +923,55 @@ const Cal = (() => {
 
   function isSpanishLeapYear(year) {
     return isJulianLeapYear(year - 38);
+  }
+
+  // ================================================================
+  // Antiochene Era (Era of Antioch / Caesarean Era)
+  // Julian calendar, year 1 = 49 BC (Julius Caesar, Battle of Pharsalus)
+  // Year starts in autumn (October), like the Seleucid calendar it replaced
+  // ================================================================
+
+  function antiocheneToJD(year, month, day) {
+    // Month 1 = October, Month 2 = November, ... Month 3 = December
+    // Month 4 = January, ... Month 12 = September
+    let julYear, julMonth;
+    if (month <= 3) {
+      // Oct(1), Nov(2), Dec(3)
+      julMonth = month + 9;
+      julYear = year - 49;
+    } else {
+      // Jan(4)..Sep(12) → Julian 1..9
+      julMonth = month - 3;
+      julYear = year - 48;
+    }
+    return julianToJD(julYear, julMonth, day);
+  }
+
+  function jdToAntiochene(jd) {
+    const jul = jdToJulian(jd);
+    let antYear, antMonth;
+    if (jul.month >= 10) {
+      antMonth = jul.month - 9; // Oct=1, Nov=2, Dec=3
+      antYear = jul.year + 49;
+    } else {
+      antMonth = jul.month + 3; // Jan=4, Feb=5, ... Sep=12
+      antYear = jul.year + 48;
+    }
+    return { year: antYear, month: antMonth, day: jul.day };
+  }
+
+  function antiocheneMonthLength(year, month) {
+    const julMonth = month <= 3 ? month + 9 : month - 3;
+    const julYear = month <= 3 ? year - 49 : year - 48;
+    return julianMonthLength(julYear, julMonth);
+  }
+
+  function antiocheneYearLength(year) {
+    return isJulianLeapYear(year - 48) ? 366 : 365;
+  }
+
+  function isAntiocheneLeapYear(year) {
+    return isJulianLeapYear(year - 48);
   }
 
   // ================================================================
@@ -1142,8 +1279,11 @@ const Cal = (() => {
     byzantineToJD, jdToByzantine, byzantineMonthLength, byzantineYearLength, isByzantineLeapYear,
     // Alexandrian
     alexandrianToJD, jdToAlexandrian, alexandrianMonthLength, alexandrianYearLength, isAlexandrianLeapYear,
+    // Chronicon Paschale
+    chronPaschToJD, jdToChronPasch, chronPaschMonthLength, chronPaschYearLength, isChronPaschLeapYear,
     // Seleucid
     seleucidToJD, jdToSeleucid, seleucidMonthLength, seleucidYearLength, isSeleucidLeapYear,
+    seleucidBabToJD, jdToSeleucidBab, seleucidBabMonthLength, seleucidBabYearLength, isSeleucidBabLeapYear,
     // Syriac
     syriacToJD, jdToSyriac, syriacMonthLength, syriacYearLength, isSyriacLeapYear,
     // Rumi
@@ -1156,6 +1296,8 @@ const Cal = (() => {
     aucToJD, jdToAuc, aucMonthLength, aucYearLength, isAucLeapYear,
     // Spanish Era
     spanishToJD, jdToSpanish, spanishMonthLength, spanishYearLength, isSpanishLeapYear,
+    // Antiochene Era
+    antiocheneToJD, jdToAntiochene, antiocheneMonthLength, antiocheneYearLength, isAntiocheneLeapYear,
     // Olympiad
     olympiadToJD, jdToOlympiad, olympiadMonthLength, olympiadYearLength, isOlympiadLeapYear,
     olympiadDisplay, olympiadFromDisplay,

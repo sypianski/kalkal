@@ -8,6 +8,7 @@ const I18N = {
     navConverter: 'Converter',
     navCalendars: 'Calendars',
     navMethodology: 'Methodology',
+    navDynasties: 'Dynasties',
     fromCalendar: 'From',
     toDate: 'To (optional)',
     targetCalendar: 'Convert to',
@@ -16,10 +17,10 @@ const I18N = {
       hijri: 'Hijri', julian: 'Julian', gregorian: 'Gregorian',
       coptic: 'Coptic', ethiopian: 'Ethiopian', yazdgerdi: 'Yazdgerdi',
       armenian: 'Armenian', solarHijri: 'Solar Hijri (Iranian)',
-      byzantine: 'Byzantine', alexandrian: 'Alexandrian',
+      byzantine: 'Byzantine',
       seleucid: 'Seleucid', syriac: 'Syriac', rumi: 'R\u016bm\u012b',
       egyptian: 'Egyptian',
-      auc: 'Ab Urbe Condita', spanish: 'Spanish Era',
+      auc: 'Ab Urbe Condita', spanish: 'Spanish Era', antiochene: 'Antiochene Era',
       olympiad: 'Olympiad', macedonian: 'Macedonian',
       hebrew: 'Hebrew',
       bp: 'Before Present', human: 'Human Era'
@@ -40,6 +41,7 @@ const I18N = {
     monthBreakdown: 'Month breakdown',
     calendarNote: 'Dates before Oct 15, 1582 use the Julian calendar.',
     julianDateNote: 'This date precedes the Gregorian reform (1582). The Gregorian date shown is calculated proleptically — the Julian calendar is used here.',
+    indictionLabel: 'Indiction',
     tabularNote: 'Tabular Islamic calendar (arithmetic). May differ \u00b11\u20132 days from observation-based calendars.',
     gregorianLabel: 'Gregorian',
     julianLabel: 'Julian',
@@ -80,6 +82,10 @@ const I18N = {
     seleucidMonths: [
       'October', 'November', 'December', 'January', 'February', 'March',
       'April', 'May', 'June', 'July', 'August', 'September'
+    ],
+    seleucidBabMonths: [
+      'April', 'May', 'June', 'July', 'August', 'September',
+      'October', 'November', 'December', 'January', 'February', 'March'
     ],
     syriacMonths: [
       'K\u0101n\u016bn ath-Th\u0101n\u012b', 'Shb\u0101\u1e6d', '\u0100dh\u0101r', 'N\u012bs\u0101n', 'Ayy\u0101r', '\u1e24z\u012br\u0101n',
@@ -206,6 +212,7 @@ const I18N = {
     navConverter: 'Konwerter',
     navCalendars: 'Kalendarze',
     navMethodology: 'Metodologia',
+    navDynasties: 'Dynastie',
     fromCalendar: 'Z',
     toDate: 'Do (opcjonalnie)',
     targetCalendar: 'Przelicz na',
@@ -214,10 +221,10 @@ const I18N = {
       hijri: 'Hid\u017cry', julian: 'Julia\u0144ski', gregorian: 'Gregoria\u0144ski',
       coptic: 'Koptyjski', ethiopian: 'Etiopski', yazdgerdi: 'Jezdegerda',
       armenian: 'Ormia\u0144ski', solarHijri: 'Ira\u0144ski',
-      byzantine: 'Bizanty\u0144ski', alexandrian: 'Aleksandryjski',
+      byzantine: 'Bizanty\u0144ski',
       seleucid: 'Seleucydzki', syriac: 'Syryjski', rumi: 'R\u016bm\u012b (osma\u0144ski)',
       egyptian: 'Egipski',
-      auc: 'Ab Urbe Condita', spanish: 'Era hiszpa\u0144ska',
+      auc: 'Ab Urbe Condita', spanish: 'Era hiszpa\u0144ska', antiochene: 'Era antioche\u0144ska',
       olympiad: 'Olimpiady', macedonian: 'Macedo\u0144ski',
       hebrew: 'Hebrajski',
       bp: 'Przed tera\u017aniejszo\u015bci\u0105', human: 'Era ludzka'
@@ -238,6 +245,7 @@ const I18N = {
     monthBreakdown: 'Rozk\u0142ad miesi\u0119cy',
     calendarNote: 'Daty przed 15.10.1582 u\u017cywaj\u0105 kalendarza julia\u0144skiego.',
     julianDateNote: 'Data sprzed reformy gregoria\u0144skiej (1582). Podana data gregoria\u0144ska jest obliczona proleptycznie \u2014 w rzeczywisto\u015bci u\u017cyty jest tu kalendarz julia\u0144ski.',
+    indictionLabel: 'Indykcja',
     tabularNote: 'Tabularyczny kalendarz islamski (arytmetyczny). Mo\u017ce si\u0119 r\u00f3\u017cni\u0107 o \u00b11\u20132 dni od kalendarzy obserwacyjnych.',
     gregorianLabel: 'Gregoria\u0144ski',
     julianLabel: 'Julia\u0144ski',
@@ -278,6 +286,10 @@ const I18N = {
     seleucidMonths: [
       'Pa\u017adziernik', 'Listopad', 'Grudzie\u0144', 'Stycze\u0144', 'Luty', 'Marzec',
       'Kwiecie\u0144', 'Maj', 'Czerwiec', 'Lipiec', 'Sierpie\u0144', 'Wrzesie\u0144'
+    ],
+    seleucidBabMonths: [
+      'Kwiecie\u0144', 'Maj', 'Czerwiec', 'Lipiec', 'Sierpie\u0144', 'Wrzesie\u0144',
+      'Pa\u017adziernik', 'Listopad', 'Grudzie\u0144', 'Stycze\u0144', 'Luty', 'Marzec'
     ],
     syriacMonths: [
       'Kanun as-Sani', 'Szubat', 'Azar', 'Nisan', 'Ajjar', 'Haziran',
@@ -404,6 +416,7 @@ const I18N = {
     navConverter: '\u0627\u0644\u0645\u062d\u0648\u0651\u0644',
     navCalendars: '\u0627\u0644\u062a\u0642\u0627\u0648\u064a\u0645',
     navMethodology: '\u0627\u0644\u0645\u0646\u0647\u062c\u064a\u0629',
+    navDynasties: '\u0627\u0644\u0623\u0633\u0631 \u0627\u0644\u062d\u0627\u0643\u0645\u0629',
     fromCalendar: '\u0645\u0646',
     toDate: '\u0625\u0644\u0649 (\u0627\u062e\u062a\u064a\u0627\u0631\u064a)',
     targetCalendar: '\u062a\u062d\u0648\u064a\u0644 \u0625\u0644\u0649',
@@ -412,10 +425,10 @@ const I18N = {
       hijri: '\u0647\u062c\u0631\u064a', julian: '\u064a\u0648\u0644\u064a\u0627\u0646\u064a', gregorian: '\u0645\u064a\u0644\u0627\u062f\u064a',
       coptic: '\u0642\u0628\u0637\u064a', ethiopian: '\u0625\u062b\u064a\u0648\u0628\u064a', yazdgerdi: '\u064a\u0632\u062f\u062c\u0631\u062f\u064a',
       armenian: '\u0623\u0631\u0645\u0646\u064a', solarHijri: '\u0647\u062c\u0631\u064a \u0634\u0645\u0633\u064a',
-      byzantine: '\u0628\u064a\u0632\u0646\u0637\u064a', alexandrian: '\u0625\u0633\u0643\u0646\u062f\u0631\u064a',
+      byzantine: '\u0628\u064a\u0632\u0646\u0637\u064a',
       seleucid: '\u0633\u0644\u0648\u0642\u064a', syriac: '\u0633\u0631\u064a\u0627\u0646\u064a', rumi: '\u0631\u0648\u0645\u064a',
       egyptian: '\u0645\u0635\u0631\u064a',
-      auc: '\u0645\u0646\u0630 \u062a\u0623\u0633\u064a\u0633 \u0631\u0648\u0645\u0627', spanish: '\u0627\u0644\u062a\u0642\u0648\u064a\u0645 \u0627\u0644\u0625\u0633\u0628\u0627\u0646\u064a',
+      auc: '\u0645\u0646\u0630 \u062a\u0623\u0633\u064a\u0633 \u0631\u0648\u0645\u0627', spanish: '\u0627\u0644\u062a\u0642\u0648\u064a\u0645 \u0627\u0644\u0625\u0633\u0628\u0627\u0646\u064a', antiochene: '\u0627\u0644\u062a\u0642\u0648\u064a\u0645 \u0627\u0644\u0623\u0646\u0637\u0627\u0643\u064a',
       olympiad: '\u0627\u0644\u0623\u0648\u0644\u0645\u0628\u064a\u0627\u062f', macedonian: '\u0645\u0642\u062f\u0648\u0646\u064a',
       hebrew: '\u0639\u0628\u0631\u064a',
       bp: '\u0642\u0628\u0644 \u0627\u0644\u062d\u0627\u0636\u0631', human: '\u0627\u0644\u062a\u0642\u0648\u064a\u0645 \u0627\u0644\u0628\u0634\u0631\u064a'
@@ -436,6 +449,7 @@ const I18N = {
     monthBreakdown: '\u062a\u0641\u0635\u064a\u0644 \u0627\u0644\u0623\u0634\u0647\u0631',
     calendarNote: '\u0627\u0644\u062a\u0648\u0627\u0631\u064a\u062e \u0642\u0628\u0644 15 \u0623\u0643\u062a\u0648\u0628\u0631 1582 \u062a\u0633\u062a\u062e\u062f\u0645 \u0627\u0644\u062a\u0642\u0648\u064a\u0645 \u0627\u0644\u064a\u0648\u0644\u064a\u0627\u0646\u064a.',
     julianDateNote: '\u0647\u0630\u0627 \u0627\u0644\u062a\u0627\u0631\u064a\u062e \u0633\u0627\u0628\u0642 \u0644\u0644\u0625\u0635\u0644\u0627\u062d \u0627\u0644\u063a\u0631\u064a\u063a\u0648\u0631\u064a (1582). \u0627\u0644\u062a\u0627\u0631\u064a\u062e \u0627\u0644\u063a\u0631\u064a\u063a\u0648\u0631\u064a \u0627\u0644\u0645\u0639\u0631\u0648\u0636 \u0645\u062d\u0633\u0648\u0628 \u0627\u0633\u062a\u0628\u0627\u0642\u064a\u064b\u0627 \u2014 \u0627\u0644\u0645\u0633\u062a\u062e\u062f\u0645 \u0647\u0646\u0627 \u0647\u0648 \u0627\u0644\u062a\u0642\u0648\u064a\u0645 \u0627\u0644\u064a\u0648\u0644\u064a\u0627\u0646\u064a.',
+    indictionLabel: '\u0627\u0644\u0625\u0646\u062f\u0643\u062a\u064a\u0648\u0646',
     tabularNote: '\u0627\u0644\u062a\u0642\u0648\u064a\u0645 \u0627\u0644\u0625\u0633\u0644\u0627\u0645\u064a \u0627\u0644\u062c\u062f\u0648\u0644\u064a (\u062d\u0633\u0627\u0628\u064a). \u0642\u062f \u064a\u062e\u062a\u0644\u0641 \u0628\u0640\u00b11\u20132 \u064a\u0648\u0645 \u0639\u0646 \u0627\u0644\u062a\u0642\u0627\u0648\u064a\u0645 \u0627\u0644\u0642\u0627\u0626\u0645\u0629 \u0639\u0644\u0649 \u0627\u0644\u0631\u0624\u064a\u0629.',
     gregorianLabel: '\u0645\u064a\u0644\u0627\u062f\u064a',
     julianLabel: '\u064a\u0648\u0644\u064a\u0627\u0646\u064a',
@@ -476,6 +490,10 @@ const I18N = {
     seleucidMonths: [
       '\u062a\u0634\u0631\u064a\u0646 \u0627\u0644\u0623\u0648\u0644', '\u062a\u0634\u0631\u064a\u0646 \u0627\u0644\u062b\u0627\u0646\u064a', '\u0643\u0627\u0646\u0648\u0646 \u0627\u0644\u0623\u0648\u0644', '\u0643\u0627\u0646\u0648\u0646 \u0627\u0644\u062b\u0627\u0646\u064a', '\u0634\u0628\u0627\u0637', '\u0622\u0630\u0627\u0631',
       '\u0646\u064a\u0633\u0627\u0646', '\u0623\u064a\u0627\u0631', '\u062d\u0632\u064a\u0631\u0627\u0646', '\u062a\u0645\u0648\u0632', '\u0622\u0628', '\u0623\u064a\u0644\u0648\u0644'
+    ],
+    seleucidBabMonths: [
+      '\u0646\u064a\u0633\u0627\u0646', '\u0623\u064a\u0627\u0631', '\u062d\u0632\u064a\u0631\u0627\u0646', '\u062a\u0645\u0648\u0632', '\u0622\u0628', '\u0623\u064a\u0644\u0648\u0644',
+      '\u062a\u0634\u0631\u064a\u0646 \u0627\u0644\u0623\u0648\u0644', '\u062a\u0634\u0631\u064a\u0646 \u0627\u0644\u062b\u0627\u0646\u064a', '\u0643\u0627\u0646\u0648\u0646 \u0627\u0644\u0623\u0648\u0644', '\u0643\u0627\u0646\u0648\u0646 \u0627\u0644\u062b\u0627\u0646\u064a', '\u0634\u0628\u0627\u0637', '\u0622\u0630\u0627\u0631'
     ],
     syriacMonths: [
       '\u0643\u0627\u0646\u0648\u0646 \u0627\u0644\u062b\u0627\u0646\u064a', '\u0634\u0628\u0627\u0637', '\u0622\u0630\u0627\u0631', '\u0646\u064a\u0633\u0627\u0646', '\u0623\u064a\u0627\u0631', '\u062d\u0632\u064a\u0631\u0627\u0646',
@@ -602,6 +620,7 @@ const I18N = {
     navConverter: 'Konvertilo',
     navCalendars: 'Kalendaroj',
     navMethodology: 'Metodologio',
+    navDynasties: 'Dinastioj',
     fromCalendar: 'De',
     toDate: '\u011cis (nedevige)',
     targetCalendar: 'Konverti al',
@@ -610,10 +629,10 @@ const I18N = {
       hijri: 'Hi\u011dra', julian: 'Julia', gregorian: 'Gregoria',
       coptic: 'Kopta', ethiopian: 'Etiopa', yazdgerdi: 'Jazdgerda',
       armenian: 'Armena', solarHijri: 'Persa',
-      byzantine: 'Bizanca', alexandrian: 'Aleksandria',
+      byzantine: 'Bizanca',
       seleucid: 'Selekida', syriac: 'Siria', rumi: 'Rumia',
       egyptian: 'Egipta',
-      auc: 'Ab Urbe Condita', spanish: 'Hispana Erao',
+      auc: 'Ab Urbe Condita', spanish: 'Hispana Erao', antiochene: 'Antio\u0125ia Erao',
       olympiad: 'Olimpiado', macedonian: 'Makedona',
       hebrew: 'Hebrea',
       bp: 'Anta\u016d la nuno', human: 'Homara Erao'
@@ -634,6 +653,7 @@ const I18N = {
     monthBreakdown: 'Monata detalo',
     calendarNote: 'Datoj anta\u016d la 15-a de oktobro 1582 uzas la julian kalendaron.',
     julianDateNote: '\u0108i tiu dato anta\u016das la gregorian reformon (1582). La montrita gregoria dato estas kalkulita proleptike \u2014 \u0109i tie estas uzata la julia kalendaro.',
+    indictionLabel: 'Indiktio',
     tabularNote: 'Tabela islama kalendaro (aritmetika). Povas diferenci je \u00b11\u20132 tagoj de observaj kalendaroj.',
     gregorianLabel: 'Gregoria',
     julianLabel: 'Julia',
@@ -674,6 +694,10 @@ const I18N = {
     seleucidMonths: [
       'oktobro', 'novembro', 'decembro', 'januaro', 'februaro', 'marto',
       'aprilo', 'majo', 'junio', 'julio', 'a\u016dgusto', 'septembro'
+    ],
+    seleucidBabMonths: [
+      'aprilo', 'majo', 'junio', 'julio', 'a\u016dgusto', 'septembro',
+      'oktobro', 'novembro', 'decembro', 'januaro', 'februaro', 'marto'
     ],
     syriacMonths: [
       'kanun a\u1e6f-\u1e6f\u0101n\u012b', '\u015db\u0101\u1e6d', '\u0101dh\u0101r', 'n\u012bs\u0101n', 'ayy\u0101r', '\u1e25z\u012br\u0101n',

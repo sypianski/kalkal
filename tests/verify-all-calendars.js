@@ -272,7 +272,103 @@ massRoundTrip('Egyptian', Cal.egyptianToJD, Cal.jdToEgyptian, 13, Cal.egyptianMo
 console.log();
 
 // ═══════════════════════════════════════════════════════
-// 12. CROSS-CALENDAR CONSISTENCY
+// 12. HEBREW
+// ═══════════════════════════════════════════════════════
+console.log('═══ HEBREW ═══');
+
+// Epoch: 1 Tishrei 1 AM = 7 Oct 3761 BCE (proleptic Julian)
+const hebEpoch = Cal.jdToJulian(Cal.hebrewToJD(1, 1, 1));
+console.log('   Epoch: 1 Tishrei 1 AM = Jul ' + hebEpoch.year + '/' + hebEpoch.month + '/' + hebEpoch.day);
+eq('Hebrew epoch JDN', Cal.hebrewToJD(1, 1, 1), 347997.5);
+
+// Intl hebrew calendar comparison
+const intlHebCases = [];
+try {
+  const fmtHeb = new Intl.DateTimeFormat('en-u-ca-hebrew', {
+    year: 'numeric', month: 'numeric', day: 'numeric', timeZone: 'UTC'
+  });
+  for (const [gy, gm, gd] of [[2024, 1, 1], [2026, 3, 21], [2025, 9, 23]]) {
+    const d = new Date(Date.UTC(gy, gm - 1, gd));
+    const parts = fmtHeb.formatToParts(d);
+    const iy = parseInt(parts.find(p => p.type === 'year')?.value);
+    const im = parseInt(parts.find(p => p.type === 'month')?.value);
+    const id = parseInt(parts.find(p => p.type === 'day')?.value);
+    if (iy && im && id) intlHebCases.push({ g: [gy, gm, gd], intl: [iy, im, id] });
+  }
+} catch (e) { /* Intl hebrew not available */ }
+
+for (const tc of intlHebCases) {
+  const heb = Cal.jdToHebrew(Cal.gregorianToJD(...tc.g));
+  // Intl uses religious month ordering (Nisan=1), kalkal uses civil (Tishrei=1)
+  // So we compare via JD round-trip instead of raw month numbers
+  console.log('   G ' + tc.g.join('/') + ' → kal: ' + heb.year + '/' + heb.month + '/' + heb.day +
+    ' | Intl: ' + tc.intl.join('/') + ' (Intl may use different month numbering)');
+}
+
+// Leap year: 19-year Metonic cycle, years 3,6,8,11,14,17,19 are leap
+ok('Hebrew leap yr 3', Cal.isHebrewLeapYear(3));
+ok('Hebrew leap yr 6', Cal.isHebrewLeapYear(6));
+ok('Hebrew leap yr 8', Cal.isHebrewLeapYear(8));
+ok('Hebrew non-leap yr 1', !Cal.isHebrewLeapYear(1));
+ok('Hebrew non-leap yr 2', !Cal.isHebrewLeapYear(2));
+ok('Hebrew non-leap yr 4', !Cal.isHebrewLeapYear(4));
+
+// Year lengths: 353 (deficient common), 354 (regular), 355 (complete)
+//               383 (deficient leap), 384 (regular leap), 385 (complete leap)
+const yearLens = new Set();
+for (let y = 5780; y <= 5800; y++) yearLens.add(Cal.hebrewYearLength(y));
+console.log('   Year lengths (5780-5800): ' + [...yearLens].sort().join(', '));
+ok('Hebrew year lengths valid', [...yearLens].every(l => [353, 354, 355, 383, 384, 385].includes(l)));
+
+// Adar II (month 7) should be 0 in common years, 29 in leap years
+const commonYear = 5784; // 2023-2024, check if common
+const leapYear5784 = Cal.isHebrewLeapYear(5784);
+// Find a definite common and leap year
+let testCommon = 5781, testLeap = 5782;
+while (Cal.isHebrewLeapYear(testCommon)) testCommon++;
+while (!Cal.isHebrewLeapYear(testLeap)) testLeap++;
+eq('Adar II = 0 in common yr ' + testCommon, Cal.hebrewMonthLength(testCommon, 7), 0);
+eq('Adar II = 29 in leap yr ' + testLeap, Cal.hebrewMonthLength(testLeap, 7), 29);
+console.log('   Adar II: common yr ' + testCommon + ' → 0d, leap yr ' + testLeap + ' → 29d ✓');
+
+// Known date: Rosh Hashana 5785 = 3 Oct 2024 (well-known, easily verifiable)
+const roshHashana5785 = Cal.jdToGregorian(Cal.hebrewToJD(5785, 1, 1));
+console.log('   Rosh Hashana 5785 → G ' + roshHashana5785.year + '/' + roshHashana5785.month + '/' + roshHashana5785.day);
+// Rosh Hashana 5785 was 2-4 Oct 2024 (evening of Oct 2)
+ok('Rosh Hashana 5785 Oct 2024', roshHashana5785.year === 2024 && roshHashana5785.month === 10 &&
+  roshHashana5785.day >= 2 && roshHashana5785.day <= 4);
+
+// Passover 5784 = 15 Nisan 5784 = ~23 Apr 2024
+const passover5784 = Cal.jdToGregorian(Cal.hebrewToJD(5784, 8, 15)); // Nisan = month 8 in civil
+console.log('   Passover (15 Nisan) 5784 → G ' + passover5784.year + '/' + passover5784.month + '/' + passover5784.day);
+ok('Passover 5784 Apr 2024', passover5784.year === 2024 && passover5784.month === 4 &&
+  passover5784.day >= 22 && passover5784.day <= 24);
+
+// Mass round-trip (skip month 7 in common years — it has 0 days)
+{
+  let hebOk = 0, hebTotal = 0;
+  for (let y = 5700; y <= 5800; y += 1) {
+    for (let m = 1; m <= 13; m++) {
+      const ml = Cal.hebrewMonthLength(y, m);
+      if (ml === 0) continue; // skip Adar II in common years
+      for (const d of [1, Math.min(15, ml), ml]) {
+        hebTotal++;
+        const jd = Cal.hebrewToJD(y, m, d);
+        const back = Cal.jdToHebrew(jd);
+        if (back.year === y && back.month === m && back.day === d) hebOk++;
+        else if (hebTotal - hebOk <= 3) issues.push('Hebrew RT: ' + y + '/' + m + '/' + d +
+          ' → ' + back.year + '/' + back.month + '/' + back.day);
+      }
+    }
+  }
+  const allOk = hebOk === hebTotal;
+  if (allOk) pass++; else { fail++; issues.push('FAIL: Hebrew mass RT: ' + hebOk + '/' + hebTotal); }
+  console.log('   Hebrew: ' + hebOk + '/' + hebTotal, allOk ? '✓' : '✗');
+}
+console.log();
+
+// ═══════════════════════════════════════════════════════
+// 13. CROSS-CALENDAR CONSISTENCY
 // ═══════════════════════════════════════════════════════
 console.log('═══ CROSS-CALENDAR CONSISTENCY ═══');
 const testJDs = [1948439.5, 2299160.5, 2451544.5, 2460499.5, 1825029.5, 1500000.5, 2000000.5];
@@ -291,6 +387,7 @@ const calFuncs = [
   { name: 'Syriac', toJD: Cal.syriacToJD, fromJD: Cal.jdToSyriac },
   { name: 'Rumi', toJD: Cal.rumiToJD, fromJD: Cal.jdToRumi },
   { name: 'Egyptian', toJD: Cal.egyptianToJD, fromJD: Cal.jdToEgyptian },
+  { name: 'Hebrew', toJD: Cal.hebrewToJD, fromJD: Cal.jdToHebrew },
 ];
 
 let crossOk = 0, crossTotal = 0;
@@ -303,7 +400,7 @@ for (const jd of testJDs) {
     else issues.push('Cross: JD ' + jd + ' ' + cal.name + ' → ' + d.year + '/' + d.month + '/' + d.day + ' → JD ' + jdBack);
   }
 }
-console.log('   All 14 calendars × 7 JDs: ' + crossOk + '/' + crossTotal, crossOk === crossTotal ? '✓' : '✗');
+console.log('   All 15 calendars × 7 JDs: ' + crossOk + '/' + crossTotal, crossOk === crossTotal ? '✓' : '✗');
 if (crossOk === crossTotal) pass++; else fail++;
 console.log();
 

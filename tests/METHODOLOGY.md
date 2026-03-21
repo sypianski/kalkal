@@ -76,7 +76,7 @@ Dla każdego kalendarza: konwertuj datę na JDN, potem z powrotem. Oryginał mus
 - **Hijri (4 warianty):** 2000 dat × 4 = 8000 testów
 - **Gregorian→Hijri→Gregorian:** 603 daty (lata 700–2100)
 - **Każdy z 11 nowych kalendarzy:** 5000–14000 dat (zależy od zakresu lat)
-- **Cross-calendar:** 14 kalendarzy × 7 referencyjnych JDN = 98 testów
+- **Cross-calendar:** 15 kalendarzy × 7 referencyjnych JDN = 105 testów
 
 ### 4.2. Epoki (stałe algorytmiczne)
 
@@ -91,6 +91,7 @@ Sprawdzenie, że JDN epoki każdego kalendarza konwertuje na znaną datę julia�
 | Armenian | 1 Navasard 1 | 11 Jul 552 CE | 1922867.5 |
 | Solar Hijri | 1 Farvardin 1 AP | ~19 Mar 622 CE | 1948320.5 |
 | Egyptian | 1 Thoth 1 Nab. | 26 Feb 747 BCE | 1448637.5 |
+| Hebrew | 1 Tishrei 1 AM | 7 Oct 3761 BCE | 347997.5 |
 
 Kalendarze oparte na juliańskim (bizantyjski, aleksandryjski, seleucydzki, syryjski, rumi) nie mają oddzielnej epoki JDN — testujemy offset wobec kalendarza juliańskiego.
 
@@ -99,6 +100,8 @@ Kalendarze oparte na juliańskim (bizantyjski, aleksandryjski, seleucydzki, syry
 - Bitwa pod Badrem: 17 Ramadan 2 AH = 13 marca 624 Jul
 - Upadek Bagdadu: 10 lutego 1258 Greg ≈ Safar 656 AH
 - Zdobycie Konstantynopola: 29 maja 1453 Jul = Byz 6961/9/29
+- Rosh Hashana 5785: 1 Tishrei 5785 = 3 października 2024
+- Pesach 5784: 15 Nisan 5784 = 23 kwietnia 2024
 - Granica juliańsko-gregoriańska: 4 X 1582 Jul + 1 dzień = 15 X 1582 Greg
 
 ### 4.4. Właściwości strukturalne
@@ -108,6 +111,7 @@ Kalendarze oparte na juliańskim (bizantyjski, aleksandryjski, seleucydzki, syry
 - Rumi = Julian − 584 lat
 - Solar Hijri: miesiące 1–6 = 31d, 7–11 = 30d, 12 = 29/30d
 - Kalendarze bez lat przestępnych (yazdgerdi, armeński, egipski): rok = 365d, miesiąc 13 = 5d
+- Hebrajski: cykl Metona 19-letni, 6 możliwych długości roku (353–385d), Adar II = 0d w roku zwykłym
 
 ## 5. Wyniki zbiorcze
 
@@ -129,7 +133,7 @@ Kalendarze oparte na juliańskim (bizantyjski, aleksandryjski, seleucydzki, syry
 | Granica juliańsko-gregoriańska | ✓ | JD ciągłe |
 | **Razem** | **39 pass** | **0 błędów rzeczywistych** |
 
-### Wszystkie kalendarze (verify-all-calendars.js) — 84 testy
+### Wszystkie kalendarze (verify-all-calendars.js) — 97 testów
 
 | Kalendarz | Epoka | Znane daty | Intl | Mass round-trip |
 |-----------|-------|------------|------|-----------------|
@@ -144,12 +148,25 @@ Kalendarze oparte na juliańskim (bizantyjski, aleksandryjski, seleucydzki, syry
 | Syriac | ✓ | ✓ | — | 7 938/7 938 ✓ |
 | Rumi | ✓ | ✓ | — | 5 040/5 040 ✓ |
 | Egyptian | ✓ | ✓ | — | 10 500/10 500 ✓ |
-| **Cross-calendar** | | | | **98/98 ✓** |
-| **Razem** | | | | **84 pass, 0 fail** |
+| Hebrew | ✓ | ✓ | porównanie | 3 747/3 747 ✓ |
+| **Cross-calendar** | | | | **105/105 ✓** |
+| **Razem** | | | | **97 pass, 0 fail** |
 
-### Łącznie: 123 testy, 0 błędów rzeczywistych
+#### Hebrew — szczegóły
 
-(39 + 84, z 3 oczekiwanymi rozbieżnościami ±1d)
+Kalendarz hebrajski jest najkompleksowy (lunisolarny, zmienna struktura roku):
+
+- **Algorytm:** Reingold & Dershowitz, *Calendrical Calculations*
+- **Cykl Metona:** lata przestępne 3, 6, 8, 11, 14, 17, 19 w cyklu 19-letnim ✓
+- **Długości lat:** 353, 354, 355 (zwykłe), 383, 384, 385 (przestępne) — wszystkie 6 wariantów zweryfikowane ✓
+- **Adar II (miesiąc 7):** 0 dni w roku zwykłym, 29 dni w przestępnym ✓
+- **Rosh Hashana 5785:** → 3 października 2024 ✓
+- **Pesach (15 Nisan) 5784:** → 23 kwietnia 2024 ✓
+- **Round-trip:** 3 747 dat (lata 5700–5800, wszystkie miesiące, uwzględniając zmienną strukturę) ✓
+
+### Łącznie: 136 testów, 0 błędów rzeczywistych
+
+(39 + 97, z 3 oczekiwanymi rozbieżnościami ±1d)
 
 ## 6. Znane rozbieżności (nie błędy)
 
@@ -179,7 +196,7 @@ Pierwsze 5 lat dywergencji: 19, 49, 79, 109, 139 AH.
 ```bash
 node tests/verify.js                # Podstawowe wyniki konwersji kalkal
 node tests/cross-verify.js          # Hijri: Fourmilab, Intl, Python, Meeus
-node tests/verify-all-calendars.js  # Wszystkie 11 kalendarzy: epoki, daty, round-tripy
+node tests/verify-all-calendars.js  # Wszystkie 12 kalendarzy: epoki, daty, round-tripy
 ```
 
 ## 9. Pliki

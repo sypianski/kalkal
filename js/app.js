@@ -10,11 +10,14 @@
   const CALENDARS = {
     hijri: {
       id: 'hijri',
-      toJD: (y, m, d) => Cal.hijriToJD(y, m, d),
-      fromJD: (jd) => Cal.jdToHijri(jd),
-      monthLength: (y, m) => Cal.hijriMonthLength(y, m),
-      yearLength: (y) => Cal.hijriYearLength(y),
-      isLeap: (y) => Cal.isHijriLeapYear(y),
+      variants: ['IIc', 'IIa', 'IIIa', 'IVa'],
+      defaultVariant: 'IIc',
+      _variant: 'IIc',
+      toJD(y, m, d) { return Cal.hijriToJD(y, m, d, this._variant); },
+      fromJD(jd) { return Cal.jdToHijri(jd, this._variant); },
+      monthLength(y, m) { return Cal.hijriMonthLength(y, m, this._variant); },
+      yearLength(y) { return Cal.hijriYearLength(y, this._variant); },
+      isLeap(y) { return Cal.isHijriLeapYear(y, this._variant); },
       monthCount: 12,
       monthNames: (t) => t.hijriMonths
     },
@@ -46,7 +49,7 @@
       yearLength: (y) => Cal.copticYearLength(y),
       isLeap: (y) => Cal.isCopticLeapYear(y),
       monthCount: 13,
-      monthNames: (t) => t.copticMonths || I18N.en.copticMonths
+      monthNames: (t) => t.copticMonths
     },
     ethiopian: {
       id: 'ethiopian',
@@ -56,7 +59,7 @@
       yearLength: (y) => Cal.ethiopianYearLength(y),
       isLeap: (y) => Cal.isEthiopianLeapYear(y),
       monthCount: 13,
-      monthNames: (t) => t.ethiopianMonths || I18N.en.ethiopianMonths
+      monthNames: (t) => t.ethiopianMonths
     },
     yazdgerdi: {
       id: 'yazdgerdi',
@@ -66,7 +69,7 @@
       yearLength: () => Cal.yazdgerdiYearLength(),
       isLeap: () => false,
       monthCount: 13,
-      monthNames: (t) => t.persianMonths || I18N.en.persianMonths
+      monthNames: (t) => t.persianMonths
     },
     armenian: {
       id: 'armenian',
@@ -76,7 +79,7 @@
       yearLength: () => Cal.armenianYearLength(),
       isLeap: () => false,
       monthCount: 13,
-      monthNames: (t) => t.armenianMonths || I18N.en.armenianMonths
+      monthNames: (t) => t.armenianMonths
     },
     solarHijri: {
       id: 'solarHijri',
@@ -86,8 +89,116 @@
       yearLength: (y) => Cal.solarHijriYearLength(y),
       isLeap: (y) => Cal.isSolarHijriLeapYear(y),
       monthCount: 12,
-      monthNames: (t) => t.persianMonths || I18N.en.persianMonths
+      monthNames: (t) => t.persianMonths
+    },
+    byzantine: {
+      id: 'byzantine',
+      toJD: (y, m, d) => Cal.byzantineToJD(y, m, d),
+      fromJD: (jd) => Cal.jdToByzantine(jd),
+      monthLength: (y, m) => Cal.byzantineMonthLength(y, m),
+      yearLength: (y) => Cal.byzantineYearLength(y),
+      isLeap: (y) => Cal.isByzantineLeapYear(y),
+      monthCount: 12,
+      monthNames: (t) => t.byzantineMonths
+    },
+    alexandrian: {
+      id: 'alexandrian',
+      toJD: (y, m, d) => Cal.alexandrianToJD(y, m, d),
+      fromJD: (jd) => Cal.jdToAlexandrian(jd),
+      monthLength: (y, m) => Cal.alexandrianMonthLength(y, m),
+      yearLength: (y) => Cal.alexandrianYearLength(y),
+      isLeap: (y) => Cal.isAlexandrianLeapYear(y),
+      monthCount: 12,
+      monthNames: (t) => t.alexandrianMonths
+    },
+    seleucid: {
+      id: 'seleucid',
+      toJD: (y, m, d) => Cal.seleucidToJD(y, m, d),
+      fromJD: (jd) => Cal.jdToSeleucid(jd),
+      monthLength: (y, m) => Cal.seleucidMonthLength(y, m),
+      yearLength: (y) => Cal.seleucidYearLength(y),
+      isLeap: (y) => Cal.isSeleucidLeapYear(y),
+      monthCount: 12,
+      monthNames: (t) => t.seleucidMonths
+    },
+    syriac: {
+      id: 'syriac',
+      toJD: (y, m, d) => Cal.syriacToJD(y, m, d),
+      fromJD: (jd) => Cal.jdToSyriac(jd),
+      monthLength: (y, m) => Cal.syriacMonthLength(y, m),
+      yearLength: (y) => Cal.syriacYearLength(y),
+      isLeap: (y) => Cal.isSyriacLeapYear(y),
+      monthCount: 12,
+      monthNames: (t) => t.syriacMonths
+    },
+    rumi: {
+      id: 'rumi',
+      toJD: (y, m, d) => Cal.rumiToJD(y, m, d),
+      fromJD: (jd) => Cal.jdToRumi(jd),
+      monthLength: (y, m) => Cal.rumiMonthLength(y, m),
+      yearLength: (y) => Cal.rumiYearLength(y),
+      isLeap: (y) => Cal.isRumiLeapYear(y),
+      monthCount: 12,
+      monthNames: (t) => t.gregorianMonths
+    },
+    egyptian: {
+      id: 'egyptian',
+      toJD: (y, m, d) => Cal.egyptianToJD(y, m, d),
+      fromJD: (jd) => Cal.jdToEgyptian(jd),
+      monthLength: (y, m) => Cal.egyptianMonthLength(y, m),
+      yearLength: () => Cal.egyptianYearLength(),
+      isLeap: () => false,
+      monthCount: 13,
+      monthNames: (t) => t.egyptianMonths
+    },
+    auc: {
+      id: 'auc',
+      toJD: (y, m, d) => Cal.aucToJD(y, m, d),
+      fromJD: (jd) => Cal.jdToAuc(jd),
+      monthLength: (y, m) => Cal.aucMonthLength(y, m),
+      yearLength: (y) => Cal.aucYearLength(y),
+      isLeap: (y) => Cal.isAucLeapYear(y),
+      monthCount: 12,
+      monthNames: (t) => t.gregorianMonths
+    },
+    spanish: {
+      id: 'spanish',
+      toJD: (y, m, d) => Cal.spanishToJD(y, m, d),
+      fromJD: (jd) => Cal.jdToSpanish(jd),
+      monthLength: (y, m) => Cal.spanishMonthLength(y, m),
+      yearLength: (y) => Cal.spanishYearLength(y),
+      isLeap: (y) => Cal.isSpanishLeapYear(y),
+      monthCount: 12,
+      monthNames: (t) => t.gregorianMonths
+    },
+    olympiad: {
+      id: 'olympiad',
+      toJD: (y, m, d) => Cal.olympiadToJD(y, m, d),
+      fromJD: (jd) => Cal.jdToOlympiad(jd),
+      monthLength: (y, m) => Cal.olympiadMonthLength(y, m),
+      yearLength: (y) => Cal.olympiadYearLength(y),
+      isLeap: (y) => Cal.isOlympiadLeapYear(y),
+      monthCount: 12,
+      monthNames: (t) => t.gregorianMonths
+    },
+    macedonian: {
+      id: 'macedonian',
+      toJD: (y, m, d) => Cal.macedonianToJD(y, m, d),
+      fromJD: (jd) => Cal.jdToMacedonian(jd),
+      monthLength: (y, m) => Cal.macedonianMonthLength(y, m),
+      yearLength: (y) => Cal.macedonianYearLength(y),
+      isLeap: (y) => Cal.isMacedonianLeapYear(y),
+      monthCount: 12,
+      monthNames: (t) => t.macedonianMonths
     }
+  };
+
+  // Variant display names (not translated — scholarly labels)
+  const VARIANT_LABELS = {
+    IIc: 'W\u00fcstenfeld',
+    IIa: 'East civil',
+    IIIa: 'West civil',
+    IVa: '\u1e24abash'
   };
 
   // ---- DOM helpers ----
@@ -121,6 +232,51 @@
   const toCalInput = $('#to-calendar');
   const fromMonthSelect = $('#from-month');
   const toMonthSelect = $('#to-month');
+  const fromVariantsBar = $('#from-variants');
+  const toVariantsBar = $('#to-variants');
+  const zodiacToggle = $('#zodiac-toggle');
+
+  // ---- Variant bar ----
+
+  function updateVariantBar(bar, calInput) {
+    while (bar.firstChild) bar.removeChild(bar.firstChild);
+    bar.classList.remove('visible');
+
+    const cal = resolveCalendar(calInput.value);
+    if (!cal || !cal.variants) return;
+
+    // Reset to default variant if not already set to a valid one
+    if (!cal.variants.includes(cal._variant)) {
+      cal._variant = cal.defaultVariant;
+    }
+
+    bar.classList.add('visible');
+    cal.variants.forEach(v => {
+      const btn = el('button', {
+        type: 'button',
+        class: 'variant-btn' + (v === cal._variant ? ' active' : ''),
+        text: VARIANT_LABELS[v] || v
+      });
+      btn.addEventListener('click', () => {
+        cal._variant = v;
+        $$('.variant-btn', bar).forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        if (calInput === fromCalInput) updateMonthSelects();
+      });
+      bar.appendChild(btn);
+    });
+  }
+
+  // ---- Calendar change handler ----
+
+  function onCalendarChange(calInput) {
+    if (calInput === fromCalInput) {
+      updateVariantBar(fromVariantsBar, fromCalInput);
+      updateMonthSelects();
+    } else {
+      updateVariantBar(toVariantsBar, toCalInput);
+    }
+  }
 
   // ---- Month select population ----
 
@@ -179,6 +335,8 @@
     });
 
     updateMonthSelects();
+    updateVariantBar(fromVariantsBar, fromCalInput);
+    updateVariantBar(toVariantsBar, toCalInput);
     document.title = 'kalkal \u2014 ' + t.appTitle;
   }
 
@@ -211,7 +369,7 @@
           input.value = m.name;
           hide();
           input.classList.remove('has-error');
-          if (input === fromCalInput) updateMonthSelects();
+          onCalendarChange(input);
         });
         dropdown.appendChild(li);
       });
@@ -245,7 +403,7 @@
       show(getMatches(input.value));
       input.classList.remove('has-error');
       clearError();
-      if (input === fromCalInput) updateMonthSelects();
+      onCalendarChange(input);
     });
 
     input.addEventListener('blur', () => {
@@ -372,14 +530,20 @@
     const srcNames = src.monthNames(t);
     const tgtNames = tgt.monthNames(t);
 
-    showResult([
+    const elements = [
       el('p', { class: 'result-label', text: t.calendars[src.id] }),
       el('p', { class: 'result-secondary', text: d + ' ' + srcNames[m - 1] + ' ' + y }),
       el('p', { class: 'result-label', text: t.calendars[tgt.id] }),
       el('p', { class: 'result-main', text: result.day + ' ' + tgtNames[result.month - 1] + ' ' + result.year }),
       el('p', { class: 'result-secondary', text: t.weekdays[dow] }),
-      buildMeta([[t.jdn, String(jd)]])
-    ]);
+    ];
+    if (zodiacToggle && zodiacToggle.checked) {
+      const zi = Cal.getZodiacSign(jd);
+      const symbol = '\u2648\u2649\u264A\u264B\u264C\u264D\u264E\u264F\u2650\u2651\u2652\u2653'[zi];
+      elements.push(el('p', { class: 'result-zodiac', text: symbol + ' ' + t.zodiacSigns[zi] }));
+    }
+    elements.push(buildMeta([[t.jdn, String(jd)]]));
+    showResult(elements);
   }
 
   function convertRange(src, tgt, y1, m1, d1, y2, m2, d2, t) {
@@ -389,31 +553,59 @@
     const endResult = tgt.fromJD(jdEnd);
     const srcNames = src.monthNames(t);
     const tgtNames = tgt.monthNames(t);
+    const srcLabel = t.calendars[src.id];
+    const tgtLabel = t.calendars[tgt.id];
 
-    const srcStartStr = d1 + ' ' + srcNames[m1 - 1] + ' ' + y1;
-    const srcEndStr = d2 + ' ' + srcNames[m2 - 1] + ' ' + y2;
     const tgtStartStr = startResult.day + ' ' + tgtNames[startResult.month - 1] + ' ' + startResult.year;
     const tgtEndStr = endResult.day + ' ' + tgtNames[endResult.month - 1] + ' ' + endResult.year;
 
-    const overlapping = [];
-    let oy = startResult.year, om = startResult.month;
-    while (oy < endResult.year || (oy === endResult.year && om <= endResult.month)) {
-      overlapping.push({ year: oy, month: om, days: tgt.monthLength(oy, om) });
-      om++;
-      if (om > tgt.monthCount) { om = 1; oy++; }
+    // Build source month breakdown with target equivalents
+    const monthRows = [];
+    let cy = y1, cm = m1;
+    while (cy < y2 || (cy === y2 && cm <= m2)) {
+      const mFirstDay = (cy === y1 && cm === m1) ? d1 : 1;
+      const mLastDay = (cy === y2 && cm === m2) ? d2 : src.monthLength(cy, cm);
+      const mDays = mLastDay - mFirstDay + 1;
+      const mStartTgt = tgt.fromJD(src.toJD(cy, cm, mFirstDay));
+      const mEndTgt = tgt.fromJD(src.toJD(cy, cm, mLastDay));
+      monthRows.push({
+        srcName: srcNames[cm - 1] + ' ' + cy,
+        days: mDays,
+        startStr: mStartTgt.day + ' ' + tgtNames[mStartTgt.month - 1] + ' ' + mStartTgt.year,
+        endStr: mEndTgt.day + ' ' + tgtNames[mEndTgt.month - 1] + ' ' + mEndTgt.year
+      });
+      cm++;
+      if (cm > src.monthCount) { cm = 1; cy++; }
     }
 
+    const table = el('table', { class: 'year-table' });
+    table.appendChild(el('thead', null, el('tr', null,
+      el('th', { text: srcLabel }), el('th', { text: t.totalDays }), el('th', { text: tgtLabel })
+    )));
+    const tbody = el('tbody');
+    monthRows.forEach(row => {
+      tbody.appendChild(el('tr', null,
+        el('td', { class: 'month-name', text: row.srcName }),
+        el('td', { text: String(row.days) }),
+        el('td', { class: 'date-cell' }, row.startStr + ' \u2013 ' + row.endStr)
+      ));
+    });
+    table.appendChild(tbody);
+
+    const srcStartStr = d1 + ' ' + srcNames[m1 - 1] + ' ' + y1;
+    const srcEndStr = d2 + ' ' + srcNames[m2 - 1] + ' ' + y2;
+
     showResult([
-      el('p', { class: 'result-label', text: t.calendars[src.id] }),
+      el('p', { class: 'result-label', text: srcLabel }),
       el('p', { class: 'result-secondary', text: srcStartStr + ' \u2013 ' + srcEndStr }),
-      el('p', { class: 'result-label', text: t.calendars[tgt.id] }),
+      el('p', { class: 'result-label', text: tgtLabel }),
       el('p', { class: 'result-span' },
         el('span', { class: 'date-val', text: tgtStartStr }),
         ' \u2013 ',
         el('span', { class: 'date-val', text: tgtEndStr })
       ),
-      el('p', { class: 'result-label', text: t.monthBreakdown }),
-      buildOverlapTable(overlapping, tgt, t),
+      monthRows.length > 1 ? el('p', { class: 'result-label', text: t.monthBreakdown }) : null,
+      monthRows.length > 1 ? table : null,
       buildMeta([[t.jdn, jdStart + ' \u2013 ' + jdEnd]])
     ]);
   }
@@ -481,23 +673,6 @@
   }
 
   // ---- Helpers ----
-
-  function buildOverlapTable(overlapping, cal, t) {
-    const names = cal.monthNames(t);
-    const table = el('table', { class: 'year-table' });
-    table.appendChild(el('thead', null, el('tr', null,
-      el('th', { text: t.calendars[cal.id] }), el('th', { text: t.totalDays })
-    )));
-    const tbody = el('tbody');
-    overlapping.forEach(o => {
-      tbody.appendChild(el('tr', null,
-        el('td', { class: 'month-name', text: names[o.month - 1] + ' ' + o.year }),
-        el('td', { text: String(o.days) })
-      ));
-    });
-    table.appendChild(tbody);
-    return table;
-  }
 
   function buildMeta(pairs) {
     const dl = el('dl', { class: 'result-meta' });

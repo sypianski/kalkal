@@ -675,8 +675,14 @@
         if (ecl.notable) {
           const mapLink = document.createElement('a');
           mapLink.className = 'eclipse-map-link';
-          mapLink.href = ecl.noteKey === 'ibrahim632' ? 'eklipso.html' : 'eclipses.html';
-          mapLink.textContent = ecl.noteKey === 'ibrahim632' ? (t.eclipseViewMap || 'View eclipse map') : (t.eclipseViewCatalogue || 'Eclipse catalogue');
+          if (ecl.noteKey === 'ibrahim632') {
+            mapLink.href = 'eklipso.html';
+          } else if (ecl.noteKey) {
+            mapLink.href = 'maps/' + ecl.noteKey + '.html';
+          } else {
+            mapLink.href = 'eclipses.html';
+          }
+          mapLink.textContent = ecl.noteKey ? (t.eclipseViewMap || 'View eclipse map') : (t.eclipseViewCatalogue || 'Eclipse catalogue');
           eclEl.appendChild(mapLink);
         }
         elements.push(eclEl);

@@ -130,7 +130,7 @@ const PageI18N = {
         ['Birashk, Ahmad. ', 'A Comparative Calendar of the Iranian, Muslim Lunar, and Christian Eras for Three Thousand Years', '. Mazda Publishers, 1993.']
       ]
     },
-    methLinks: { title: 'Similar Tools' }
+    methLinks: { title: 'Coverage and Similar Tools' }
   },
 
   pl: {
@@ -261,7 +261,7 @@ const PageI18N = {
         ['Birashk, Ahmad. ', 'A Comparative Calendar of the Iranian, Muslim Lunar, and Christian Eras for Three Thousand Years', '. Mazda Publishers, 1993.']
       ]
     },
-    methLinks: { title: 'Podobne narz\u0119dzia' }
+    methLinks: { title: 'Pokrycie i podobne narz\u0119dzia' }
   },
 
   ar: {
@@ -307,7 +307,7 @@ const PageI18N = {
       ['de Blois, F. "Ta\u02bfr\u012bkh" in ', 'Encyclopaedia of Islam', '.'],
       ['Birashk, Ahmad. ', 'A Comparative Calendar...', ' Mazda, 1993.']
     ] },
-    methLinks: { title: '\u0623\u062f\u0648\u0627\u062a \u0645\u0634\u0627\u0628\u0647\u0629' }
+    methLinks: { title: '\u0627\u0644\u062a\u063a\u0637\u064a\u0629 \u0648\u0623\u062f\u0648\u0627\u062a \u0645\u0634\u0627\u0628\u0647\u0629' }
   },
 
   eo: {
@@ -353,7 +353,7 @@ const PageI18N = {
       ['de Blois. "Ta\u02bfr\u012bkh" en ', 'Encyclopaedia of Islam', '.'],
       ['Birashk, Ahmad. ', 'A Comparative Calendar...', ' Mazda, 1993.']
     ] },
-    methLinks: { title: 'Similaj iloj' }
+    methLinks: { title: 'Kovrado kaj similaj iloj' }
   }
 };
 

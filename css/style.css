@@ -285,19 +285,19 @@ html[dir="rtl"] .site-title {
 /* ---- Seasonal months grid ---- */
 
 .cal-seasons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0 var(--space-md);
   border-block-start: var(--border-subtle);
   padding-block-start: var(--space-sm);
   margin-block-start: var(--space-sm);
 }
 
 .cal-season-band {
-  display: grid;
-  grid-template-columns: 5.5em 1fr;
-  align-items: start;
-  gap: 0;
-  padding-inline-start: var(--space-sm);
-  border-inline-start: 3px solid transparent;
-  margin-block-end: 0.35em;
+  display: flex;
+  flex-direction: column;
+  border-block-start: 3px solid transparent;
+  padding-block-start: var(--space-xs);
 }
 
 .cal-season-band[data-season="0"] { border-color: #5a7a4a; }
@@ -307,11 +307,11 @@ html[dir="rtl"] .site-title {
 
 .cal-season-label {
   font-family: var(--font-display);
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   font-style: italic;
   font-weight: 600;
   letter-spacing: 0.03em;
-  padding-block-start: 0.25em;
+  margin-block-end: 0.3em;
   color: var(--ink-400);
 }
 
@@ -321,20 +321,15 @@ html[dir="rtl"] .site-title {
 .cal-season-band[data-season="3"] .cal-season-label { color: #4a6070; }
 
 .cal-season-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.15em var(--space-md);
-}
-
-.cal-season-row--flat {
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-direction: column;
 }
 
 .cal-month-item {
   display: flex;
   align-items: baseline;
   gap: 0.35em;
-  padding: 0.15em 0;
+  padding: 0.1em 0;
   font-family: var(--font-body);
   font-size: 0.82rem;
   color: var(--ink-700);
@@ -364,8 +359,15 @@ html[dir="rtl"] .site-title {
   white-space: nowrap;
 }
 
-.cal-seasons--flat .cal-season-row--flat {
-  padding-inline-start: 0;
+/* Flat layout for wandering/lunar calendars */
+.cal-seasons--flat {
+  grid-template-columns: 1fr;
+}
+
+.cal-season-row--flat {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0 var(--space-md);
 }
 
 /* Calendar variants table */
@@ -618,6 +620,115 @@ html[dir="rtl"] .site-title {
   color: var(--ink-700);
 }
 
+/* Coverage comparison table */
+
+.meth-table-wrap {
+  overflow-x: auto;
+  margin-block: var(--space-md) var(--space-lg);
+  -webkit-overflow-scrolling: touch;
+}
+
+.meth-coverage {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+.meth-coverage th {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-600);
+  padding: 0.4em var(--space-sm);
+  border-block-end: var(--border-strong);
+  text-align: center;
+}
+
+.meth-coverage th:first-child {
+  text-align: start;
+}
+
+.meth-coverage td {
+  padding: 0.3em var(--space-sm);
+  border-block-end: var(--border-subtle);
+  color: var(--ink-700);
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.meth-coverage td:first-child {
+  text-align: start;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ink-800);
+  white-space: nowrap;
+}
+
+.meth-coverage tr:last-child td {
+  border-block-end: none;
+}
+
+.meth-coverage .cov-y::before {
+  content: "\2713";
+  color: var(--teal);
+  font-weight: 700;
+}
+
+.meth-coverage .cov-n::before {
+  content: "\2014";
+  color: var(--ink-300);
+}
+
+.meth-coverage .cov-p::before {
+  content: "\2713";
+  color: var(--ink-400);
+  font-weight: 700;
+}
+
+.meth-coverage .cov-y,
+.meth-coverage .cov-p {
+  font-size: 0.68rem;
+  color: var(--ink-500);
+}
+
+.meth-coverage thead th:nth-child(2) {
+  color: var(--rust);
+}
+
+.meth-links {
+  list-style: none;
+  padding: 0;
+  font-size: 0.85rem;
+  line-height: 1.8;
+}
+
+.meth-links li {
+  margin-block-end: var(--space-xs);
+  padding-inline-start: 1em;
+  text-indent: -1em;
+}
+
+.meth-links li::before {
+  content: "\203A\00a0";
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.meth-links a {
+  color: var(--rust);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.meth-links a:hover {
+  text-decoration: underline;
+}
+
 .back-link {
   font-family: var(--font-mono);
   font-size: 0.78rem;
@@ -655,13 +766,12 @@ html[dir="rtl"] .site-title {
     font-size: 0.68rem;
   }
 
-  .cal-season-band {
-    grid-template-columns: 1fr;
-    gap: 0.1em;
+  .cal-seasons {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-sm) var(--space-md);
   }
-  .cal-season-row,
   .cal-season-row--flat {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -2312,8 +2422,8 @@ body[data-theme="brutalist"] .cal-seasons {
 }
 
 body[data-theme="brutalist"] .cal-season-band {
-  border-inline-start: 4px solid;
-  margin-block-end: var(--space-sm);
+  border-block-start: 4px solid;
+  padding-block-start: var(--space-xs);
 }
 
 body[data-theme="brutalist"] .cal-season-band[data-season="0"] { border-color: #2d5a27; }
@@ -2416,6 +2526,58 @@ body[data-theme="brutalist"] .meth-sources li {
 
 body[data-theme="brutalist"] .main-content--prose .divider {
   margin-block: var(--space-xl);
+}
+
+body[data-theme="brutalist"] .meth-coverage {
+  border: 2px solid #000;
+}
+
+body[data-theme="brutalist"] .meth-coverage th {
+  background: #000;
+  color: #fff;
+  border-block-end: none;
+  font-family: 'Noto Sans Mono', 'Courier New', monospace;
+}
+
+body[data-theme="brutalist"] .meth-coverage thead th:nth-child(2) {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+body[data-theme="brutalist"] .meth-coverage td {
+  border-block-end: 1px solid #000;
+  font-family: 'Noto Sans Mono', 'Courier New', monospace;
+}
+
+body[data-theme="brutalist"] .meth-coverage td:first-child {
+  font-family: 'Noto Sans Mono', 'Courier New', monospace;
+  font-weight: 700;
+}
+
+body[data-theme="brutalist"] .meth-coverage .cov-y::before {
+  color: #000;
+}
+
+body[data-theme="brutalist"] .meth-coverage .cov-n::before {
+  color: #ccc;
+}
+
+body[data-theme="brutalist"] .meth-coverage .cov-p::before {
+  color: #666;
+}
+
+body[data-theme="brutalist"] .meth-links {
+  font-family: 'Noto Sans Mono', 'Courier New', monospace;
+}
+
+body[data-theme="brutalist"] .meth-links li::before {
+  color: #000;
+}
+
+body[data-theme="brutalist"] .meth-links a {
+  color: #000;
+  text-decoration: underline;
 }
 
 body[data-theme="brutalist"] .back-link {

@@ -78,15 +78,48 @@ kalkal places 1 Farvardin 1404 on 20 March 2025; ICU/Intl places it on 21 March.
 
 IIc (Wüstenfeld, our default) and IIa (Kuwaiti/Fourmilab) differ in 50 out of 1500 years (3.3%). The difference is always ±1 day and stems from years 18 vs 19 in the 30-year leap cycle.
 
+## All Calendars Verification (verify-all-calendars.js)
+
+Comprehensive test of all 11 non-Gregorian/Julian calendars added to kalkal.
+
+### Per-calendar tests
+
+| Calendar | Epoch verified | Known dates | Intl match | Mass round-trip |
+|----------|---------------|-------------|------------|-----------------|
+| Coptic | 29 Aug 284 Jul ✓ | 2 Intl dates ✓ | 2/2 ✓ | 12600/12600 ✓ |
+| Ethiopian | 29 Aug 8 CE Jul ✓ | 2 Intl dates ✓ | 2/2 ✓ | 14154/14154 ✓ |
+| Yazdgerdi | 16 Jun 632 Jul ✓ | 365d, no leap ✓ | N/A | 9807/9807 ✓ |
+| Armenian | 11 Jul 552 Jul ✓ | 365d, no leap ✓ | N/A | 10500/10500 ✓ |
+| Solar Hijri | 19 Mar 622 Jul ✓ | Nowruz 1405 ✓ | 1/2 (±1d) | 9000/9000 ✓ |
+| Byzantine | 1 Jan 1AD=5509/5/1 ✓ | Constantinople ✓ | N/A | 7218/7218 ✓ |
+| Alexandrian | 25 Mar 1AD=5494/1/25 ✓ | Jan=m11 ✓ | N/A | 9018/9018 ✓ |
+| Seleucid | 1 Jan 1AD=312/4/1 ✓ | Oct=m1 ✓ | N/A | 7938/7938 ✓ |
+| Syriac | 1 Jan 1AD=312/1/1 ✓ | Julian+311 ✓ | N/A | 7938/7938 ✓ |
+| Rumi | 1 Jan 622=38/1/1 ✓ | Julian-584 ✓ | N/A | 5040/5040 ✓ |
+| Egyptian | JDN 1448637.5 ✓ | 747 BCE=−746/2/26 ✓ | N/A | 10500/10500 ✓ |
+
+### Cross-calendar consistency
+
+All 14 calendars × 7 reference JD values: **98/98** round-trips pass.
+
+### Additional checks
+
+- Coptic-Ethiopian relationship: same month/day, 276-year offset ✓
+- Solar Hijri month lengths: m1–6=31d, m7–11=30d, m12=29/30d ✓
+
+### Total: 84 passed, 0 failed
+
 ## How to Run
 
 ```bash
-node tests/verify.js          # Basic kalkal output
-node tests/cross-verify.js    # Full cross-verification
+node tests/verify.js                # Basic kalkal output
+node tests/cross-verify.js          # Hijri cross-verification (Fourmilab, Intl, Python)
+node tests/verify-all-calendars.js  # All 11 calendars comprehensive test
 ```
 
 ## Files
 
 - `tests/verify.js` — Runs kalkal's Cal functions, outputs all conversions
 - `tests/cross-verify.js` — Cross-references against Fourmilab, Intl, Python data
+- `tests/verify-all-calendars.js` — All calendars: epochs, known dates, mass round-trips, cross-consistency
 - `tests/verify-output.json` — Raw JSON output from verify.js

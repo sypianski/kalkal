@@ -233,6 +233,16 @@
       monthCount: 12,
       monthNames: (t) => t.gregorianMonths
     },
+    roman: {
+      id: 'roman',
+      toJD: (y, m, d) => Cal.aucToJD(y, m, d),
+      fromJD: (jd) => Cal.jdToAuc(jd),
+      monthLength: (y, m) => Cal.aucMonthLength(y, m),
+      yearLength: (y) => Cal.aucYearLength(y),
+      isLeap: (y) => Cal.isAucLeapYear(y),
+      monthCount: 12,
+      monthNames: (t) => t.romanMonths
+    },
     spanish: {
       id: 'spanish',
       toJD: (y, m, d) => Cal.spanishToJD(y, m, d),
@@ -485,7 +495,7 @@
       { group: 'iranian', ids: ['yazdgerdi', 'ilkhani'] },
       { group: 'semitic', ids: ['hebrew', 'syriac', 'antiochene', 'seleucid', 'babylonian'] },
       { group: 'african', ids: ['coptic', 'ethiopian', 'egyptian'] },
-      { group: 'grecoRoman', ids: ['auc', 'olympiad', 'macedonian'] },
+      { group: 'grecoRoman', ids: ['roman', 'auc', 'olympiad', 'macedonian'] },
       { group: 'scientific', ids: ['bp'] }
     ];
 
@@ -694,6 +704,11 @@
       const animalName = (t.ilkhaniAnimals && t.ilkhaniAnimals[animal]) || animal;
       elements.push(el('p', { class: 'result-secondary result-animal', text: (t.animalYearLabel || 'Animal year') + ': ' + animalName }));
     }
+    // Roman day notation
+    if (tgt.id === 'roman' && result.day) {
+      const notation = Cal.romanDayNotation(result.month, result.day, tgt.isLeap(result.year));
+      elements.push(el('p', { class: 'result-secondary result-roman', text: notation }));
+    }
     // Babylonian source note
     if (tgt.id === 'babylonian') {
       const isPD = Cal.isBabylonianPD(result.year);
@@ -715,7 +730,7 @@
         const typeStr = Eclipses.typeLabel(ecl.type, t);
         const magStr = ecl.mag ? ' (' + ecl.mag.toFixed(3) + ')' : '';
         const eclEl = el('div', { class: 'result-eclipse' },
-          el('span', { class: 'eclipse-icon', text: '\u{1F311}' }),
+          el('span', { class: 'eclipse-icon' }),
           el('span', { class: 'eclipse-type', text: (t.eclipseLabel || 'Solar eclipse') + ': ' + typeStr + magStr })
         );
         if (ecl.notable && ecl.noteKey && t.eclipseNotes && t.eclipseNotes[ecl.noteKey]) {
@@ -1015,7 +1030,7 @@
       solarHijri: 'SH', byzantine: 'Byz.', alexandrian: 'Alex.',
       seleucid: 'Sel.', syriac: 'Syr.', rumi: 'R\u016bm\u012b',
       egyptian: 'Egypt.', auc: 'AUC', spanish: 'Span.',
-      olympiad: 'Ol.', macedonian: 'Mac.'
+      roman: 'Rom.', olympiad: 'Ol.', macedonian: 'Mac.'
     };
     return SHORT[id] || id;
   }

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>com.kalkal.converter</string>
+	<key>category</key>
+	<string>Tools</string>
+	<key>connections</key>
+	<dict>
+		<!-- Script Filter → Copy to Clipboard -->
+		<key>8A1B2C3D-4E5F-6789-ABCD-EF0123456789</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>COPY-TO-CLIPBOARD-001</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitowards</key>
+				<string></string>
+			</dict>
+		</array>
+		<!-- Universal Action → Script Filter (reuse) -->
+		<key>UNIVERSAL-ACTION-001</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>8A1B2C3D-4E5F-6789-ABCD-EF0123456789</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitowards</key>
+				<string></string>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>kalkal</string>
+	<key>description</key>
+	<string>Multi-calendar date converter — 15+ calendar systems via Julian Day Number</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>kalkal</string>
+	<key>objects</key>
+	<array>
+		<!-- Script Filter: keyword "cal" -->
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>keyword</key>
+				<string>cal</string>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyalinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>Converting…</string>
+				<key>script</key>
+				<string>/usr/local/bin/node cal.js "{query}"</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string>e.g. 15 Ramadan 1446 · 2024-3-22 · today</string>
+				<key>title</key>
+				<string>kalkal — Date Converter</string>
+				<key>type</key>
+				<integer>0</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>8A1B2C3D-4E5F-6789-ABCD-EF0123456789</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<!-- Copy to Clipboard -->
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>clipboardtext</key>
+				<string>{query}</string>
+				<key>transient</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.clipboard</string>
+			<key>uid</key>
+			<string>COPY-TO-CLIPBOARD-001</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<!-- Universal Action -->
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>acceptsmultiplefiles</key>
+				<false/>
+				<key>allowedfiletypes</key>
+				<array/>
+				<key>name</key>
+				<string>Convert Date with kalkal</string>
+				<key>types</key>
+				<array>
+					<string>public.text</string>
+				</array>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.universalaction</string>
+			<key>uid</key>
+			<string>UNIVERSAL-ACTION-001</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string>kalkal — Multi-calendar date converter
+
+USAGE:
+  cal 15 Ramadan 1446     → convert Hijri date
+  cal 2024-3-22           → convert Gregorian date
+  cal today               → convert today's date
+  cal 1446/9/15 hijri     → explicit source calendar
+
+SUPPORTED CALENDARS:
+  Hijri, Gregorian, Julian, Coptic, Ethiopian, Solar Hijri,
+  Hebrew, Byzantine, Syriac, Rūmī, Armenian, Egyptian,
+  Ab Urbe Condita, Olympiad
+
+MODIFIERS:
+  ⏎ Enter    → Copy formatted date
+  ⌘ Cmd      → Copy Julian Day Number
+  ⌥ Alt      → Copy as D/M/Y
+
+UNIVERSAL ACTION:
+  Select any text containing a date → Universal Actions → "Convert Date with kalkal"
+</string>
+	<key>uidata</key>
+	<dict>
+		<key>8A1B2C3D-4E5F-6789-ABCD-EF0123456789</key>
+		<dict>
+			<key>xpos</key>
+			<real>200</real>
+			<key>ypos</key>
+			<real>200</real>
+		</dict>
+		<key>COPY-TO-CLIPBOARD-001</key>
+		<dict>
+			<key>xpos</key>
+			<real>500</real>
+			<key>ypos</key>
+			<real>200</real>
+		</dict>
+		<key>UNIVERSAL-ACTION-001</key>
+		<dict>
+			<key>xpos</key>
+			<real>200</real>
+			<key>ypos</key>
+			<real>400</real>
+		</dict>
+	</dict>
+	<key>version</key>
+	<string>1.0.0</string>
+	<key>webaddress</key>
+	<string></string>
+</dict>
+</plist>

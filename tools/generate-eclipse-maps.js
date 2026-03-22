@@ -102,6 +102,44 @@ const TITLES = {
   hattin1187: 'Year of the Battle of Hattin and Saladin\u2019s conquest of Jerusalem',
   mongols1241: 'During the Mongol invasion of the Middle East',
   constantinople1453: 'Months before the fall of Constantinople to Mehmed II',
+  ibrahim632: 'Annular eclipse on the day Ibr\u0101h\u012bm, son of the Prophet Mu\u1e25ammad, died',
+  umayyad693: 'Total eclipse over Persia during the Second Fitna',
+  abbasid891: 'Annular eclipse over the Levant \u2014 late Abbasid period',
+  fatimid961: 'Annular eclipse during the rise of the Fatimid Caliphate',
+  byzantine1176: 'Total eclipse during the reign of Manuel I Komnenos',
+  damascus1230: 'Total eclipse over the eastern Mediterranean \u2014 Ayyubid period',
+  ayyubid1239: 'Total eclipse across Europe and the Levant \u2014 documented by chroniclers',
+  ilkhanid1310: 'Annular eclipse during the Ilkhanate period',
+  ottoman1354: 'Hybrid eclipse over East Africa and Arabia \u2014 early Ottoman expansion',
+  murad1431: 'Total eclipse during the reign of Murad II',
+  claudius45: 'Total eclipse over Arabia during the reign of Claudius',
+  barkokhba132: 'Total eclipse during the Bar Kokhba revolt against Rome',
+  rome247: 'Total eclipse near the millennium of Rome \u2014 reign of Philip the Arab',
+  constantius345: 'Highest-magnitude eclipse in the catalogue \u2014 Arian controversy era',
+  arcadius399: 'Total eclipse at the division of the Roman Empire',
+  stilicho402: 'Total eclipse documented by the poet Claudian \u2014 Gothic Wars',
+  ephesus432: 'Total eclipse in the wake of the Council of Ephesus',
+  odoacer486: 'Highest-magnitude eclipse \u2014 decade after the fall of Rome',
+  justinian540: 'Total eclipse on the eve of the Plague of Justinian',
+  sassanid573: 'Total eclipse during the Byzantine\u2013Sassanid wars',
+  nineveh627: 'Total eclipse in the year of the Battle of Nineveh \u2014 Heraclius defeats the Sassanids',
+  conquest646: 'Total eclipse during the Arab conquest of Egypt',
+  bede725: 'Total eclipse documented by the Venerable Bede',
+  charlemagne812: 'Total eclipse during the reign of Charlemagne',
+  mamun833: 'Total eclipse in the year Caliph al-Ma\u02bcm\u016bn died \u2014 patron of astronomy',
+  romanos920: 'Total eclipse during the Byzantine reconquest \u2014 Romanos I era',
+  byzantine939: 'Total eclipse over Anatolia \u2014 Byzantine expansion',
+  hakim993: 'Total eclipse during the reign of Fatimid Caliph al-\u1e24\u0101kim',
+  millennium1000: 'Total eclipse in the year 1000 \u2014 millennial anxieties across Christendom',
+  schism1054: 'Total eclipse in the year of the Great Schism and supernova SN 1054',
+  khayyam1079: 'Total eclipse in the era of Omar Khayy\u0101m and Seljuk rule',
+  crusader1113: 'Total eclipse over Crusader states and the Levant',
+  crusade1147: 'Annular eclipse during the Second Crusade',
+  palaiologos1261: 'Annular eclipse in the year of the Byzantine reconquest of Constantinople',
+  acre1293: 'Total eclipse two years after the fall of Acre \u2014 end of the Crusader states',
+  adrianople1361: 'Total eclipse in the year of the Ottoman conquest of Adrianople',
+  ottoman1434: 'Total eclipse over the eastern Mediterranean \u2014 Ottoman expansion',
+  mehmed1478: 'Total eclipse during the reign of Mehmed the Conqueror',
 };
 
 // Historical observations: where / by whom the eclipse was documented
@@ -168,6 +206,41 @@ const OBSERVATIONS = {
   constantinople1453: [
     { lat: 41.01, lon: 28.98, label: 'Constantinople — before the fall to Mehmed II' }
   ],
+  ibrahim632: [
+    { lat: 24.47, lon: 39.61, label: 'Medina — death of Ibrāhīm, son of the Prophet' }
+  ],
+  umayyad693: [
+    { lat: 33.31, lon: 44.37, label: 'Iraq — during the Second Fitna' }
+  ],
+  abbasid891: [
+    { lat: 33.51, lon: 36.29, label: 'Damascus — late Abbasid era' },
+    { lat: 31.77, lon: 35.23, label: 'Jerusalem — visible across the Levant' }
+  ],
+  fatimid961: [
+    { lat: 30.05, lon: 31.23, label: 'Cairo — rise of the Fatimid Caliphate' }
+  ],
+  byzantine1176: [
+    { lat: 41.01, lon: 28.98, label: 'Constantinople — reign of Manuel I Komnenos' },
+    { lat: 37.94, lon: 29.12, label: 'Anatolia — near Myriokephalon campaign' }
+  ],
+  damascus1230: [
+    { lat: 33.51, lon: 36.29, label: 'Damascus — Ayyubid sultanate' },
+    { lat: 31.77, lon: 35.23, label: 'Jerusalem — under Ayyubid control' }
+  ],
+  ayyubid1239: [
+    { lat: 41.90, lon: 12.50, label: 'Rome — documented by European chroniclers' },
+    { lat: 33.51, lon: 36.29, label: 'Damascus — Ayyubid period' }
+  ],
+  ilkhanid1310: [
+    { lat: 38.07, lon: 46.30, label: 'Tabriz — Ilkhanate capital' }
+  ],
+  ottoman1354: [
+    { lat: 15.34, lon: 38.93, label: 'Eritrea — path of hybrid eclipse' },
+    { lat: 21.43, lon: 39.83, label: 'Mecca — partial eclipse visible' }
+  ],
+  murad1431: [
+    { lat: 41.01, lon: 28.98, label: 'Constantinople — reign of Murad II' }
+  ],
 };
 
 const TYPE_NAMES = { T: 'Total', A: 'Annular', H: 'Hybrid' };
@@ -178,6 +251,9 @@ const TYPES = {
   arabia590: 'A', constantinople718: 'T', harun809: 'A', louis840: 'T',
   biruni968: 'T', crucifixion1033: 'A', crusade1098: 'A', henry1133: 'T',
   hattin1187: 'T', mongols1241: 'T', constantinople1453: 'A',
+  ibrahim632: 'A', umayyad693: 'T', abbasid891: 'A', fatimid961: 'A',
+  byzantine1176: 'T', damascus1230: 'T', ayyubid1239: 'T', ilkhanid1310: 'A',
+  ottoman1354: 'H', murad1431: 'T',
 };
 const MAGS = {
   crucifixion29: 1.022, pliny59: 1.019, jerusalem71: 1.007, elagabalus219: 1.063,
@@ -185,6 +261,9 @@ const MAGS = {
   arabia590: 0.930, constantinople718: 1.046, harun809: 0.968, louis840: 1.076,
   biruni968: 1.030, crucifixion1033: 0.993, crusade1098: 0.926, henry1133: 1.065,
   hattin1187: 1.059, mongols1241: 1.049, constantinople1453: 0.939,
+  ibrahim632: 0.984, umayyad693: 1.052, abbasid891: 0.946, fatimid961: 0.975,
+  byzantine1176: 1.063, damascus1230: 1.060, ayyubid1239: 1.077, ilkhanid1310: 0.936,
+  ottoman1354: 1.012, murad1431: 1.053,
 };
 
 function pad2(n) { return n < 10 ? '0' + n : '' + n; }

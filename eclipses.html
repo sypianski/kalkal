@@ -338,8 +338,12 @@
         tdDate.appendChild(dateLink);
         tr.appendChild(tdDate);
 
-        // Type cell
-        tr.appendChild(mkEl('td', { cls: 'ecl-type', text: types[e[3]] || e[3] }));
+        // Type cell — colored badge
+        var tdType = mkEl('td', { cls: 'ecl-type' });
+        var badge = mkEl('span', { cls: 'ecl-type-badge', text: types[e[3]] || e[3] });
+        badge.setAttribute('data-type', e[3]);
+        tdType.appendChild(badge);
+        tr.appendChild(tdType);
 
         // Mag cell
         tr.appendChild(mkEl('td', { cls: 'ecl-mag', text: e[4].toFixed(3) }));
@@ -348,7 +352,7 @@
         var tdMap = document.createElement('td');
         if (e[6]) {
           var he = (e[0] + 10000) + '' + pad2(e[1]) + pad2(e[2]);
-          var mapHref = e[6] === 'ibrahim632' ? 'eklipso.html' : ('maps/' + he + '.html');
+          var mapHref = 'maps/' + he + '.html';
           var mapLink = mkEl('a', { cls: 'ecl-nasa', text: t.mapLabel || 'Map', href: mapHref });
           tdMap.appendChild(mapLink);
         }

@@ -21,7 +21,7 @@ const I18N = {
       byzantine: 'Byzantine',
       seleucid: 'Seleucid', syriac: 'Syriac', rumi: 'R\u016bm\u012b',
       egyptian: 'Egyptian',
-      auc: 'Ab Urbe Condita', spanish: 'Spanish Era', antiochene: 'Antiochene Era',
+      auc: 'Ab Urbe Condita', roman: 'Roman', spanish: 'Spanish Era', antiochene: 'Antiochene Era',
       olympiad: 'Olympiad', macedonian: 'Macedonian',
       hebrew: 'Hebrew', babylonian: 'Babylonian',
       bp: 'Before Present', human: 'Human Era'
@@ -64,6 +64,10 @@ const I18N = {
     gregorianMonths: [
       'January', 'February', 'March', 'April', 'May', 'June',
       'July', 'August', 'September', 'October', 'November', 'December'
+    ],
+    romanMonths: [
+      'Ianuarius', 'Februarius', 'Martius', 'Aprilis', 'Maius', 'Iunius',
+      'Iulius', 'Augustus', 'September', 'October', 'November', 'December'
     ],
     hijriMonths: [
       'Mu\u1e25arram', '\u1e62afar', 'Rab\u012b\u02bf al-Awwal', 'Rab\u012b\u02bf a\u1e6f-\u1e6e\u0101n\u012b',
@@ -142,15 +146,24 @@ const I18N = {
       proclus484: 'Documented by Marinus of Neapolis in the biography of Proclus',
       arabia590: 'Annular eclipse over Arabia \u2014 pre-Islamic period',
       ibrahim632: 'Eclipse at the death of Ibrahim, son of Prophet Muhammad',
+      umayyad693: 'Total eclipse over Persia during the Second Fitna',
       constantinople718: 'During the Arab siege of Constantinople',
       harun809: 'During the reign of Harun al-Rashid',
       louis840: 'Eclipse of Emperor Louis the Pious, seen as an omen of his death',
+      abbasid891: 'Annular eclipse over the Levant \u2014 late Abbasid period',
+      fatimid961: 'Annular eclipse during the rise of the Fatimid Caliphate',
       biruni968: 'Observed and recorded by al-Biruni in Baghdad',
       crucifixion1033: 'Millennium of the Crucifixion \u2014 widely documented across Christendom',
       crusade1098: 'During the First Crusade, siege of Antioch',
       henry1133: 'King Henry\u2019s Eclipse \u2014 observed across Europe and the Levant',
+      byzantine1176: 'Total eclipse during the reign of Manuel I Komnenos',
       hattin1187: 'Year of the Battle of Hattin and Saladin\u2019s conquest of Jerusalem',
+      damascus1230: 'Total eclipse over the eastern Mediterranean \u2014 Ayyubid period',
+      ayyubid1239: 'Total eclipse across Europe and the Levant \u2014 documented by chroniclers',
       mongols1241: 'During the Mongol invasion of the Middle East',
+      ilkhanid1310: 'Annular eclipse during the Ilkhanate period',
+      ottoman1354: 'Hybrid eclipse over East Africa and Arabia \u2014 early Ottoman expansion',
+      murad1431: 'Total eclipse during the reign of Murad II',
       constantinople1453: 'Months before the fall of Constantinople to Mehmed II'
     },
     moonPhaseLabel: 'Moon phase',
@@ -246,7 +259,7 @@ const I18N = {
       byzantine: 'Bizanty\u0144ski',
       seleucid: 'Seleucydzki', syriac: 'Syryjski', rumi: 'R\u016bm\u012b (osma\u0144ski)',
       egyptian: 'Egipski',
-      auc: 'Ab Urbe Condita', spanish: 'Era hiszpa\u0144ska', antiochene: 'Era antioche\u0144ska',
+      auc: 'Ab Urbe Condita', roman: 'Rzymski', spanish: 'Era hiszpa\u0144ska', antiochene: 'Era antioche\u0144ska',
       olympiad: 'Olimpiady', macedonian: 'Macedo\u0144ski',
       hebrew: 'Hebrajski', babylonian: 'Babilo\u0144ski',
       bp: 'Przed tera\u017aniejszo\u015bci\u0105', human: 'Era ludzka'
@@ -289,6 +302,10 @@ const I18N = {
     gregorianMonths: [
       'Stycze\u0144', 'Luty', 'Marzec', 'Kwiecie\u0144', 'Maj', 'Czerwiec',
       'Lipiec', 'Sierpie\u0144', 'Wrzesie\u0144', 'Pa\u017adziernik', 'Listopad', 'Grudzie\u0144'
+    ],
+    romanMonths: [
+      'Ianuarius', 'Februarius', 'Martius', 'Aprilis', 'Maius', 'Iunius',
+      'Iulius', 'Augustus', 'September', 'October', 'November', 'December'
     ],
     hijriMonths: [
       'Muharram', 'Safar', 'Rabi al-awwal', 'Rabi as-sani',
@@ -367,15 +384,24 @@ const I18N = {
       proclus484: 'Udokumentowane przez Marinusa z Neapolis w biografii Proklosa',
       arabia590: 'Obr\u0105czkowe nad Arabi\u0105 \u2014 okres przedislamski',
       ibrahim632: 'Za\u0107mienie w dniu \u015bmierci Ibrahima, syna Proroka Mahometa',
+      umayyad693: 'Ca\u0142kowite nad Persj\u0105 podczas drugiej fitny',
       constantinople718: 'Podczas arabskiego obl\u0119\u017cenia Konstantynopola',
       harun809: 'Za rz\u0105d\u00f3w Haruna ar-Raszida',
       louis840: 'Za\u0107mienie cesarza Ludwika Pobo\u017cnego, uznane za omen jego \u015bmierci',
+      abbasid891: 'Obr\u0105czkowe nad Lewantem \u2014 p\u00f3\u017any okres Abbasyd\u00f3w',
+      fatimid961: 'Obr\u0105czkowe w okresie powstania kalifatu Fatymid\u00f3w',
       biruni968: 'Obserwowane i opisane przez al-Biruniego w Bagdadzie',
       crucifixion1033: 'Milenium Ukrzy\u017cowania \u2014 szeroko udokumentowane w \u015bwiecie chrze\u015bcija\u0144skim',
       crusade1098: 'Podczas pierwszej krucjaty, obl\u0119\u017cenie Antiochii',
       henry1133: 'Za\u0107mienie kr\u00f3la Henryka \u2014 obserwowane w Europie i Lewancie',
+      byzantine1176: 'Ca\u0142kowite za panowania Manuela I Komnena',
       hattin1187: 'Rok bitwy pod Hattin i podboju Jerozolimy przez Saladyna',
+      damascus1230: 'Ca\u0142kowite nad wschodnim \u015br\u00f3dziemnomorzem \u2014 okres Ajjubid\u00f3w',
+      ayyubid1239: 'Ca\u0142kowite nad Europ\u0105 i Lewantem \u2014 udokumentowane przez kronikarzy',
       mongols1241: 'Podczas inwazji mongo\u0142\u00f3w na Bliski Wsch\u00f3d',
+      ilkhanid1310: 'Obr\u0105czkowe w okresie Ilchanat\u00f3w',
+      ottoman1354: 'Hybrydowe nad Afryk\u0105 Wschodni\u0105 i Arabi\u0105 \u2014 pocz\u0105tki ekspansji osma\u0144skiej',
+      murad1431: 'Ca\u0142kowite za panowania Murada II',
       constantinople1453: 'Na miesi\u0105ce przed upadkiem Konstantynopola'
     },
     moonPhaseLabel: 'Faza Ksi\u0119\u017cyca',
@@ -471,7 +497,7 @@ const I18N = {
       byzantine: '\u0628\u064a\u0632\u0646\u0637\u064a',
       seleucid: '\u0633\u0644\u0648\u0642\u064a', syriac: '\u0633\u0631\u064a\u0627\u0646\u064a', rumi: '\u0631\u0648\u0645\u064a',
       egyptian: '\u0645\u0635\u0631\u064a',
-      auc: '\u0645\u0646\u0630 \u062a\u0623\u0633\u064a\u0633 \u0631\u0648\u0645\u0627', spanish: '\u0627\u0644\u062a\u0642\u0648\u064a\u0645 \u0627\u0644\u0625\u0633\u0628\u0627\u0646\u064a', antiochene: '\u0627\u0644\u062a\u0642\u0648\u064a\u0645 \u0627\u0644\u0623\u0646\u0637\u0627\u0643\u064a',
+      auc: '\u0645\u0646\u0630 \u062a\u0623\u0633\u064a\u0633 \u0631\u0648\u0645\u0627', roman: '\u0631\u0648\u0645\u0627\u0646\u064a', spanish: '\u0627\u0644\u062a\u0642\u0648\u064a\u0645 \u0627\u0644\u0625\u0633\u0628\u0627\u0646\u064a', antiochene: '\u0627\u0644\u062a\u0642\u0648\u064a\u0645 \u0627\u0644\u0623\u0646\u0637\u0627\u0643\u064a',
       olympiad: '\u0627\u0644\u0623\u0648\u0644\u0645\u0628\u064a\u0627\u062f', macedonian: '\u0645\u0642\u062f\u0648\u0646\u064a',
       hebrew: '\u0639\u0628\u0631\u064a', babylonian: '\u0628\u0627\u0628\u0644\u064a',
       bp: '\u0642\u0628\u0644 \u0627\u0644\u062d\u0627\u0636\u0631', human: '\u0627\u0644\u062a\u0642\u0648\u064a\u0645 \u0627\u0644\u0628\u0634\u0631\u064a'
@@ -514,6 +540,10 @@ const I18N = {
     gregorianMonths: [
       '\u064a\u0646\u0627\u064a\u0631', '\u0641\u0628\u0631\u0627\u064a\u0631', '\u0645\u0627\u0631\u0633', '\u0623\u0628\u0631\u064a\u0644', '\u0645\u0627\u064a\u0648', '\u064a\u0648\u0646\u064a\u0648',
       '\u064a\u0648\u0644\u064a\u0648', '\u0623\u063a\u0633\u0637\u0633', '\u0633\u0628\u062a\u0645\u0628\u0631', '\u0623\u0643\u062a\u0648\u0628\u0631', '\u0646\u0648\u0641\u0645\u0628\u0631', '\u062f\u064a\u0633\u0645\u0628\u0631'
+    ],
+    romanMonths: [
+      'Ianuarius', 'Februarius', 'Martius', 'Aprilis', 'Maius', 'Iunius',
+      'Iulius', 'Augustus', 'September', 'October', 'November', 'December'
     ],
     hijriMonths: [
       '\u0645\u062d\u0631\u0645', '\u0635\u0641\u0631', '\u0631\u0628\u064a\u0639 \u0627\u0644\u0623\u0648\u0644', '\u0631\u0628\u064a\u0639 \u0627\u0644\u062b\u0627\u0646\u064a',
@@ -592,15 +622,24 @@ const I18N = {
       proclus484: '\u0648\u062b\u0642\u0647 \u0645\u0627\u0631\u064a\u0646\u0648\u0633 \u0627\u0644\u0646\u064a\u0627\u0628\u0648\u0644\u064a\u0633\u064a \u0641\u064a \u0633\u064a\u0631\u0629 \u0628\u0631\u0648\u0642\u0644\u0633',
       arabia590: '\u0643\u0633\u0648\u0641 \u062d\u0644\u0642\u064a \u0641\u0648\u0642 \u0627\u0644\u062c\u0632\u064a\u0631\u0629 \u0627\u0644\u0639\u0631\u0628\u064a\u0629 \u2014 \u0627\u0644\u0639\u0635\u0631 \u0627\u0644\u062c\u0627\u0647\u0644\u064a',
       ibrahim632: '\u0643\u0633\u0648\u0641 \u064a\u0648\u0645 \u0648\u0641\u0627\u0629 \u0625\u0628\u0631\u0627\u0647\u064a\u0645 \u0628\u0646 \u0627\u0644\u0646\u0628\u064a \u0645\u062d\u0645\u062f \uFDFA',
+      umayyad693: '\u0643\u0633\u0648\u0641 \u0643\u0644\u064a \u0641\u0648\u0642 \u0641\u0627\u0631\u0633 \u0623\u062b\u0646\u0627\u0621 \u0627\u0644\u0641\u062a\u0646\u0629 \u0627\u0644\u062b\u0627\u0646\u064a\u0629',
       constantinople718: '\u0623\u062b\u0646\u0627\u0621 \u062d\u0635\u0627\u0631 \u0627\u0644\u0639\u0631\u0628 \u0644\u0644\u0642\u0633\u0637\u0646\u0637\u064a\u0646\u064a\u0629',
       harun809: '\u0641\u064a \u0639\u0647\u062f \u0647\u0627\u0631\u0648\u0646 \u0627\u0644\u0631\u0634\u064a\u062f',
       louis840: '\u0643\u0633\u0648\u0641 \u0627\u0644\u0625\u0645\u0628\u0631\u0627\u0637\u0648\u0631 \u0644\u0648\u064a\u0633 \u0627\u0644\u062a\u0642\u064a\u060c \u0627\u0639\u062a\u064f\u0628\u0631 \u0646\u0630\u064a\u0631 \u0634\u0624\u0645 \u0628\u0648\u0641\u0627\u062a\u0647',
+      abbasid891: '\u0643\u0633\u0648\u0641 \u062d\u0644\u0642\u064a \u0641\u0648\u0642 \u0627\u0644\u0634\u0627\u0645 \u2014 \u0623\u0648\u0627\u062e\u0631 \u0627\u0644\u0639\u0635\u0631 \u0627\u0644\u0639\u0628\u0627\u0633\u064a',
+      fatimid961: '\u0643\u0633\u0648\u0641 \u062d\u0644\u0642\u064a \u0641\u064a \u0641\u062a\u0631\u0629 \u0635\u0639\u0648\u062f \u0627\u0644\u062e\u0644\u0627\u0641\u0629 \u0627\u0644\u0641\u0627\u0637\u0645\u064a\u0629',
       biruni968: '\u0631\u0635\u062f\u0647 \u0648\u0633\u062c\u0644\u0647 \u0627\u0644\u0628\u064a\u0631\u0648\u0646\u064a \u0641\u064a \u0628\u063a\u062f\u0627\u062f',
       crucifixion1033: '\u0623\u0644\u0641\u064a\u0629 \u0627\u0644\u0635\u0644\u0628 \u2014 \u0645\u0648\u062b\u0642 \u0639\u0644\u0649 \u0646\u0637\u0627\u0642 \u0648\u0627\u0633\u0639 \u0641\u064a \u0627\u0644\u0639\u0627\u0644\u0645 \u0627\u0644\u0645\u0633\u064a\u062d\u064a',
       crusade1098: '\u0623\u062b\u0646\u0627\u0621 \u0627\u0644\u062d\u0645\u0644\u0629 \u0627\u0644\u0635\u0644\u064a\u0628\u064a\u0629 \u0627\u0644\u0623\u0648\u0644\u0649\u060c \u062d\u0635\u0627\u0631 \u0623\u0646\u0637\u0627\u0643\u064a\u0629',
       henry1133: '\u0643\u0633\u0648\u0641 \u0627\u0644\u0645\u0644\u0643 \u0647\u0646\u0631\u064a \u2014 \u0631\u064f\u0635\u062f \u0641\u064a \u0623\u0648\u0631\u0648\u0628\u0627 \u0648\u0627\u0644\u0645\u0634\u0631\u0642',
+      byzantine1176: '\u0643\u0633\u0648\u0641 \u0643\u0644\u064a \u0641\u064a \u0639\u0647\u062f \u0645\u0627\u0646\u0648\u064a\u0644 \u0627\u0644\u0623\u0648\u0644 \u0643\u0648\u0645\u0646\u064a\u0646\u0648\u0633',
       hattin1187: '\u0639\u0627\u0645 \u0645\u0639\u0631\u0643\u0629 \u062d\u0637\u064a\u0646 \u0648\u0641\u062a\u062d \u0635\u0644\u0627\u062d \u0627\u0644\u062f\u064a\u0646 \u0644\u0644\u0642\u062f\u0633',
+      damascus1230: '\u0643\u0633\u0648\u0641 \u0643\u0644\u064a \u0641\u0648\u0642 \u0634\u0631\u0642 \u0627\u0644\u0645\u062a\u0648\u0633\u0637 \u2014 \u0627\u0644\u0639\u0635\u0631 \u0627\u0644\u0623\u064a\u0648\u0628\u064a',
+      ayyubid1239: '\u0643\u0633\u0648\u0641 \u0643\u0644\u064a \u0639\u0628\u0631 \u0623\u0648\u0631\u0648\u0628\u0627 \u0648\u0627\u0644\u0634\u0627\u0645 \u2014 \u0648\u062b\u0642\u0647 \u0627\u0644\u0645\u0624\u0631\u062e\u0648\u0646',
       mongols1241: '\u0623\u062b\u0646\u0627\u0621 \u0627\u0644\u063a\u0632\u0648 \u0627\u0644\u0645\u063a\u0648\u0644\u064a \u0644\u0644\u0634\u0631\u0642 \u0627\u0644\u0623\u0648\u0633\u0637',
+      ilkhanid1310: '\u0643\u0633\u0648\u0641 \u062d\u0644\u0642\u064a \u0641\u064a \u0639\u0647\u062f \u0627\u0644\u0625\u064a\u0644\u062e\u0627\u0646\u064a\u0629',
+      ottoman1354: '\u0643\u0633\u0648\u0641 \u0647\u062c\u064a\u0646 \u0641\u0648\u0642 \u0634\u0631\u0642 \u0623\u0641\u0631\u064a\u0642\u064a\u0627 \u0648\u0627\u0644\u062c\u0632\u064a\u0631\u0629 \u0627\u0644\u0639\u0631\u0628\u064a\u0629 \u2014 \u0628\u062f\u0627\u064a\u0629 \u0627\u0644\u062a\u0648\u0633\u0639 \u0627\u0644\u0639\u062b\u0645\u0627\u0646\u064a',
+      murad1431: '\u0643\u0633\u0648\u0641 \u0643\u0644\u064a \u0641\u064a \u0639\u0647\u062f \u0627\u0644\u0633\u0644\u0637\u0627\u0646 \u0645\u0631\u0627\u062f \u0627\u0644\u062b\u0627\u0646\u064a',
       constantinople1453: '\u0642\u0628\u0644 \u0623\u0634\u0647\u0631 \u0645\u0646 \u0633\u0642\u0648\u0637 \u0627\u0644\u0642\u0633\u0637\u0646\u0637\u064a\u0646\u064a\u0629 \u0639\u0644\u0649 \u064a\u062f \u0645\u062d\u0645\u062f \u0627\u0644\u0641\u0627\u062a\u062d'
     },
     moonPhaseLabel: '\u0637\u0648\u0631 \u0627\u0644\u0642\u0645\u0631',
@@ -696,7 +735,7 @@ const I18N = {
       byzantine: 'Bizanca',
       seleucid: 'Selekida', syriac: 'Siria', rumi: 'Rumia',
       egyptian: 'Egipta',
-      auc: 'Ab Urbe Condita', spanish: 'Hispana Erao', antiochene: 'Antio\u0125ia Erao',
+      auc: 'Ab Urbe Condita', roman: 'Romia', spanish: 'Hispana Erao', antiochene: 'Antio\u0125ia Erao',
       olympiad: 'Olimpiado', macedonian: 'Makedona',
       hebrew: 'Hebrea', babylonian: 'Babilona',
       bp: 'Anta\u016d la nuno', human: 'Homara Erao'
@@ -739,6 +778,10 @@ const I18N = {
     gregorianMonths: [
       'januaro', 'februaro', 'marto', 'aprilo', 'majo', 'junio',
       'julio', 'a\u016dgusto', 'septembro', 'oktobro', 'novembro', 'decembro'
+    ],
+    romanMonths: [
+      'Ianuarius', 'Februarius', 'Martius', 'Aprilis', 'Maius', 'Iunius',
+      'Iulius', 'Augustus', 'September', 'October', 'November', 'December'
     ],
     hijriMonths: [
       'mu\u1e25arram', '\u1e63afar', 'rab\u012b\u02bf al-awwal', 'rab\u012b\u02bf a\u1e6f-\u1e6f\u0101n\u012b',
@@ -817,15 +860,24 @@ const I18N = {
       proclus484: 'Dokumentita de Marino el Neapolo en la biografio de Proklo',
       arabia590: 'Anula eklipso super Arabio \u2014 antaislama periodo',
       ibrahim632: 'Eklipso je la morto de Ibrahim, filo de Profeto Mahometo',
+      umayyad693: 'Totala eklipso super Persio dum la Dua Fitno',
       constantinople718: 'Dum la araba sie\u011do de Konstantinopolo',
       harun809: 'Dum la regado de Harun al-Ra\u015did',
       louis840: 'Eklipso de imperiestro Ludoviko la Pia, vidata kiel a\u016dguro de lia morto',
+      abbasid891: 'Anula eklipso super Levanto \u2014 malfrua Abasida periodo',
+      fatimid961: 'Anula eklipso dum la esti\u011do de la Fatimida Kaliflando',
       biruni968: 'Observita kaj registrita de al-Biruni en Bagdado',
       crucifixion1033: 'Jarmilo de la Krucumo \u2014 vaste dokumentita tra la kristana mondo',
       crusade1098: 'Dum la Unua Krucmilito, sie\u011do de Antio\u0125io',
       henry1133: 'Eklipso de Re\u011do Henriko \u2014 observita tra E\u016dropo kaj Levanto',
+      byzantine1176: 'Totala eklipso dum la regado de Manuelo la 1-a Komneno',
       hattin1187: 'Jaro de la Batalo de Hattin kaj la konkero de Jerusalemo fare de Saladino',
+      damascus1230: 'Totala eklipso super orienta Mediteraneo \u2014 Ajubida periodo',
+      ayyubid1239: 'Totala eklipso tra E\u016dropo kaj Levanto \u2014 dokumentita de kronikiistoj',
       mongols1241: 'Dum la mongola invado de Proksima Oriento',
+      ilkhanid1310: 'Anula eklipso dum la Ilkanata periodo',
+      ottoman1354: 'Hibrida eklipso super Orienta Afriko kaj Arabio \u2014 komenca Osmana ekspansio',
+      murad1431: 'Totala eklipso dum la regado de Murado la 2-a',
       constantinople1453: 'Monatojn anta\u016d la falo de Konstantinopolo al Mehmedo la 2-a'
     },
     moonPhaseLabel: 'Luna fazo',

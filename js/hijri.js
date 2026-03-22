@@ -1007,6 +1007,50 @@ const Cal = (() => {
   }
 
   // ================================================================
+  // Roman date notation (Kalends, Nones, Ides)
+  // Converts a Julian/AUC month+day into Roman notation string
+  // ================================================================
+
+  function romanDayNotation(month, day, isLeap) {
+    // Nones/Ides fall later in March, May, July, October
+    const long = (month === 3 || month === 5 || month === 7 || month === 10);
+    const nones = long ? 7 : 5;
+    const ides = long ? 15 : 13;
+    const mLen = [31, isLeap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    // Ablative month adjectives (for Kalendis/Nonis/Idibus)
+    const abl = ['Ianuariis','Februariis','Martiis','Aprilibus','Maiis','Iuniis',
+                 'Iuliis','Augustis','Septembribus','Octobribus','Novembribus','Decembribus'];
+    // Accusative month adjectives (for ante diem/pridie + Kalendas/Nonas/Idus)
+    const acc = ['Ianuarias','Februarias','Martias','Apriles','Maias','Iunias',
+                 'Iulias','Augustas','Septembres','Octobres','Novembres','Decembres'];
+
+    if (day === 1) return 'Kalendis ' + abl[month - 1];
+    if (day === nones) return 'Nonis ' + abl[month - 1];
+    if (day === ides) return 'Idibus ' + abl[month - 1];
+
+    // Roman numerals for small numbers (max ~19)
+    function rom(n) {
+      const vals = [10,9,5,4,1], syms = ['X','IX','V','IV','I'];
+      let s = ''; for (let i = 0; i < vals.length; i++) while (n >= vals[i]) { s += syms[i]; n -= vals[i]; } return s;
+    }
+
+    let count, target, nextMonth;
+    if (day < nones) {
+      count = nones - day + 1;
+      target = 'Nonas'; nextMonth = month;
+    } else if (day < ides) {
+      count = ides - day + 1;
+      target = 'Idus'; nextMonth = month;
+    } else {
+      nextMonth = month === 12 ? 1 : month + 1;
+      count = mLen[month - 1] - day + 2;
+      target = 'Kalendas';
+    }
+    if (count === 2) return 'pridie ' + target + ' ' + acc[nextMonth - 1];
+    return 'ante diem ' + rom(count) + ' ' + target + ' ' + acc[nextMonth - 1];
+  }
+
+  // ================================================================
   // Spanish Era (Era Hispanica)
   // Julian calendar, year 1 = 38 BC (Julian year -37)
   // Used in Iberian Peninsula until 14th-15th century
@@ -1571,8 +1615,9 @@ const Cal = (() => {
     egyptianMonthLength, egyptianYearLength, egyptianToJD, jdToEgyptian,
     // Zodiac
     getZodiacSign,
-    // AUC
+    // AUC / Roman
     aucToJD, jdToAuc, aucMonthLength, aucYearLength, isAucLeapYear,
+    romanDayNotation,
     // Spanish Era
     spanishToJD, jdToSpanish, spanishMonthLength, spanishYearLength, isSpanishLeapYear,
     // Antiochene Era

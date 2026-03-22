@@ -1022,7 +1022,7 @@ html[dir="rtl"] .ai-input {
   border: var(--border-subtle);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* ---- Form ---- */
@@ -1383,26 +1383,62 @@ html[dir="rtl"] .btn-convert:hover svg {
 /* ---- Eclipse result ---- */
 
 .result-eclipse {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.4em;
-  padding: var(--space-sm) var(--space-md);
+  align-items: center;
+  gap: 0.5em;
+  padding: var(--space-md) var(--space-md) var(--space-md) var(--space-lg);
   margin-block-end: var(--space-md);
-  background: var(--parchment-200);
-  border-radius: var(--radius-sm);
-  border-inline-start: 3px solid var(--ink-700);
+  background:
+    radial-gradient(ellipse at 2em 50%, rgba(26, 22, 18, 0.07) 0%, transparent 60%),
+    linear-gradient(135deg, var(--ink-900) 0%, #2a231a 100%);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+/* Subtle star-dust texture */
+.result-eclipse::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 15% 25%, rgba(184, 134, 11, 0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 72% 18%, rgba(184, 134, 11, 0.2) 0%, transparent 100%),
+    radial-gradient(1px 1px at 45% 78%, rgba(184, 134, 11, 0.25) 0%, transparent 100%),
+    radial-gradient(1px 1px at 88% 62%, rgba(184, 134, 11, 0.15) 0%, transparent 100%),
+    radial-gradient(1px 1px at 32% 55%, rgba(184, 134, 11, 0.2) 0%, transparent 100%);
+  pointer-events: none;
 }
 
 .eclipse-icon {
-  font-size: 1.1rem;
+  position: relative;
+  width: 1.6em;
+  height: 1.6em;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--ink-900);
+  box-shadow:
+    0 0 0 2px rgba(184, 134, 11, 0.4),
+    0 0 8px 2px rgba(184, 134, 11, 0.2),
+    0 0 18px 4px rgba(184, 134, 11, 0.1);
+}
+
+/* Corona highlight — crescent of light on one edge */
+.eclipse-icon::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 75% 30%, rgba(184, 134, 11, 0.5) 0%, transparent 50%);
 }
 
 .eclipse-type {
   font-family: var(--font-display);
   font-size: 0.95rem;
   font-weight: 600;
-  color: var(--ink-800);
+  color: var(--gold);
+  letter-spacing: 0.02em;
 }
 
 .eclipse-note {
@@ -1410,23 +1446,30 @@ html[dir="rtl"] .btn-convert:hover svg {
   font-family: var(--font-display);
   font-size: 0.85rem;
   font-style: italic;
-  color: var(--ink-600);
-  margin-block-start: 0.2em;
+  color: var(--ink-400);
+  margin-block-start: 0.15em;
+  padding-inline-start: 2.1em;
+  line-height: 1.5;
 }
 
 .eclipse-map-link {
   display: inline-block;
-  width: 100%;
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  color: var(--ink-600);
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  color: var(--gold-dim);
   text-decoration: none;
-  margin-block-start: 0.3em;
+  margin-block-start: 0.25em;
+  margin-inline-start: 2.1em;
+  padding: 0.2em 0.7em;
+  border: 1px solid rgba(184, 134, 11, 0.25);
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
 }
 
 .eclipse-map-link:hover {
-  color: var(--ink-800);
-  text-decoration: underline;
+  color: var(--gold);
+  border-color: rgba(184, 134, 11, 0.5);
+  background: rgba(184, 134, 11, 0.08);
 }
 
 /* ---- Eclipse map pages ---- */
@@ -1471,29 +1514,253 @@ html[dir="rtl"] .btn-convert:hover svg {
 
 /* ---- Eclipses subpage ---- */
 
-.ecl-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin: 1.5rem 0; }
-.ecl-table th { text-align: left; padding: 0.5rem 0.6rem; border-bottom: 2px solid var(--c-border); font-family: var(--font-display); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--c-muted); }
-.ecl-table td { padding: 0.45rem 0.6rem; border-bottom: 1px solid var(--c-border); vertical-align: top; }
-.ecl-table tr.notable td { background: var(--c-bg-alt, rgba(0,0,0,0.02)); }
-.ecl-table .ecl-date { font-family: var(--font-mono); white-space: nowrap; }
-.ecl-table .ecl-type { font-family: var(--font-mono); text-align: center; }
-.ecl-table .ecl-mag { font-family: var(--font-mono); text-align: right; }
-.ecl-table .ecl-note { font-family: var(--font-display); font-style: italic; color: var(--c-muted); font-size: 0.82rem; }
-.ecl-century { font-family: var(--font-display); font-size: 1rem; font-weight: 700; margin: 2rem 0 0.5rem; padding-bottom: 0.3rem; border-bottom: 1px solid var(--c-border); }
-.ecl-century:first-of-type { margin-top: 1rem; }
-.ecl-map-wrap { margin: 2rem 0; border: 1px solid var(--c-border); border-radius: var(--radius); overflow: hidden; background: #faf6ee; }
+.ecl-intro {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+/* --- Stats: observatory instrument panels --- */
+
+.ecl-stats {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin: 1rem 0 2rem;
+}
+
+.ecl-stat {
+  flex: 1 1 6rem;
+  text-align: center;
+  padding: 0.9rem 0.6rem 0.7rem;
+  background: linear-gradient(160deg, var(--ink-900) 0%, #2a231a 100%);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(184, 134, 11, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Faint corona glow in corner */
+.ecl-stat::before {
+  content: '';
+  position: absolute;
+  top: -30%;
+  right: -30%;
+  width: 80%;
+  height: 80%;
+  background: radial-gradient(circle, rgba(184, 134, 11, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.ecl-stat-num {
+  font-family: var(--font-mono);
+  font-size: 1.6rem;
+  font-weight: 700;
+  display: block;
+  color: var(--gold);
+  text-shadow: 0 0 12px rgba(184, 134, 11, 0.25);
+}
+
+.ecl-stat-label {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  color: var(--ink-400);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+/* --- Century headings: astronomical ledger dividers --- */
+
+.ecl-century {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 2.5rem 0 0.5rem;
+  padding: 0.5rem 0.9rem;
+  background: linear-gradient(135deg, var(--ink-900) 0%, #2a231a 100%);
+  border-radius: var(--radius-sm);
+  border-inline-start: 3px solid var(--gold-dim);
+}
+
+.ecl-century:first-of-type {
+  margin-top: 1rem;
+}
+
+/* --- Table: astronomer's ledger --- */
+
+.ecl-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.84rem;
+  margin: 0 0 0.5rem;
+}
+
+.ecl-table th {
+  text-align: left;
+  padding: 0.5rem 0.7rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-400);
+  background: var(--ink-900);
+  border-bottom: 1px solid rgba(184, 134, 11, 0.2);
+}
+
+.ecl-table th:first-child { border-radius: var(--radius-sm) 0 0 0; }
+.ecl-table th:last-child { border-radius: 0 var(--radius-sm) 0 0; }
+html[dir="rtl"] .ecl-table th:first-child { border-radius: 0 var(--radius-sm) 0 0; }
+html[dir="rtl"] .ecl-table th:last-child { border-radius: var(--radius-sm) 0 0 0; }
+
+.ecl-table td {
+  padding: 0.4rem 0.7rem;
+  border-bottom: 1px solid var(--parchment-300);
+  vertical-align: middle;
+}
+
+.ecl-table tbody tr {
+  transition: background 0.15s ease;
+}
+
+.ecl-table tbody tr:hover td {
+  background: var(--parchment-200);
+}
+
+/* Notable rows — golden glow */
+.ecl-table tr.notable td {
+  background: rgba(184, 134, 11, 0.06);
+  border-bottom-color: rgba(184, 134, 11, 0.15);
+}
+
+.ecl-table tr.notable:hover td {
+  background: rgba(184, 134, 11, 0.1);
+}
+
+.ecl-table tr.notable td:first-child {
+  box-shadow: inset 3px 0 0 var(--gold-dim);
+}
+
+html[dir="rtl"] .ecl-table tr.notable td:first-child {
+  box-shadow: inset -3px 0 0 var(--gold-dim);
+}
+
+.ecl-table .ecl-date {
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+
+.ecl-table .ecl-mag {
+  font-family: var(--font-mono);
+  text-align: right;
+}
+
+/* Type badges */
+.ecl-table .ecl-type {
+  text-align: center;
+}
+
+.ecl-type-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  padding: 0.15em 0.55em;
+  border-radius: 3px;
+  line-height: 1.4;
+}
+
+.ecl-type-badge[data-type="T"] {
+  color: var(--gold);
+  background: rgba(184, 134, 11, 0.12);
+  border: 1px solid rgba(184, 134, 11, 0.25);
+}
+
+.ecl-type-badge[data-type="A"] {
+  color: var(--teal);
+  background: rgba(47, 107, 96, 0.1);
+  border: 1px solid rgba(47, 107, 96, 0.25);
+}
+
+.ecl-type-badge[data-type="H"] {
+  color: var(--rust-light);
+  background: rgba(139, 69, 19, 0.1);
+  border: 1px solid rgba(139, 69, 19, 0.2);
+}
+
+.ecl-convert-link {
+  cursor: pointer;
+  color: var(--ink-700);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.ecl-convert-link:hover {
+  color: var(--gold);
+  text-decoration: underline;
+}
+
+.ecl-table tr.notable .ecl-convert-link {
+  color: var(--ink-800);
+  font-weight: 500;
+}
+
+.ecl-table .ecl-nasa {
+  color: var(--ink-500);
+  text-decoration: none;
+  font-size: 0.8rem;
+  transition: color 0.15s ease;
+}
+
+.ecl-table .ecl-nasa:hover {
+  color: var(--gold);
+}
+
+/* --- Featured & source --- */
+
+.ecl-featured {
+  margin: 1.5rem 0;
+  padding: 1.2rem 1.2rem 1.2rem 1.5rem;
+  background: linear-gradient(135deg, var(--ink-900) 0%, #2a231a 100%);
+  border-radius: var(--radius-md);
+  border-inline-start: 3px solid var(--gold-dim);
+}
+
+.ecl-featured h3 {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  margin: 0 0 0.3rem;
+  color: var(--gold);
+}
+
+.ecl-featured p {
+  margin: 0.3rem 0;
+  font-size: 0.88rem;
+  color: var(--ink-400);
+}
+
+.ecl-map-wrap {
+  margin: 2rem 0;
+  border: 1px solid rgba(184, 134, 11, 0.2);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: #faf6ee;
+}
+
 .ecl-map-wrap iframe { width: 100%; height: 620px; border: none; }
-.ecl-intro { font-family: var(--font-display); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem; }
-.ecl-stats { display: flex; gap: 2rem; flex-wrap: wrap; margin: 1rem 0 1.5rem; }
-.ecl-stat { text-align: center; }
-.ecl-stat-num { font-family: var(--font-mono); font-size: 1.5rem; font-weight: 700; display: block; }
-.ecl-stat-label { font-family: var(--font-display); font-size: 0.78rem; color: var(--c-muted); }
-.ecl-convert-link { cursor: pointer; color: var(--c-accent); text-decoration: none; }
-.ecl-convert-link:hover { text-decoration: underline; }
-.ecl-featured { margin: 1.5rem 0; padding: 1.2rem; border: 1px solid var(--c-border); border-radius: var(--radius); background: var(--c-bg-alt, rgba(0,0,0,0.02)); }
-.ecl-featured h3 { font-family: var(--font-display); font-size: 1.05rem; margin: 0 0 0.3rem; }
-.ecl-featured p { margin: 0.3rem 0; font-size: 0.88rem; }
-.ecl-source { margin-top: 2rem; font-size: 0.82rem; color: var(--c-muted); font-family: var(--font-display); }
+
+.ecl-source {
+  margin-top: 2rem;
+  font-size: 0.82rem;
+  color: var(--ink-500);
+  font-family: var(--font-display);
+}
 
 /* ---- Astronomy results ---- */
 
@@ -2452,7 +2719,11 @@ body[data-theme="brutalist"] .result-panel .year-table td {
   padding: 0.5em var(--space-md);
 }
 
-body[data-theme="brutalist"] .result-eclipse,
+body[data-theme="brutalist"] .result-eclipse {
+  border-radius: 0;
+  background: #111;
+}
+
 body[data-theme="brutalist"] .result-astro {
   padding: var(--space-md) var(--space-lg);
   margin-block: var(--space-md);

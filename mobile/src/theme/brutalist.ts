@@ -1,28 +1,30 @@
 export const brutalist = {
   name: 'brutalist' as const,
   colors: {
-    background: '#ffffff',
-    surface: '#f0f0f0',
-    surfaceAlt: '#e0e0e0',
+    background: '#f5f5f0',
+    surface: '#ebebeb',
+    surfaceAlt: '#000000',
     text: '#000000',
     textSecondary: '#333333',
     textMuted: '#666666',
-    accent: '#000000',
-    accentGold: '#000000',
+    accent: '#FFDD00',
+    accentGold: '#FFDD00',
     accentTeal: '#000000',
     border: '#000000',
     error: '#ff0000',
-    resultBg: '#f8f8f8',
+    resultBg: '#ffffff',
     buttonBg: '#000000',
-    buttonText: '#ffffff',
+    buttonText: '#FFDD00',
     cardBg: '#ffffff',
-    tabBar: '#ffffff',
-    tabActive: '#000000',
-    tabInactive: '#999999',
+    tabBar: '#000000',
+    tabActive: '#FFDD00',
+    tabInactive: '#666666',
   },
   fonts: {
-    regular: undefined, // system sans
+    regular: undefined, // system mono
     mono: undefined, // system mono
   },
   borderRadius: 0,
+  borderWidth: 3,
+  shadowOffset: { width: 6, height: 6 },
 };

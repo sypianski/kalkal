@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTheme } from '../theme/ThemeContext';
+import { BrutalistCard } from '../components/BrutalistCard';
 
 const CALENDARS_DATA = [
   {
@@ -151,37 +152,58 @@ const CALENDARS_DATA = [
 
 function CalendarCard({ cal, theme }: { cal: typeof CALENDARS_DATA[0]; theme: any }) {
   const [expanded, setExpanded] = useState(false);
-  const typeColor = cal.type.includes('Lunar') ? '#2f6b60' : cal.type.includes('wandering') ? '#b8860b' : theme.colors.accent;
+  const isBrut = theme.name === 'brutalist';
+  const typeColor = isBrut
+    ? theme.colors.accent
+    : cal.type.includes('Lunar') ? '#2f6b60' : cal.type.includes('wandering') ? '#b8860b' : theme.colors.accent;
 
   return (
-    <View style={[cardStyles.card, { borderColor: theme.colors.border, borderRadius: theme.borderRadius, backgroundColor: theme.colors.cardBg }]}>
+    <BrutalistCard>
       <View style={cardStyles.header}>
-        <Text style={[cardStyles.name, { color: theme.colors.text }]}>{cal.name}</Text>
-        <Text style={[cardStyles.type, { color: typeColor, borderColor: typeColor }]}>{cal.type}</Text>
+        <Text style={[cardStyles.name, { color: theme.colors.text }, isBrut && { borderBottomWidth: 2, borderBottomColor: theme.colors.accent, paddingBottom: 2 }]}>
+          {cal.name}
+        </Text>
+        <Text style={[
+          cardStyles.type,
+          { borderColor: typeColor },
+          isBrut
+            ? { backgroundColor: '#000', color: theme.colors.accent, borderWidth: 0, paddingHorizontal: 8, paddingVertical: 4 }
+            : { color: typeColor, borderWidth: 1 }
+        ]}>
+          {cal.type}
+        </Text>
       </View>
-      <Text style={[cardStyles.intro, { color: theme.colors.textSecondary }]}>{cal.intro}</Text>
+      <Text style={[cardStyles.intro, { color: theme.colors.textSecondary }, isBrut && { fontStyle: 'normal', fontWeight: '700' }]}>{cal.intro}</Text>
       <TouchableOpacity onPress={() => setExpanded(!expanded)}>
-        <Text style={[cardStyles.toggle, { color: theme.colors.accent }]}>{expanded ? 'Show less' : 'Show more'}</Text>
+        <Text style={[
+          cardStyles.toggle,
+          isBrut
+            ? { color: theme.colors.text, backgroundColor: theme.colors.accent, paddingHorizontal: 8, paddingVertical: 4, alignSelf: 'flex-start', fontWeight: '900' }
+            : { color: theme.colors.accent }
+        ]}>
+          {expanded ? 'SHOW LESS' : 'SHOW MORE'}
+        </Text>
       </TouchableOpacity>
       {expanded && (
         <>
           <Text style={[cardStyles.body, { color: theme.colors.text }]}>{cal.body}</Text>
-          <Text style={[cardStyles.monthLabel, { color: theme.colors.textMuted }]}>Months</Text>
+          <Text style={[cardStyles.monthLabel, { color: isBrut ? theme.colors.text : theme.colors.textMuted }, isBrut && { backgroundColor: '#000', color: theme.colors.accent, paddingHorizontal: 8, paddingVertical: 4, alignSelf: 'flex-start' }]}>Months</Text>
           <Text style={[cardStyles.months, { color: theme.colors.textSecondary }]}>{cal.months}</Text>
         </>
       )}
-    </View>
+    </BrutalistCard>
   );
 }
 
 export function CalendarsScreen() {
   const { theme } = useTheme();
+  const isBrut = theme.name === 'brutalist';
 
   return (
     <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <Text style={[styles.title, { color: theme.colors.text }]}>Calendar Systems</Text>
-      <Text style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
-        Descriptions of the {CALENDARS_DATA.length} calendar systems supported by kalkal
+      <Text style={[styles.title, { color: theme.colors.text, letterSpacing: isBrut ? 3 : 0 }]}>Calendar Systems</Text>
+      <Text style={[styles.subtitle, { color: isBrut ? theme.colors.accent : theme.colors.textSecondary, letterSpacing: isBrut ? 2 : 0 }]}>
+        {CALENDARS_DATA.length} calendar systems supported
       </Text>
       {CALENDARS_DATA.map(cal => (
         <CalendarCard key={cal.id} cal={cal} theme={theme} />
@@ -193,18 +215,17 @@ export function CalendarsScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, paddingHorizontal: 16 },
-  title: { fontSize: 24, fontWeight: '700', textAlign: 'center', marginTop: 16 },
-  subtitle: { fontSize: 14, textAlign: 'center', marginBottom: 16 },
+  title: { fontSize: 22, fontWeight: '900', textAlign: 'center', marginTop: 16, textTransform: 'uppercase', letterSpacing: 2 },
+  subtitle: { fontSize: 11, textAlign: 'center', marginBottom: 16, textTransform: 'uppercase', fontWeight: '700', letterSpacing: 1.5 },
 });
 
 const cardStyles = StyleSheet.create({
-  card: { borderWidth: 1, padding: 16, marginBottom: 12 },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
-  name: { fontSize: 17, fontWeight: '700', flex: 1 },
-  type: { fontSize: 11, fontWeight: '600', borderWidth: 1, paddingHorizontal: 6, paddingVertical: 2, textTransform: 'uppercase' },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8, gap: 8 },
+  name: { fontSize: 16, fontWeight: '900', flex: 1, textTransform: 'uppercase', letterSpacing: 0.5 },
+  type: { fontSize: 10, fontWeight: '900', paddingHorizontal: 6, paddingVertical: 2, textTransform: 'uppercase', letterSpacing: 1 },
   intro: { fontSize: 14, fontStyle: 'italic', lineHeight: 20 },
-  toggle: { fontSize: 14, fontWeight: '600', marginTop: 8 },
+  toggle: { fontSize: 12, fontWeight: '700', marginTop: 8, textTransform: 'uppercase', letterSpacing: 1 },
   body: { fontSize: 14, lineHeight: 20, marginTop: 8 },
-  monthLabel: { fontSize: 12, fontWeight: '700', textTransform: 'uppercase', marginTop: 12, letterSpacing: 0.5 },
+  monthLabel: { fontSize: 11, fontWeight: '900', textTransform: 'uppercase', marginTop: 12, letterSpacing: 2 },
   months: { fontSize: 13, lineHeight: 19, marginTop: 4 },
 });

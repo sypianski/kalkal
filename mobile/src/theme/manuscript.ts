@@ -25,4 +25,6 @@ export const manuscript = {
     mono: undefined, // system mono
   },
   borderRadius: 8,
+  borderWidth: 1,
+  shadowOffset: { width: 0, height: 2 },
 };

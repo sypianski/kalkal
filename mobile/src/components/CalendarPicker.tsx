@@ -30,7 +30,7 @@ export function CalendarPicker({ value, onSelect, label }: Props) {
     <View>
       <Text style={[styles.label, { color: theme.colors.textSecondary }]}>{label}</Text>
       <TouchableOpacity
-        style={[styles.picker, { borderColor: theme.colors.border, borderRadius: theme.borderRadius, backgroundColor: theme.colors.surface }]}
+        style={[styles.picker, { borderColor: theme.colors.border, borderRadius: theme.borderRadius, backgroundColor: theme.colors.surface, borderWidth: theme.borderWidth }]}
         onPress={() => { setVisible(true); setSearch(''); }}
       >
         <Text style={[styles.pickerText, { color: calName ? theme.colors.text : theme.colors.textMuted }]}>
@@ -40,14 +40,17 @@ export function CalendarPicker({ value, onSelect, label }: Props) {
 
       <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
         <View style={[styles.modal, { backgroundColor: theme.colors.background }]}>
-          <View style={styles.modalHeader}>
-            <Text style={[styles.modalTitle, { color: theme.colors.text }]}>{label}</Text>
+          <View style={[
+            styles.modalHeader,
+            theme.name === 'brutalist' && { backgroundColor: '#000', paddingTop: 16, paddingBottom: 16 }
+          ]}>
+            <Text style={[styles.modalTitle, { color: theme.name === 'brutalist' ? '#fff' : theme.colors.text }]}>{label}</Text>
             <TouchableOpacity onPress={() => setVisible(false)}>
               <Text style={[styles.closeBtn, { color: theme.colors.accent }]}>Done</Text>
             </TouchableOpacity>
           </View>
           <TextInput
-            style={[styles.searchInput, { borderColor: theme.colors.border, color: theme.colors.text, backgroundColor: theme.colors.surface, borderRadius: theme.borderRadius }]}
+            style={[styles.searchInput, { borderColor: theme.colors.border, color: theme.colors.text, backgroundColor: theme.colors.surface, borderRadius: theme.borderRadius, borderWidth: theme.borderWidth }]}
             placeholder="Search..."
             placeholderTextColor={theme.colors.textMuted}
             value={search}
@@ -57,7 +60,12 @@ export function CalendarPicker({ value, onSelect, label }: Props) {
           <ScrollView style={styles.list}>
             {filtered.map(g => (
               <View key={g!.group}>
-                <Text style={[styles.groupLabel, { color: theme.colors.textMuted }]}>
+                <Text style={[
+                  styles.groupLabel,
+                  theme.name === 'brutalist'
+                    ? { backgroundColor: '#000', color: theme.colors.accent, paddingVertical: 8, marginTop: 0 }
+                    : { color: theme.colors.textMuted }
+                ]}>
                   {(T.calendarGroups as any)[g!.group] || g!.group}
                 </Text>
                 {g!.items.map(id => (
@@ -66,7 +74,7 @@ export function CalendarPicker({ value, onSelect, label }: Props) {
                     style={[styles.item, value === id && { backgroundColor: theme.colors.surfaceAlt }]}
                     onPress={() => { onSelect(id); setVisible(false); }}
                   >
-                    <Text style={[styles.itemText, { color: theme.colors.text }]}>
+                    <Text style={[styles.itemText, { color: value === id && theme.name === 'brutalist' ? theme.colors.accent : theme.colors.text }]}>
                       {(T.calendars as any)[id] || id}
                     </Text>
                   </TouchableOpacity>
@@ -81,16 +89,16 @@ export function CalendarPicker({ value, onSelect, label }: Props) {
 }
 
 const styles = StyleSheet.create({
-  label: { fontSize: 13, fontWeight: '600', marginBottom: 4, textTransform: 'uppercase', letterSpacing: 0.5 },
-  picker: { borderWidth: 1, paddingHorizontal: 12, paddingVertical: 12 },
-  pickerText: { fontSize: 16 },
+  label: { fontSize: 11, fontWeight: '900', marginBottom: 4, textTransform: 'uppercase', letterSpacing: 1.5 },
+  picker: { paddingHorizontal: 12, paddingVertical: 12 },
+  pickerText: { fontSize: 16, fontWeight: '700', textTransform: 'uppercase' },
   modal: { flex: 1, paddingTop: 16 },
   modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingBottom: 12 },
-  modalTitle: { fontSize: 20, fontWeight: '700' },
-  closeBtn: { fontSize: 17, fontWeight: '600' },
-  searchInput: { marginHorizontal: 16, borderWidth: 1, paddingHorizontal: 12, paddingVertical: 10, fontSize: 16, marginBottom: 8 },
+  modalTitle: { fontSize: 20, fontWeight: '900', textTransform: 'uppercase', letterSpacing: 1 },
+  closeBtn: { fontSize: 17, fontWeight: '700' },
+  searchInput: { marginHorizontal: 16, paddingHorizontal: 12, paddingVertical: 10, fontSize: 16, marginBottom: 8, fontWeight: '700' },
   list: { flex: 1 },
-  groupLabel: { fontSize: 12, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 1, paddingHorizontal: 16, paddingTop: 16, paddingBottom: 4 },
+  groupLabel: { fontSize: 11, fontWeight: '900', textTransform: 'uppercase', letterSpacing: 2, paddingHorizontal: 16, paddingTop: 16, paddingBottom: 4 },
   item: { paddingHorizontal: 16, paddingVertical: 12 },
-  itemText: { fontSize: 16 },
+  itemText: { fontSize: 16, fontWeight: '600' },
 });

@@ -8,6 +8,7 @@ import { Astronomy } from '../engine/astronomy';
 import { CalendarPicker } from '../components/CalendarPicker';
 import { VariantBar } from '../components/VariantBar';
 import { ThemeToggle } from '../components/ThemeToggle';
+import { BrutalistCard } from '../components/BrutalistCard';
 import { useHistory, HistoryEntry } from '../hooks/useHistory';
 
 type ResultData = { type: 'date'; lines: ResultLine[] }
@@ -284,10 +285,10 @@ export function ConverterScreen() {
 
   return (
     <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]} keyboardShouldPersistTaps="handled">
-      <Text style={[styles.title, { color: theme.colors.text }]}>{T.appTitle}</Text>
-      <Text style={[styles.subtitle, { color: theme.colors.textSecondary }]}>{T.appSubtitle}</Text>
+      <Text style={[styles.title, { color: theme.colors.text, letterSpacing: theme.name === 'brutalist' ? 3 : 0 }]}>{T.appTitle}</Text>
+      <Text style={[styles.subtitle, { color: theme.name === 'brutalist' ? theme.colors.accent : theme.colors.textSecondary, letterSpacing: theme.name === 'brutalist' ? 2 : 0 }]}>{T.appSubtitle}</Text>
 
-      <View style={[styles.card, { backgroundColor: theme.colors.cardBg, borderColor: theme.colors.border, borderRadius: theme.borderRadius }]}>
+      <BrutalistCard>
         {/* Source calendar */}
         <CalendarPicker value={fromCal} onSelect={onFromCalChange} label={T.fromCalendar} />
         {srcCal?.variants && (
@@ -318,7 +319,7 @@ export function ConverterScreen() {
                 style={[styles.monthChip, !month && { backgroundColor: theme.colors.accent }]}
                 onPress={() => setMonth('')}
               >
-                <Text style={[styles.monthChipText, { color: !month ? theme.colors.buttonText : theme.colors.text }]}>\u2014</Text>
+                <Text style={[styles.monthChipText, { color: !month ? theme.colors.buttonText : theme.colors.text }]}>{'—'}</Text>
               </TouchableOpacity>
               {monthNames.map((name: string, i: number) => {
                 const active = month === String(i + 1);
@@ -363,24 +364,33 @@ export function ConverterScreen() {
 
         {/* Convert button */}
         <TouchableOpacity
-          style={[styles.convertBtn, { backgroundColor: theme.colors.buttonBg, borderRadius: theme.borderRadius }]}
+          style={[styles.convertBtn, {
+            backgroundColor: theme.colors.buttonBg,
+            borderRadius: theme.borderRadius,
+            borderWidth: theme.name === 'brutalist' ? 3 : 0,
+            borderColor: theme.colors.border,
+            shadowColor: theme.name === 'brutalist' ? theme.colors.accent : 'transparent',
+            shadowOffset: theme.name === 'brutalist' ? { width: 4, height: 4 } : { width: 0, height: 0 },
+            shadowOpacity: 1,
+            shadowRadius: 0,
+          }]}
           onPress={convert}
         >
-          <Text style={[styles.convertBtnText, { color: theme.colors.buttonText }]}>{T.convert} \u2192</Text>
+          <Text style={[styles.convertBtnText, { color: theme.colors.buttonText, letterSpacing: theme.name === 'brutalist' ? 3 : 0 }]}>{T.convert} →</Text>
         </TouchableOpacity>
-      </View>
+      </BrutalistCard>
 
       {/* Result */}
       {result && (
-        <View style={[styles.resultCard, { backgroundColor: theme.colors.resultBg, borderColor: theme.colors.border, borderRadius: theme.borderRadius }]}>
+        <BrutalistCard>
           {result.type === 'error' ? (
             <Text style={[styles.errorText, { color: theme.colors.error }]}>{result.message}</Text>
           ) : (
             <>
               {result.lines.map((line, i) => (
                 <Text key={i} style={[
-                  line.style === 'main' && [styles.resultMain, { color: theme.colors.text }],
-                  line.style === 'label' && [styles.resultLabel, { color: theme.colors.accent }],
+                  line.style === 'main' && [styles.resultMain, { color: theme.colors.text, borderBottomWidth: theme.name === 'brutalist' ? 3 : 0, borderBottomColor: theme.colors.accent, paddingBottom: theme.name === 'brutalist' ? 4 : 0, fontWeight: '900' as const }],
+                  line.style === 'label' && [styles.resultLabel, { color: theme.name === 'brutalist' ? theme.colors.textMuted : theme.colors.accent }],
                   line.style === 'secondary' && [styles.resultSecondary, { color: theme.colors.text }],
                   line.style === 'meta' && [styles.resultMeta, { color: theme.colors.textMuted }],
                   line.style === 'note' && [styles.resultNote, { color: theme.colors.textSecondary }],
@@ -389,11 +399,11 @@ export function ConverterScreen() {
                 </Text>
               ))}
               {result.type === 'range' && result.table && (
-                <View style={[styles.table, { borderColor: theme.colors.border }]}>
+                <View style={[styles.table, { borderColor: theme.colors.border, borderWidth: theme.borderWidth }]}>
                   <View style={[styles.tableHeader, { backgroundColor: theme.colors.surfaceAlt }]}>
-                    <Text style={[styles.tableCell, styles.tableCellMonth, { color: theme.colors.text }]}>Month</Text>
-                    <Text style={[styles.tableCell, styles.tableCellDays, { color: theme.colors.text }]}>Days</Text>
-                    <Text style={[styles.tableCell, styles.tableCellRange, { color: theme.colors.text }]}>Range</Text>
+                    <Text style={[styles.tableCell, styles.tableCellMonth, { color: theme.name === 'brutalist' ? theme.colors.accent : theme.colors.text, fontWeight: '900' as const }]}>Month</Text>
+                    <Text style={[styles.tableCell, styles.tableCellDays, { color: theme.name === 'brutalist' ? theme.colors.accent : theme.colors.text, fontWeight: '900' as const }]}>Days</Text>
+                    <Text style={[styles.tableCell, styles.tableCellRange, { color: theme.name === 'brutalist' ? theme.colors.accent : theme.colors.text, fontWeight: '900' as const }]}>Range</Text>
                   </View>
                   {result.table.map((row, i) => (
                     <View key={i} style={[styles.tableRow, { borderTopColor: theme.colors.border }]}>
@@ -406,16 +416,16 @@ export function ConverterScreen() {
               )}
             </>
           )}
-        </View>
+        </BrutalistCard>
       )}
 
       {/* History */}
       {history.entries.length > 0 && (
-        <View style={[styles.historyPanel, { borderColor: theme.colors.border }]}>
+        <View style={[styles.historyPanel, { borderColor: theme.colors.border, borderTopWidth: theme.borderWidth }]}>
           <View style={styles.historyHeader}>
-            <Text style={[styles.historyTitle, { color: theme.colors.text }]}>{T.history}</Text>
+            <Text style={[styles.historyTitle, { color: theme.colors.text, letterSpacing: theme.name === 'brutalist' ? 2 : 0 }]}>{T.history}</Text>
             <TouchableOpacity onPress={history.clear}>
-              <Text style={[styles.historyClear, { color: theme.colors.accent }]}>{T.clearHistory}</Text>
+              <Text style={[styles.historyClear, { color: theme.name === 'brutalist' ? theme.colors.text : theme.colors.accent }]}>{T.clearHistory}</Text>
             </TouchableOpacity>
           </View>
           {history.entries.map(entry => {
@@ -429,10 +439,10 @@ export function ConverterScreen() {
                 onPress={() => loadHistoryEntry(entry)}
               >
                 <Text style={[styles.historyText, { color: theme.colors.text }]} numberOfLines={1}>
-                  {dateStr} {srcName} \u2192 {tgtName}
+                  {dateStr} {srcName} → {tgtName}
                 </Text>
                 <TouchableOpacity onPress={() => history.remove(entry.ts)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-                  <Text style={[styles.historyRemove, { color: theme.colors.textMuted }]}>\u00d7</Text>
+                  <Text style={[styles.historyRemove, { color: theme.colors.textMuted }]}>×</Text>
                 </TouchableOpacity>
               </TouchableOpacity>
             );
@@ -448,37 +458,37 @@ export function ConverterScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, paddingHorizontal: 16 },
-  title: { fontSize: 24, fontWeight: '700', textAlign: 'center', marginTop: 16 },
-  subtitle: { fontSize: 14, textAlign: 'center', marginBottom: 16 },
-  card: { borderWidth: 1, padding: 16, marginBottom: 16 },
+  title: { fontSize: 22, fontWeight: '900', textAlign: 'center', marginTop: 20, textTransform: 'uppercase' },
+  subtitle: { fontSize: 11, textAlign: 'center', marginBottom: 20, textTransform: 'uppercase', fontWeight: '700' },
+  card: { padding: 16, marginBottom: 16 },
   dateRow: { flexDirection: 'row', gap: 8, marginTop: 12 },
   dateField: { flex: 1 },
-  fieldLabel: { fontSize: 12, fontWeight: '600', textTransform: 'uppercase', marginBottom: 4, letterSpacing: 0.5 },
-  numInput: { borderWidth: 1, paddingHorizontal: 10, paddingVertical: 10, fontSize: 16, textAlign: 'center' },
+  fieldLabel: { fontSize: 11, fontWeight: '900', textTransform: 'uppercase', marginBottom: 4, letterSpacing: 1.5 },
+  numInput: { borderWidth: 2, paddingHorizontal: 10, paddingVertical: 10, fontSize: 16, textAlign: 'center', fontWeight: '700' },
   monthScroll: { maxHeight: 38 },
-  monthChip: { borderWidth: 1, borderColor: 'transparent', paddingHorizontal: 8, paddingVertical: 8, marginRight: 4 },
-  monthChipText: { fontSize: 13, fontWeight: '500' },
+  monthChip: { borderWidth: 2, borderColor: 'transparent', paddingHorizontal: 8, paddingVertical: 8, marginRight: 4 },
+  monthChipText: { fontSize: 13, fontWeight: '700' },
   convertBtn: { marginTop: 16, paddingVertical: 14, alignItems: 'center' },
-  convertBtnText: { fontSize: 16, fontWeight: '700' },
-  resultCard: { borderWidth: 1, padding: 16, marginBottom: 16 },
-  errorText: { fontSize: 15, fontWeight: '600' },
-  resultMain: { fontSize: 20, fontWeight: '700', marginBottom: 4 },
-  resultLabel: { fontSize: 12, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 12 },
-  resultSecondary: { fontSize: 16, marginBottom: 2 },
+  convertBtnText: { fontSize: 16, fontWeight: '900', textTransform: 'uppercase' },
+  resultCard: { padding: 16, marginBottom: 16 },
+  errorText: { fontSize: 15, fontWeight: '700' },
+  resultMain: { fontSize: 20, fontWeight: '900', marginBottom: 4 },
+  resultLabel: { fontSize: 11, fontWeight: '900', textTransform: 'uppercase', letterSpacing: 2, marginTop: 12 },
+  resultSecondary: { fontSize: 16, marginBottom: 2, fontWeight: '600' },
   resultMeta: { fontSize: 13, marginTop: 6 },
   resultNote: { fontSize: 13, fontStyle: 'italic', marginTop: 8 },
-  table: { borderWidth: 1, marginTop: 12 },
+  table: { marginTop: 12 },
   tableHeader: { flexDirection: 'row', padding: 8 },
-  tableRow: { flexDirection: 'row', padding: 8, borderTopWidth: 1 },
-  tableCell: { fontSize: 13 },
+  tableRow: { flexDirection: 'row', padding: 8, borderTopWidth: 2 },
+  tableCell: { fontSize: 13, fontWeight: '700' },
   tableCellMonth: { flex: 3 },
   tableCellDays: { flex: 1, textAlign: 'center' },
   tableCellRange: { flex: 4 },
-  historyPanel: { borderTopWidth: 1, paddingTop: 12, marginTop: 8 },
+  historyPanel: { paddingTop: 12, marginTop: 8 },
   historyHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
-  historyTitle: { fontSize: 16, fontWeight: '700' },
-  historyClear: { fontSize: 14 },
-  historyEntry: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 10, borderBottomWidth: StyleSheet.hairlineWidth },
-  historyText: { fontSize: 14, flex: 1 },
+  historyTitle: { fontSize: 14, fontWeight: '900', textTransform: 'uppercase' },
+  historyClear: { fontSize: 14, fontWeight: '700' },
+  historyEntry: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 10, borderBottomWidth: 2 },
+  historyText: { fontSize: 14, flex: 1, fontWeight: '600' },
   historyRemove: { fontSize: 20, paddingLeft: 12 },
 });

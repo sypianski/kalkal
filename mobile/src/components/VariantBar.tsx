@@ -38,7 +38,7 @@ export function VariantBar({ variants, selected, onSelect }: Props) {
 }
 
 const styles = StyleSheet.create({
-  bar: { flexDirection: 'row', marginTop: 6, maxHeight: 36 },
-  btn: { borderWidth: 1, paddingHorizontal: 10, paddingVertical: 6, marginRight: 6 },
-  btnText: { fontSize: 13, fontWeight: '500' },
+  bar: { flexDirection: 'row', marginTop: 6, maxHeight: 40 },
+  btn: { borderWidth: 2, paddingHorizontal: 10, paddingVertical: 6, marginRight: 6 },
+  btnText: { fontSize: 12, fontWeight: '900', textTransform: 'uppercase', letterSpacing: 0.5 },
 });

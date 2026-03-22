@@ -7,7 +7,16 @@ export function ThemeToggle() {
 
   return (
     <TouchableOpacity
-      style={[styles.btn, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border, borderRadius: theme.borderRadius }]}
+      style={[styles.btn, {
+        backgroundColor: theme.name === 'brutalist' ? theme.colors.accent : theme.colors.surface,
+        borderColor: theme.colors.border,
+        borderRadius: theme.borderRadius,
+        borderWidth: theme.borderWidth,
+        shadowColor: theme.name === 'brutalist' ? theme.colors.border : 'transparent',
+        shadowOffset: theme.name === 'brutalist' ? { width: 3, height: 3 } : { width: 0, height: 0 },
+        shadowOpacity: 1,
+        shadowRadius: 0,
+      }]}
       onPress={toggleTheme}
     >
       <Text style={[styles.text, { color: theme.colors.text }]}>
@@ -18,6 +27,6 @@ export function ThemeToggle() {
 }
 
 const styles = StyleSheet.create({
-  btn: { borderWidth: 1, paddingHorizontal: 12, paddingVertical: 6, alignSelf: 'center', marginVertical: 12 },
-  text: { fontSize: 13, fontWeight: '500' },
+  btn: { paddingHorizontal: 12, paddingVertical: 8, alignSelf: 'center', marginVertical: 12 },
+  text: { fontSize: 12, fontWeight: '900', textTransform: 'uppercase', letterSpacing: 1.5 },
 });

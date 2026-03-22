@@ -24,7 +24,7 @@ function AppTabs() {
 
   return (
     <>
-      <StatusBar style="dark" />
+      <StatusBar style={theme.name === 'brutalist' ? 'light' : 'dark'} />
       <Tab.Navigator
         id="main-tabs"
         screenOptions={({ route }) => ({
@@ -34,9 +34,15 @@ function AppTabs() {
           tabBarInactiveTintColor: theme.colors.tabInactive,
           tabBarStyle: {
             backgroundColor: theme.colors.tabBar,
-            borderTopColor: theme.colors.border,
+            borderTopColor: theme.name === 'brutalist' ? theme.colors.tabActive : theme.colors.border,
+            borderTopWidth: theme.name === 'brutalist' ? 3 : 1,
           },
-          tabBarLabelStyle: { fontSize: 12, fontWeight: '600' },
+          tabBarLabelStyle: {
+            fontSize: 11,
+            fontWeight: '900' as const,
+            textTransform: 'uppercase' as const,
+            letterSpacing: theme.name === 'brutalist' ? 1.5 : 0,
+          },
         })}
       >
         <Tab.Screen name="Converter" component={ConverterScreen} />

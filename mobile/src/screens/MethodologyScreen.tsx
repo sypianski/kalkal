@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { useTheme } from '../theme/ThemeContext';
+import { BrutalistCard } from '../components/BrutalistCard';
 
 const SECTIONS = [
   {
@@ -31,18 +32,26 @@ const SECTIONS = [
 
 export function MethodologyScreen() {
   const { theme } = useTheme();
+  const isBrut = theme.name === 'brutalist';
 
   return (
     <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <Text style={[styles.title, { color: theme.colors.text }]}>Methodology</Text>
-      <Text style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
-        How kalkal calculates and how it is verified
+      <Text style={[styles.title, { color: theme.colors.text, letterSpacing: isBrut ? 3 : 0 }]}>Methodology</Text>
+      <Text style={[styles.subtitle, { color: isBrut ? theme.colors.accent : theme.colors.textSecondary, letterSpacing: isBrut ? 2 : 0 }]}>
+        How kalkal calculates and verifies
       </Text>
       {SECTIONS.map((section, i) => (
-        <View key={i} style={[styles.section, { borderColor: theme.colors.border, borderRadius: theme.borderRadius, backgroundColor: theme.colors.cardBg }]}>
-          <Text style={[styles.sectionTitle, { color: theme.colors.accent }]}>{section.title}</Text>
+        <BrutalistCard key={i}>
+          <Text style={[
+            styles.sectionTitle,
+            isBrut
+              ? { color: theme.colors.text, borderBottomWidth: 3, borderBottomColor: theme.colors.accent, paddingBottom: 4, alignSelf: 'flex-start' }
+              : { color: theme.colors.accent }
+          ]}>
+            {section.title}
+          </Text>
           <Text style={[styles.sectionBody, { color: theme.colors.text }]}>{section.body}</Text>
-        </View>
+        </BrutalistCard>
       ))}
       <View style={{ height: 40 }} />
     </ScrollView>
@@ -51,9 +60,8 @@ export function MethodologyScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, paddingHorizontal: 16 },
-  title: { fontSize: 24, fontWeight: '700', textAlign: 'center', marginTop: 16 },
-  subtitle: { fontSize: 14, textAlign: 'center', marginBottom: 16 },
-  section: { borderWidth: 1, padding: 16, marginBottom: 12 },
-  sectionTitle: { fontSize: 18, fontWeight: '700', marginBottom: 8 },
+  title: { fontSize: 22, fontWeight: '900', textAlign: 'center', marginTop: 16, textTransform: 'uppercase', letterSpacing: 2 },
+  subtitle: { fontSize: 11, textAlign: 'center', marginBottom: 16, textTransform: 'uppercase', fontWeight: '700', letterSpacing: 1.5 },
+  sectionTitle: { fontSize: 17, fontWeight: '900', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 1 },
   sectionBody: { fontSize: 14, lineHeight: 21 },
 });

@@ -33,11 +33,20 @@
     },
     gregorian: {
       id: 'gregorian',
-      toJD: (y, m, d) => Cal.gregorianToJD(y, m, d),
-      fromJD: (jd) => Cal.jdToGregorian(jd),
-      monthLength: (y, m) => Cal.gregorianMonthLength(y, m),
-      yearLength: (y) => Cal.isGregorianLeapYear(y) ? 366 : 365,
-      isLeap: (y) => Cal.isGregorianLeapYear(y),
+      toJD: (y, m, d) => Cal.civilToJD(y, m, d),
+      fromJD: (jd) => Cal.jdToCivil(jd),
+      monthLength: (y, m) => {
+        const cutoverYear = 1582;
+        if (y < cutoverYear || (y === cutoverYear && m < 10)) return Cal.julianMonthLength(y, m);
+        if (y === cutoverYear && m === 10) return 21; // Oct 1582: days 1-4 (Julian) + 15-31 (Gregorian)
+        return Cal.gregorianMonthLength(y, m);
+      },
+      yearLength: (y) => {
+        if (y < 1582) return Cal.isJulianLeapYear(y) ? 366 : 365;
+        if (y === 1582) return 355; // 10 days removed
+        return Cal.isGregorianLeapYear(y) ? 366 : 365;
+      },
+      isLeap: (y) => y < 1582 ? Cal.isJulianLeapYear(y) : Cal.isGregorianLeapYear(y),
       monthCount: 12,
       monthNames: (t) => t.gregorianMonths
     },
@@ -469,32 +478,55 @@
     let dropdown = null;
     let activeIndex = -1;
 
+    const CALENDAR_GROUPS = [
+      { group: 'universal', ids: ['human'] },
+      { group: 'christian', ids: ['gregorian', 'julian', 'byzantine', 'spanish'] },
+      { group: 'islamic', ids: ['hijri', 'solarHijri', 'rumi'] },
+      { group: 'iranian', ids: ['yazdgerdi', 'ilkhani'] },
+      { group: 'semitic', ids: ['hebrew', 'syriac', 'antiochene', 'seleucid', 'babylonian'] },
+      { group: 'african', ids: ['coptic', 'ethiopian', 'egyptian'] },
+      { group: 'grecoRoman', ids: ['auc', 'olympiad', 'macedonian'] },
+      { group: 'scientific', ids: ['bp'] }
+    ];
+
     function getMatches(query) {
       const t = I18N[currentLang];
       const lower = query.trim().toLowerCase();
-      if (!lower) return Object.entries(t.calendars).map(([id, name]) => ({ id, name }));
-      return Object.entries(t.calendars)
-        .filter(([id, name]) => name.toLowerCase().startsWith(lower) || id.startsWith(lower))
-        .map(([id, name]) => ({ id, name }));
+      const results = [];
+      CALENDAR_GROUPS.forEach(g => {
+        const items = g.ids
+          .filter(id => t.calendars[id])
+          .filter(id => !lower || t.calendars[id].toLowerCase().startsWith(lower) || id.startsWith(lower))
+          .map(id => ({ id, name: t.calendars[id] }));
+        if (items.length > 0) results.push({ group: g.group, items });
+      });
+      return results;
     }
 
-    function show(matches) {
+    function show(groups) {
       hide();
-      if (matches.length === 0) return;
-      dropdown = el('ul', { class: 'cal-suggestions' });
-      matches.forEach((m, i) => {
-        const li = el('li', null,
-          m.name,
-          el('span', { class: 'cal-hint', text: m.id })
-        );
-        li.addEventListener('mousedown', e => {
-          e.preventDefault();
-          input.value = m.name;
-          hide();
-          input.classList.remove('has-error');
-          onCalendarChange(input);
+      if (groups.length === 0) return;
+      const t = I18N[currentLang];
+      dropdown = el('div', { class: 'cal-suggestions' });
+      groups.forEach(g => {
+        const groupLabel = (t.calendarGroups && t.calendarGroups[g.group]) || g.group;
+        const itemsWrap = el('div', { class: 'cal-group-items' });
+        g.items.forEach(m => {
+          const item = el('div', { class: 'cal-item', text: m.name });
+          item.addEventListener('mousedown', e => {
+            e.preventDefault();
+            input.value = m.name;
+            hide();
+            input.classList.remove('has-error');
+            onCalendarChange(input);
+          });
+          itemsWrap.appendChild(item);
         });
-        dropdown.appendChild(li);
+        const group = el('div', { class: 'cal-group' },
+          el('div', { class: 'cal-group-label', text: groupLabel }),
+          itemsWrap
+        );
+        dropdown.appendChild(group);
       });
       input.parentNode.appendChild(dropdown);
       activeIndex = -1;
@@ -508,17 +540,24 @@
       }
     }
 
+    function getSelectableItems() {
+      if (!dropdown) return [];
+      return Array.from(dropdown.querySelectorAll('.cal-item'));
+    }
+
     function setActive(index) {
       if (!dropdown) return;
-      const items = dropdown.querySelectorAll('li');
+      const items = getSelectableItems();
       items.forEach(li => li.classList.remove('active'));
       activeIndex = index;
       if (activeIndex >= 0 && activeIndex < items.length) {
         items[activeIndex].classList.add('active');
+        items[activeIndex].scrollIntoView({ block: 'nearest' });
       }
     }
 
     input.addEventListener('focus', () => {
+      input.select();
       show(getMatches(input.value));
     });
 
@@ -535,7 +574,7 @@
 
     input.addEventListener('keydown', e => {
       if (!dropdown) return;
-      const items = dropdown.querySelectorAll('li');
+      const items = getSelectableItems();
       if (e.key === 'ArrowDown') {
         e.preventDefault();
         setActive(Math.min(activeIndex + 1, items.length - 1));
@@ -769,8 +808,9 @@
     const srcLabel = t.calendars[src.id];
     const tgtLabel = t.calendars[tgt.id];
 
-    const tgtStartStr = startResult.day + ' ' + tgtNames[startResult.month - 1] + ' ' + startResult.year;
-    const tgtEndStr = endResult.day + ' ' + tgtNames[endResult.month - 1] + ' ' + endResult.year;
+    const tgtRange = fmtDateRange(tgtNames, startResult, endResult);
+    const tgtStartStr = tgtRange.startStr;
+    const tgtEndStr = tgtRange.endStr;
 
     // Build source month breakdown with target equivalents
     const monthRows = [];
@@ -781,11 +821,12 @@
       const mDays = mLastDay - mFirstDay + 1;
       const mStartTgt = tgt.fromJD(src.toJD(cy, cm, mFirstDay));
       const mEndTgt = tgt.fromJD(src.toJD(cy, cm, mLastDay));
+      const rowRange = fmtDateRange(tgtNames, mStartTgt, mEndTgt);
       monthRows.push({
         srcName: srcNames[cm - 1] + ' ' + cy,
         days: mDays,
-        startStr: mStartTgt.day + ' ' + tgtNames[mStartTgt.month - 1] + ' ' + mStartTgt.year,
-        endStr: mEndTgt.day + ' ' + tgtNames[mEndTgt.month - 1] + ' ' + mEndTgt.year
+        startStr: rowRange.startStr,
+        endStr: rowRange.endStr
       });
       cm++;
       if (cm > src.monthCount) { cm = 1; cy++; }
@@ -805,8 +846,9 @@
     });
     table.appendChild(tbody);
 
-    const srcStartStr = d1 + ' ' + srcNames[m1 - 1] + ' ' + y1;
-    const srcEndStr = d2 + ' ' + srcNames[m2 - 1] + ' ' + y2;
+    const srcRange = fmtDateRange(srcNames, { day: d1, month: m1, year: y1 }, { day: d2, month: m2, year: y2 });
+    const srcStartStr = srcRange.startStr;
+    const srcEndStr = srcRange.endStr;
 
     const isProlepticGregorian = tgt.id === 'gregorian' && jdEnd < 2299160.5;
     showResult([
@@ -835,18 +877,20 @@
     const srcLabel = t.calendars[src.id];
     const tgtLabel = t.calendars[tgt.id];
 
-    const tgtStartStr = startResult.day + ' ' + tgtNames[startResult.month - 1] + ' ' + startResult.year;
-    const tgtEndStr = endResult.day + ' ' + tgtNames[endResult.month - 1] + ' ' + endResult.year;
+    const tgtRange = fmtDateRange(tgtNames, startResult, endResult);
+    const tgtStartStr = tgtRange.startStr;
+    const tgtEndStr = tgtRange.endStr;
 
     const monthRows = [];
     for (let m = 1; m <= src.monthCount; m++) {
       const mLen = src.monthLength(year, m);
       const mStartTgt = tgt.fromJD(src.toJD(year, m, 1));
       const mEndTgt = tgt.fromJD(src.toJD(year, m, mLen));
+      const rowRange = fmtDateRange(tgtNames, mStartTgt, mEndTgt);
       monthRows.push({
         srcName: srcNames[m - 1], days: mLen,
-        startStr: mStartTgt.day + ' ' + tgtNames[mStartTgt.month - 1] + ' ' + mStartTgt.year,
-        endStr: mEndTgt.day + ' ' + tgtNames[mEndTgt.month - 1] + ' ' + mEndTgt.year
+        startStr: rowRange.startStr,
+        endStr: rowRange.endStr
       });
     }
 
@@ -890,6 +934,13 @@
   }
 
   // ---- Helpers ----
+
+  // Format "day month [year]" — omit year from start when both years match
+  function fmtDateRange(names, s, e) {
+    const startStr = s.day + ' ' + names[s.month - 1] + (s.year === e.year ? '' : ' ' + s.year);
+    const endStr = e.day + ' ' + names[e.month - 1] + ' ' + e.year;
+    return { startStr, endStr };
+  }
 
   function buildMeta(pairs) {
     const dl = el('dl', { class: 'result-meta' });
@@ -959,7 +1010,7 @@
 
   function shortCalName(id) {
     const SHORT = {
-      hijri: 'AH', julian: 'Jul.', gregorian: 'Greg.', coptic: 'Copt.',
+      hijri: 'AH', julian: 'Jul.', gregorian: 'AD', coptic: 'Copt.',
       ethiopian: 'Eth.', yazdgerdi: 'Zoro.', armenian: 'Arm.',
       solarHijri: 'SH', byzantine: 'Byz.', alexandrian: 'Alex.',
       seleucid: 'Sel.', syriac: 'Syr.', rumi: 'R\u016bm\u012b',
@@ -969,12 +1020,13 @@
     return SHORT[id] || id;
   }
 
-  function fmtDate(cal, t, y, m, d) {
+  function fmtDate(cal, t, y, m, d, omitYear) {
     if (!m) return String(y);
     const names = cal.monthNames(t);
     const mName = names[m - 1] || String(m);
     // Abbreviate month to 3 chars if > 5 chars
     const shortM = mName.length > 5 ? mName.slice(0, 3) + '.' : mName;
+    if (omitYear) return d ? (d + ' ' + shortM) : shortM;
     return d ? (d + ' ' + shortM + ' ' + y) : (shortM + ' ' + y);
   }
 
@@ -999,7 +1051,7 @@
       const r1 = tgt.fromJD(src.toJD(entry.year, entry.month, 1));
       const last = src.monthLength(entry.year, entry.month);
       const r2 = tgt.fromJD(src.toJD(entry.year, entry.month, last));
-      resStr = fmtDate(tgt, t, r1.year, r1.month, r1.day) + ' \u2013 ' + fmtDate(tgt, t, r2.year, r2.month, r2.day);
+      resStr = fmtDate(tgt, t, r1.year, r1.month, r1.day, r1.year === r2.year) + ' \u2013 ' + fmtDate(tgt, t, r2.year, r2.month, r2.day);
     } else {
       const r1 = tgt.fromJD(src.toJD(entry.year, 1, 1));
       const lastM = src.monthCount;
@@ -1101,6 +1153,10 @@
     e.preventDefault();
     convert();
   });
+
+  // Select all on focus for numeric inputs
+  $('#from-year').addEventListener('focus', function() { this.select(); });
+  $('#from-day').addEventListener('focus', function() { this.select(); });
 
   // Clear errors on any input change
   form.addEventListener('input', () => clearError());

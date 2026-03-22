@@ -496,6 +496,43 @@ html[dir="rtl"] .site-title {
   color: var(--rust);
 }
 
+.cal-toc-list li.cal-toc-group {
+  counter-increment: none;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--parchment-100);
+  background: var(--ink-800);
+  padding: 0.3em 0.5em;
+  margin-block-start: 0.5em;
+  margin-block-end: 0.2em;
+  break-inside: avoid;
+  break-after: avoid;
+}
+
+.cal-toc-group:first-child {
+  margin-block-start: 0;
+}
+
+.cal-group-heading {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--parchment-100);
+  background: var(--ink-800);
+  padding: 0.5em 0.8em;
+  margin-block-start: var(--space-xl);
+  margin-block-end: var(--space-md);
+}
+
+.cal-group-heading:first-of-type {
+  margin-block-start: 0;
+}
+
 /* ---- Formula callouts ---- */
 
 .cal-formula {
@@ -1192,32 +1229,38 @@ html[dir="rtl"] .input-month {
   border-block-start: none;
   border-radius: 0 0 var(--radius-sm) var(--radius-sm);
   box-shadow: 0 4px 12px rgba(26, 22, 18, 0.12);
-  list-style: none;
   padding: 0;
   margin: 0;
   min-width: 100%;
+  max-height: 60vh;
+  overflow-y: auto;
 }
 
-.cal-suggestions li {
+.cal-group-label {
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--parchment-100);
+  background: var(--ink-800);
+  padding: 0.35em 0.65em;
+}
+
+.cal-item {
   font-family: var(--font-display);
   font-size: 0.92rem;
-  padding: 0.45em 0.65em;
+  font-weight: 600;
+  padding: 0.4em 0.65em;
   cursor: pointer;
   color: var(--ink-700);
   transition: background 0.1s ease;
 }
 
-.cal-suggestions li:hover,
-.cal-suggestions li.active {
+.cal-item:hover,
+.cal-item.active {
   background: var(--parchment-200);
   color: var(--ink-900);
-}
-
-.cal-suggestions li .cal-hint {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  color: var(--ink-400);
-  margin-inline-start: 0.5em;
 }
 
 .form-field--cal {
@@ -2466,12 +2509,12 @@ body[data-theme="brutalist"] .cal-suggestions {
   box-shadow: 4px 4px 0 #000;
 }
 
-body[data-theme="brutalist"] .cal-suggestions li {
+body[data-theme="brutalist"] .cal-item {
   font-family: 'Noto Sans Mono', 'Courier New', monospace;
 }
 
-body[data-theme="brutalist"] .cal-suggestions li:hover,
-body[data-theme="brutalist"] .cal-suggestions li.active {
+body[data-theme="brutalist"] .cal-item:hover,
+body[data-theme="brutalist"] .cal-item.active {
   background: #000;
   color: #fff;
 }
@@ -3064,7 +3107,34 @@ html {
     height: 48px;
   }
 
-  .cal-suggestions li {
+  .cal-group {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .cal-group + .cal-group {
+    border-block-start: 2px solid var(--ink-800);
+  }
+
+  .cal-group-label {
+    writing-mode: vertical-lr;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    font-size: 0.58rem;
+    padding: 0.4em 0.2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.5em;
+    flex-shrink: 0;
+  }
+
+  .cal-group-items {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .cal-item {
     min-height: 44px;
     display: flex;
     align-items: center;
@@ -3103,7 +3173,7 @@ body {
   .variant-btn,
   .history-entry,
   .zodiac-btn,
-  .cal-suggestions li {
+  .cal-item {
     -webkit-tap-highlight-color: rgba(139, 69, 19, 0.15);
   }
 }

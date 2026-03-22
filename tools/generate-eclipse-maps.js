@@ -54,17 +54,20 @@ function selectCities(vb, year, centralLine) {
   // Merge: major first, then zone cities
   const candidates = [...major, ...inZone];
 
-  // Anti-overlap filter
+  // Anti-overlap filter using bounding-box collision
+  // Approximate label size: ~50px wide, ~12px tall at typical zoom
+  const scaleX = vb.w / 800; // scale factor relative to default 800px viewport
+  const labelW = 55 * scaleX;  // approximate label width in map coords
+  const labelH = 14 * scaleX;  // approximate label height
   const selected = [];
-  const minDist = Math.min(vb.w, vb.h) * 0.06;
 
   for (const c of candidates) {
     const cx = lonToX(c.lon);
     const cy = latToY(c.lat);
     const tooClose = selected.some(s => {
-      const dx = lonToX(s.lon) - cx;
-      const dy = latToY(s.lat) - cy;
-      return Math.sqrt(dx * dx + dy * dy) < minDist;
+      const dx = Math.abs(lonToX(s.lon) - cx);
+      const dy = Math.abs(latToY(s.lat) - cy);
+      return dx < labelW && dy < labelH;
     });
     if (!tooClose) selected.push(c);
     if (selected.length >= 25) break;

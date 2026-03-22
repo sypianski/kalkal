@@ -1464,27 +1464,51 @@ const Cal = (() => {
   // Human Era (HE) / Holocene Era
   // year HE = Gregorian year + 10000
   // 1 HE = 10001 BCE, 10001 HE = 1 CE, 12024 HE = 2024 CE
+  // Variants:
+  //   Proleptic — proleptic Gregorian throughout (default, standard HE)
+  //   Civil — Julian before Oct 15, 1582 CE (11582 HE), Gregorian after
   // ================================================================
 
-  function humanToJD(year, month, day) {
-    return gregorianToJD(year - 10000, month, day);
+  const HUMAN_VARIANTS = ['Proleptic', 'Civil'];
+  const HUMAN_DEFAULT = 'Proleptic';
+
+  function humanToJD(year, month, day, variant) {
+    const cy = year - 10000;
+    if (variant === 'Civil') return civilToJD(cy, month, day);
+    return gregorianToJD(cy, month, day);
   }
 
-  function jdToHuman(jd) {
+  function jdToHuman(jd, variant) {
+    if (variant === 'Civil') {
+      const c = jdToCivil(jd);
+      return { year: c.year + 10000, month: c.month, day: c.day };
+    }
     const greg = jdToGregorian(jd);
     return { year: greg.year + 10000, month: greg.month, day: greg.day };
   }
 
-  function humanMonthLength(year, month) {
-    return gregorianMonthLength(year - 10000, month);
+  function humanMonthLength(year, month, variant) {
+    const cy = year - 10000;
+    if (variant === 'Civil' && gregorianToJD(cy, month, 1) < GREGORIAN_CUTOVER_JD) {
+      return julianMonthLength(cy, month);
+    }
+    return gregorianMonthLength(cy, month);
   }
 
-  function humanYearLength(year) {
-    return isGregorianLeapYear(year - 10000) ? 366 : 365;
+  function humanYearLength(year, variant) {
+    const cy = year - 10000;
+    if (variant === 'Civil' && cy < 1582) {
+      return isJulianLeapYear(cy) ? 366 : 365;
+    }
+    return isGregorianLeapYear(cy) ? 366 : 365;
   }
 
-  function isHumanLeapYear(year) {
-    return isGregorianLeapYear(year - 10000);
+  function isHumanLeapYear(year, variant) {
+    const cy = year - 10000;
+    if (variant === 'Civil' && cy < 1582) {
+      return isJulianLeapYear(cy);
+    }
+    return isGregorianLeapYear(cy);
   }
 
   return {
@@ -1569,6 +1593,7 @@ const Cal = (() => {
     bpToJD, jdToBP, bpMonthLength, bpYearLength, isBPLeapYear,
     // Human Era
     humanToJD, jdToHuman, humanMonthLength, humanYearLength, isHumanLeapYear,
+    HUMAN_VARIANTS, HUMAN_DEFAULT,
     HIJRI_VARIANTS, HIJRI_DEFAULT,
     GREGORIAN_CUTOVER_JD
   };

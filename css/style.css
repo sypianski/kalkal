@@ -108,7 +108,7 @@ html[dir="rtl"] .site-title {
 }
 
 .header-inner {
-  max-width: 640px;
+  max-width: 860px;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -179,7 +179,7 @@ html[dir="rtl"] .site-title {
 .page-nav {
   display: flex;
   gap: 2px;
-  max-width: 640px;
+  max-width: 860px;
   margin: var(--space-sm) auto 0;
   padding: 0 var(--space-xl);
 }
@@ -209,7 +209,7 @@ html[dir="rtl"] .site-title {
 /* ---- Prose / Subpage Content ---- */
 
 .main-content--prose {
-  max-width: 680px;
+  max-width: 860px;
 }
 
 .cal-card {
@@ -831,7 +831,7 @@ html[dir="rtl"] .site-title {
 /* ---- Main Content ---- */
 
 .main-content {
-  max-width: 640px;
+  max-width: 860px;
   margin: 0 auto;
   padding: var(--space-xl) var(--space-lg) var(--space-2xl);
 }
@@ -1841,6 +1841,104 @@ html[dir="rtl"] .copy-btn {
   color: var(--rust);
 }
 
+/* ---- Install Banner ---- */
+
+.install-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  margin-block-start: var(--space-lg);
+  padding: var(--space-md) var(--space-lg);
+  background: var(--parchment-200);
+  border: var(--border-subtle);
+  border-radius: var(--radius-md);
+  animation: resultReveal 0.35s ease both;
+}
+
+.install-banner[hidden] {
+  display: none;
+}
+
+.install-text {
+  font-family: var(--font-display);
+  font-size: 0.88rem;
+  color: var(--ink-700);
+  margin: 0;
+}
+
+.install-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-shrink: 0;
+}
+
+.install-btn {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--parchment-100);
+  background: var(--rust);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 0.5em 1.2em;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  white-space: nowrap;
+  min-height: 44px;
+}
+
+.install-btn:hover {
+  background: var(--rust-light);
+}
+
+.install-dismiss {
+  font-size: 1.2rem;
+  color: var(--ink-400);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.3em;
+  line-height: 1;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease;
+}
+
+.install-dismiss:hover {
+  color: var(--ink-700);
+}
+
+.ios-share-icon {
+  display: inline-block;
+  vertical-align: -0.15em;
+  color: var(--rust);
+}
+
+/* Brutalist install banner */
+body[data-theme="brutalist"] .install-banner {
+  background: #f0f0f0;
+  border: 2px solid #000;
+  border-radius: 0;
+}
+
+body[data-theme="brutalist"] .install-text {
+  font-family: 'Noto Sans Mono', monospace;
+}
+
+body[data-theme="brutalist"] .install-btn {
+  background: #000;
+  border-radius: 0;
+}
+
+body[data-theme="brutalist"] .install-btn:hover {
+  background: #333;
+}
+
 /* ---- Footer ---- */
 
 .site-footer {
@@ -2412,20 +2510,20 @@ body[data-theme="brutalist"] .page-nav a {
   letter-spacing: 0.12em;
   font-weight: 700;
   font-size: 0.65rem;
-  color: #555;
+  color: #999;
   border: 2px solid transparent;
   padding: 0.5em 1em;
 }
 
 body[data-theme="brutalist"] .page-nav a:hover {
-  background: #f0f0f0;
-  color: #000;
+  background: #333;
+  color: #fff;
 }
 
 body[data-theme="brutalist"] .page-nav a.active {
-  color: #000;
+  color: #fff;
   background: transparent;
-  border-block-end: 2px solid #000;
+  border-block-end: 2px solid #fff;
 }
 
 /* Prose content */
@@ -2862,4 +2960,160 @@ body[data-theme="brutalist"] .dyn-name {
 
 body[data-theme="brutalist"] .dyn-date-link {
   color: #000;
+}
+
+/* ============================================================
+   PWA & MOBILE ENHANCEMENTS
+   ============================================================ */
+
+/* Safe area insets for notched devices (iPhone X+, etc.) */
+html {
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+/* Standalone mode — app installed on home screen */
+@media (display-mode: standalone) {
+  .site-header {
+    padding-block-start: calc(var(--space-lg) + env(safe-area-inset-top, 0px));
+  }
+
+  body[data-theme="brutalist"] .site-header {
+    padding-block-start: calc(var(--space-lg) + env(safe-area-inset-top, 0px));
+  }
+
+  .site-footer {
+    padding-block-end: calc(var(--space-lg) + env(safe-area-inset-bottom, 0px));
+  }
+
+  .theme-switcher {
+    bottom: calc(1.2rem + env(safe-area-inset-bottom, 0px));
+    right: calc(1.2rem + env(safe-area-inset-right, 0px));
+  }
+}
+
+/* Touch-friendly targets: min 48px hit areas */
+@media (max-width: 600px) {
+  .lang-btn {
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5em 0.7em;
+    font-size: 0.75rem;
+  }
+
+  .page-nav a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5em 0.8em;
+    font-size: 0.75rem;
+  }
+
+  .variant-btn {
+    min-height: 40px;
+    padding: 0.4em 0.7em;
+    font-size: 0.7rem;
+  }
+
+  .btn-convert {
+    min-height: 48px;
+    width: 100%;
+    justify-content: center;
+    font-size: 1rem;
+    padding: 0.65em 1.5em;
+  }
+
+  .history-entry {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    padding: 0.6em 0;
+  }
+
+  .history-remove {
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .history-clear {
+    min-height: 40px;
+    padding: 0.4em 0.8em;
+  }
+
+  .copy-btn {
+    min-height: 40px;
+    min-width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.4em 0.8em;
+  }
+
+  .zodiac-btn {
+    min-height: 44px;
+    padding: 0.4em 0.8em;
+  }
+
+  .ai-send {
+    width: 48px;
+    height: 48px;
+  }
+
+  .cal-suggestions li {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    padding: 0.6em 0.8em;
+  }
+
+  .input-cal,
+  .input-num,
+  .input-month {
+    font-size: 1rem;
+    padding: 0.5em 0;
+  }
+
+  /* Prevent iOS zoom on focus (requires 16px+ font-size) */
+  .ai-input {
+    font-size: 1rem;
+  }
+}
+
+/* Overscroll behavior — prevent pull-to-refresh interfering */
+body {
+  overscroll-behavior-y: contain;
+}
+
+/* Smooth momentum scrolling on iOS */
+.meth-table-wrap,
+.cal-formula-code {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Tap highlight for touch feedback */
+@media (hover: none) and (pointer: coarse) {
+  .btn-convert,
+  .lang-btn,
+  .page-nav a,
+  .variant-btn,
+  .history-entry,
+  .zodiac-btn,
+  .cal-suggestions li {
+    -webkit-tap-highlight-color: rgba(139, 69, 19, 0.15);
+  }
+}
+
+/* Selection color matching theme */
+::selection {
+  background: rgba(139, 69, 19, 0.2);
+  color: var(--ink-900);
+}
+
+body[data-theme="brutalist"] ::selection {
+  background: rgba(0, 0, 0, 0.2);
 }

@@ -104,6 +104,72 @@ const TITLES = {
   constantinople1453: 'Months before the fall of Constantinople to Mehmed II',
 };
 
+// Historical observations: where / by whom the eclipse was documented
+const OBSERVATIONS = {
+  crucifixion29: [
+    { lat: 31.77, lon: 35.23, label: 'Jerusalem — discussed in Crucifixion dating' }
+  ],
+  pliny59: [
+    { lat: 41.90, lon: 12.50, label: 'Rome — documented by Pliny the Elder' }
+  ],
+  jerusalem71: [
+    { lat: 31.77, lon: 35.23, label: 'Jerusalem — era of the Roman siege' }
+  ],
+  elagabalus219: [
+    { lat: 33.09, lon: 44.58, label: 'Ctesiphon — reign of Elagabalus' }
+  ],
+  julian364: [
+    { lat: 33.09, lon: 44.58, label: 'Mesopotamia — Julian\u2019s Persian campaign' }
+  ],
+  theon393: [
+    { lat: 31.20, lon: 29.92, label: 'Alexandria — first observation by Theon' }
+  ],
+  theon418: [
+    { lat: 31.20, lon: 29.92, label: 'Alexandria — Theon\u2019s calibration observation' }
+  ],
+  proclus484: [
+    { lat: 37.98, lon: 23.73, label: 'Athens — biography of Proclus by Marinus' }
+  ],
+  arabia590: [
+    { lat: 21.43, lon: 39.83, label: 'Arabia — pre-Islamic period' }
+  ],
+  constantinople718: [
+    { lat: 41.01, lon: 28.98, label: 'Constantinople — during Arab siege' }
+  ],
+  harun809: [
+    { lat: 33.31, lon: 44.37, label: 'Baghdad — reign of Harun al-Rashid' }
+  ],
+  louis840: [
+    { lat: 50.77, lon: 6.08, label: 'Aachen — omen of Emperor Louis\u2019 death' },
+    { lat: 48.85, lon: 2.35, label: 'Francia — widely observed' }
+  ],
+  biruni968: [
+    { lat: 33.31, lon: 44.37, label: 'Baghdad — observed by al-Biruni' }
+  ],
+  crucifixion1033: [
+    { lat: 31.77, lon: 35.23, label: 'Jerusalem — millennium of the Crucifixion' },
+    { lat: 41.90, lon: 12.50, label: 'Rome — documented across Christendom' }
+  ],
+  crusade1098: [
+    { lat: 36.20, lon: 36.16, label: 'Antioch — during the First Crusade siege' }
+  ],
+  henry1133: [
+    { lat: 51.50, lon: -0.12, label: 'England — King Henry\u2019s Eclipse' },
+    { lat: 31.77, lon: 35.23, label: 'Levant — observed by Crusader chroniclers' }
+  ],
+  hattin1187: [
+    { lat: 32.79, lon: 35.53, label: 'Tiberias — year of the Battle of Hattin' },
+    { lat: 31.77, lon: 35.23, label: 'Jerusalem — Saladin\u2019s conquest' }
+  ],
+  mongols1241: [
+    { lat: 33.31, lon: 44.37, label: 'Baghdad — Mongol invasion era' },
+    { lat: 36.20, lon: 37.16, label: 'Aleppo — Mongol advance' }
+  ],
+  constantinople1453: [
+    { lat: 41.01, lon: 28.98, label: 'Constantinople — before the fall to Mehmed II' }
+  ],
+};
+
 const TYPE_NAMES = { T: 'Total', A: 'Annular', H: 'Hybrid' };
 const TYPE_COLORS = { T: '#8b0000', A: '#c46920', H: '#6b3fa0' };
 const TYPES = {
@@ -131,7 +197,7 @@ function nasaUrl(y, m, d) {
 // Uses the centroid of the central line (clipped to core), not greatest eclipse.
 const CORE = { lonMin: -8, lonMax: 58, latMin: 12, latMax: 45 };
 
-function computeViewBox(ecl) {
+function computeViewBox(ecl, key) {
   const HALF_LON = 22;
   const HALF_LAT = 14;
 
@@ -140,20 +206,31 @@ function computeViewBox(ecl) {
     lon >= CORE.lonMin && lon <= CORE.lonMax && lat >= CORE.latMin && lat <= CORE.latMax
   );
 
+  // Collect all points that must be visible: central line in core + observation sites
+  const mustShow = inCore.map(([lat, lon]) => ({ lat, lon }));
+  const obs = OBSERVATIONS[key] || [];
+  obs.forEach(o => mustShow.push({ lat: o.lat, lon: o.lon }));
+
   let cLon, cLat;
-  if (inCore.length >= 2) {
-    cLon = inCore.reduce((s, p) => s + p[1], 0) / inCore.length;
-    cLat = inCore.reduce((s, p) => s + p[0], 0) / inCore.length;
+  if (mustShow.length >= 2) {
+    cLon = mustShow.reduce((s, p) => s + p.lon, 0) / mustShow.length;
+    cLat = mustShow.reduce((s, p) => s + p.lat, 0) / mustShow.length;
   } else {
-    // Fallback to greatest eclipse clamped
     cLon = Math.max(-5, Math.min(55, ecl.greatestLon));
     cLat = Math.max(18, Math.min(42, ecl.greatestLat));
   }
 
-  let lonMin = cLon - HALF_LON;
-  let lonMax = cLon + HALF_LON;
-  let latMin = cLat - HALF_LAT;
-  let latMax = cLat + HALF_LAT;
+  // Ensure all must-show points fit within the view
+  let halfLon = HALF_LON, halfLat = HALF_LAT;
+  for (const p of mustShow) {
+    halfLon = Math.max(halfLon, Math.abs(p.lon - cLon) + 3);
+    halfLat = Math.max(halfLat, Math.abs(p.lat - cLat) + 3);
+  }
+
+  let lonMin = cLon - halfLon;
+  let lonMax = cLon + halfLon;
+  let latMin = cLat - halfLat;
+  let latMax = cLat + halfLat;
 
   // Clamp to outer limits (land data available)
   lonMin = Math.max(lonMin, -15);
@@ -243,7 +320,7 @@ function generateMap(key, ecl) {
   const dateStr = pad2(ecl.day) + ' ' + MONTHS[ecl.month] + ' ' + ecl.year + ' CE';
 
   // Compute centered viewBox
-  const vb = computeViewBox(ecl);
+  const vb = computeViewBox(ecl, key);
 
   const gx = lonToX(ecl.greatestLon);
   const gy = latToY(ecl.greatestLat);
@@ -263,6 +340,23 @@ function generateMap(key, ecl) {
   const gridSvg = generateGrid(vb);
   const citiesSvg = generateCities(vb, ecl.year, ecl.centralLine);
 
+  // Historical observation markers
+  const obs = OBSERVATIONS[key] || [];
+  const obsElems = obs.map(o => {
+    const ox = lonToX(o.lon);
+    const oy = latToY(o.lat);
+    const inView = ox >= vb.x && ox <= vb.x + vb.w && oy >= vb.y && oy <= vb.y + vb.h;
+    if (!inView) return '';
+    const anchor = o.lon > (vb.lonMin + vb.lonMax) / 2 ? 'end' : 'start';
+    const tx = anchor === 'start' ? (ox + 8).toFixed(1) : (ox - 8).toFixed(1);
+    return `    <!-- Observation: ${o.label} -->
+    <g>
+      <polygon points="${ox.toFixed(1)},${(oy - 7).toFixed(1)} ${(ox - 4.5).toFixed(1)},${(oy + 4).toFixed(1)} ${(ox + 4.5).toFixed(1)},${(oy + 4).toFixed(1)}" fill="#d4a017" stroke="#8b6914" stroke-width="0.8"/>
+      <text x="${tx}" y="${(oy - 9).toFixed(1)}" text-anchor="${anchor}" style="font: italic 7px 'Alegreya Sans', sans-serif; fill: #8b6914;">${o.label}</text>
+    </g>`;
+  }).filter(Boolean);
+  const observationsSvg = obsElems.length ? '\n    <!-- Historical observations -->\n' + obsElems.join('\n') : '';
+
   const eclipseSvg = `
     <!-- Partial eclipse zone (penumbra) -->
     ${penumbraPath ? '<path d="' + penumbraPath + '" fill="' + color + '" fill-opacity="0.06" stroke="none"/>' : ''}
@@ -277,7 +371,8 @@ function generateMap(key, ecl) {
     <!-- Greatest eclipse -->
     ${inBounds ? `<circle cx="${gx.toFixed(1)}" cy="${gy.toFixed(1)}" r="6" fill="none" stroke="${color}" stroke-width="2"/>
     <circle cx="${gx.toFixed(1)}" cy="${gy.toFixed(1)}" r="2" fill="${color}"/>
-    <text x="${(gx - 10).toFixed(1)}" y="${(gy - 10).toFixed(1)}" text-anchor="end" class="cn" style="font-size:8px;fill:${color};">Greatest eclipse</text>` : `<!-- Greatest eclipse outside view: ${ecl.greatestLat.toFixed(1)}\u00b0N, ${ecl.greatestLon.toFixed(1)}\u00b0E -->`}`;
+    <text x="${(gx - 10).toFixed(1)}" y="${(gy - 10).toFixed(1)}" text-anchor="end" class="cn" style="font-size:8px;fill:${color};">Greatest eclipse</text>` : `<!-- Greatest eclipse outside view: ${ecl.greatestLat.toFixed(1)}\u00b0N, ${ecl.greatestLon.toFixed(1)}\u00b0E -->`}
+${observationsSvg}`;
 
   const legendItems = [];
   if (penumbraPath) {
@@ -300,6 +395,12 @@ function generateMap(key, ecl) {
       <svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="5" fill="none" stroke="${color}" stroke-width="1.5"/><circle cx="7" cy="7" r="2" fill="${color}"/></svg>
       Greatest eclipse (${ecl.greatestLat.toFixed(1)}\u00b0N, ${ecl.greatestLon.toFixed(1)}\u00b0E)
     </div>`);
+  if (obs.length) {
+    legendItems.push(`<div class="legend-item">
+      <svg width="14" height="14" viewBox="0 0 14 14"><polygon points="7,2 3.5,12 10.5,12" fill="#d4a017" stroke="#8b6914" stroke-width="0.8"/></svg>
+      Historical observation
+    </div>`);
+  }
 
   return `<!DOCTYPE html>
 <html lang="en" dir="ltr">
@@ -372,6 +473,11 @@ ${eclipseSvg}
     ${legendItems.join('\n    ')}
   </div>
 
+  ${obs.length ? `<div class="ecl-map-note" style="text-align:left;max-width:700px;margin:0.8rem auto;">
+    <strong>Historical context</strong>
+    ${obs.map(o => '<p style="margin:0.3rem 0;">\u25b2 ' + o.label + '</p>').join('\n    ')}
+  </div>` : ''}
+
   <p class="ecl-map-note">
     Eclipse path computed from NASA Five Millennium Canon of Solar Eclipses (Fred Espenak, NASA/GSFC).<br>
     Land contours: Natural Earth 10m. Magnitude: ${mag.toFixed(3)}.
@@ -424,7 +530,7 @@ for (const [key, ecl] of Object.entries(pathData)) {
   const filename = heYear + pad2(ecl.month) + pad2(ecl.day) + '.html';
   fs.writeFileSync(path.join(outDir, filename), html);
 
-  const vb = computeViewBox(ecl);
+  const vb = computeViewBox(ecl, key);
   console.log(`maps/${filename}  (${key})  view: ${vb.lonMin.toFixed(0)}\u00b0..${vb.lonMax.toFixed(0)}\u00b0E, ${vb.latMin.toFixed(0)}\u00b0..${vb.latMax.toFixed(0)}\u00b0N`);
   count++;
 }

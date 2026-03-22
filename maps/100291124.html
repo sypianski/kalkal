@@ -38,7 +38,7 @@
 
   <main class="main-content ecl-map-page">
 
-  <svg class="map" viewBox="-6.7 -20.3 586.7 370.5" xmlns="http://www.w3.org/2000/svg">
+  <svg class="map" viewBox="-7.9 -41.9 586.7 407.7" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <style>
         .gl { font: 8px 'Charis SIL', Georgia, serif; fill: #8a7a62; opacity: 0.6; }
@@ -48,7 +48,7 @@
     </defs>
 
     <!-- Sea -->
-    <rect x="-17" y="-30" width="607" height="391" fill="#d4dce6"/>
+    <rect x="-18" y="-52" width="607" height="428" fill="#d4dce6"/>
 
     <!-- Land -->
     <g fill="#e8ddc6" stroke="#4a3f30" stroke-width="0.6" stroke-linejoin="round">
@@ -118,22 +118,22 @@
     </g>
 
     <g stroke="#8a7a62" stroke-width="0.25" fill="none" opacity="0.35">
-      <line x1="-6.7" y1="330.8" x2="580.0" y2="330.8"/>
-      <text x="-3.7" y="327.8" class="gl">20°N</text>
-      <line x1="-6.7" y1="209.5" x2="580.0" y2="209.5"/>
-      <text x="-3.7" y="206.5" class="gl">30°N</text>
-      <line x1="-6.7" y1="75.1" x2="580.0" y2="75.1"/>
-      <text x="-3.7" y="72.1" class="gl">40°N</text>
-      <line x1="0.0" y1="-20.3" x2="0.0" y2="350.2"/>
-      <text x="2.0" y="347.2" class="gl">20°E</text>
-      <line x1="133.3" y1="-20.3" x2="133.3" y2="350.2"/>
-      <text x="135.3" y="347.2" class="gl">30°E</text>
-      <line x1="266.7" y1="-20.3" x2="266.7" y2="350.2"/>
-      <text x="268.7" y="347.2" class="gl">40°E</text>
-      <line x1="400.0" y1="-20.3" x2="400.0" y2="350.2"/>
-      <text x="402.0" y="347.2" class="gl">50°E</text>
-      <line x1="533.3" y1="-20.3" x2="533.3" y2="350.2"/>
-      <text x="535.3" y="347.2" class="gl">60°E</text>
+      <line x1="-7.9" y1="330.8" x2="578.8" y2="330.8"/>
+      <text x="-4.9" y="327.8" class="gl">20°N</text>
+      <line x1="-7.9" y1="209.5" x2="578.8" y2="209.5"/>
+      <text x="-4.9" y="206.5" class="gl">30°N</text>
+      <line x1="-7.9" y1="75.1" x2="578.8" y2="75.1"/>
+      <text x="-4.9" y="72.1" class="gl">40°N</text>
+      <line x1="0.0" y1="-41.9" x2="0.0" y2="365.9"/>
+      <text x="2.0" y="362.9" class="gl">20°E</text>
+      <line x1="133.3" y1="-41.9" x2="133.3" y2="365.9"/>
+      <text x="135.3" y="362.9" class="gl">30°E</text>
+      <line x1="266.7" y1="-41.9" x2="266.7" y2="365.9"/>
+      <text x="268.7" y="362.9" class="gl">40°E</text>
+      <line x1="400.0" y1="-41.9" x2="400.0" y2="365.9"/>
+      <text x="402.0" y="362.9" class="gl">50°E</text>
+      <line x1="533.3" y1="-41.9" x2="533.3" y2="365.9"/>
+      <text x="535.3" y="362.9" class="gl">60°E</text>
     </g>
 
     <g>
@@ -205,8 +205,15 @@
     <circle cx="410.9" cy="265.8" r="2" fill="#8b0000"/>
     <text x="400.9" y="255.8" text-anchor="end" class="cn" style="font-size:8px;fill:#8b0000;">Greatest eclipse</text>
 
+    <!-- Historical observations -->
+    <!-- Observation: Jerusalem — discussed in Crucifixion dating -->
+    <g>
+      <polygon points="203.1,179.8 198.6,190.8 207.6,190.8" fill="#d4a017" stroke="#8b6914" stroke-width="0.8"/>
+      <text x="211.1" y="177.8" text-anchor="start" style="font: italic 7px 'Alegreya Sans', sans-serif; fill: #8b6914;">Jerusalem — discussed in Crucifixion dating</text>
+    </g>
+
     <!-- Frame -->
-    <rect x="-6.7" y="-20.3" width="586.7" height="370.5" fill="none" stroke="#8a7a62" stroke-width="0.8"/>
+    <rect x="-7.9" y="-41.9" width="586.7" height="407.7" fill="none" stroke="#8a7a62" stroke-width="0.8"/>
   </svg>
 
   <div class="ecl-map-legend">
@@ -226,6 +233,15 @@
       <svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="5" fill="none" stroke="#8b0000" stroke-width="1.5"/><circle cx="7" cy="7" r="2" fill="#8b0000"/></svg>
       Greatest eclipse (25.5°N, 50.8°E)
     </div>
+    <div class="legend-item">
+      <svg width="14" height="14" viewBox="0 0 14 14"><polygon points="7,2 3.5,12 10.5,12" fill="#d4a017" stroke="#8b6914" stroke-width="0.8"/></svg>
+      Historical observation
+    </div>
+  </div>
+
+  <div class="ecl-map-note" style="text-align:left;max-width:700px;margin:0.8rem auto;">
+    <strong>Historical context</strong>
+    <p style="margin:0.3rem 0;">▲ Jerusalem — discussed in Crucifixion dating</p>
   </div>
 
   <p class="ecl-map-note">

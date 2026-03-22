@@ -8,6 +8,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Charis+SIL:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Sans:wght@400;500;600&family=Noto+Sans+Mono:wght@400;500&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css?v=3">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#f3ecdc">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="kalkal">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 </head>
 <body data-page="eclipses">
 
@@ -311,7 +317,7 @@
           var table = mkEl('table', { cls: 'ecl-table' });
           var thead = document.createElement('thead');
           var headerRow = document.createElement('tr');
-          [t.colDate, t.colType, t.colMag, t.colNote, t.colMap, t.colNasa].forEach(function(txt) {
+          [t.colDate, t.colType, t.colMag, t.colMap, t.colNasa].forEach(function(txt) {
             var th = document.createElement('th');
             th.textContent = txt;
             headerRow.appendChild(th);
@@ -337,10 +343,6 @@
 
         // Mag cell
         tr.appendChild(mkEl('td', { cls: 'ecl-mag', text: e[4].toFixed(3) }));
-
-        // Note cell
-        var noteText = (e[6] && notes[e[6]]) ? notes[e[6]] : (e[5] ? '\u2022' : '');
-        tr.appendChild(mkEl('td', { cls: 'ecl-note', text: noteText }));
 
         // Map link cell
         var tdMap = document.createElement('td');

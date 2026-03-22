@@ -296,11 +296,14 @@
     },
     human: {
       id: 'human',
-      toJD: (y, m, d) => Cal.humanToJD(y, m, d),
-      fromJD: (jd) => Cal.jdToHuman(jd),
-      monthLength: (y, m) => Cal.humanMonthLength(y, m),
-      yearLength: (y) => Cal.humanYearLength(y),
-      isLeap: (y) => Cal.isHumanLeapYear(y),
+      variants: Cal.HUMAN_VARIANTS,
+      defaultVariant: Cal.HUMAN_DEFAULT,
+      _variant: Cal.HUMAN_DEFAULT,
+      toJD(y, m, d) { return Cal.humanToJD(y, m, d, this._variant); },
+      fromJD(jd) { return Cal.jdToHuman(jd, this._variant); },
+      monthLength(y, m) { return Cal.humanMonthLength(y, m, this._variant); },
+      yearLength(y) { return Cal.humanYearLength(y, this._variant); },
+      isLeap(y) { return Cal.isHumanLeapYear(y, this._variant); },
       monthCount: 12,
       monthNames: (t) => t.gregorianMonths
     }
@@ -319,7 +322,9 @@
     Babylonian: 'Babylonian',
     Shahenshahi: 'Shahenshahi',
     Qadimi: 'Qadimi',
-    Fasli: 'Fasli'
+    Fasli: 'Fasli',
+    Proleptic: 'Proleptic Gregorian',
+    Civil: 'Julian/Gregorian'
   };
 
   // ---- DOM helpers ----
@@ -637,8 +642,7 @@
       el('p', { class: 'result-label', text: t.calendars[src.id] }),
       el('p', { class: 'result-secondary', text: d + ' ' + srcNames[m - 1] + ' ' + y }),
       el('p', { class: 'result-label', text: t.calendars[tgt.id] }),
-      el('p', { class: 'result-main', text: result.day + ' ' + tgtNames[result.month - 1] + ' ' + result.year }),
-      el('p', { class: 'result-secondary', text: t.weekdays[dow] }),
+      el('p', { class: 'result-main', text: result.day + ' ' + tgtNames[result.month - 1] + ' ' + result.year + ' — ' + t.weekdays[dow] }),
     ];
     // Indiction for Byzantine calendars
     if (tgt.id === 'byzantine') {

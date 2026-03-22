@@ -1,0 +1,32 @@
+{
+  "name": "kalkal — Multi-Calendar Converter",
+  "short_name": "kalkal",
+  "id": "/kalkal",
+  "description": "Convert dates between 20 calendar systems: Hijri, Gregorian, Julian, Coptic, Ethiopian, Solar Hijri, and more.",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#f3ecdc",
+  "background_color": "#faf6ee",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "lang": "en",
+  "categories": ["utilities", "education"]
+}

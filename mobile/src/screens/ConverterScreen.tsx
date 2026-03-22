@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import React, { useState, useCallback, useRef } from 'react';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, Dimensions } from 'react-native';
 import { useTheme } from '../theme/ThemeContext';
 import { Cal } from '../engine/cal';
 import { T } from '../engine/i18n';
@@ -19,10 +19,15 @@ type ResultData = { type: 'date'; lines: ResultLine[] }
 interface ResultLine { label?: string; text: string; style?: 'main' | 'secondary' | 'label' | 'meta' | 'note' }
 interface TableRow { month: string; days: number; range: string }
 
+type Page = 'input' | 'result';
+
 export function ConverterScreen() {
   const { theme } = useTheme();
+  const isBrut = theme.name === 'brutalist';
   const history = useHistory();
+  const scrollRef = useRef<ScrollView>(null);
 
+  const [page, setPage] = useState<Page>('input');
   const [fromCal, setFromCal] = useState<string>('gregorian');
   const [toCal, setToCal] = useState<string>('hijri');
   const [fromVariant, setFromVariant] = useState<string>('');
@@ -46,6 +51,7 @@ export function ConverterScreen() {
 
   const onFromCalChange = (id: string) => {
     setFromCal(id);
+    setMonth('');
     const cal = CALENDARS[id];
     if (cal?.variants) setFromVariant(cal.defaultVariant || cal.variants[0]);
     else setFromVariant('');
@@ -61,22 +67,22 @@ export function ConverterScreen() {
   const convert = () => {
     const src = getSrc();
     const tgt = getTgt();
-    if (!src) { setResult({ type: 'error', message: 'Select source calendar' }); return; }
-    if (!tgt) { setResult({ type: 'error', message: 'Select target calendar' }); return; }
-    if (src.id === tgt.id) { setResult({ type: 'error', message: T.errSameCal }); return; }
+    if (!src) { setResult({ type: 'error', message: 'Select source calendar' }); setPage('result'); return; }
+    if (!tgt) { setResult({ type: 'error', message: 'Select target calendar' }); setPage('result'); return; }
+    if (src.id === tgt.id) { setResult({ type: 'error', message: T.errSameCal }); setPage('result'); return; }
 
     const y = parseInt(year, 10);
-    if (!y || y < 1) { setResult({ type: 'error', message: T.errNoYear }); return; }
+    if (!y || y < 1) { setResult({ type: 'error', message: T.errNoYear }); setPage('result'); return; }
 
     const m = parseInt(month, 10) || null;
     const d = parseInt(day, 10) || null;
 
     if (m && (m < 1 || m > src.monthCount)) {
-      setResult({ type: 'error', message: T.errInvalidMonth }); return;
+      setResult({ type: 'error', message: T.errInvalidMonth }); setPage('result'); return;
     }
     if (d && m) {
       const maxDay = src.monthLength(y, m);
-      if (d < 1 || d > maxDay) { setResult({ type: 'error', message: T.errInvalidDay }); return; }
+      if (d < 1 || d > maxDay) { setResult({ type: 'error', message: T.errInvalidDay }); setPage('result'); return; }
     }
 
     if (d && m) {
@@ -92,6 +98,14 @@ export function ConverterScreen() {
       year: y, month: m, day: d,
       variant: src._variant || null
     });
+
+    setPage('result');
+    scrollRef.current?.scrollTo({ y: 0, animated: false });
+  };
+
+  const goBack = () => {
+    setPage('input');
+    scrollRef.current?.scrollTo({ y: 0, animated: false });
   };
 
   const convertDate = (src: CalendarDef, tgt: CalendarDef, y: number, m: number, d: number) => {
@@ -108,43 +122,35 @@ export function ConverterScreen() {
       { text: `${res.day} ${tgtNames[res.month - 1]} ${res.year} \u2014 ${T.weekdays[dow]}`, style: 'main' },
     ];
 
-    // Indiction for Byzantine
     if (tgt.id === 'byzantine') {
       const ind = Cal.indictionFromJD(jd);
       lines.push({ text: `${T.indictionLabel || 'Indiction'} ${ind}`, style: 'secondary' });
     }
-    // Animal year for Ilkhanid
     if (tgt.id === 'ilkhani') {
       const animal = Cal.ilkhaniAnimalYear(res.year);
       const animalName = (T.ilkhaniAnimals as any)?.[animal] || animal;
       lines.push({ text: `${T.animalYearLabel || 'Animal year'}: ${animalName}`, style: 'secondary' });
     }
-    // Roman notation
     if (tgt.id === 'roman' && res.day) {
       const notation = Cal.romanDayNotation(res.month, res.day, tgt.isLeap(res.year));
       lines.push({ text: notation, style: 'secondary' });
     }
-    // Babylonian source note
     if (tgt.id === 'babylonian') {
       const isPD = Cal.isBabylonianPD(res.year);
       lines.push({ text: isPD ? T.babylonianPDNote : T.babylonianArithNote, style: 'note' });
     }
-    // Proleptic Gregorian note
     if (tgt.id === 'gregorian' && jd < 2299160.5) {
       lines.push({ text: T.julianDateNote, style: 'note' });
     }
 
-    // Zodiac
     const zi = Cal.getZodiacSign(jd);
     const zodiacSymbol = '\u2648\u2649\u264A\u264B\u264C\u264D\u264E\u264F\u2650\u2651\u2652\u2653'[zi];
     lines.push({ text: `${zodiacSymbol} ${T.zodiacSigns[zi]}`, style: 'meta' });
 
-    // Moon phase
     const moon = Astronomy.moonPhase(jd);
     const phaseName = (T.moonPhases as any)?.[moon.name] || moon.name;
     lines.push({ text: `${moon.icon} ${phaseName} \u2014 ${T.moonAge}: ${moon.age}d, ${moon.illumination}%`, style: 'meta' });
 
-    // Comet
     const comet = Astronomy.lookupComet(jd);
     if (comet) {
       const cometName = (T.cometNames as any)?.[comet.id] || comet.id;
@@ -152,14 +158,12 @@ export function ConverterScreen() {
       lines.push({ text: `\u2604\uFE0F ${T.cometLabel}: ${cometName} (${comet.year})${note ? ' \u2014 ' + note : ''}`, style: 'meta' });
     }
 
-    // Supernova
     const sn = Astronomy.lookupSupernova(jd);
     if (sn) {
       const note = sn.noteKey ? (T.supernovaNotes as any)?.[sn.noteKey] : null;
       lines.push({ text: `\u2B50 ${T.supernovaLabel}: ${sn.constellation} (mag ${sn.peakMag})${note ? ' \u2014 ' + note : ''}`, style: 'meta' });
     }
 
-    // Conjunction
     const conj = Astronomy.lookupConjunction(jd);
     if (conj) {
       const p1 = Astronomy.planetName(conj.planet1, T);
@@ -169,9 +173,7 @@ export function ConverterScreen() {
       lines.push({ text: `${T.conjunctionLabel}: ${p1}\u2013${p2} (${sep})${note ? ' \u2014 ' + note : ''}`, style: 'meta' });
     }
 
-    // JDN
     lines.push({ text: `${T.jdn}: ${jd}`, style: 'meta' });
-
     setResult({ type: 'date', lines });
   };
 
@@ -192,13 +194,9 @@ export function ConverterScreen() {
       { text: `${resStart.day} ${tgtNames[resStart.month - 1]} ${resStart.year} \u2013 ${resEnd.day} ${tgtNames[resEnd.month - 1]} ${resEnd.year}`, style: 'main' },
     ];
 
-    // Month breakdown table
     const table: TableRow[] = [];
     let curJd = jdStart;
     while (curJd <= jdEnd) {
-      const tgtDate = tgt.fromJD(curJd);
-      const tgtMonthEnd = Math.min(jdEnd, src.toJD(y, m, endD));
-      // Find how many days until target month changes or source range ends
       let daysInChunk = 0;
       let chunkEnd = curJd;
       const startTgt = tgt.fromJD(curJd);
@@ -217,9 +215,7 @@ export function ConverterScreen() {
       curJd = chunkEnd;
     }
     if (table.length > 1) lines.push({ text: T.monthBreakdown, style: 'label' });
-
     lines.push({ text: `${T.jdn}: ${jdStart} \u2013 ${jdEnd}`, style: 'meta' });
-
     setResult({ type: 'range', lines, table: table.length > 1 ? table : undefined });
   };
 
@@ -241,7 +237,6 @@ export function ConverterScreen() {
       { text: `${resStart.day} ${tgtNames[resStart.month - 1]} ${resStart.year} \u2013 ${resEnd.day} ${tgtNames[resEnd.month - 1]} ${resEnd.year}`, style: 'main' },
     ];
 
-    // Month breakdown
     const table: TableRow[] = [];
     for (let mo = 1; mo <= src.monthCount; mo++) {
       const mLen = src.monthLength(y, mo);
@@ -258,7 +253,6 @@ export function ConverterScreen() {
     }
 
     lines.push({ text: `${T.jdn}: ${jdStart} \u2013 ${jdEnd}`, style: 'meta' });
-
     setResult({ type: 'range', lines, table });
   };
 
@@ -275,83 +269,104 @@ export function ConverterScreen() {
         cal._variant = entry.variant;
       }
     }
+    setPage('input');
   };
 
   const srcCal = fromCal ? CALENDARS[fromCal] : null;
   const tgtCal = toCal ? CALENDARS[toCal] : null;
-
-  // Month names for picker
   const monthNames = srcCal ? srcCal.monthNames(T) : [];
 
-  return (
-    <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]} keyboardShouldPersistTaps="handled">
-      <Text style={[styles.title, { color: theme.colors.text, letterSpacing: theme.name === 'brutalist' ? 3 : 0 }]}>{T.appTitle}</Text>
-      <Text style={[styles.subtitle, { color: theme.name === 'brutalist' ? theme.colors.accent : theme.colors.textSecondary, letterSpacing: theme.name === 'brutalist' ? 2 : 0 }]}>{T.appSubtitle}</Text>
+  // ─── INPUT PAGE ───
+  if (page === 'input') {
+    return (
+      <ScrollView ref={scrollRef} style={[styles.container, { backgroundColor: theme.colors.background }]} keyboardShouldPersistTaps="handled">
+        <Text style={[styles.title, { color: theme.colors.text, letterSpacing: isBrut ? 3 : 0 }]}>{T.appTitle}</Text>
+        <Text style={[styles.subtitle, { color: isBrut ? theme.colors.accent : theme.colors.textSecondary, letterSpacing: isBrut ? 2 : 0 }]}>{T.appSubtitle}</Text>
 
-      <BrutalistCard>
         {/* Source calendar */}
-        <CalendarPicker value={fromCal} onSelect={onFromCalChange} label={T.fromCalendar} />
-        {srcCal?.variants && (
-          <VariantBar
-            variants={srcCal.variants}
-            selected={fromVariant || srcCal.defaultVariant || srcCal.variants[0]}
-            onSelect={(v) => { setFromVariant(v); srcCal._variant = v; }}
-          />
-        )}
+        <BrutalistCard>
+          <CalendarPicker value={fromCal} onSelect={onFromCalChange} label={T.fromCalendar} />
+          {srcCal?.variants && (
+            <VariantBar
+              variants={srcCal.variants}
+              selected={fromVariant || srcCal.defaultVariant || srcCal.variants[0]}
+              onSelect={(v) => { setFromVariant(v); srcCal._variant = v; }}
+            />
+          )}
+        </BrutalistCard>
 
-        {/* Date inputs */}
-        <View style={styles.dateRow}>
-          <View style={styles.dateField}>
-            <Text style={[styles.fieldLabel, { color: theme.colors.textSecondary }]}>{T.year}</Text>
-            <TextInput
-              style={[styles.numInput, { borderColor: theme.colors.border, color: theme.colors.text, borderRadius: theme.borderRadius }]}
-              keyboardType="number-pad"
-              value={year}
-              onChangeText={setYear}
-              placeholder="1"
-              placeholderTextColor={theme.colors.textMuted}
-            />
+        {/* Year + Day row */}
+        <BrutalistCard>
+          <View style={styles.yearDayRow}>
+            <View style={{ flex: 1 }}>
+              <Text style={[styles.fieldLabel, { color: theme.colors.textSecondary }]}>{T.year}</Text>
+              <TextInput
+                style={[styles.numInput, { borderColor: theme.colors.border, color: theme.colors.text, borderRadius: theme.borderRadius, borderWidth: theme.borderWidth }]}
+                keyboardType="number-pad"
+                value={year}
+                onChangeText={setYear}
+                placeholder="1"
+                placeholderTextColor={theme.colors.textMuted}
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={[styles.fieldLabel, { color: theme.colors.textSecondary }]}>{T.day}</Text>
+              <TextInput
+                style={[styles.numInput, { borderColor: theme.colors.border, color: theme.colors.text, borderRadius: theme.borderRadius, borderWidth: theme.borderWidth }]}
+                keyboardType="number-pad"
+                value={day}
+                onChangeText={setDay}
+                placeholder="—"
+                placeholderTextColor={theme.colors.textMuted}
+              />
+            </View>
           </View>
-          <View style={[styles.dateField, { flex: 2 }]}>
-            <Text style={[styles.fieldLabel, { color: theme.colors.textSecondary }]}>{T.month}</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.monthScroll}>
-              <TouchableOpacity
-                style={[styles.monthChip, !month && { backgroundColor: theme.colors.accent }]}
-                onPress={() => setMonth('')}
-              >
-                <Text style={[styles.monthChipText, { color: !month ? theme.colors.buttonText : theme.colors.text }]}>{'—'}</Text>
-              </TouchableOpacity>
-              {monthNames.map((name: string, i: number) => {
-                const active = month === String(i + 1);
-                return (
-                  <TouchableOpacity
-                    key={i}
-                    style={[styles.monthChip, { borderColor: theme.colors.border }, active && { backgroundColor: theme.colors.accent }]}
-                    onPress={() => setMonth(String(i + 1))}
-                  >
-                    <Text style={[styles.monthChipText, { color: active ? theme.colors.buttonText : theme.colors.text }]}>
-                      {name.slice(0, 3)}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </ScrollView>
-          </View>
-          <View style={styles.dateField}>
-            <Text style={[styles.fieldLabel, { color: theme.colors.textSecondary }]}>{T.day}</Text>
-            <TextInput
-              style={[styles.numInput, { borderColor: theme.colors.border, color: theme.colors.text, borderRadius: theme.borderRadius }]}
-              keyboardType="number-pad"
-              value={day}
-              onChangeText={setDay}
-              placeholder="1"
-              placeholderTextColor={theme.colors.textMuted}
-            />
-          </View>
-        </View>
+        </BrutalistCard>
+
+        {/* Month grid — full names */}
+        <BrutalistCard>
+          <Text style={[styles.fieldLabel, { color: theme.colors.textSecondary, marginBottom: 8 }]}>{T.month}</Text>
+          {(() => {
+            const half = Math.ceil(monthNames.length / 2);
+            const col1 = monthNames.slice(0, half);
+            const col2 = monthNames.slice(half);
+            const renderItem = (name: string, idx: number) => {
+              const num = idx + 1;
+              const active = month === String(num);
+              const fg = active ? (isBrut ? '#000' : theme.colors.buttonText) : theme.colors.text;
+              const fgNum = active ? fg : theme.colors.textMuted;
+              return (
+                <TouchableOpacity
+                  key={idx}
+                  style={[styles.monthItem, { borderColor: theme.colors.border, borderWidth: theme.borderWidth }, active && { backgroundColor: theme.colors.accent }]}
+                  onPress={() => setMonth(String(num))}
+                >
+                  <Text style={[styles.monthItemNum, { color: fgNum }]}>{num}</Text>
+                  <Text style={[styles.monthItemName, { color: fg }]} numberOfLines={1}>{name}</Text>
+                </TouchableOpacity>
+              );
+            };
+            return (
+              <View style={styles.monthGrid}>
+                <View style={styles.monthCol}>
+                  {col1.map((name, i) => renderItem(name, i))}
+                </View>
+                <View style={styles.monthCol}>
+                  {col2.map((name, i) => renderItem(name, half + i))}
+                </View>
+                <TouchableOpacity
+                  style={[styles.monthItemFull, { borderColor: theme.colors.border, borderWidth: theme.borderWidth }, !month && { backgroundColor: theme.colors.accent }]}
+                  onPress={() => setMonth('')}
+                >
+                  <Text style={[styles.monthItemName, { color: !month ? (isBrut ? '#000' : theme.colors.buttonText) : theme.colors.text }]}>Whole year</Text>
+                </TouchableOpacity>
+              </View>
+            );
+          })()}
+        </BrutalistCard>
 
         {/* Target calendar */}
-        <View style={{ marginTop: 16 }}>
+        <BrutalistCard>
           <CalendarPicker value={toCal} onSelect={onToCalChange} label={T.targetCalendar} />
           {tgtCal?.variants && (
             <VariantBar
@@ -360,27 +375,70 @@ export function ConverterScreen() {
               onSelect={(v) => { setToVariant(v); tgtCal._variant = v; }}
             />
           )}
-        </View>
+        </BrutalistCard>
 
         {/* Convert button */}
         <TouchableOpacity
           style={[styles.convertBtn, {
             backgroundColor: theme.colors.buttonBg,
             borderRadius: theme.borderRadius,
-            borderWidth: theme.name === 'brutalist' ? 3 : 0,
+            borderWidth: isBrut ? 3 : 0,
             borderColor: theme.colors.border,
-            shadowColor: theme.name === 'brutalist' ? theme.colors.accent : 'transparent',
-            shadowOffset: theme.name === 'brutalist' ? { width: 4, height: 4 } : { width: 0, height: 0 },
-            shadowOpacity: 1,
-            shadowRadius: 0,
           }]}
           onPress={convert}
         >
-          <Text style={[styles.convertBtnText, { color: theme.colors.buttonText, letterSpacing: theme.name === 'brutalist' ? 3 : 0 }]}>{T.convert} →</Text>
+          <View style={isBrut ? [styles.convertShadow, { backgroundColor: theme.colors.accent }] : undefined} />
+          <Text style={[styles.convertBtnText, { color: theme.colors.buttonText, letterSpacing: isBrut ? 3 : 0 }]}>{T.convert} →</Text>
         </TouchableOpacity>
-      </BrutalistCard>
 
-      {/* Result */}
+        {/* History */}
+        {history.entries.length > 0 && (
+          <View style={[styles.historyPanel, { borderColor: theme.colors.border, borderTopWidth: theme.borderWidth }]}>
+            <View style={styles.historyHeader}>
+              <Text style={[styles.historyTitle, { color: theme.colors.text, letterSpacing: isBrut ? 2 : 0 }]}>{T.history}</Text>
+              <TouchableOpacity onPress={history.clear}>
+                <Text style={[styles.historyClear, { color: isBrut ? theme.colors.text : theme.colors.accent }]}>{T.clearHistory}</Text>
+              </TouchableOpacity>
+            </View>
+            {history.entries.map(entry => {
+              const srcName = (T.calendars as any)[entry.fromCal] || entry.fromCal;
+              const tgtName = (T.calendars as any)[entry.toCal] || entry.toCal;
+              const dateStr = [entry.day, entry.month, entry.year].filter(Boolean).join('/');
+              return (
+                <TouchableOpacity
+                  key={entry.ts}
+                  style={[styles.historyEntry, { borderBottomColor: theme.colors.border }]}
+                  onPress={() => loadHistoryEntry(entry)}
+                >
+                  <Text style={[styles.historyText, { color: theme.colors.text }]} numberOfLines={1}>
+                    {dateStr} {srcName} → {tgtName}
+                  </Text>
+                  <TouchableOpacity onPress={() => history.remove(entry.ts)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+                    <Text style={[styles.historyRemove, { color: theme.colors.textMuted }]}>×</Text>
+                  </TouchableOpacity>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        )}
+
+        <ThemeToggle />
+        <View style={{ height: 40 }} />
+      </ScrollView>
+    );
+  }
+
+  // ─── RESULT PAGE ───
+  return (
+    <ScrollView ref={scrollRef} style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      {/* Back button */}
+      <TouchableOpacity
+        style={[styles.backBtn, { borderColor: theme.colors.border, borderWidth: theme.borderWidth }]}
+        onPress={goBack}
+      >
+        <Text style={[styles.backBtnText, { color: theme.colors.text }]}>← {isBrut ? 'BACK' : 'Back'}</Text>
+      </TouchableOpacity>
+
       {result && (
         <BrutalistCard>
           {result.type === 'error' ? (
@@ -389,8 +447,8 @@ export function ConverterScreen() {
             <>
               {result.lines.map((line, i) => (
                 <Text key={i} style={[
-                  line.style === 'main' && [styles.resultMain, { color: theme.colors.text, borderBottomWidth: theme.name === 'brutalist' ? 3 : 0, borderBottomColor: theme.colors.accent, paddingBottom: theme.name === 'brutalist' ? 4 : 0, fontWeight: '900' as const }],
-                  line.style === 'label' && [styles.resultLabel, { color: theme.name === 'brutalist' ? theme.colors.textMuted : theme.colors.accent }],
+                  line.style === 'main' && [styles.resultMain, { color: theme.colors.text, borderBottomWidth: isBrut ? 3 : 0, borderBottomColor: theme.colors.accent, paddingBottom: isBrut ? 4 : 0 }],
+                  line.style === 'label' && [styles.resultLabel, { color: isBrut ? theme.colors.textMuted : theme.colors.accent }],
                   line.style === 'secondary' && [styles.resultSecondary, { color: theme.colors.text }],
                   line.style === 'meta' && [styles.resultMeta, { color: theme.colors.textMuted }],
                   line.style === 'note' && [styles.resultNote, { color: theme.colors.textSecondary }],
@@ -401,9 +459,9 @@ export function ConverterScreen() {
               {result.type === 'range' && result.table && (
                 <View style={[styles.table, { borderColor: theme.colors.border, borderWidth: theme.borderWidth }]}>
                   <View style={[styles.tableHeader, { backgroundColor: theme.colors.surfaceAlt }]}>
-                    <Text style={[styles.tableCell, styles.tableCellMonth, { color: theme.name === 'brutalist' ? theme.colors.accent : theme.colors.text, fontWeight: '900' as const }]}>Month</Text>
-                    <Text style={[styles.tableCell, styles.tableCellDays, { color: theme.name === 'brutalist' ? theme.colors.accent : theme.colors.text, fontWeight: '900' as const }]}>Days</Text>
-                    <Text style={[styles.tableCell, styles.tableCellRange, { color: theme.name === 'brutalist' ? theme.colors.accent : theme.colors.text, fontWeight: '900' as const }]}>Range</Text>
+                    <Text style={[styles.tableCell, styles.tableCellMonth, { color: isBrut ? theme.colors.accent : theme.colors.text, fontWeight: '900' as const }]}>Month</Text>
+                    <Text style={[styles.tableCell, styles.tableCellDays, { color: isBrut ? theme.colors.accent : theme.colors.text, fontWeight: '900' as const }]}>Days</Text>
+                    <Text style={[styles.tableCell, styles.tableCellRange, { color: isBrut ? theme.colors.accent : theme.colors.text, fontWeight: '900' as const }]}>Range</Text>
                   </View>
                   {result.table.map((row, i) => (
                     <View key={i} style={[styles.tableRow, { borderTopColor: theme.colors.border }]}>
@@ -419,38 +477,19 @@ export function ConverterScreen() {
         </BrutalistCard>
       )}
 
-      {/* History */}
-      {history.entries.length > 0 && (
-        <View style={[styles.historyPanel, { borderColor: theme.colors.border, borderTopWidth: theme.borderWidth }]}>
-          <View style={styles.historyHeader}>
-            <Text style={[styles.historyTitle, { color: theme.colors.text, letterSpacing: theme.name === 'brutalist' ? 2 : 0 }]}>{T.history}</Text>
-            <TouchableOpacity onPress={history.clear}>
-              <Text style={[styles.historyClear, { color: theme.name === 'brutalist' ? theme.colors.text : theme.colors.accent }]}>{T.clearHistory}</Text>
-            </TouchableOpacity>
-          </View>
-          {history.entries.map(entry => {
-            const srcName = (T.calendars as any)[entry.fromCal] || entry.fromCal;
-            const tgtName = (T.calendars as any)[entry.toCal] || entry.toCal;
-            const dateStr = [entry.day, entry.month, entry.year].filter(Boolean).join('/');
-            return (
-              <TouchableOpacity
-                key={entry.ts}
-                style={[styles.historyEntry, { borderBottomColor: theme.colors.border }]}
-                onPress={() => loadHistoryEntry(entry)}
-              >
-                <Text style={[styles.historyText, { color: theme.colors.text }]} numberOfLines={1}>
-                  {dateStr} {srcName} → {tgtName}
-                </Text>
-                <TouchableOpacity onPress={() => history.remove(entry.ts)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-                  <Text style={[styles.historyRemove, { color: theme.colors.textMuted }]}>×</Text>
-                </TouchableOpacity>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-      )}
+      {/* Convert again */}
+      <TouchableOpacity
+        style={[styles.convertBtn, {
+          backgroundColor: theme.colors.buttonBg,
+          borderRadius: theme.borderRadius,
+          borderWidth: isBrut ? 3 : 0,
+          borderColor: theme.colors.border,
+        }]}
+        onPress={goBack}
+      >
+        <Text style={[styles.convertBtnText, { color: theme.colors.buttonText, letterSpacing: isBrut ? 3 : 0 }]}>← {isBrut ? 'NEW CONVERSION' : 'New conversion'}</Text>
+      </TouchableOpacity>
 
-      <ThemeToggle />
       <View style={{ height: 40 }} />
     </ScrollView>
   );
@@ -460,20 +499,33 @@ const styles = StyleSheet.create({
   container: { flex: 1, paddingHorizontal: 16 },
   title: { fontSize: 22, fontWeight: '900', textAlign: 'center', marginTop: 20, textTransform: 'uppercase' },
   subtitle: { fontSize: 11, textAlign: 'center', marginBottom: 20, textTransform: 'uppercase', fontWeight: '700' },
-  card: { padding: 16, marginBottom: 16 },
-  dateRow: { flexDirection: 'row', gap: 8, marginTop: 12 },
-  dateField: { flex: 1 },
+
+  // Input fields
+  yearDayRow: { flexDirection: 'row', gap: 12 },
   fieldLabel: { fontSize: 11, fontWeight: '900', textTransform: 'uppercase', marginBottom: 4, letterSpacing: 1.5 },
-  numInput: { borderWidth: 2, paddingHorizontal: 10, paddingVertical: 10, fontSize: 16, textAlign: 'center', fontWeight: '700' },
-  monthScroll: { maxHeight: 38 },
-  monthChip: { borderWidth: 2, borderColor: 'transparent', paddingHorizontal: 8, paddingVertical: 8, marginRight: 4 },
-  monthChipText: { fontSize: 13, fontWeight: '700' },
-  convertBtn: { marginTop: 16, paddingVertical: 14, alignItems: 'center' },
+  numInput: { paddingHorizontal: 10, paddingVertical: 12, fontSize: 18, textAlign: 'center', fontWeight: '900' },
+
+  // Month grid
+  monthGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
+  monthCol: { flex: 1, gap: 6 },
+  monthItem: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 10, paddingVertical: 10 },
+  monthItemFull: { alignItems: 'center', paddingVertical: 12 },
+  monthItemNum: { fontSize: 11, fontWeight: '900', width: 18, textAlign: 'center' },
+  monthItemName: { fontSize: 14, fontWeight: '700', flexShrink: 1 },
+
+  // Convert button
+  convertBtn: { marginTop: 4, marginBottom: 16, paddingVertical: 16, alignItems: 'center', position: 'relative' },
   convertBtnText: { fontSize: 16, fontWeight: '900', textTransform: 'uppercase' },
-  resultCard: { padding: 16, marginBottom: 16 },
+  convertShadow: { position: 'absolute', top: 4, left: 4, right: -4, bottom: -4 },
+
+  // Back button
+  backBtn: { paddingVertical: 10, paddingHorizontal: 12, alignSelf: 'flex-start', marginTop: 16, marginBottom: 8 },
+  backBtnText: { fontSize: 14, fontWeight: '900', textTransform: 'uppercase', letterSpacing: 1 },
+
+  // Results
   errorText: { fontSize: 15, fontWeight: '700' },
-  resultMain: { fontSize: 20, fontWeight: '900', marginBottom: 4 },
-  resultLabel: { fontSize: 11, fontWeight: '900', textTransform: 'uppercase', letterSpacing: 2, marginTop: 12 },
+  resultMain: { fontSize: 22, fontWeight: '900', marginBottom: 4 },
+  resultLabel: { fontSize: 11, fontWeight: '900', textTransform: 'uppercase', letterSpacing: 2, marginTop: 16 },
   resultSecondary: { fontSize: 16, marginBottom: 2, fontWeight: '600' },
   resultMeta: { fontSize: 13, marginTop: 6 },
   resultNote: { fontSize: 13, fontStyle: 'italic', marginTop: 8 },
@@ -484,6 +536,8 @@ const styles = StyleSheet.create({
   tableCellMonth: { flex: 3 },
   tableCellDays: { flex: 1, textAlign: 'center' },
   tableCellRange: { flex: 4 },
+
+  // History
   historyPanel: { paddingTop: 12, marginTop: 8 },
   historyHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
   historyTitle: { fontSize: 14, fontWeight: '900', textTransform: 'uppercase' },

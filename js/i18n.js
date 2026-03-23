@@ -27,14 +27,13 @@ const I18N = {
       bp: 'Before Present', human: 'Human Era'
     },
     calendarGroups: {
-      universal: 'Universal',
+      universal: 'Universal / Scientific',
       islamic: 'Islamic',
       christian: 'Christian / Western',
       iranian: 'Iranian',
       semitic: 'Semitic / Near Eastern',
       african: 'African',
-      grecoRoman: 'Greco-Roman',
-      scientific: 'Scientific'
+      grecoRoman: 'Greco-Roman'
     },
     year: 'Year',
     month: 'Month',
@@ -50,6 +49,8 @@ const I18N = {
     leapYear: 'Leap year',
     totalDays: 'days',
     monthBreakdown: 'Month breakdown',
+    rangeStart: 'Start',
+    rangeEnd: 'End',
     calendarNote: 'Uses the Julian calendar before Oct 15, 1582 and Gregorian after.',
     julianDateNote: 'This date precedes the Gregorian reform (Oct 15, 1582). The Julian calendar is used.',
     indictionLabel: 'Indiction',
@@ -411,14 +412,13 @@ const I18N = {
       bp: 'Przed tera\u017aniejszo\u015bci\u0105', human: 'Era ludzka'
     },
     calendarGroups: {
-      universal: 'Uniwersalne',
+      universal: 'Uniwersalne / naukowe',
       islamic: 'Islamskie',
       christian: 'Chrze\u015bcija\u0144skie / zachodnie',
       iranian: 'Ira\u0144skie',
       semitic: 'Semickie / bliskowschodnie',
       african: 'Afryka\u0144skie',
-      grecoRoman: 'Grecko-rzymskie',
-      scientific: 'Naukowe'
+      grecoRoman: 'Grecko-rzymskie'
     },
     year: 'Rok',
     month: 'Miesi\u0105c',
@@ -434,6 +434,8 @@ const I18N = {
     leapYear: 'Rok przest\u0119pny',
     totalDays: 'dni',
     monthBreakdown: 'Rozk\u0142ad miesi\u0119cy',
+    rangeStart: 'Pocz\u0105tek',
+    rangeEnd: 'Koniec',
     calendarNote: 'Przed 15.10.1582 u\u017cywa kalendarza julia\u0144skiego, po tej dacie gregoria\u0144skiego.',
     julianDateNote: 'Data sprzed reformy gregoria\u0144skiej (15.10.1582). U\u017cyty jest kalendarz julia\u0144ski.',
     indictionLabel: 'Indykcja',
@@ -795,14 +797,13 @@ const I18N = {
       bp: '\u0642\u0628\u0644 \u0627\u0644\u062d\u0627\u0636\u0631', human: '\u0627\u0644\u062a\u0642\u0648\u064a\u0645 \u0627\u0644\u0628\u0634\u0631\u064a'
     },
     calendarGroups: {
-      universal: '\u0639\u0627\u0644\u0645\u064a',
+      universal: '\u0639\u0627\u0644\u0645\u064a / \u0639\u0644\u0645\u064a',
       islamic: '\u0625\u0633\u0644\u0627\u0645\u064a',
       christian: '\u0645\u0633\u064a\u062d\u064a / \u063a\u0631\u0628\u064a',
       iranian: '\u0625\u064a\u0631\u0627\u0646\u064a',
       semitic: '\u0633\u0627\u0645\u064a / \u0634\u0631\u0642 \u0623\u062f\u0646\u0649',
       african: '\u0623\u0641\u0631\u064a\u0642\u064a',
-      grecoRoman: '\u064a\u0648\u0646\u0627\u0646\u064a-\u0631\u0648\u0645\u0627\u0646\u064a',
-      scientific: '\u0639\u0644\u0645\u064a'
+      grecoRoman: '\u064a\u0648\u0646\u0627\u0646\u064a-\u0631\u0648\u0645\u0627\u0646\u064a'
     },
     year: '\u0627\u0644\u0633\u0646\u0629',
     month: '\u0627\u0644\u0634\u0647\u0631',
@@ -818,6 +819,8 @@ const I18N = {
     leapYear: '\u0633\u0646\u0629 \u0643\u0628\u064a\u0633\u0629',
     totalDays: '\u064a\u0648\u0645',
     monthBreakdown: '\u062a\u0641\u0635\u064a\u0644 \u0627\u0644\u0623\u0634\u0647\u0631',
+    rangeStart: '\u0628\u062f\u0627\u064a\u0629',
+    rangeEnd: '\u0646\u0647\u0627\u064a\u0629',
     calendarNote: '\u064a\u0633\u062a\u062e\u062f\u0645 \u0627\u0644\u062a\u0642\u0648\u064a\u0645 \u0627\u0644\u064a\u0648\u0644\u064a\u0627\u0646\u064a \u0642\u0628\u0644 15 \u0623\u0643\u062a\u0648\u0628\u0631 1582 \u0648\u0627\u0644\u063a\u0631\u064a\u063a\u0648\u0631\u064a \u0628\u0639\u062f\u0647.',
     julianDateNote: '\u0647\u0630\u0627 \u0627\u0644\u062a\u0627\u0631\u064a\u062e \u0633\u0627\u0628\u0642 \u0644\u0644\u0625\u0635\u0644\u0627\u062d \u0627\u0644\u063a\u0631\u064a\u063a\u0648\u0631\u064a (15 \u0623\u0643\u062a\u0648\u0628\u0631 1582). \u0627\u0644\u0645\u0633\u062a\u062e\u062f\u0645 \u0647\u0648 \u0627\u0644\u062a\u0642\u0648\u064a\u0645 \u0627\u0644\u064a\u0648\u0644\u064a\u0627\u0646\u064a.',
     indictionLabel: '\u0627\u0644\u0625\u0646\u062f\u0643\u062a\u064a\u0648\u0646',
@@ -1179,14 +1182,13 @@ const I18N = {
       bp: 'Anta\u016d la nuno', human: 'Homara Erao'
     },
     calendarGroups: {
-      universal: 'Universala',
+      universal: 'Universala / scienca',
       islamic: 'Islama',
       christian: 'Kristana / okcidenta',
       iranian: 'Irana',
       semitic: 'Semida / orientproksima',
       african: 'Afrika',
-      grecoRoman: 'Grek-romia',
-      scientific: 'Scienca'
+      grecoRoman: 'Grek-romia'
     },
     year: 'Jaro',
     month: 'Monato',
@@ -1202,6 +1204,8 @@ const I18N = {
     leapYear: 'Superjaro',
     totalDays: 'tagoj',
     monthBreakdown: 'Monata detalo',
+    rangeStart: 'Komenco',
+    rangeEnd: 'Fino',
     calendarNote: 'Uzas la julian kalendaron anta\u016d la 15-a de oktobro 1582 kaj la gregorian poste.',
     julianDateNote: '\u0108i tiu dato anta\u016das la gregorian reformon (15-a de oktobro 1582). Uzata estas la julia kalendaro.',
     indictionLabel: 'Indiktio',

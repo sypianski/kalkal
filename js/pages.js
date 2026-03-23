@@ -485,14 +485,13 @@ const SEASON_LABELS = {
     }
 
     const CAL_GROUPS = [
-      { group: 'universal', ids: ['human'] },
+      { group: 'universal', ids: ['human', 'bp'] },
       { group: 'christian', ids: ['gregorian', 'julian', 'byzantine', 'spanish'] },
       { group: 'islamic', ids: ['hijri', 'solarHijri', 'rumi'] },
       { group: 'iranian', ids: ['yazdgerdi', 'ilkhani'] },
       { group: 'semitic', ids: ['hebrew', 'syriac', 'antiochene', 'seleucid', 'babylonian'] },
       { group: 'african', ids: ['coptic', 'ethiopian', 'egyptian'] },
-      { group: 'grecoRoman', ids: ['auc', 'olympiad', 'macedonian', 'alexandrian', 'armenian'] },
-      { group: 'scientific', ids: ['bp'] }
+      { group: 'grecoRoman', ids: ['auc', 'olympiad', 'macedonian', 'alexandrian', 'armenian'] }
     ];
     const calOrder = CAL_GROUPS.flatMap(g => g.ids);
     calOrder.forEach(id => {

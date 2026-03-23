@@ -735,7 +735,6 @@ html[dir="rtl"] .site-title {
   transform: rotate(180deg);
   display: inline-block;
   line-height: 1;
-  height: 7em;
 }
 
 .meth-coverage th:first-child {
@@ -1207,11 +1206,12 @@ body[data-theme="brutalist"] .converter-form .form-field--year {
 .input-month {
   width: 100%;
   font-family: var(--font-display);
-  font-size: 0.88rem;
+  font-size: 1rem;
+  font-weight: 600;
   color: var(--ink-900);
   background: transparent;
   border: none;
-  border-block-end: 1px solid var(--ink-300);
+  border-block-end: 2px solid var(--ink-300);
   border-radius: 0;
   padding: 0.4em 0;
   appearance: none;
@@ -2552,67 +2552,6 @@ body[data-theme="brutalist"] .install-btn:hover {
    DESIGN VARIANTS — full visual redesigns via data-theme
    ============================================================ */
 
-/* ---- Theme Switcher (shared across all designs) ---- */
-
-.theme-switcher {
-  position: fixed;
-  bottom: 1.2rem;
-  right: 1.2rem;
-  z-index: 10000;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  border: 2px solid rgba(128,128,128,0.3);
-  background: rgba(128,128,128,0.15);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  color: inherit;
-  font-size: 1.2rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  line-height: 1;
-}
-
-.theme-switcher:hover {
-  transform: scale(1.12);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
-}
-
-.theme-switcher:active {
-  transform: scale(0.92);
-}
-
-.theme-label {
-  position: absolute;
-  bottom: calc(100% + 8px);
-  right: 0;
-  background: #222;
-  color: #eee;
-  font-family: var(--font-mono), monospace;
-  font-size: 0.7rem;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  padding: 0.4em 0.7em;
-  border-radius: 4px;
-  white-space: nowrap;
-  opacity: 0;
-  transform: translateY(4px);
-  pointer-events: none;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.theme-switcher:hover .theme-label {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-@media print {
-  .theme-switcher { display: none; }
-}
 
 /* ============================================================
    DESIGN B: "Brutalist" — raw, confrontational, high-contrast,
@@ -3878,14 +3817,17 @@ body[data-theme="brutalist"] .meth-coverage td:first-child {
 }
 
 body[data-theme="brutalist"] .meth-coverage .cov-y::before {
+  content: "\25CF";
   color: var(--brut-ink);
 }
 
 body[data-theme="brutalist"] .meth-coverage .cov-n::before {
+  content: "\00B7";
   color: #ccc;
 }
 
 body[data-theme="brutalist"] .meth-coverage .cov-p::before {
+  content: "\25CF";
   color: var(--brut-muted);
 }
 

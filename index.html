@@ -60,71 +60,64 @@
       <div class="ai-result" id="ai-result"></div>
     </div>
 
-    <div class="converter-card">
+    <div class="converter-grid">
 
-      <form id="converter-form" class="converter-form" autocomplete="off">
+      <div class="converter-card">
+        <form id="converter-form" class="converter-form" autocomplete="off">
 
-        <div class="form-source">
           <div class="form-field form-field--cal">
             <label for="from-calendar" class="form-label" data-i18n="fromCalendar">From</label>
             <input type="text" id="from-calendar" class="input-cal" autocomplete="off">
             <div class="variant-bar" id="from-variants"></div>
           </div>
 
-          <div class="form-dates">
-            <div class="form-date-row">
-              <div class="form-field form-field--num">
-                <label for="from-year" class="form-label" data-i18n="year">Year</label>
-                <input type="number" id="from-year" min="1" dir="ltr" class="input-num" required>
-              </div>
-              <div class="form-field form-field--month">
-                <label for="from-month" class="form-label" data-i18n="month">Month</label>
-                <select id="from-month" class="input-month">
-                  <option value=""></option>
-                </select>
-              </div>
-              <div class="form-field form-field--num">
-                <label for="from-day" class="form-label" data-i18n="day">Day</label>
-                <input type="number" id="from-day" min="1" max="31" dir="ltr" class="input-num">
-              </div>
-            </div>
-
+          <div class="form-field form-field--num form-field--year">
+            <label for="from-year" class="form-label" data-i18n="year">Year</label>
+            <input type="number" id="from-year" min="1" dir="ltr" class="input-num" required>
           </div>
-        </div>
 
-        <div class="form-flow">
-          <svg class="flow-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m5 12 7 7 7-7"/></svg>
-        </div>
-
-        <div class="form-error" id="form-error" role="alert"></div>
-
-        <div class="form-row form-row--target">
           <div class="form-field form-field--cal">
             <label for="to-calendar" class="form-label" data-i18n="targetCalendar">Convert to</label>
             <input type="text" id="to-calendar" class="input-cal" autocomplete="off">
             <div class="variant-bar" id="to-variants"></div>
           </div>
+
+          <div class="form-error" id="form-error" role="alert"></div>
+
           <div class="form-field form-field--action">
             <button type="submit" class="btn-convert" id="btn-convert">
               <span data-i18n="convert">Convert</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
             </button>
           </div>
-        </div>
 
-      </form>
-
-      <div class="divider">
-        <span class="divider-ornament">&#10022;</span>
+        </form>
       </div>
 
-      <section class="result-panel" id="result-panel" aria-live="polite">
-        <p class="result-placeholder" id="result-placeholder">
-          <span class="result-placeholder-icon">&#9788;</span>
-        </p>
+      <section class="result-card result-panel" id="result-panel" aria-live="polite">
+        <div class="refine-bar" id="refine-bar">
+          <div class="form-field form-field--month">
+            <label for="from-month" class="form-label" data-i18n="month">Month</label>
+            <select id="from-month" class="input-month">
+              <option value=""></option>
+            </select>
+          </div>
+          <div class="form-field form-field--num">
+            <label for="from-day" class="form-label" data-i18n="day">Day</label>
+            <input type="number" id="from-day" min="1" max="31" dir="ltr" class="input-num">
+          </div>
+        </div>
+        <div class="result-body" id="result-body">
+          <p class="result-placeholder" id="result-placeholder">
+            <span class="result-placeholder-icon">&#9788;</span>
+          </p>
+        </div>
       </section>
 
     </div>
+
+    <section class="breakdown-card" id="breakdown-panel" hidden>
+    </section>
 
     <section class="history-panel" id="history-panel">
       <div class="history-header">

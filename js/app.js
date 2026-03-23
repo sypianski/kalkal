@@ -370,6 +370,8 @@
   const langSwitcher = $('#lang-switcher');
   const form = $('#converter-form');
   const resultPanel = $('#result-panel');
+  const resultBody = $('#result-body');
+  const breakdownPanel = $('#breakdown-panel');
   const errorPanel = $('#form-error');
   const appTitle = $('#app-title');
   const appSubtitle = $('#app-subtitle');
@@ -849,14 +851,18 @@
 
     const table = el('table', { class: 'year-table' });
     table.appendChild(el('thead', null, el('tr', null,
-      el('th', { text: srcLabel }), el('th', { text: t.totalDays }), el('th', { text: tgtLabel })
+      el('th', { text: srcLabel }),
+      el('th', { text: tgtLabel + ' (' + (t.rangeStart || 'Start') + ')' }),
+      el('th', { text: tgtLabel + ' (' + (t.rangeEnd || 'End') + ')' }),
+      el('th', { text: t.totalDays })
     )));
     const tbody = el('tbody');
     monthRows.forEach(row => {
       tbody.appendChild(el('tr', null,
         el('td', { class: 'month-name', text: row.srcName }),
-        el('td', { text: String(row.days) }),
-        el('td', { class: 'date-cell' }, row.startStr + ' \u2013 ' + row.endStr)
+        el('td', { class: 'date-cell', text: row.startStr }),
+        el('td', { class: 'date-cell', text: row.endStr }),
+        el('td', { text: String(row.days) })
       ));
     });
     table.appendChild(tbody);
@@ -866,6 +872,10 @@
     const srcEndStr = srcRange.endStr;
 
     const isProlepticGregorian = tgt.id === 'gregorian' && jdEnd < 2299160.5;
+    const breakdown = monthRows.length > 1 ? [
+      el('p', { class: 'result-label', text: t.monthBreakdown }),
+      table
+    ] : null;
     showResult([
       el('p', { class: 'result-label', text: srcLabel }),
       el('p', { class: 'result-secondary', text: srcStartStr + ' \u2013 ' + srcEndStr }),
@@ -876,10 +886,8 @@
         el('span', { class: 'date-val', text: tgtEndStr })
       ),
       isProlepticGregorian ? el('p', { class: 'result-note', text: t.julianDateNote }) : null,
-      monthRows.length > 1 ? el('p', { class: 'result-label', text: t.monthBreakdown }) : null,
-      monthRows.length > 1 ? table : null,
       buildMeta([[t.jdn, jdStart + ' \u2013 ' + jdEnd]])
-    ]);
+    ], breakdown);
   }
 
   function convertYearRange(src, tgt, year, t) {
@@ -911,14 +919,18 @@
 
     const table = el('table', { class: 'year-table' });
     table.appendChild(el('thead', null, el('tr', null,
-      el('th', { text: srcLabel }), el('th', { text: t.totalDays }), el('th', { text: tgtLabel })
+      el('th', { text: srcLabel }),
+      el('th', { text: tgtLabel + ' (' + (t.rangeStart || 'Start') + ')' }),
+      el('th', { text: tgtLabel + ' (' + (t.rangeEnd || 'End') + ')' }),
+      el('th', { text: t.totalDays })
     )));
     const tbody = el('tbody');
     monthRows.forEach(row => {
       tbody.appendChild(el('tr', null,
         el('td', { class: 'month-name', text: row.srcName }),
-        el('td', { text: String(row.days) }),
-        el('td', { class: 'date-cell' }, row.startStr + ' \u2013 ' + row.endStr)
+        el('td', { class: 'date-cell', text: row.startStr }),
+        el('td', { class: 'date-cell', text: row.endStr }),
+        el('td', { text: String(row.days) })
       ));
     });
     table.appendChild(tbody);
@@ -942,9 +954,10 @@
         el('span', { class: 'date-val', text: tgtEndStr })
       ),
       isProlepticGregorian ? el('p', { class: 'result-note', text: t.julianDateNote }) : null,
-      el('p', { class: 'result-label', text: t.monthBreakdown }),
-      table,
       buildMeta([[t.jdn, jdStart + ' \u2013 ' + jdEnd]])
+    ], [
+      el('p', { class: 'result-label', text: t.monthBreakdown }),
+      table
     ]);
   }
 
@@ -965,23 +978,24 @@
     return dl;
   }
 
-  function showResult(elements) {
-    while (resultPanel.firstChild) resultPanel.removeChild(resultPanel.firstChild);
-    elements.forEach(node => { if (node) resultPanel.appendChild(node); });
+  function showResult(elements, breakdownElements) {
+    while (resultBody.firstChild) resultBody.removeChild(resultBody.firstChild);
+    elements.forEach(node => { if (node) resultBody.appendChild(node); });
     const t = I18N[currentLang] || I18N.en;
     const copyBtn = el('button', { class: 'copy-btn', text: t.copyResult });
     copyBtn.type = 'button';
     copyBtn.addEventListener('click', function () {
-      const text = resultPanel.innerText.replace(copyBtn.textContent, '').trim();
+      const mainEl = resultBody.querySelector('.result-main');
+      const text = mainEl ? mainEl.textContent.trim() : resultBody.innerText.trim();
       navigator.clipboard.writeText(text).then(function () {
         copyBtn.textContent = t.copied;
         setTimeout(function () { copyBtn.textContent = t.copyResult; }, 1500);
       });
     });
-    resultPanel.appendChild(copyBtn);
+    resultBody.appendChild(copyBtn);
 
     // Zodiac toggle button (only if there's a zodiac element in results)
-    const zodiacEl = resultPanel.querySelector('.result-zodiac');
+    const zodiacEl = resultBody.querySelector('.result-zodiac');
     if (zodiacEl) {
       const zodiacBtn = el('button', { class: 'zodiac-btn', text: t.zodiacLabel });
       zodiacBtn.type = 'button';
@@ -989,10 +1003,19 @@
         zodiacEl.classList.toggle('hidden');
         zodiacBtn.classList.toggle('active');
       });
-      resultPanel.appendChild(zodiacBtn);
+      resultBody.appendChild(zodiacBtn);
     }
 
     resultPanel.classList.add('has-result');
+
+    // Breakdown panel (table etc.)
+    while (breakdownPanel.firstChild) breakdownPanel.removeChild(breakdownPanel.firstChild);
+    if (breakdownElements && breakdownElements.length > 0) {
+      breakdownElements.forEach(node => { if (node) breakdownPanel.appendChild(node); });
+      breakdownPanel.hidden = false;
+    } else {
+      breakdownPanel.hidden = true;
+    }
   }
 
   // ---- History ----
@@ -1173,6 +1196,14 @@
   $('#from-year').addEventListener('focus', function() { this.select(); });
   $('#from-day').addEventListener('focus', function() { this.select(); });
 
+  // Re-convert when month or day changes (refinement)
+  $('#from-month').addEventListener('change', () => {
+    if (resultPanel.classList.contains('has-result')) convert();
+  });
+  $('#from-day').addEventListener('change', () => {
+    if (resultPanel.classList.contains('has-result')) convert();
+  });
+
   // Clear errors on any input change
   form.addEventListener('input', () => clearError());
 
@@ -1195,5 +1226,16 @@
     if (params.get('m')) $('#from-month').value = params.get('m');
     if (params.get('d')) $('#from-day').value = params.get('d');
     convert();
+  } else {
+    // Default: Hijri → Human Era
+    var t = I18N[currentLang] || I18N.en;
+    fromCalInput.value = t.calendars.hijri || 'Hijri';
+    toCalInput.value = t.calendars.human || 'Human Era';
+    onCalendarChange(fromCalInput);
+    onCalendarChange(toCalInput);
+    updateMonthSelects();
   }
+
+  // Auto-focus year input
+  $('#from-year').focus();
 })();

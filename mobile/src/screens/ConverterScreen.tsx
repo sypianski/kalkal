@@ -347,20 +347,22 @@ export function ConverterScreen() {
               );
             };
             return (
-              <View style={styles.monthGrid}>
-                <View style={styles.monthCol}>
-                  {col1.map((name, i) => renderItem(name, i))}
-                </View>
-                <View style={styles.monthCol}>
-                  {col2.map((name, i) => renderItem(name, half + i))}
+              <>
+                <View style={styles.monthGrid}>
+                  <View style={styles.monthCol}>
+                    {col1.map((name, i) => renderItem(name, i))}
+                  </View>
+                  <View style={styles.monthCol}>
+                    {col2.map((name, i) => renderItem(name, half + i))}
+                  </View>
                 </View>
                 <TouchableOpacity
-                  style={[styles.monthItemFull, { borderColor: theme.colors.border, borderWidth: theme.borderWidth }, !month && { backgroundColor: theme.colors.accent }]}
+                  style={[styles.monthItemFull, { borderColor: theme.colors.border, borderWidth: theme.borderWidth, marginTop: 6 }, !month && { backgroundColor: theme.colors.accent }]}
                   onPress={() => setMonth('')}
                 >
                   <Text style={[styles.monthItemName, { color: !month ? (isBrut ? '#000' : theme.colors.buttonText) : theme.colors.text }]}>Whole year</Text>
                 </TouchableOpacity>
-              </View>
+              </>
             );
           })()}
         </BrutalistCard>

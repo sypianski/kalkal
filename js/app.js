@@ -368,6 +368,15 @@
     Civil: 'Julian/Gregorian'
   };
 
+  // Variant priority: lower number = more important (shown as groups, not toggle)
+  const VARIANT_PRIORITY = {
+    byzantine: 1,
+    hijri: 2,
+    yazdgerdi: 3,
+    seleucid: 4,
+    human: 5
+  };
+
   // ---- DOM helpers ----
   const $ = (sel, ctx = document) => ctx.querySelector(sel);
   const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
@@ -403,37 +412,9 @@
   const fromVariantsBar = $('#from-variants');
   const toVariantsBar = $('#to-variants');
 
-  // ---- Variant bar ----
+  // ---- Variant bar (disabled — variants now shown in results) ----
 
-  function updateVariantBar(bar, calInput) {
-    while (bar.firstChild) bar.removeChild(bar.firstChild);
-    bar.classList.remove('visible');
-
-    const cal = resolveCalendar(calInput.value);
-    if (!cal || !cal.variants) return;
-
-    // Reset to default variant if not already set to a valid one
-    if (!cal.variants.includes(cal._variant)) {
-      cal._variant = cal.defaultVariant;
-    }
-
-    bar.classList.add('visible');
-    cal.variants.forEach(v => {
-      const btn = el('button', {
-        type: 'button',
-        class: 'variant-btn' + (v === cal._variant ? ' active' : ''),
-        text: VARIANT_LABELS[v] || v
-      });
-      btn.addEventListener('click', () => {
-        cal._variant = v;
-        $$('.variant-btn', bar).forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        if (calInput === fromCalInput) updateMonthSelects();
-        if (resultPanel.classList.contains('has-result')) convert();
-      });
-      bar.appendChild(btn);
-    });
-  }
+  function updateVariantBar() {}
 
   // ---- Calendar change handler ----
 
@@ -772,6 +753,10 @@
 
     if (srcCal.id === tgtCal.id) { showError(t.errSameCal); return; }
 
+    // Ensure default variants for validation & range conversions
+    if (srcCal.variants) srcCal._variant = srcCal.defaultVariant;
+    if (tgtCal.variants) tgtCal._variant = tgtCal.defaultVariant;
+
     // Validate year
     const fromYear = parseInt($('#from-year').value, 10);
     if (!fromYear || fromYear < 1) { showError(t.errNoYear, $('#from-year')); return; }
@@ -806,54 +791,162 @@
   }
 
   function convertDate(src, tgt, y, m, d, t) {
-    const jd = src.toJD(y, m, d);
-    const result = tgt.fromJD(jd);
-    const dow = Cal.getDayOfWeek(jd);
-    const srcNames = src.monthNames(t);
-    const tgtNames = tgt.monthNames(t);
+    var hasSrcVars = !!src.variants;
+    var hasTgtVars = !!tgt.variants;
 
-    const isProlepticGregorian = tgt.id === 'gregorian' && jd < 2299160.5;
-    const elements = [
-      el('p', { class: 'result-label', text: t.calendars[src.id] }),
-      el('p', { class: 'result-secondary', text: d + ' ' + srcNames[m - 1] + ' ' + y }),
-      el('p', { class: 'result-label', text: t.calendars[tgt.id] }),
-      tgt.id === 'roman' && result.day
-        ? el('p', { class: 'result-main', text: Cal.romanDayNotation(result.month, result.day, tgt.isLeap(result.year)) + ' ' + result.year + ' AUC' })
-        : el('p', { class: 'result-main', text: result.day + ' ' + tgtNames[result.month - 1] + ' ' + result.year + ' — ' + t.weekdays[dow] }),
-    ];
-    // Indiction for Byzantine calendars
-    if (tgt.id === 'byzantine') {
-      const ind = Cal.indictionFromJD(jd);
-      elements.push(el('p', { class: 'result-secondary result-indiction', text: (t.indictionLabel || 'Indiction') + ' ' + ind }));
+    // When both sides have variants, the higher-priority one gets groups,
+    // the lower-priority one gets a toggle switcher in results
+    var secondaryCal = null;
+    var srcVars, tgtVars;
+    if (hasSrcVars && hasTgtVars) {
+      var srcPrio = VARIANT_PRIORITY[src.id] || 99;
+      var tgtPrio = VARIANT_PRIORITY[tgt.id] || 99;
+      if (srcPrio <= tgtPrio) {
+        // Source is primary (groups), target is secondary (toggle)
+        secondaryCal = tgt;
+        srcVars = src.variants.slice();
+        tgtVars = [tgt._variant];
+      } else {
+        // Target is primary (groups), source is secondary (toggle)
+        secondaryCal = src;
+        srcVars = [src._variant];
+        tgtVars = tgt.variants.slice();
+      }
+    } else {
+      srcVars = hasSrcVars ? src.variants.slice() : [null];
+      tgtVars = hasTgtVars ? tgt.variants.slice() : [null];
     }
-    // Animal year for Ilkhanid
+
+    // Compute all variant combinations, grouped by identical target date
+    var groups = new Map();
+    for (var si = 0; si < srcVars.length; si++) {
+      var sv = srcVars[si];
+      if (hasSrcVars) src._variant = sv;
+      var maxDay = src.monthLength(y, m);
+      if (d > maxDay) continue;
+      var jd = src.toJD(y, m, d);
+      for (var ti = 0; ti < tgtVars.length; ti++) {
+        var tv = tgtVars[ti];
+        if (hasTgtVars) tgt._variant = tv;
+        var result = tgt.fromJD(jd);
+        var key = result.year + '-' + result.month + '-' + result.day;
+        if (!groups.has(key)) {
+          var dow = Cal.getDayOfWeek(jd);
+          var tgtNames = tgt.monthNames(t);
+          groups.set(key, { result: result, jd: jd, dow: dow, tgtNames: tgtNames, labels: [] });
+        }
+        var vlabel = '';
+        if (hasSrcVars && !secondaryCal) vlabel = VARIANT_LABELS[sv] || sv;
+        else if (hasTgtVars && !secondaryCal) vlabel = VARIANT_LABELS[tv] || tv;
+        else if (secondaryCal === tgt) vlabel = VARIANT_LABELS[sv] || sv;
+        else if (secondaryCal === src) vlabel = VARIANT_LABELS[tv] || tv;
+        if (vlabel) {
+          var existing = groups.get(key).labels;
+          if (existing.indexOf(vlabel) < 0) existing.push(vlabel);
+        }
+      }
+    }
+
+    var groupList = [];
+    groups.forEach(function(v) { groupList.push(v); });
+    var showVarLabels = groupList.length > 1;
+    var primaryJd = groupList[0].jd;
+
+    // Source info — use default variant for month names
+    if (hasSrcVars) src._variant = src.defaultVariant;
+    var srcNames = src.monthNames(t);
+
+    var elements = [
+      el('p', { class: 'result-label', text: t.calendars[src.id] }),
+    ];
+
+    // Toggle for secondary source calendar
+    if (secondaryCal === src) {
+      var srcBar = el('div', { class: 'result-variant-bar' });
+      src.variants.forEach(function(v) {
+        var btn = el('button', {
+          type: 'button',
+          class: 'variant-btn' + (v === src._variant ? ' active' : ''),
+          text: VARIANT_LABELS[v] || v
+        });
+        btn.addEventListener('click', function() {
+          src._variant = v;
+          convertDate(src, tgt, y, m, d, t);
+        });
+        srcBar.appendChild(btn);
+      });
+      elements.push(srcBar);
+    }
+
+    elements.push(el('p', { class: 'result-secondary', text: d + ' ' + srcNames[m - 1] + ' ' + y }));
+    elements.push(el('p', { class: 'result-label', text: t.calendars[tgt.id] }));
+
+    // Toggle for secondary target calendar
+    if (secondaryCal === tgt) {
+      var tgtBar = el('div', { class: 'result-variant-bar' });
+      tgt.variants.forEach(function(v) {
+        var btn = el('button', {
+          type: 'button',
+          class: 'variant-btn' + (v === tgt._variant ? ' active' : ''),
+          text: VARIANT_LABELS[v] || v
+        });
+        btn.addEventListener('click', function() {
+          tgt._variant = v;
+          convertDate(src, tgt, y, m, d, t);
+        });
+        tgtBar.appendChild(btn);
+      });
+      elements.push(tgtBar);
+    }
+
+    // Target results per variant group
+    for (var gi = 0; gi < groupList.length; gi++) {
+      var g = groupList[gi];
+      if (tgt.id === 'roman' && g.result.day) {
+        elements.push(el('p', { class: 'result-main', text: Cal.romanDayNotation(g.result.month, g.result.day, tgt.isLeap(g.result.year)) + ' ' + g.result.year + ' AUC' }));
+      } else {
+        var mainEl = el('p', { class: 'result-main' },
+          el('span', { class: 'result-date', text: g.result.day + ' ' + g.tgtNames[g.result.month - 1] + ' ' + g.result.year }),
+          el('span', { class: 'result-dow', text: t.weekdays[g.dow] })
+        );
+        elements.push(mainEl);
+      }
+      if (showVarLabels && g.labels.length > 0) {
+        elements.push(el('p', { class: 'result-variant-label', text: g.labels.join(', ') }));
+      }
+      if (tgt.id === 'byzantine') {
+        var ind = Cal.indictionFromJD(g.jd);
+        elements.push(el('p', { class: 'result-secondary result-indiction', text: (t.indictionLabel || 'Indiction') + ' ' + ind }));
+      }
+    }
+
+    var primaryResult = groupList[0].result;
     if (tgt.id === 'ilkhani') {
-      const animal = Cal.ilkhaniAnimalYear(result.year);
-      const animalName = (t.ilkhaniAnimals && t.ilkhaniAnimals[animal]) || animal;
+      var animal = Cal.ilkhaniAnimalYear(primaryResult.year);
+      var animalName = (t.ilkhaniAnimals && t.ilkhaniAnimals[animal]) || animal;
       elements.push(el('p', { class: 'result-secondary result-animal', text: (t.animalYearLabel || 'Animal year') + ': ' + animalName }));
     }
-    // Babylonian source note
     if (tgt.id === 'babylonian') {
-      const isPD = Cal.isBabylonianPD(result.year);
-      const note = isPD ? (t.babylonianPDNote || 'Observational date from Parker & Dubberstein tables (626 BCE \u2013 45 CE).') : (t.babylonianArithNote || 'Arithmetic approximation (outside Parker & Dubberstein range). May differ \u00b11\u20132 days from historical observation.');
+      var isPD = Cal.isBabylonianPD(primaryResult.year);
+      var note = isPD ? (t.babylonianPDNote || 'Observational date from Parker & Dubberstein tables (626 BCE \u2013 45 CE).') : (t.babylonianArithNote || 'Arithmetic approximation (outside Parker & Dubberstein range). May differ \u00b11\u20132 days from historical observation.');
       elements.push(el('p', { class: 'result-note', text: note }));
     }
-    if (isProlepticGregorian) {
+    if (tgt.id === 'gregorian' && primaryJd < 2299160.5) {
       elements.push(el('p', { class: 'result-note', text: t.julianDateNote }));
     }
     // Astro panel (zodiac + moon + events, hidden by default, toggled by astro button)
-    const astroPanel = el('div', { class: 'astro-panel hidden' });
-    const zi = Cal.getZodiacSign(jd);
-    const zodiacSymbol = '\u2648\u2649\u264A\u264B\u264C\u264D\u264E\u264F\u2650\u2651\u2652\u2653'[zi];
+    var astroPanel = el('div', { class: 'astro-panel hidden' });
+    var zi = Cal.getZodiacSign(primaryJd);
+    var zodiacSymbol = '\u2648\u2649\u264A\u264B\u264C\u264D\u264E\u264F\u2650\u2651\u2652\u2653'[zi];
     astroPanel.appendChild(el('p', { class: 'result-zodiac', text: zodiacSymbol + ' ' + t.zodiacSigns[zi] }));
     elements.push(astroPanel);
     // Eclipse check
     if (typeof Eclipses !== 'undefined') {
-      const ecl = Eclipses.lookup(jd);
+      var ecl = Eclipses.lookup(primaryJd);
       if (ecl) {
-        const typeStr = Eclipses.typeLabel(ecl.type, t);
-        const magStr = ecl.mag ? ' (' + ecl.mag.toFixed(3) + ')' : '';
-        const eclEl = el('div', { class: 'result-eclipse' },
+        var typeStr = Eclipses.typeLabel(ecl.type, t);
+        var magStr = ecl.mag ? ' (' + ecl.mag.toFixed(3) + ')' : '';
+        var eclEl = el('div', { class: 'result-eclipse' },
           el('span', { class: 'eclipse-icon' }),
           el('span', { class: 'eclipse-type', text: (t.eclipseLabel || 'Solar eclipse') + ': ' + typeStr + magStr })
         );
@@ -861,12 +954,12 @@
           eclEl.appendChild(el('p', { class: 'eclipse-note', text: t.eclipseNotes[ecl.noteKey] }));
         }
         if (ecl.notable) {
-          const mapLink = document.createElement('a');
+          var mapLink = document.createElement('a');
           mapLink.className = 'eclipse-map-link';
           if (ecl.noteKey === 'ibrahim632') {
             mapLink.href = 'eklipso.html';
           } else if (ecl.noteKey) {
-            const he = (ecl.year + 10000) + '' + (ecl.month < 10 ? '0' : '') + ecl.month + (ecl.day < 10 ? '0' : '') + ecl.day;
+            var he = (ecl.year + 10000) + '' + (ecl.month < 10 ? '0' : '') + ecl.month + (ecl.day < 10 ? '0' : '') + ecl.day;
             mapLink.href = 'maps/' + he + '.html';
           } else {
             mapLink.href = 'eclipses.html';
@@ -877,23 +970,20 @@
         elements.push(eclEl);
       }
     }
-    // Astronomy: moon phase, comets, supernovae, conjunctions — all inside astroPanel
+    // Astronomy: moon phase, comets, supernovae, conjunctions
     if (typeof Astronomy !== 'undefined') {
-      // Moon phase
-      const moon = Astronomy.moonPhase(jd);
-      const phaseName = (t.moonPhases && t.moonPhases[moon.name]) || moon.name;
-      const moonEl = el('div', { class: 'result-astro result-moon' },
+      var moon = Astronomy.moonPhase(primaryJd);
+      var phaseName = (t.moonPhases && t.moonPhases[moon.name]) || moon.name;
+      var moonEl = el('div', { class: 'result-astro result-moon' },
         el('span', { class: 'astro-icon', text: moon.icon }),
         el('span', { class: 'astro-text', text: (t.moonPhaseLabel || 'Moon phase') + ': ' + phaseName }),
         el('span', { class: 'astro-detail', text: moon.age + ' ' + (t.moonAge || 'day') + ' \u2022 ' + moon.illumination + '% ' + (t.moonIllumination || 'illuminated') })
       );
       astroPanel.appendChild(moonEl);
-
-      // Comet check
-      const comet = Astronomy.lookupComet(jd);
+      var comet = Astronomy.lookupComet(primaryJd);
       if (comet) {
-        const cName = (t.cometNames && t.cometNames[comet.id]) || comet.id;
-        const cEl = el('div', { class: 'result-astro result-comet' },
+        var cName = (t.cometNames && t.cometNames[comet.id]) || comet.id;
+        var cEl = el('div', { class: 'result-astro result-comet' },
           el('span', { class: 'astro-icon', text: '\u2604\uFE0F' }),
           el('span', { class: 'astro-text', text: (t.cometLabel || 'Comet') + ': ' + cName + ' (' + comet.year + ')' })
         );
@@ -902,28 +992,24 @@
         }
         astroPanel.appendChild(cEl);
       }
-
-      // Supernova check
-      const sn = Astronomy.lookupSupernova(jd);
+      var sn = Astronomy.lookupSupernova(primaryJd);
       if (sn) {
-        const magStr = sn.peakMag > 0 ? '+' + sn.peakMag : String(sn.peakMag);
-        const snEl = el('div', { class: 'result-astro result-supernova' },
-          el('span', { class: 'astro-icon', text: '\u{1F4A5}' }),
-          el('span', { class: 'astro-text', text: (t.supernovaLabel || 'Supernova') + ': ' + sn.id + ' (' + sn.constellation + ', mag ' + magStr + ')' })
+        var snMag = sn.peakMag > 0 ? '+' + sn.peakMag : String(sn.peakMag);
+        var snEl = el('div', { class: 'result-astro result-supernova' },
+          el('span', { class: 'astro-icon', text: '\uD83D\uDCA5' }),
+          el('span', { class: 'astro-text', text: (t.supernovaLabel || 'Supernova') + ': ' + sn.id + ' (' + sn.constellation + ', mag ' + snMag + ')' })
         );
         if (sn.noteKey && t.supernovaNotes && t.supernovaNotes[sn.noteKey]) {
           snEl.appendChild(el('p', { class: 'astro-note', text: t.supernovaNotes[sn.noteKey] }));
         }
         astroPanel.appendChild(snEl);
       }
-
-      // Conjunction check
-      const conj = Astronomy.lookupConjunction(jd);
+      var conj = Astronomy.lookupConjunction(primaryJd);
       if (conj) {
-        const p1 = Astronomy.planetName(conj.planet1, t);
-        const p2 = Astronomy.planetName(conj.planet2, t);
-        const sepStr = conj.separation < 60 ? conj.separation + '\u2032' : (conj.separation / 60).toFixed(1) + '\u00b0';
-        const conjEl = el('div', { class: 'result-astro result-conjunction' },
+        var p1 = Astronomy.planetName(conj.planet1, t);
+        var p2 = Astronomy.planetName(conj.planet2, t);
+        var sepStr = conj.separation < 60 ? conj.separation + '\u2032' : (conj.separation / 60).toFixed(1) + '\u00b0';
+        var conjEl = el('div', { class: 'result-astro result-conjunction' },
           el('span', { class: 'astro-icon', text: '\u2728' }),
           el('span', { class: 'astro-text', text: (t.conjunctionLabel || 'Conjunction') + ': ' + p1 + '\u2013' + p2 + ' (' + sepStr + ')' })
         );
@@ -933,11 +1019,11 @@
         astroPanel.appendChild(conjEl);
       }
     }
-    astroPanel.appendChild(buildMeta([[t.jdn, String(jd)]]));
-    // Contextual calendars panel — other calendars in use during this period
-    const contextPanel = buildContextualPanel(jd, src.id, tgt.id, t);
+    astroPanel.appendChild(buildMeta([[t.jdn, String(primaryJd)]]));
+    // Contextual calendars panel
+    var contextPanel = buildContextualPanel(primaryJd, src.id, tgt.id, t);
     if (contextPanel) {
-      const astroIdx = elements.indexOf(astroPanel);
+      var astroIdx = elements.indexOf(astroPanel);
       if (astroIdx >= 0) {
         elements.splice(astroIdx, 0, contextPanel);
       } else {
@@ -1004,11 +1090,12 @@
     const srcEndStr = srcRange.endStr;
 
     const isProlepticGregorian = tgt.id === 'gregorian' && jdEnd < 2299160.5;
+    const astroResult = buildRangeAstroPanel(jdStart, jdEnd, tgt, tgtNames, t);
     const breakdown = monthRows.length > 1 ? [
       el('p', { class: 'result-label', text: t.monthBreakdown }),
       table
     ] : null;
-    showResult([
+    const rangeElements = [
       el('p', { class: 'result-label', text: srcLabel }),
       el('p', { class: 'result-secondary', text: srcStartStr + ' \u2013 ' + srcEndStr }),
       el('p', { class: 'result-label', text: tgtLabel }),
@@ -1018,8 +1105,11 @@
         el('span', { class: 'date-val', text: tgtEndStr })
       ),
       isProlepticGregorian ? el('p', { class: 'result-note', text: t.julianDateNote }) : null,
-      buildMeta([[t.jdn, jdStart + ' \u2013 ' + jdEnd]])
-    ], breakdown);
+    ];
+    const contextPanel = buildContextualPanel(Math.floor((jdStart + jdEnd) / 2), src.id, tgt.id, t);
+    if (contextPanel) rangeElements.push(contextPanel);
+    if (astroResult) rangeElements.push(astroResult.panel);
+    showResult(rangeElements, breakdown, astroResult ? astroResult.highlights : null);
   }
 
   function convertYearRange(src, tgt, year, t) {
@@ -1078,7 +1168,8 @@
     );
 
     const isProlepticGregorian = tgt.id === 'gregorian' && jdEnd < 2299160.5;
-    showResult([
+    const astroResult = buildRangeAstroPanel(jdStart, jdEnd, tgt, tgtNames, t);
+    const yearElements = [
       el('p', { class: 'result-label', text: year + ' ' + srcLabel }),
       yearInfo,
       el('p', { class: 'result-span' },
@@ -1086,11 +1177,115 @@
         el('span', { class: 'date-val', text: tgtEndStr })
       ),
       isProlepticGregorian ? el('p', { class: 'result-note', text: t.julianDateNote }) : null,
-      buildMeta([[t.jdn, jdStart + ' \u2013 ' + jdEnd]])
-    ], [
+    ];
+    const contextPanel = buildContextualPanel(Math.floor((jdStart + jdEnd) / 2), src.id, tgt.id, t);
+    if (contextPanel) yearElements.push(contextPanel);
+    if (astroResult) yearElements.push(astroResult.panel);
+    showResult(yearElements, [
       el('p', { class: 'result-label', text: t.monthBreakdown }),
       table
-    ]);
+    ], astroResult ? astroResult.highlights : null);
+  }
+
+  // Build astro panel for a JDN range (year/month conversions).
+  // Returns { panel, highlights } or null if no events found.
+  function buildRangeAstroPanel(jdStart, jdEnd, tgt, tgtNames, t) {
+    const panel = el('div', { class: 'astro-panel hidden' });
+    const highlights = [];
+    // Eclipses in range
+    if (typeof Eclipses !== 'undefined') {
+      for (let d = jdStart; d <= jdEnd; d++) {
+        const ecl = Eclipses.lookup(d);
+        if (ecl) {
+          const typeStr = Eclipses.typeLabel(ecl.type, t);
+          const magStr = ecl.mag ? ' (' + ecl.mag.toFixed(3) + ')' : '';
+          const eclDate = tgt.fromJD(d);
+          const eclDateStr = eclDate.day + ' ' + tgtNames[eclDate.month - 1] + ' ' + eclDate.year;
+          const eclEl = el('div', { class: 'result-eclipse' },
+            el('span', { class: 'eclipse-icon' }),
+            el('span', { class: 'eclipse-type', text: (t.eclipseLabel || 'Solar eclipse') + ': ' + typeStr + magStr + ' \u2014 ' + eclDateStr })
+          );
+          if (ecl.notable && ecl.noteKey && t.eclipseNotes && t.eclipseNotes[ecl.noteKey]) {
+            eclEl.appendChild(el('p', { class: 'eclipse-note', text: t.eclipseNotes[ecl.noteKey] }));
+          }
+          if (ecl.notable) {
+            const mapLink = document.createElement('a');
+            mapLink.className = 'eclipse-map-link';
+            if (ecl.noteKey === 'ibrahim632') {
+              mapLink.href = 'eklipso.html';
+            } else if (ecl.noteKey) {
+              const he = (ecl.year + 10000) + '' + (ecl.month < 10 ? '0' : '') + ecl.month + (ecl.day < 10 ? '0' : '') + ecl.day;
+              mapLink.href = 'maps/' + he + '.html';
+            } else {
+              mapLink.href = 'eclipses.html';
+            }
+            mapLink.textContent = ecl.noteKey ? (t.eclipseViewMap || 'View eclipse map') : (t.eclipseViewCatalogue || 'Eclipse catalogue');
+            eclEl.appendChild(mapLink);
+          }
+          panel.appendChild(eclEl);
+          highlights.push('\u25D0 ' + typeStr);
+        }
+      }
+    }
+    // Comets, supernovae, conjunctions (deduplicate by origin JDN)
+    if (typeof Astronomy !== 'undefined') {
+      const seenComets = new Set();
+      for (let d = jdStart; d <= jdEnd; d++) {
+        const comet = Astronomy.lookupComet(d);
+        if (comet && !seenComets.has(comet.perihelionJD)) {
+          seenComets.add(comet.perihelionJD);
+          const cName = (t.cometNames && t.cometNames[comet.id]) || comet.id;
+          const cEl = el('div', { class: 'result-astro result-comet' },
+            el('span', { class: 'astro-icon', text: '\u2604\uFE0F' }),
+            el('span', { class: 'astro-text', text: (t.cometLabel || 'Comet') + ': ' + cName + ' (' + comet.year + ')' })
+          );
+          if (comet.noteKey && t.cometNotes && t.cometNotes[comet.noteKey]) {
+            cEl.appendChild(el('p', { class: 'astro-note', text: t.cometNotes[comet.noteKey] }));
+          }
+          panel.appendChild(cEl);
+          highlights.push('\u2604 ' + cName);
+        }
+      }
+      const seenSN = new Set();
+      for (let d = jdStart; d <= jdEnd; d++) {
+        const sn = Astronomy.lookupSupernova(d);
+        if (sn && !seenSN.has(sn.id)) {
+          seenSN.add(sn.id);
+          const magStr = sn.peakMag !== undefined ? String(sn.peakMag) : '?';
+          const snEl = el('div', { class: 'result-astro result-supernova' },
+            el('span', { class: 'astro-icon', text: '\u{1F4A5}' }),
+            el('span', { class: 'astro-text', text: (t.supernovaLabel || 'Supernova') + ': ' + sn.id + ' (' + sn.constellation + ', mag ' + magStr + ')' })
+          );
+          if (sn.noteKey && t.supernovaNotes && t.supernovaNotes[sn.noteKey]) {
+            snEl.appendChild(el('p', { class: 'astro-note', text: t.supernovaNotes[sn.noteKey] }));
+          }
+          panel.appendChild(snEl);
+          highlights.push('\u2726 ' + sn.id);
+        }
+      }
+      const seenConj = new Set();
+      for (let d = jdStart; d <= jdEnd; d++) {
+        const conj = Astronomy.lookupConjunction(d);
+        if (conj && !seenConj.has(conj.closestJD)) {
+          seenConj.add(conj.closestJD);
+          const p1 = Astronomy.planetName(conj.planet1, t);
+          const p2 = Astronomy.planetName(conj.planet2, t);
+          const sepStr = conj.separation < 60 ? conj.separation + '\u2032' : (conj.separation / 60).toFixed(1) + '\u00b0';
+          const conjEl = el('div', { class: 'result-astro result-conjunction' },
+            el('span', { class: 'astro-icon', text: '\u2728' }),
+            el('span', { class: 'astro-text', text: (t.conjunctionLabel || 'Conjunction') + ': ' + p1 + '\u2013' + p2 + ' (' + sepStr + ')' })
+          );
+          if (conj.noteKey && t.conjunctionNotes && t.conjunctionNotes[conj.noteKey]) {
+            conjEl.appendChild(el('p', { class: 'astro-note', text: t.conjunctionNotes[conj.noteKey] }));
+          }
+          panel.appendChild(conjEl);
+          highlights.push('\u2728 ' + p1 + '\u2013' + p2);
+        }
+      }
+    }
+    if (highlights.length === 0) return null;
+    panel.appendChild(buildMeta([[t.jdn, jdStart + ' \u2013 ' + jdEnd]]));
+    return { panel: panel, highlights: highlights };
   }
 
   // ---- Helpers ----
@@ -1140,7 +1335,7 @@
     );
   }
 
-  function showResult(elements, breakdownElements) {
+  function showResult(elements, breakdownElements, rangeHighlights) {
     while (resultBody.firstChild) resultBody.removeChild(resultBody.firstChild);
     elements.forEach(node => { if (node) resultBody.appendChild(node); });
     const t = I18N[currentLang] || I18N.en;
@@ -1169,8 +1364,21 @@
         astroPanelEl.classList.toggle('hidden');
         astroBtn.classList.toggle('active');
       });
-      // Insert button before the panel so panel opens below the button
-      astroPanelEl.parentNode.insertBefore(astroBtn, astroPanelEl);
+      // Range highlights: show event summary as a pill extension next to the button
+      if (rangeHighlights && rangeHighlights.length > 0) {
+        const pillWrap = el('div', { class: 'astro-pill' });
+        pillWrap.appendChild(astroBtn);
+        const summaryEl = el('span', { class: 'astro-pill-summary', text: rangeHighlights.join(' \u00b7 ') });
+        summaryEl.addEventListener('click', function () {
+          astroPanelEl.classList.toggle('hidden');
+          astroBtn.classList.toggle('active');
+        });
+        pillWrap.appendChild(summaryEl);
+        astroPanelEl.parentNode.insertBefore(pillWrap, astroPanelEl);
+      } else {
+        // Insert button before the panel so panel opens below the button
+        astroPanelEl.parentNode.insertBefore(astroBtn, astroPanelEl);
+      }
     }
 
     resultPanel.classList.add('has-result');
@@ -1203,8 +1411,7 @@
     // Deduplicate: remove if same params already exist
     const dominated = hist.findIndex(h =>
       h.fromCal === entry.fromCal && h.toCal === entry.toCal &&
-      h.year === entry.year && h.month === entry.month && h.day === entry.day &&
-      h.variant === entry.variant
+      h.year === entry.year && h.month === entry.month && h.day === entry.day
     );
     if (dominated >= 0) hist.splice(dominated, 1);
     hist.unshift(entry);
@@ -1308,13 +1515,6 @@
     onCalendarChange(fromCalInput);
     onCalendarChange(toCalInput);
 
-    // Set variant if applicable
-    const srcCal = CALENDARS[entry.fromCal];
-    if (srcCal && srcCal.variants && entry.variant) {
-      srcCal._variant = entry.variant;
-      updateVariantBar(fromVariantsBar, fromCalInput);
-    }
-
     // Set date fields
     $('#from-year').value = entry.year;
     setMonthByNumber(entry.month || null);
@@ -1334,7 +1534,6 @@
       year: parseInt($('#from-year').value, 10) || null,
       month: getMonthValue(),
       day: parseInt($('#from-day').value, 10) || null,
-      variant: srcCal._variant || null,
       ts: Date.now()
     };
     if (entry.year) saveHistory(entry);

@@ -1,26 +1,35 @@
 /* kalkal — Calendar Converter
-   Aesthetic: Scholarly manuscript / warm parchment
+   Aesthetic: Brutalist — raw, high-contrast, monospace
    ================================================ */
 
 :root {
-  /* Parchment palette */
-  --parchment-100: #faf6ee;
-  --parchment-200: #f3ecdc;
-  --parchment-300: #e8ddc6;
-  --parchment-400: #d4c5a3;
-  --ink-900: #1a1612;
-  --ink-800: #2d261e;
-  --ink-700: #4a3f30;
-  --ink-600: #6b5d48;
-  --ink-500: #8a7a62;
-  --ink-400: #a99d86;
-  --ink-300: #c4baa6;
-  --rust: #8b4513;
-  --rust-light: #a0522d;
-  --rust-glow: #c4692015;
-  --gold: #b8860b;
-  --gold-dim: #96700a;
-  --teal: #2f6b60;
+  /* Brutalist palette */
+  --brut-accent: #000;
+  --brut-bg: #f0f0ec;
+  --brut-surface: #fff;
+  --brut-ink: #000;
+  --brut-muted: #555;
+  --brut-dim: #888;
+  --brut-border: #000;
+  --brut-mono: 'Noto Sans Mono', 'Courier New', monospace;
+
+  --parchment-100: var(--brut-surface);
+  --parchment-200: #e8e8e4;
+  --parchment-300: #ccc;
+  --parchment-400: #999;
+  --ink-900: #000;
+  --ink-800: #111;
+  --ink-700: #333;
+  --ink-600: #555;
+  --ink-500: #777;
+  --ink-400: #999;
+  --ink-300: #bbb;
+  --rust: #000;
+  --rust-light: #222;
+  --rust-glow: transparent;
+  --gold: #000;
+  --gold-dim: #333;
+  --teal: #000;
 
   /* Spacing */
   --space-xs: 0.25rem;
@@ -30,23 +39,22 @@
   --space-xl: 2.5rem;
   --space-2xl: 4rem;
 
-  /* Typography — Charis SIL for full ISO 233 transliteration support */
-  --font-display: 'Charis SIL', 'Gentium Plus', 'Georgia', serif;
-  --font-body: 'Noto Sans', 'Segoe UI', system-ui, sans-serif;
+  /* Typography */
+  --font-display: var(--brut-mono);
+  --font-body: var(--brut-mono);
   --font-mono: 'Noto Sans Mono', 'Menlo', monospace;
   --font-arabic: 'Amiri', 'Noto Naskh Arabic', serif;
 
   /* Borders */
-  --border-subtle: 1px solid var(--parchment-300);
-  --border-strong: 1px solid var(--ink-300);
-  --radius-sm: 3px;
-  --radius-md: 6px;
-  --radius-lg: 10px;
+  --border-subtle: 2px solid var(--brut-border);
+  --border-strong: 4px solid var(--brut-border);
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
 
   /* Shadows */
-  --shadow-card: 0 1px 3px rgba(26, 22, 18, 0.06),
-                 0 8px 24px rgba(26, 22, 18, 0.08);
-  --shadow-inset: inset 0 1px 3px rgba(26, 22, 18, 0.08);
+  --shadow-card: none;
+  --shadow-inset: none;
 }
 
 /* ---- Reset & Base ---- */
@@ -66,7 +74,7 @@ html {
 body {
   font-family: var(--font-body);
   color: var(--ink-800);
-  background: var(--parchment-100);
+  background: var(--brut-bg);
   min-height: 100vh;
   line-height: 1.6;
   position: relative;
@@ -1077,7 +1085,7 @@ html[dir="rtl"] .ai-input {
   max-width: 180px;
 }
 
-body[data-theme="brutalist"] .converter-form .form-field--year {
+.converter-form .form-field--year {
   max-width: none;
 }
 
@@ -1445,7 +1453,7 @@ html[dir="rtl"] .btn-convert:hover svg {
   border-radius: 4px;
   padding: 0.3em 0.8em;
   cursor: pointer;
-  margin-block-start: var(--space-sm);
+  margin-block-start: var(--space-lg);
   transition: all 0.2s ease;
   letter-spacing: 0.03em;
 }
@@ -1474,6 +1482,53 @@ html[dir="rtl"] .btn-convert:hover svg {
   transform: rotate(0deg);
 }
 
+/* Astro pill: button + event summary as a two-cell row */
+.astro-pill {
+  display: inline-flex;
+  align-items: stretch;
+  margin-block-start: var(--space-lg);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--ink-300);
+}
+
+.astro-pill .astro-btn {
+  margin-block-start: 0;
+  border: none;
+  border-radius: 0;
+  background: var(--ink-700);
+  color: var(--parchment-100);
+  border-inline-end: 1px solid var(--ink-300);
+}
+
+.astro-pill .astro-btn:hover {
+  background: var(--ink-800, #1a1a1a);
+  color: #fff;
+}
+
+.astro-pill .astro-btn.active {
+  background: var(--ink-800, #1a1a1a);
+  color: var(--gold);
+}
+
+.astro-pill-summary {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3em 0.8em;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  color: var(--ink-600);
+  background: var(--parchment-100);
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  white-space: nowrap;
+}
+
+.astro-pill-summary:hover {
+  background: var(--parchment-200);
+}
+
 .result-note {
   font-size: 0.75rem;
   color: var(--ink-400, color-mix(in srgb, var(--ink-500) 60%, transparent));
@@ -1486,28 +1541,47 @@ html[dir="rtl"] .btn-convert:hover svg {
 /* ---- Contextual calendars panel ---- */
 
 .contextual-panel {
-  margin-block-start: var(--space-md, 0.75rem);
-  padding-block-start: var(--space-sm, 0.5rem);
+  margin-block-start: var(--space-lg, 1.5rem);
+  padding-block-start: var(--space-md, 1rem);
   border-block-start: 1px solid var(--parchment-300, #d5cfc3);
 }
 
 .contextual-heading {
-  font-size: 0.7rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: 0.02em;
   color: var(--ink-400, #8a8070);
-  margin-block-end: var(--space-xs, 0.25rem);
+  margin-block-end: var(--space-sm, 0.5rem);
+}
+
+.contextual-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-xs, 0.25rem);
+}
+
+.contextual-list > div {
+  display: flex;
+  flex-direction: column;
+  padding-block: 0.2em;
 }
 
 .contextual-list dt {
-  font-size: 0.65rem;
+  font-size: 0.62rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   color: var(--ink-400, #8a8070);
+  line-height: 1.3;
 }
 
 .contextual-list dd {
-  font-size: 0.8rem;
-  color: var(--ink-600, #5a5040);
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  color: var(--ink-700, #4a3f30);
+  line-height: 1.4;
 }
 
 /* ---- Eclipse result ---- */
@@ -2062,6 +2136,19 @@ html[dir="rtl"] .copy-btn {
   color: var(--ink-900);
   line-height: 1.35;
   margin-block-end: var(--space-sm);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 0.5em;
+}
+
+.result-panel .result-dow {
+  font-size: 0.72rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-400);
+  font-family: var(--font-body);
 }
 
 .result-panel .result-secondary {
@@ -2130,6 +2217,42 @@ html[dir="rtl"] .copy-btn {
 
 .result-panel .result-label:first-child {
   margin-block-start: 0;
+}
+
+.result-panel .result-variant-label {
+  font-size: 0.65rem;
+  font-family: var(--font-mono);
+  color: var(--ink-400);
+  margin-block-start: 0.15em;
+  margin-block-end: var(--space-sm);
+}
+
+.result-panel .result-variant-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-block-end: var(--space-sm);
+}
+
+.result-panel .result-variant-bar .variant-btn {
+  font-size: 0.65rem;
+  font-family: var(--font-mono);
+  padding: 2px 6px;
+  border: 1px solid var(--ink-200, #ccc);
+  border-radius: 3px;
+  background: transparent;
+  color: var(--ink-500);
+  cursor: pointer;
+}
+
+.result-panel .result-variant-bar .variant-btn:hover {
+  background: var(--ink-100, #f0f0f0);
+}
+
+.result-panel .result-variant-bar .variant-btn.active {
+  background: var(--rust);
+  color: var(--paper);
+  border-color: var(--rust);
 }
 
 /* Year breakdown table */
@@ -2405,14 +2528,14 @@ html[dir="rtl"] .copy-btn {
 }
 
 /* Brutalist install banner */
-body[data-theme="brutalist"] .install-banner {
+.install-banner {
   background: #fff;
   border: 2px solid #000;
   border-radius: 0;
   box-shadow: none;
 }
 
-body[data-theme="brutalist"] .install-text {
+.install-text {
   font-family: var(--brut-mono);
   font-weight: 500;
   text-transform: uppercase;
@@ -2421,7 +2544,7 @@ body[data-theme="brutalist"] .install-text {
   color: #000;
 }
 
-body[data-theme="brutalist"] .install-btn {
+.install-btn {
   background: #000;
   border-radius: 0;
   color: #fff;
@@ -2430,7 +2553,7 @@ body[data-theme="brutalist"] .install-btn {
   text-transform: uppercase;
 }
 
-body[data-theme="brutalist"] .install-btn:hover {
+.install-btn:hover {
   background: #333;
 }
 
@@ -2464,17 +2587,17 @@ body[data-theme="brutalist"] .install-btn:hover {
     margin-block-start: var(--space-lg);
   }
 
-  body[data-theme="brutalist"] .converter-grid {
+  .converter-grid {
     grid-template-columns: 1fr;
   }
 
-  body[data-theme="brutalist"] .result-card {
+  .result-card {
     border-inline-start: 3px solid #000;
     margin-block-start: 0;
     border-block-start: none;
   }
 
-  body[data-theme="brutalist"] .converter-card {
+  .converter-card {
     border: none;
   }
 
@@ -2568,90 +2691,44 @@ body[data-theme="brutalist"] .install-btn:hover {
 }
 
 /* ============================================================
-   DESIGN VARIANTS — full visual redesigns via data-theme
+   Brutalist design — raw, high-contrast, exposed structure,
+   dramatic typography, zero decoration
    ============================================================ */
 
-
-/* ============================================================
-   DESIGN B: "Brutalist" — raw, confrontational, high-contrast,
-   exposed structure, dramatic typography, zero decoration
-   ============================================================ */
-
-body[data-theme="brutalist"] {
-  --brut-accent: #000;
-  --brut-bg: #f0f0ec;
-  --brut-surface: #fff;
-  --brut-ink: #000;
-  --brut-muted: #555;
-  --brut-dim: #888;
-  --brut-border: #000;
-  --brut-mono: 'Noto Sans Mono', 'Courier New', monospace;
-
-  --parchment-100: var(--brut-surface);
-  --parchment-200: #e8e8e4;
-  --parchment-300: #ccc;
-  --parchment-400: #999;
-  --ink-900: #000;
-  --ink-800: #111;
-  --ink-700: #333;
-  --ink-600: #555;
-  --ink-500: #777;
-  --ink-400: #999;
-  --ink-300: #bbb;
-  --rust: #000;
-  --rust-light: #222;
-  --rust-glow: transparent;
-  --gold: #000;
-  --gold-dim: #333;
-  --teal: #000;
-  --font-display: var(--brut-mono);
-  --font-body: var(--brut-mono);
-  --radius-sm: 0;
-  --radius-md: 0;
-  --radius-lg: 0;
-  --border-subtle: 2px solid var(--brut-border);
-  --border-strong: 4px solid var(--brut-border);
-  --shadow-card: none;
-  --shadow-inset: none;
-
-  background: var(--brut-bg);
-  font-family: var(--brut-mono);
-}
-
-body[data-theme="brutalist"] * {
+* {
   transition: none !important;
 }
 
-body[data-theme="brutalist"] .main-content {
+.main-content {
   padding: var(--space-2xl) var(--space-xl) var(--space-2xl);
   max-width: 1100px;
 }
 
-body[data-theme="brutalist"] .main-content--prose {
+.main-content--prose {
   padding: var(--space-2xl) var(--space-lg);
   max-width: 1200px;
 }
 
-body[data-theme="brutalist"][data-page="calendars"] .main-content--prose {
+body[data-page="calendars"] .main-content--prose {
   max-width: 760px;
 }
 
-body[data-theme="brutalist"] .form-date-row {
+.form-date-row {
   gap: var(--space-md);
 }
 
-body[data-theme="brutalist"] .page-grain {
+.page-grain {
   display: none;
 }
 
 /* ---- Header: black slab, rule underneath ---- */
-body[data-theme="brutalist"] .site-header {
+.site-header {
   background: #000;
   border-block-end: none;
   padding: var(--space-lg) var(--space-xl) var(--space-md);
 }
 
-body[data-theme="brutalist"] .site-title {
+.site-title {
   color: #fff;
   font-family: var(--brut-mono);
   font-weight: 900;
@@ -2660,7 +2737,7 @@ body[data-theme="brutalist"] .site-title {
   font-size: 1.1rem;
 }
 
-body[data-theme="brutalist"] .site-subtitle {
+.site-subtitle {
   color: #666;
   font-family: var(--brut-mono);
   text-transform: uppercase;
@@ -2671,7 +2748,7 @@ body[data-theme="brutalist"] .site-subtitle {
 }
 
 /* ---- Lang switcher ---- */
-body[data-theme="brutalist"] .lang-switcher {
+.lang-switcher {
   background: transparent;
   border: 2px solid #555;
   border-radius: 0;
@@ -2679,7 +2756,7 @@ body[data-theme="brutalist"] .lang-switcher {
   padding: 0;
 }
 
-body[data-theme="brutalist"] .lang-btn {
+.lang-btn {
   border-radius: 0;
   color: #666;
   font-size: 0.65rem;
@@ -2689,43 +2766,43 @@ body[data-theme="brutalist"] .lang-btn {
   border-inline-end: 1px solid #333;
 }
 
-body[data-theme="brutalist"] .lang-btn:last-child {
+.lang-btn:last-child {
   border-inline-end: none;
 }
 
-body[data-theme="brutalist"] .lang-btn.active {
+.lang-btn.active {
   background: #fff;
   color: #000;
   box-shadow: none;
 }
 
-body[data-theme="brutalist"] .lang-btn:hover {
+.lang-btn:hover {
   background: #333;
   color: #fff;
 }
 
 /* ---- Converter grid: asymmetric ---- */
-body[data-theme="brutalist"] .converter-grid {
+.converter-grid {
   grid-template-columns: 300px 1fr;
   gap: 0;
   align-items: stretch;
 }
 
 /* ---- Left card: dense control panel ---- */
-body[data-theme="brutalist"] .converter-card {
+.converter-card {
   background: #000;
   border: none;
   border-radius: 0;
   box-shadow: none;
 }
 
-body[data-theme="brutalist"] .converter-form {
+.converter-form {
   padding: var(--space-xl);
   gap: var(--space-lg);
 }
 
 /* Labels */
-body[data-theme="brutalist"] .form-label {
+.form-label {
   font-family: var(--brut-mono);
   font-size: 0.58rem;
   letter-spacing: 0.3em;
@@ -2735,24 +2812,24 @@ body[data-theme="brutalist"] .form-label {
   margin-block-end: 6px;
 }
 
-body[data-theme="brutalist"] .converter-form .form-field--cal .form-label {
+.converter-form .form-field--cal .form-label {
   color: #999;
 }
 
-body[data-theme="brutalist"] .form-source > .form-field--cal {
+.form-source > .form-field--cal {
   margin-block-end: var(--space-lg);
 }
 
-body[data-theme="brutalist"] .form-source > .form-field--cal .form-label {
+.form-source > .form-field--cal .form-label {
   color: #999;
 }
 
-body[data-theme="brutalist"] .form-row--target .form-label {
+.form-row--target .form-label {
   color: #999;
 }
 
 /* Inputs on black card: inverted */
-body[data-theme="brutalist"] .converter-card .input-cal {
+.converter-card .input-cal {
   font-family: var(--brut-mono);
   font-size: 0.95rem;
   font-weight: 700;
@@ -2765,12 +2842,12 @@ body[data-theme="brutalist"] .converter-card .input-cal {
   background: transparent;
 }
 
-body[data-theme="brutalist"] .converter-card .input-cal:focus {
+.converter-card .input-cal:focus {
   border-color: #fff;
   background: #111;
 }
 
-body[data-theme="brutalist"] .converter-card .input-num {
+.converter-card .input-num {
   font-weight: 700;
   border: none;
   border-block-end: 2px solid #444;
@@ -2781,13 +2858,13 @@ body[data-theme="brutalist"] .converter-card .input-num {
   font-family: var(--brut-mono);
 }
 
-body[data-theme="brutalist"] .converter-card .input-num:focus {
+.converter-card .input-num:focus {
   border-color: #fff;
   background: #111;
 }
 
 /* Other (non-card) inputs keep default brutalist style */
-body[data-theme="brutalist"] .input-cal {
+.input-cal {
   font-family: var(--brut-mono);
   font-size: 1rem;
   font-weight: 700;
@@ -2797,24 +2874,24 @@ body[data-theme="brutalist"] .input-cal {
   letter-spacing: 0.05em;
 }
 
-body[data-theme="brutalist"] .input-cal:focus {
+.input-cal:focus {
   border-color: #000;
   background: #eee;
 }
 
-body[data-theme="brutalist"] .input-num {
+.input-num {
   font-weight: 700;
   border-block-end: 2px solid var(--brut-ink);
   padding: 0.5em 0;
   font-size: 1rem;
 }
 
-body[data-theme="brutalist"] .input-num:focus {
+.input-num:focus {
   border-color: #000;
   background: #eee;
 }
 
-body[data-theme="brutalist"] .input-month {
+.input-month {
   font-family: var(--brut-mono);
   font-weight: 700;
   border-block-end: 2px solid var(--brut-ink);
@@ -2822,25 +2899,25 @@ body[data-theme="brutalist"] .input-month {
   font-size: 0.9rem;
 }
 
-body[data-theme="brutalist"] .input-month:focus {
+.input-month:focus {
   border-color: #000;
   background: #eee;
 }
 
 /* Date section */
-body[data-theme="brutalist"] .form-dates {
+.form-dates {
   border-inline-start: 4px solid #444;
   padding-inline-start: var(--space-xl);
   gap: var(--space-md);
 }
 
 /* Variant buttons */
-body[data-theme="brutalist"] .variant-bar {
+.variant-bar {
   gap: 4px;
   margin-block-start: var(--space-xs);
 }
 
-body[data-theme="brutalist"] .variant-btn {
+.variant-btn {
   border: 2px solid #555;
   border-radius: 0;
   font-weight: 700;
@@ -2851,14 +2928,14 @@ body[data-theme="brutalist"] .variant-btn {
   letter-spacing: 0.06em;
 }
 
-body[data-theme="brutalist"] .variant-btn.active {
+.variant-btn.active {
   background: #fff;
   color: #000;
   border-color: #fff;
 }
 
 /* Convert button */
-body[data-theme="brutalist"] .btn-convert {
+.btn-convert {
   font-family: var(--brut-mono);
   font-weight: 900;
   text-transform: uppercase;
@@ -2872,31 +2949,31 @@ body[data-theme="brutalist"] .btn-convert {
   box-shadow: none;
 }
 
-body[data-theme="brutalist"] .btn-convert:hover {
+.btn-convert:hover {
   background: #ccc;
   color: #000;
   box-shadow: none;
 }
 
 /* Divider */
-body[data-theme="brutalist"] .divider {
+.divider {
   padding: 0;
   background: var(--brut-ink);
   height: 3px;
   margin: 0;
 }
 
-body[data-theme="brutalist"] .divider::before,
-body[data-theme="brutalist"] .divider::after {
+.divider::before,
+.divider::after {
   display: none;
 }
 
-body[data-theme="brutalist"] .divider-ornament {
+.divider-ornament {
   display: none;
 }
 
 /* ---- Right card: spacious result display ---- */
-body[data-theme="brutalist"] .result-card {
+.result-card {
   background: var(--brut-surface);
   border: 3px solid #000;
   border-inline-start: none;
@@ -2906,14 +2983,14 @@ body[data-theme="brutalist"] .result-card {
 }
 
 /* Refine bar */
-body[data-theme="brutalist"] .refine-bar {
+.refine-bar {
   border-block-end: 2px solid #ddd;
   padding: var(--space-md) var(--space-xl);
   background: #fafaf7;
 }
 
 /* Breakdown card */
-body[data-theme="brutalist"] .breakdown-card {
+.breakdown-card {
   background: var(--brut-surface);
   border: 3px solid var(--brut-ink);
   border-radius: 0;
@@ -2922,15 +2999,15 @@ body[data-theme="brutalist"] .breakdown-card {
 }
 
 /* Result panel */
-body[data-theme="brutalist"] .result-panel {
+.result-panel {
   padding: 0;
 }
 
-body[data-theme="brutalist"] .result-body {
+.result-body {
   padding: var(--space-xl) var(--space-xl) var(--space-xl);
 }
 
-body[data-theme="brutalist"] .result-panel .result-main {
+.result-panel .result-main {
   font-family: var(--brut-mono);
   font-weight: 900;
   text-transform: uppercase;
@@ -2940,27 +3017,44 @@ body[data-theme="brutalist"] .result-panel .result-main {
   margin-block-end: var(--space-lg);
   border: none;
   padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 0.5em;
 }
 
-body[data-theme="brutalist"] .contextual-panel {
+.contextual-panel {
   border-block-start: 1px solid #444;
 }
 
-body[data-theme="brutalist"] .contextual-heading {
+.contextual-heading {
   font-family: var(--brut-mono);
-  color: #888;
+  font-style: normal;
+  color: #666;
   letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-size: 0.55rem;
 }
 
-body[data-theme="brutalist"] .contextual-list dt {
-  color: #888;
+.contextual-list dt {
+  font-family: var(--brut-mono);
+  color: #666;
+  letter-spacing: 0.1em;
 }
 
-body[data-theme="brutalist"] .contextual-list dd {
+.contextual-list dd {
+  font-family: var(--brut-mono);
   color: #bbb;
 }
 
-body[data-theme="brutalist"] .result-panel .result-secondary {
+.result-dow {
+  font-family: var(--brut-mono);
+  color: #666;
+  letter-spacing: 0.1em;
+  font-size: 0.6rem;
+}
+
+.result-panel .result-secondary {
   font-family: var(--brut-mono);
   font-style: normal;
   color: #888;
@@ -2969,7 +3063,7 @@ body[data-theme="brutalist"] .result-panel .result-secondary {
   letter-spacing: 0.04em;
 }
 
-body[data-theme="brutalist"] .result-panel .result-label {
+.result-panel .result-label {
   font-family: var(--brut-mono);
   letter-spacing: 0.3em;
   margin-block-start: var(--space-lg);
@@ -2979,12 +3073,34 @@ body[data-theme="brutalist"] .result-panel .result-label {
   color: #999;
 }
 
-body[data-theme="brutalist"] .result-panel .result-label:first-child {
+.result-panel .result-label:first-child {
   margin-block-start: 0;
 }
 
+.result-panel .result-variant-label {
+  font-family: var(--brut-mono);
+  font-size: 0.6rem;
+  color: #999;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.result-panel .result-variant-bar .variant-btn {
+  font-family: var(--brut-mono);
+  text-transform: uppercase;
+  border: 2px solid #000;
+  border-radius: 0;
+  font-weight: 700;
+}
+
+.result-panel .result-variant-bar .variant-btn.active {
+  background: #000;
+  color: #fff;
+  border-color: #000;
+}
+
 /* Copy button */
-body[data-theme="brutalist"] .copy-btn {
+.copy-btn {
   background: transparent;
   color: #999;
   border: 2px solid #ddd;
@@ -3001,25 +3117,25 @@ body[data-theme="brutalist"] .copy-btn {
   right: var(--space-md);
 }
 
-body[data-theme="brutalist"] .copy-btn:hover {
+.copy-btn:hover {
   background: #000;
   border-color: #000;
   color: #fff;
 }
 
-html[dir="rtl"] body[data-theme="brutalist"] .copy-btn {
+html[dir="rtl"] body .copy-btn {
   right: auto;
   left: var(--space-md);
 }
 
 /* Year table */
-body[data-theme="brutalist"] .year-table {
+.year-table {
   border: 2px solid var(--brut-ink);
   margin-block-start: 0;
   width: 100%;
 }
 
-body[data-theme="brutalist"] .year-table th {
+.year-table th {
   background: var(--brut-ink);
   color: #fff;
   border-block-end: none;
@@ -3030,51 +3146,51 @@ body[data-theme="brutalist"] .year-table th {
   text-transform: uppercase;
 }
 
-body[data-theme="brutalist"] .year-table td {
+.year-table td {
   border-block-end: 1px solid #ddd;
   padding: 0.45em var(--space-md);
   font-weight: 500;
   font-size: 0.8rem;
 }
 
-body[data-theme="brutalist"] .year-table tr:last-child td {
+.year-table tr:last-child td {
   border-block-end: none;
 }
 
-body[data-theme="brutalist"] .year-table .month-name {
+.year-table .month-name {
   font-weight: 700;
 }
 
 /* Eclipse result card */
-body[data-theme="brutalist"] .result-eclipse {
+.result-eclipse {
   border-radius: 0;
   background: var(--brut-ink);
   border: 3px solid var(--brut-ink);
 }
 
-body[data-theme="brutalist"] .result-eclipse::before {
+.result-eclipse::before {
   display: none;
 }
 
-body[data-theme="brutalist"] .eclipse-icon {
+.eclipse-icon {
   background: var(--brut-ink);
   box-shadow:
     0 0 0 2px var(--brut-accent),
     0 0 0 4px var(--brut-ink);
 }
 
-body[data-theme="brutalist"] .eclipse-icon::after {
+.eclipse-icon::after {
   background: radial-gradient(circle at 75% 30%, var(--brut-accent) 0%, transparent 50%);
 }
 
-body[data-theme="brutalist"] .eclipse-type {
+.eclipse-type {
   color: #fff;
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
 
-body[data-theme="brutalist"] .eclipse-note {
+.eclipse-note {
   color: #aaa;
   font-style: normal;
   text-transform: uppercase;
@@ -3082,7 +3198,7 @@ body[data-theme="brutalist"] .eclipse-note {
   letter-spacing: 0.03em;
 }
 
-body[data-theme="brutalist"] .eclipse-map-link {
+.eclipse-map-link {
   color: #fff;
   border: 2px solid var(--brut-accent);
   border-radius: 0;
@@ -3094,18 +3210,18 @@ body[data-theme="brutalist"] .eclipse-map-link {
   padding: 0.2em 0.6em;
 }
 
-body[data-theme="brutalist"] .eclipse-map-link:hover {
+.eclipse-map-link:hover {
   background: #000;
   color: #fff;
   border-color: #000;
 }
 
 /* Eclipse map page */
-body[data-theme="brutalist"] .ecl-map-page {
+.ecl-map-page {
   align-items: stretch;
 }
 
-body[data-theme="brutalist"] .ecl-map-page svg.map {
+.ecl-map-page svg.map {
   max-width: 100%;
   width: 100%;
   border: 4px solid var(--brut-ink);
@@ -3113,17 +3229,17 @@ body[data-theme="brutalist"] .ecl-map-page svg.map {
 }
 
 /* Override SVG inline styles for brutalist */
-body[data-theme="brutalist"] .ecl-map-page svg .gl {
+.ecl-map-page svg .gl {
   fill: #666 !important;
   font-family: 'Noto Sans Mono', monospace !important;
 }
 
-body[data-theme="brutalist"] .ecl-map-page svg .cn {
+.ecl-map-page svg .cn {
   font-family: 'Noto Sans Mono', monospace !important;
   font-weight: 700 !important;
 }
 
-body[data-theme="brutalist"] .ecl-map-legend {
+.ecl-map-legend {
   background: var(--brut-ink);
   color: #fff;
   padding: 0.7rem 1rem;
@@ -3137,11 +3253,11 @@ body[data-theme="brutalist"] .ecl-map-legend {
   border-radius: 0;
 }
 
-body[data-theme="brutalist"] .ecl-map-legend .legend-swatch {
+.ecl-map-legend .legend-swatch {
   border-radius: 0;
 }
 
-body[data-theme="brutalist"] .ecl-map-note {
+.ecl-map-note {
   font-family: var(--brut-mono);
   font-size: 0.75rem;
   color: var(--brut-muted);
@@ -3152,29 +3268,29 @@ body[data-theme="brutalist"] .ecl-map-note {
   line-height: 1.7;
 }
 
-body[data-theme="brutalist"] .ecl-map-note strong {
+.ecl-map-note strong {
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
 
-body[data-theme="brutalist"] .ecl-map-note a {
+.ecl-map-note a {
   color: var(--brut-ink);
   text-decoration: none;
   border-bottom: 2px solid var(--brut-accent);
   font-weight: 700;
 }
 
-body[data-theme="brutalist"] .ecl-map-note a:hover {
+.ecl-map-note a:hover {
   background: #000;
   color: #fff;
 }
 
 /* Eclipses catalogue page — brutalist */
-body[data-theme="brutalist"] .ecl-stats {
+.ecl-stats {
   gap: 0;
 }
 
-body[data-theme="brutalist"] .ecl-stat {
+.ecl-stat {
   background: var(--brut-surface);
   border: 3px solid var(--brut-ink);
   border-radius: 0;
@@ -3182,17 +3298,17 @@ body[data-theme="brutalist"] .ecl-stat {
   padding: 0.8rem 0.5rem 0.6rem;
 }
 
-body[data-theme="brutalist"] .ecl-stat-num {
+.ecl-stat-num {
   color: var(--brut-ink);
   font-weight: 900;
 }
 
-body[data-theme="brutalist"] .ecl-stat-label {
+.ecl-stat-label {
   color: var(--brut-muted);
   font-weight: 700;
 }
 
-body[data-theme="brutalist"] .ecl-century-card {
+.ecl-century-card {
   background: var(--brut-surface);
   border: 3px solid var(--brut-ink);
   border-radius: 0;
@@ -3200,7 +3316,7 @@ body[data-theme="brutalist"] .ecl-century-card {
   margin-block-end: var(--space-lg);
 }
 
-body[data-theme="brutalist"] .ecl-century {
+.ecl-century {
   background: transparent;
   color: var(--brut-ink);
   border-radius: 0;
@@ -3212,7 +3328,7 @@ body[data-theme="brutalist"] .ecl-century {
   padding: var(--space-md) var(--space-lg);
 }
 
-body[data-theme="brutalist"] .ecl-table th {
+.ecl-table th {
   background: #f0f0ec;
   color: var(--brut-ink);
   border-bottom: 2px solid var(--brut-ink);
@@ -3222,98 +3338,98 @@ body[data-theme="brutalist"] .ecl-table th {
   border-radius: 0;
 }
 
-body[data-theme="brutalist"] .ecl-table td {
+.ecl-table td {
   border-bottom: 2px solid var(--brut-ink);
   padding: 0.5rem 0.7rem;
 }
 
-body[data-theme="brutalist"] .ecl-table tbody tr:hover td {
+.ecl-table tbody tr:hover td {
   background: #000;
   color: #fff;
 }
 
-body[data-theme="brutalist"] .ecl-table tr.notable td {
+.ecl-table tr.notable td {
   background: #f5f5e0;
   border-bottom-color: var(--brut-ink);
 }
 
-body[data-theme="brutalist"] .ecl-table tr.notable td:first-child {
+.ecl-table tr.notable td:first-child {
   box-shadow: inset 4px 0 0 var(--brut-accent);
 }
 
-html[dir="rtl"] body[data-theme="brutalist"] .ecl-table tr.notable td:first-child {
+html[dir="rtl"] body .ecl-table tr.notable td:first-child {
   box-shadow: inset -4px 0 0 var(--brut-accent);
 }
 
-body[data-theme="brutalist"] .ecl-table tr.notable:hover td {
+.ecl-table tr.notable:hover td {
   background: #000;
   color: #fff;
 }
 
-body[data-theme="brutalist"] .ecl-type-badge {
+.ecl-type-badge {
   border-radius: 0;
   font-weight: 900;
   border-width: 2px;
 }
 
-body[data-theme="brutalist"] .ecl-type-badge[data-type="T"] {
+.ecl-type-badge[data-type="T"] {
   color: #fff;
   background: #000;
   border-color: #000;
 }
 
-body[data-theme="brutalist"] .ecl-type-badge[data-type="A"] {
+.ecl-type-badge[data-type="A"] {
   color: var(--brut-ink);
   background: #ccc;
   border-color: var(--brut-ink);
 }
 
-body[data-theme="brutalist"] .ecl-type-badge[data-type="H"] {
+.ecl-type-badge[data-type="H"] {
   color: var(--brut-ink);
   background: #f0a040;
   border-color: var(--brut-ink);
 }
 
-body[data-theme="brutalist"] .ecl-convert-link {
+.ecl-convert-link {
   color: var(--brut-ink);
   font-weight: 700;
 }
 
-body[data-theme="brutalist"] .ecl-convert-link:hover {
+.ecl-convert-link:hover {
   color: #fff;
   background: #000;
   text-decoration: none;
 }
 
-body[data-theme="brutalist"] .ecl-table .ecl-nasa {
+.ecl-table .ecl-nasa {
   color: var(--brut-ink);
   font-weight: 900;
 }
 
-body[data-theme="brutalist"] .ecl-table .ecl-nasa:hover {
+.ecl-table .ecl-nasa:hover {
   color: #fff;
   background: #000;
 }
 
-body[data-theme="brutalist"] .ecl-featured {
+.ecl-featured {
   background: var(--brut-surface);
   border-radius: 0;
   border: 3px solid var(--brut-ink);
   border-inline-start: 6px solid var(--brut-accent);
 }
 
-body[data-theme="brutalist"] .ecl-featured h3 {
+.ecl-featured h3 {
   color: var(--brut-ink);
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
 
-body[data-theme="brutalist"] .ecl-featured p {
+.ecl-featured p {
   color: var(--brut-muted);
 }
 
-body[data-theme="brutalist"] .ecl-source {
+.ecl-source {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -3322,13 +3438,13 @@ body[data-theme="brutalist"] .ecl-source {
   padding-top: var(--space-md);
 }
 
-body[data-theme="brutalist"] .ecl-map-wrap {
+.ecl-map-wrap {
   border: 4px solid var(--brut-ink);
   border-radius: 0;
   background: #fff;
 }
 
-body[data-theme="brutalist"] .result-astro {
+.result-astro {
   padding: var(--space-sm) var(--space-md);
   margin-block: var(--space-sm);
   border-inline-start: 3px solid #ddd;
@@ -3336,29 +3452,29 @@ body[data-theme="brutalist"] .result-astro {
   background: transparent;
 }
 
-body[data-theme="brutalist"] .result-panel .result-meta {
+.result-panel .result-meta {
   gap: var(--space-sm) var(--space-lg);
   margin-block-start: var(--space-lg);
   padding-block-start: var(--space-md);
   border-block-start: 1px solid #ddd;
 }
 
-body[data-theme="brutalist"] .astro-panel {
+.astro-panel {
   background: transparent;
   border: 2px solid #ddd;
   border-radius: 0;
   padding: var(--space-md);
 }
 
-body[data-theme="brutalist"] .astro-panel .result-zodiac {
+.astro-panel .result-zodiac {
   border-block-end-color: #ddd;
 }
 
-body[data-theme="brutalist"] .astro-panel .result-meta {
+.astro-panel .result-meta {
   border-block-start-color: #ddd;
 }
 
-body[data-theme="brutalist"] .astro-btn {
+.astro-btn {
   border-radius: 0;
   border: 2px solid var(--brut-ink);
   font-weight: 700;
@@ -3367,13 +3483,31 @@ body[data-theme="brutalist"] .astro-btn {
   font-size: 0.72rem;
 }
 
-body[data-theme="brutalist"] .astro-btn.active {
+.astro-btn.active {
   background: var(--brut-ink);
   color: #fff;
   border-color: var(--brut-ink);
 }
 
-body[data-theme="brutalist"] .result-panel .calendar-tag {
+.astro-pill {
+  border-radius: 0;
+  border: 2px solid var(--brut-ink);
+}
+
+.astro-pill .astro-btn {
+  background: var(--brut-ink);
+  color: #fff;
+  border-inline-end: 2px solid var(--brut-ink);
+}
+
+.astro-pill-summary {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.7rem;
+}
+
+.result-panel .calendar-tag {
   background: #000;
   color: #fff;
   border-radius: 0;
@@ -3383,23 +3517,23 @@ body[data-theme="brutalist"] .result-panel .calendar-tag {
   padding: 0.2em 0.5em;
 }
 
-body[data-theme="brutalist"] .result-panel .result-span {
+.result-panel .result-span {
   font-size: 1.1rem;
   font-weight: 700;
 }
 
-body[data-theme="brutalist"] .result-panel .year-info {
+.result-panel .year-info {
   margin-block-end: var(--space-sm);
 }
 
 /* Footer */
-body[data-theme="brutalist"] .site-footer {
+.site-footer {
   border-block-start: 2px solid #ccc;
   margin-block-start: var(--space-2xl);
   padding: var(--space-lg) 0;
 }
 
-body[data-theme="brutalist"] .footer-note {
+.footer-note {
   font-family: var(--brut-mono);
   font-size: 0.62rem;
   text-transform: uppercase;
@@ -3408,41 +3542,41 @@ body[data-theme="brutalist"] .footer-note {
   color: #999;
 }
 
-body[data-theme="brutalist"] .footer-note + .footer-note {
+.footer-note + .footer-note {
   margin-block-start: var(--space-xs);
 }
 
-body[data-theme="brutalist"] .footer-note a {
+.footer-note a {
   color: #666;
   text-decoration: none;
   border-block-end: 1px solid #ccc;
   padding-block-end: 1px;
 }
 
-body[data-theme="brutalist"] .footer-note a:hover {
+.footer-note a:hover {
   color: #000;
   border-color: #000;
 }
 
 /* History */
-body[data-theme="brutalist"] .history-panel {
+.history-panel {
   margin-block-start: var(--space-xl);
 }
 
-body[data-theme="brutalist"] .history-header {
+.history-header {
   margin-block-end: var(--space-md);
   border-block-end: 2px solid #000;
   padding-block-end: var(--space-xs);
 }
 
-body[data-theme="brutalist"] .history-title {
+.history-title {
   font-weight: 700;
   letter-spacing: 0.25em;
   font-size: 0.65rem;
   text-transform: uppercase;
 }
 
-body[data-theme="brutalist"] .history-clear {
+.history-clear {
   border: 1px solid #ccc;
   border-radius: 0;
   font-weight: 500;
@@ -3452,71 +3586,71 @@ body[data-theme="brutalist"] .history-clear {
   color: #999;
 }
 
-body[data-theme="brutalist"] .history-clear:hover {
+.history-clear:hover {
   background: #000;
   color: #fff;
   border-color: #000;
 }
 
-body[data-theme="brutalist"] .history-item {
+.history-item {
   padding: var(--space-xs) 0;
   border-block-end: 1px solid #ddd;
 }
 
-body[data-theme="brutalist"] .history-entry {
+.history-entry {
   font-family: var(--brut-mono);
   font-weight: 500;
   font-size: 0.78rem;
 }
 
-body[data-theme="brutalist"] .history-entry:hover {
+.history-entry:hover {
   color: #000;
 }
 
 /* Autocomplete dropdown */
-body[data-theme="brutalist"] .cal-suggestions {
+.cal-suggestions {
   border: 2px solid #000;
   border-radius: 0;
   box-shadow: 4px 4px 0 rgba(0,0,0,0.15);
   background: #fff;
 }
 
-body[data-theme="brutalist"] .cal-item {
+.cal-item {
   font-family: var(--brut-mono);
   font-weight: 500;
   font-size: 0.82rem;
   padding: 0.4em 0.8em;
 }
 
-body[data-theme="brutalist"] .cal-item:hover,
-body[data-theme="brutalist"] .cal-item.active {
+.cal-item:hover,
+.cal-item.active {
   background: #000;
   color: #fff;
 }
 
-body[data-theme="brutalist"] .cal-group-label {
+.cal-group-label {
   display: none;
 }
 
-body[data-theme="brutalist"] .cal-group + .cal-group {
+.cal-group + .cal-group {
   border-block-start: 1px solid #ddd;
 }
 
-body[data-theme="brutalist"] .form-flow {
+.form-flow {
   padding: var(--space-lg) 0;
 }
 
-body[data-theme="brutalist"] .flow-arrow {
+.flow-arrow {
   color: #ccc;
   opacity: 1;
   stroke-width: 2;
 }
 
-body[data-theme="brutalist"] .form-options {
+.form-options {
   padding: var(--space-md) 0 var(--space-xs);
 }
 
-body[data-theme="brutalist"] .form-row--target {
+.form-row--target {
   gap: var(--space-md);
 }
 
@@ -3524,12 +3658,12 @@ body[data-theme="brutalist"] .form-row--target {
    BRUTALIST: subpage elements (prose pages, cal-cards, meth)
    ============================================================ */
 
-body[data-theme="brutalist"] .page-nav {
+.page-nav {
   gap: 0;
   margin-block-start: var(--space-sm);
 }
 
-body[data-theme="brutalist"] .page-nav a {
+.page-nav a {
   font-family: var(--brut-mono);
   border-radius: 0;
   text-transform: uppercase;
@@ -3541,19 +3675,19 @@ body[data-theme="brutalist"] .page-nav a {
   padding: 0.5em 1em;
 }
 
-body[data-theme="brutalist"] .page-nav a:hover {
+.page-nav a:hover {
   color: #fff;
   background: transparent;
 }
 
-body[data-theme="brutalist"] .page-nav a.active {
+.page-nav a.active {
   color: #fff;
   background: transparent;
   border-block-end: 2px solid #fff;
 }
 
 /* Prose content */
-body[data-theme="brutalist"] .cal-card {
+.cal-card {
   background: var(--brut-surface);
   border: 3px solid var(--brut-ink);
   border-radius: 0;
@@ -3563,11 +3697,11 @@ body[data-theme="brutalist"] .cal-card {
 }
 
 /* Two-column grid for calendar cards */
-body[data-theme="brutalist"] .main-content--prose .cal-card:first-of-type {
+.main-content--prose .cal-card:first-of-type {
   margin-block-start: 0;
 }
 
-body[data-theme="brutalist"] .cal-name {
+.cal-name {
   font-family: var(--brut-mono);
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -3577,28 +3711,28 @@ body[data-theme="brutalist"] .cal-name {
   display: inline-block;
 }
 
-body[data-theme="brutalist"] .cal-header {
+.cal-header {
   margin-block-end: var(--space-lg);
 }
 
-body[data-theme="brutalist"] .cal-meta {
+.cal-meta {
   gap: var(--space-sm);
   margin-block-start: var(--space-sm);
 }
 
-body[data-theme="brutalist"] .cal-tag {
+.cal-tag {
   border-radius: 0;
   font-weight: 900;
   padding: 0.25em 0.6em;
   letter-spacing: 0.06em;
 }
 
-body[data-theme="brutalist"] .cal-type {
+.cal-type {
   background: #000;
   color: #fff;
 }
 
-body[data-theme="brutalist"] .cal-toc {
+.cal-toc {
   background: #fff;
   border: 3px solid var(--brut-ink);
   border-radius: 0;
@@ -3608,12 +3742,12 @@ body[data-theme="brutalist"] .cal-toc {
   box-shadow: 6px 6px 0 var(--brut-ink);
 }
 
-body[data-theme="brutalist"] .cal-toc-list {
+.cal-toc-list {
   columns: 2;
   column-gap: var(--space-xl);
 }
 
-body[data-theme="brutalist"] .cal-toc-link {
+.cal-toc-link {
   font-family: var(--brut-mono);
   font-size: 0.78rem;
   text-transform: uppercase;
@@ -3625,25 +3759,25 @@ body[data-theme="brutalist"] .cal-toc-link {
   margin: 0 -0.4em;
 }
 
-body[data-theme="brutalist"] .cal-toc-link::before {
+.cal-toc-link::before {
   color: #999;
   font-weight: 700;
 }
 
-body[data-theme="brutalist"] .cal-toc-link:hover {
+.cal-toc-link:hover {
   color: #fff;
   text-decoration: none;
   background: #000;
 }
 
-body[data-theme="brutalist"] .cal-formula {
+.cal-formula {
   border: 2px solid #ccc;
   border-radius: 0;
   background: #fff;
   margin-block: var(--space-md);
 }
 
-body[data-theme="brutalist"] .cal-formula summary {
+.cal-formula summary {
   font-family: var(--brut-mono);
   font-weight: 700;
   color: var(--brut-muted);
@@ -3651,66 +3785,66 @@ body[data-theme="brutalist"] .cal-formula summary {
   letter-spacing: 0.1em;
 }
 
-body[data-theme="brutalist"] .cal-formula summary:hover {
+.cal-formula summary:hover {
   background: #000;
   color: #fff;
 }
 
-body[data-theme="brutalist"] .cal-formula-math {
+.cal-formula-math {
   background: #f8f8f5;
   border-radius: 0;
   border-inline-start: 3px solid #ccc;
 }
 
-body[data-theme="brutalist"] .cal-formula-math p {
+.cal-formula-math p {
   font-family: var(--brut-mono) !important;
   font-size: 0.78rem !important;
   color: var(--brut-ink) !important;
 }
 
-body[data-theme="brutalist"] .cal-formula-code {
+.cal-formula-code {
   background: #111;
   color: #eee;
   border-radius: 0;
   border: none;
 }
 
-body[data-theme="brutalist"] .cal-card p {
+.cal-card p {
   font-family: var(--brut-mono);
   font-size: 0.82rem;
   line-height: 1.8;
   margin-block-end: var(--space-md);
 }
 
-body[data-theme="brutalist"] .cal-card .cal-intro {
+.cal-card .cal-intro {
   font-family: var(--brut-mono);
   font-style: normal;
   font-weight: 900;
 }
 
-body[data-theme="brutalist"] .cal-card .cal-months {
+.cal-card .cal-months {
   border-block-start: 3px solid var(--brut-ink);
   padding-block-start: var(--space-md);
   margin-block-start: var(--space-md);
 }
 
-body[data-theme="brutalist"] .cal-seasons {
+.cal-seasons {
   border-block-start: 3px solid var(--brut-ink);
   padding-block-start: var(--space-md);
   margin-block-start: var(--space-md);
 }
 
-body[data-theme="brutalist"] .cal-season-band {
+.cal-season-band {
   border-block-start: 5px solid;
   padding-block-start: var(--space-xs);
 }
 
-body[data-theme="brutalist"] .cal-season-band[data-season="0"] { border-color: #2d5a27; }
-body[data-theme="brutalist"] .cal-season-band[data-season="1"] { border-color: #b8860b; }
-body[data-theme="brutalist"] .cal-season-band[data-season="2"] { border-color: #8b2500; }
-body[data-theme="brutalist"] .cal-season-band[data-season="3"] { border-color: #1a3a4a; }
+.cal-season-band[data-season="0"] { border-color: #2d5a27; }
+.cal-season-band[data-season="1"] { border-color: #b8860b; }
+.cal-season-band[data-season="2"] { border-color: #8b2500; }
+.cal-season-band[data-season="3"] { border-color: #1a3a4a; }
 
-body[data-theme="brutalist"] .cal-season-label {
+.cal-season-label {
   font-family: var(--brut-mono);
   font-style: normal;
   font-weight: 900;
@@ -3719,39 +3853,39 @@ body[data-theme="brutalist"] .cal-season-label {
   font-size: 0.58rem;
 }
 
-body[data-theme="brutalist"] .cal-month-item {
+.cal-month-item {
   font-family: var(--brut-mono);
   font-size: 0.78rem;
   font-weight: 700;
 }
 
-body[data-theme="brutalist"] .cal-month-num {
+.cal-month-num {
   font-weight: 900;
   color: var(--brut-ink);
 }
 
-body[data-theme="brutalist"] .cal-month-days {
+.cal-month-days {
   color: var(--brut-muted);
 }
 
-body[data-theme="brutalist"] .cal-variants {
+.cal-variants {
   border: 2px solid var(--brut-ink);
 }
 
-body[data-theme="brutalist"] .cal-variants th {
+.cal-variants th {
   background: var(--brut-ink);
   color: #fff;
   border-block-end: none;
   font-weight: 700;
 }
 
-body[data-theme="brutalist"] .cal-variants td {
+.cal-variants td {
   border-block-end: 2px solid var(--brut-ink);
   font-weight: 700;
 }
 
 /* Methodology sections */
-body[data-theme="brutalist"] .meth-intro {
+.meth-intro {
   font-family: var(--brut-mono);
   font-style: normal;
   font-weight: 900;
@@ -3761,7 +3895,7 @@ body[data-theme="brutalist"] .meth-intro {
   font-size: 1.05rem;
 }
 
-body[data-theme="brutalist"] .meth-section {
+.meth-section {
   background: var(--brut-surface);
   border: 3px solid var(--brut-ink);
   border-radius: 0;
@@ -3770,7 +3904,7 @@ body[data-theme="brutalist"] .meth-section {
   margin-block-end: var(--space-lg);
 }
 
-body[data-theme="brutalist"] .meth-title {
+.meth-title {
   font-family: var(--brut-mono);
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -3781,15 +3915,15 @@ body[data-theme="brutalist"] .meth-title {
   display: inline-block;
 }
 
-body[data-theme="brutalist"] .meth-body,
-body[data-theme="brutalist"] .meth-body2 {
+.meth-body,
+.meth-body2 {
   font-family: var(--brut-mono);
   font-size: 0.82rem;
   line-height: 1.9;
   margin-block-end: var(--space-md);
 }
 
-body[data-theme="brutalist"] .meth-aside {
+.meth-aside {
   background: #f8f8f5;
   border-inline-start: 4px solid #ccc;
   border-radius: 0;
@@ -3797,33 +3931,33 @@ body[data-theme="brutalist"] .meth-aside {
   margin-block: var(--space-md);
 }
 
-body[data-theme="brutalist"] .meth-aside--warning {
+.meth-aside--warning {
   border-color: #000;
   background: #f0f0ec;
 }
 
-body[data-theme="brutalist"] .meth-note,
-body[data-theme="brutalist"] .meth-warning {
+.meth-note,
+.meth-warning {
   font-family: var(--brut-mono);
   color: #333;
 }
 
-body[data-theme="brutalist"] .meth-sources {
+.meth-sources {
   font-family: var(--brut-mono);
   line-height: 2;
 }
 
-body[data-theme="brutalist"] .meth-sources li {
+.meth-sources li {
   margin-block-end: var(--space-sm);
 }
 
 /* dividers hidden globally in prose pages via .main-content--prose .divider { display: none } */
 
-body[data-theme="brutalist"] .meth-coverage {
+.meth-coverage {
   border: 3px solid var(--brut-ink);
 }
 
-body[data-theme="brutalist"] .meth-coverage th {
+.meth-coverage th {
   background: var(--brut-ink);
   color: #fff;
   border-block-end: none;
@@ -3831,56 +3965,56 @@ body[data-theme="brutalist"] .meth-coverage th {
   font-weight: 900;
 }
 
-body[data-theme="brutalist"] .meth-coverage thead th:nth-child(2) {
+.meth-coverage thead th:nth-child(2) {
   color: #fff;
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 
-body[data-theme="brutalist"] .meth-coverage--transposed tbody tr:first-child td:first-child {
+.meth-coverage--transposed tbody tr:first-child td:first-child {
   text-decoration: underline;
   text-underline-offset: 2px;
   font-weight: 900;
 }
 
-body[data-theme="brutalist"] .meth-coverage td {
+.meth-coverage td {
   border-block-end: 2px solid var(--brut-ink);
   font-family: var(--brut-mono);
 }
 
-body[data-theme="brutalist"] .meth-coverage td:first-child {
+.meth-coverage td:first-child {
   font-family: var(--brut-mono);
   font-weight: 900;
 }
 
-body[data-theme="brutalist"] .meth-coverage .cov-y::before {
+.meth-coverage .cov-y::before {
   content: "\25CF";
   color: var(--brut-ink);
 }
 
-body[data-theme="brutalist"] .meth-coverage .cov-n::before {
+.meth-coverage .cov-n::before {
   content: "\00B7";
   color: #ccc;
 }
 
-body[data-theme="brutalist"] .meth-coverage .cov-p::before {
+.meth-coverage .cov-p::before {
   content: "\25CF";
   color: var(--brut-muted);
 }
 
-body[data-theme="brutalist"] .meth-coverage .cov-var {
+.meth-coverage .cov-var {
   color: var(--brut-ink);
 }
 
-body[data-theme="brutalist"] .meth-links {
+.meth-links {
   font-family: var(--brut-mono);
 }
 
-body[data-theme="brutalist"] .meth-links li::before {
+.meth-links li::before {
   color: var(--brut-ink);
 }
 
-body[data-theme="brutalist"] .meth-links a {
+.meth-links a {
   color: #000;
   text-decoration: none;
   background: transparent;
@@ -3889,14 +4023,14 @@ body[data-theme="brutalist"] .meth-links a {
   font-weight: 700;
 }
 
-body[data-theme="brutalist"] .meth-links a:hover {
+.meth-links a:hover {
   background: #000;
   color: #fff;
   padding: 0.1em 0.3em;
   margin: -0.1em -0.3em;
 }
 
-body[data-theme="brutalist"] .back-link {
+.back-link {
   font-family: var(--brut-mono);
   color: var(--brut-ink);
   text-transform: uppercase;
@@ -4024,23 +4158,23 @@ body[data-theme="brutalist"] .back-link {
 }
 
 /* Brutalist dynasty overrides */
-body[data-theme="brutalist"] .dyn-table th {
+.dyn-table th {
   font-family: var(--brut-mono);
   border-block-end: 4px solid var(--brut-ink);
   font-weight: 900;
   letter-spacing: 0.08em;
 }
 
-body[data-theme="brutalist"] .dyn-table td {
+.dyn-table td {
   border-block-end: 2px solid var(--brut-ink);
 }
 
-body[data-theme="brutalist"] .dyn-name {
+.dyn-name {
   font-family: var(--brut-mono);
   font-weight: 900;
 }
 
-body[data-theme="brutalist"] .dyn-date-link {
+.dyn-date-link {
   color: var(--brut-ink);
   text-decoration-thickness: 2px;
 }
@@ -4060,7 +4194,7 @@ html {
     padding-block-start: calc(var(--space-lg) + env(safe-area-inset-top, 0px));
   }
 
-  body[data-theme="brutalist"] .site-header {
+  .site-header {
     padding-block-start: calc(var(--space-xl) + env(safe-area-inset-top, 0px));
   }
 
@@ -4068,10 +4202,6 @@ html {
     padding-block-end: calc(var(--space-lg) + env(safe-area-inset-bottom, 0px));
   }
 
-  .theme-switcher {
-    bottom: calc(1.2rem + env(safe-area-inset-bottom, 0px));
-    right: calc(1.2rem + env(safe-area-inset-right, 0px));
-  }
 }
 
 /* Touch-friendly targets: min 48px hit areas */
@@ -4140,6 +4270,16 @@ html {
   .astro-btn {
     min-height: 44px;
     padding: 0.4em 0.8em;
+  }
+
+  .astro-pill {
+    display: inline-flex;
+    max-width: 100%;
+  }
+
+  .astro-pill-summary {
+    white-space: normal;
+    min-height: 44px;
   }
 
   .ai-send {
@@ -4218,39 +4358,12 @@ body {
   }
 }
 
-/* Selection color matching theme */
 ::selection {
-  background: rgba(139, 69, 19, 0.2);
-  color: var(--ink-900);
-}
-
-body[data-theme="brutalist"] ::selection {
   background: #000;
   color: #fff;
 }
 
-/* Brutalist focus visible */
-body[data-theme="brutalist"] :focus-visible {
+:focus-visible {
   outline: 2px solid #000;
   outline-offset: 2px;
-}
-
-/* Brutalist theme switcher */
-body[data-theme="brutalist"] .theme-switcher {
-  border-radius: 0;
-  border: 3px solid var(--brut-ink);
-  background: var(--brut-surface);
-  box-shadow: 3px 3px 0 var(--brut-ink);
-}
-
-body[data-theme="brutalist"] .theme-switcher:hover {
-  transform: none;
-  box-shadow: 1px 1px 0 var(--brut-ink);
-}
-
-body[data-theme="brutalist"] .theme-label {
-  border-radius: 0;
-  background: var(--brut-ink);
-  font-weight: 900;
-  letter-spacing: 0.1em;
 }

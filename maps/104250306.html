@@ -210,31 +210,5 @@
 
   <script src="../js/pages.js"></script>
 
-  <button class="theme-switcher" id="theme-switcher" aria-label="Switch theme">
-    &#x1F3A8;
-    <span class="theme-label" id="theme-label"></span>
-  </button>
-  <script>
-  (() => {
-    const THEMES = ['manuscript', 'brutalist'];
-    const LABELS = { manuscript: 'Manuscript', brutalist: 'Brutalist' };
-    const btn = document.getElementById('theme-switcher');
-    const label = document.getElementById('theme-label');
-    function applyTheme(theme) {
-      if (theme === 'manuscript') document.body.removeAttribute('data-theme');
-      else document.body.setAttribute('data-theme', theme);
-      label.textContent = LABELS[theme];
-      localStorage.setItem('kalkal-theme', theme);
-    }
-    const saved = localStorage.getItem('kalkal-theme');
-    if (saved && THEMES.includes(saved)) applyTheme(saved);
-    else applyTheme('brutalist');
-    btn.addEventListener('click', () => {
-      const current = localStorage.getItem('kalkal-theme') || 'manuscript';
-      const next = THEMES[(THEMES.indexOf(current) + 1) % THEMES.length];
-      applyTheme(next);
-    });
-  })();
-  </script>
 </body>
 </html>

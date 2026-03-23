@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
   <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#f3ecdc">
+  <meta name="theme-color" content="#f0f0ec">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="kalkal">
   <link rel="apple-touch-icon" href="/icons/icon-192.png">
@@ -63,7 +63,7 @@
         <li><a href="#syriac" class="cal-toc-link" data-toc="syriac">Syriac Calendar</a></li>
         <li><a href="#macedonian" class="cal-toc-link" data-toc="macedonian">Macedonian Calendar</a></li>
         <li><a href="#rumi" class="cal-toc-link" data-toc="rumi">R&#363;m&#299; Calendar</a></li>
-        <li><a href="#auc" class="cal-toc-link" data-toc="auc">Ab Urbe Condita</a></li>
+        <li><a href="#roman" class="cal-toc-link" data-toc="roman">Roman Calendar</a></li>
         <li><a href="#spanish" class="cal-toc-link" data-toc="spanish">Spanish Era</a></li>
         <li><a href="#olympiad" class="cal-toc-link" data-toc="olympiad">Olympiad Calendar</a></li>
         <li><a href="#hebrew" class="cal-toc-link" data-toc="hebrew">Hebrew Calendar</a></li>
@@ -560,16 +560,16 @@ def egyptian_to_jd(Y, M, D):
       <p class="cal-months">Twelve months with Julian names and lengths, January&ndash;December.</p>
     </article>
 
-    <!-- AUC -->
-    <article class="cal-card" data-cal="auc" id="auc">
+    <!-- Roman -->
+    <article class="cal-card" data-cal="roman" id="roman">
       <header class="cal-header">
-        <h2 class="cal-name">Ab Urbe Condita</h2>
+        <h2 class="cal-name">Roman Calendar</h2>
         <div class="cal-meta">
           <span class="cal-tag cal-type">Solar</span>
         </div>
       </header>
-      <p class="cal-intro">Ab Urbe Condita ("from the founding of the City") counts years from the legendary founding of Rome in 753 BCE, as calculated by Marcus Terentius Varro.</p>
-      <p class="cal-body">The calendar uses Julian calendar mechanics with a simple era offset: year 1 AUC = 753 BCE. It was used sporadically in Roman historiography and is sometimes encountered in classical studies and inscriptions.</p>
+      <p class="cal-intro">The Julian calendar with traditional Roman date notation: Kalends, Nones, and Ides. Years counted Ab Urbe Condita (AUC) from the founding of Rome in 753 BCE.</p>
+      <p class="cal-body">Uses AUC year numbering with Latin month names. Days are expressed by counting inclusively backward from three fixed points: Kalendae (1st), Nonae (5th/7th), and Idus (13th/15th). In March, May, July, and October the Nones fall on the 7th and the Ides on the 15th; in all other months, on the 5th and 13th respectively.</p>
       <details class="cal-formula">
         <summary data-formula-label="formula">Formula</summary>
         <div class="cal-formula-content">
@@ -583,7 +583,7 @@ def egyptian_to_jd(Y, M, D):
           <p class="cal-source"><strong class="cal-source-label">Algorithm source</strong><span class="cal-source-text"></span></p>
         </div>
       </details>
-      <p class="cal-months">Twelve months with Julian names and lengths, January&ndash;December.</p>
+      <p class="cal-months">Twelve months with Latin names: Ianuarius, Februarius, Martius, Aprilis, Maius, Iunius, Iulius, Augustus, September, October, November, December.</p>
     </article>
 
     <!-- Spanish -->
@@ -740,47 +740,14 @@ def new_year_jd(Y):
     </article>
 
     <footer class="site-footer">
-      <p class="footer-note"><a href="index.html" class="back-link" data-nav="converter">&#8592; Converter</a></p>
       <p class="footer-note">&copy; <a href="https://sypianski.cc">sypianski.cc</a></p>
     </footer>
 
   </main>
 
-  <button class="theme-switcher" id="theme-switcher" aria-label="Switch theme">
-    &#x1F3A8;
-    <span class="theme-label" id="theme-label"></span>
-  </button>
 
   <script src="js/i18n.js"></script>
   <script src="js/pages.js"></script>
-  <script>
-  (() => {
-    const THEMES = ['manuscript', 'brutalist'];
-    const LABELS = { manuscript: 'Manuscript', brutalist: 'Brutalist' };
-    const btn = document.getElementById('theme-switcher');
-    const label = document.getElementById('theme-label');
-
-    function applyTheme(theme) {
-      if (theme === 'manuscript') {
-        document.body.removeAttribute('data-theme');
-      } else {
-        document.body.setAttribute('data-theme', theme);
-      }
-      label.textContent = LABELS[theme];
-      localStorage.setItem('kalkal-theme', theme);
-    }
-
-    const saved = localStorage.getItem('kalkal-theme');
-    if (saved && THEMES.includes(saved)) applyTheme(saved);
-    else applyTheme('brutalist');
-
-    btn.addEventListener('click', () => {
-      const current = localStorage.getItem('kalkal-theme') || 'manuscript';
-      const next = THEMES[(THEMES.indexOf(current) + 1) % THEMES.length];
-      applyTheme(next);
-    });
-  })();
-  </script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous"
     onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})"></script>

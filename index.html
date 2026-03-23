@@ -17,7 +17,7 @@
   <link rel="apple-touch-startup-image" href="/icons/icon-512.png">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 </head>
-<body>
+<body data-theme="brutalist">
 
   <div class="page-grain"></div>
 
@@ -98,9 +98,7 @@
         <div class="refine-bar" id="refine-bar">
           <div class="form-field form-field--month">
             <label for="from-month" class="form-label" data-i18n="month">Month</label>
-            <select id="from-month" class="input-month">
-              <option value=""></option>
-            </select>
+            <input type="text" id="from-month" class="input-month" autocomplete="off" readonly>
           </div>
           <div class="form-field form-field--num">
             <label for="from-day" class="form-label" data-i18n="day">Day</label>
@@ -110,6 +108,7 @@
         <div class="result-body" id="result-body">
           <p class="result-placeholder" id="result-placeholder">
             <span class="result-placeholder-icon">&#9788;</span>
+            <span class="result-placeholder-text" data-i18n="resultHint"></span>
           </p>
         </div>
       </section>
@@ -143,45 +142,12 @@
 
   </main>
 
-  <button class="theme-switcher" id="theme-switcher" aria-label="Switch theme">
-    &#x1F3A8;
-    <span class="theme-label" id="theme-label"></span>
-  </button>
-
   <script src="js/hijri.js"></script>
   <script src="js/eclipses.js"></script>
   <script src="js/astronomy.js"></script>
   <script src="js/i18n.js"></script>
   <script src="js/app.js"></script>
   <script src="js/ai.js"></script>
-  <script>
-  (() => {
-    const THEMES = ['manuscript', 'brutalist'];
-    const LABELS = { manuscript: 'Manuscript', brutalist: 'Brutalist' };
-    const btn = document.getElementById('theme-switcher');
-    const label = document.getElementById('theme-label');
-
-    function applyTheme(theme) {
-      if (theme === 'manuscript') {
-        document.body.removeAttribute('data-theme');
-      } else {
-        document.body.setAttribute('data-theme', theme);
-      }
-      label.textContent = LABELS[theme];
-      localStorage.setItem('kalkal-theme', theme);
-    }
-
-    const saved = localStorage.getItem('kalkal-theme');
-    if (saved && THEMES.includes(saved)) applyTheme(saved);
-    else applyTheme('brutalist');
-
-    btn.addEventListener('click', () => {
-      const current = localStorage.getItem('kalkal-theme') || 'manuscript';
-      const next = THEMES[(THEMES.indexOf(current) + 1) % THEMES.length];
-      applyTheme(next);
-    });
-  })();
-  </script>
   <script>
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js');

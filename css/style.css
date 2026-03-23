@@ -1214,17 +1214,8 @@ body[data-theme="brutalist"] .converter-form .form-field--year {
   border-block-end: 2px solid var(--ink-300);
   border-radius: 0;
   padding: 0.4em 0;
-  appearance: none;
   cursor: pointer;
   transition: border-color 0.2s ease;
-  background-image: url("data:image/svg+xml,%3Csvg width='8' height='5' viewBox='0 0 8 5' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l3 3 3-3' stroke='%23a99d86' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 0 center;
-  padding-inline-end: 1.2em;
-}
-
-html[dir="rtl"] .input-month {
-  background-position: left 0 center;
 }
 
 .input-month:focus {
@@ -1237,6 +1228,7 @@ html[dir="rtl"] .input-month {
 }
 
 .form-field--month {
+  position: relative;
   min-width: 0;
 }
 
@@ -1489,6 +1481,33 @@ html[dir="rtl"] .btn-convert:hover svg {
   margin-block-end: var(--space-xs, 0.25rem);
   letter-spacing: 0.01em;
   opacity: 0.7;
+}
+
+/* ---- Contextual calendars panel ---- */
+
+.contextual-panel {
+  margin-block-start: var(--space-md, 0.75rem);
+  padding-block-start: var(--space-sm, 0.5rem);
+  border-block-start: 1px solid var(--parchment-300, #d5cfc3);
+}
+
+.contextual-heading {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-400, #8a8070);
+  margin-block-end: var(--space-xs, 0.25rem);
+}
+
+.contextual-list dt {
+  font-size: 0.65rem;
+  color: var(--ink-400, #8a8070);
+}
+
+.contextual-list dd {
+  font-size: 0.8rem;
+  color: var(--ink-600, #5a5040);
 }
 
 /* ---- Eclipse result ---- */
@@ -2921,6 +2940,24 @@ body[data-theme="brutalist"] .result-panel .result-main {
   margin-block-end: var(--space-lg);
   border: none;
   padding: 0;
+}
+
+body[data-theme="brutalist"] .contextual-panel {
+  border-block-start: 1px solid #444;
+}
+
+body[data-theme="brutalist"] .contextual-heading {
+  font-family: var(--brut-mono);
+  color: #888;
+  letter-spacing: 0.15em;
+}
+
+body[data-theme="brutalist"] .contextual-list dt {
+  color: #888;
+}
+
+body[data-theme="brutalist"] .contextual-list dd {
+  color: #bbb;
 }
 
 body[data-theme="brutalist"] .result-panel .result-secondary {

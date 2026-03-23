@@ -223,16 +223,6 @@
       monthCount: 13,
       monthNames: (t) => t.egyptianMonths
     },
-    auc: {
-      id: 'auc',
-      toJD: (y, m, d) => Cal.aucToJD(y, m, d),
-      fromJD: (jd) => Cal.jdToAuc(jd),
-      monthLength: (y, m) => Cal.aucMonthLength(y, m),
-      yearLength: (y) => Cal.aucYearLength(y),
-      isLeap: (y) => Cal.isAucLeapYear(y),
-      monthCount: 12,
-      monthNames: (t) => t.gregorianMonths
-    },
     roman: {
       id: 'roman',
       toJD: (y, m, d) => Cal.aucToJD(y, m, d),
@@ -407,6 +397,7 @@
         $$('.variant-btn', bar).forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         if (calInput === fromCalInput) updateMonthSelects();
+        if (resultPanel.classList.contains('has-result')) convert();
       });
       bar.appendChild(btn);
     });
@@ -497,7 +488,7 @@
       { group: 'iranian', ids: ['yazdgerdi', 'ilkhani'] },
       { group: 'semitic', ids: ['hebrew', 'syriac', 'antiochene', 'seleucid', 'babylonian'] },
       { group: 'african', ids: ['coptic', 'ethiopian', 'egyptian'] },
-      { group: 'grecoRoman', ids: ['roman', 'auc', 'olympiad', 'macedonian'] },
+      { group: 'grecoRoman', ids: ['roman', 'olympiad', 'macedonian'] },
       { group: 'scientific', ids: ['bp'] }
     ];
 
@@ -570,7 +561,11 @@
 
     input.addEventListener('focus', () => {
       input.select();
-      show(getMatches(input.value));
+      show(getMatches(''));
+    });
+
+    input.addEventListener('click', () => {
+      show(getMatches(''));
     });
 
     input.addEventListener('input', () => {
@@ -693,7 +688,9 @@
       el('p', { class: 'result-label', text: t.calendars[src.id] }),
       el('p', { class: 'result-secondary', text: d + ' ' + srcNames[m - 1] + ' ' + y }),
       el('p', { class: 'result-label', text: t.calendars[tgt.id] }),
-      el('p', { class: 'result-main', text: result.day + ' ' + tgtNames[result.month - 1] + ' ' + result.year + ' — ' + t.weekdays[dow] }),
+      tgt.id === 'roman' && result.day
+        ? el('p', { class: 'result-main', text: Cal.romanDayNotation(result.month, result.day, tgt.isLeap(result.year)) + ' ' + result.year + ' AUC' })
+        : el('p', { class: 'result-main', text: result.day + ' ' + tgtNames[result.month - 1] + ' ' + result.year + ' — ' + t.weekdays[dow] }),
     ];
     // Indiction for Byzantine calendars
     if (tgt.id === 'byzantine') {
@@ -706,11 +703,6 @@
       const animalName = (t.ilkhaniAnimals && t.ilkhaniAnimals[animal]) || animal;
       elements.push(el('p', { class: 'result-secondary result-animal', text: (t.animalYearLabel || 'Animal year') + ': ' + animalName }));
     }
-    // Roman day notation
-    if (tgt.id === 'roman' && result.day) {
-      const notation = Cal.romanDayNotation(result.month, result.day, tgt.isLeap(result.year));
-      elements.push(el('p', { class: 'result-secondary result-roman', text: notation }));
-    }
     // Babylonian source note
     if (tgt.id === 'babylonian') {
       const isPD = Cal.isBabylonianPD(result.year);
@@ -720,11 +712,12 @@
     if (isProlepticGregorian) {
       elements.push(el('p', { class: 'result-note', text: t.julianDateNote }));
     }
-    // Zodiac (hidden by default, toggled after results)
+    // Astro panel (zodiac + moon + events, hidden by default, toggled by astro button)
+    const astroPanel = el('div', { class: 'astro-panel hidden' });
     const zi = Cal.getZodiacSign(jd);
     const zodiacSymbol = '\u2648\u2649\u264A\u264B\u264C\u264D\u264E\u264F\u2650\u2651\u2652\u2653'[zi];
-    const zodiacEl = el('p', { class: 'result-zodiac hidden', text: zodiacSymbol + ' ' + t.zodiacSigns[zi] });
-    elements.push(zodiacEl);
+    astroPanel.appendChild(el('p', { class: 'result-zodiac', text: zodiacSymbol + ' ' + t.zodiacSigns[zi] }));
+    elements.push(astroPanel);
     // Eclipse check
     if (typeof Eclipses !== 'undefined') {
       const ecl = Eclipses.lookup(jd);
@@ -755,7 +748,7 @@
         elements.push(eclEl);
       }
     }
-    // Astronomy: moon phase, comets, supernovae, conjunctions
+    // Astronomy: moon phase, comets, supernovae, conjunctions — all inside astroPanel
     if (typeof Astronomy !== 'undefined') {
       // Moon phase
       const moon = Astronomy.moonPhase(jd);
@@ -765,7 +758,7 @@
         el('span', { class: 'astro-text', text: (t.moonPhaseLabel || 'Moon phase') + ': ' + phaseName }),
         el('span', { class: 'astro-detail', text: moon.age + ' ' + (t.moonAge || 'day') + ' \u2022 ' + moon.illumination + '% ' + (t.moonIllumination || 'illuminated') })
       );
-      elements.push(moonEl);
+      astroPanel.appendChild(moonEl);
 
       // Comet check
       const comet = Astronomy.lookupComet(jd);
@@ -778,7 +771,7 @@
         if (comet.noteKey && t.cometNotes && t.cometNotes[comet.noteKey]) {
           cEl.appendChild(el('p', { class: 'astro-note', text: t.cometNotes[comet.noteKey] }));
         }
-        elements.push(cEl);
+        astroPanel.appendChild(cEl);
       }
 
       // Supernova check
@@ -792,7 +785,7 @@
         if (sn.noteKey && t.supernovaNotes && t.supernovaNotes[sn.noteKey]) {
           snEl.appendChild(el('p', { class: 'astro-note', text: t.supernovaNotes[sn.noteKey] }));
         }
-        elements.push(snEl);
+        astroPanel.appendChild(snEl);
       }
 
       // Conjunction check
@@ -808,10 +801,10 @@
         if (conj.noteKey && t.conjunctionNotes && t.conjunctionNotes[conj.noteKey]) {
           conjEl.appendChild(el('p', { class: 'astro-note', text: t.conjunctionNotes[conj.noteKey] }));
         }
-        elements.push(conjEl);
+        astroPanel.appendChild(conjEl);
       }
     }
-    elements.push(buildMeta([[t.jdn, String(jd)]]));
+    astroPanel.appendChild(buildMeta([[t.jdn, String(jd)]]));
     showResult(elements);
   }
 
@@ -994,16 +987,21 @@
     });
     resultBody.appendChild(copyBtn);
 
-    // Zodiac toggle button (only if there's a zodiac element in results)
-    const zodiacEl = resultBody.querySelector('.result-zodiac');
-    if (zodiacEl) {
-      const zodiacBtn = el('button', { class: 'zodiac-btn', text: t.zodiacLabel });
-      zodiacBtn.type = 'button';
-      zodiacBtn.addEventListener('click', function () {
-        zodiacEl.classList.toggle('hidden');
-        zodiacBtn.classList.toggle('active');
+    // Astro toggle button (zodiac + moon phase + events) — button above, panel below
+    const astroPanelEl = resultBody.querySelector('.astro-panel');
+    if (astroPanelEl) {
+      const astroBtnIcon = el('span', { class: 'astro-btn-icon', text: '\u263D' });
+      const astroBtnText = document.createTextNode(' ' + (t.astroLabel || 'Astro'));
+      const astroBtn = el('button', { class: 'astro-btn' });
+      astroBtn.type = 'button';
+      astroBtn.appendChild(astroBtnIcon);
+      astroBtn.appendChild(astroBtnText);
+      astroBtn.addEventListener('click', function () {
+        astroPanelEl.classList.toggle('hidden');
+        astroBtn.classList.toggle('active');
       });
-      resultBody.appendChild(zodiacBtn);
+      // Insert button before the panel so panel opens below the button
+      astroPanelEl.parentNode.insertBefore(astroBtn, astroPanelEl);
     }
 
     resultPanel.classList.add('has-result');
@@ -1052,7 +1050,7 @@
       ethiopian: 'Eth.', yazdgerdi: 'Zoro.', armenian: 'Arm.',
       solarHijri: 'SH', byzantine: 'Byz.', alexandrian: 'Alex.',
       seleucid: 'Sel.', syriac: 'Syr.', rumi: 'R\u016bm\u012b',
-      egyptian: 'Egypt.', auc: 'AUC', spanish: 'Span.',
+      egyptian: 'Egypt.', spanish: 'Span.',
       roman: 'Rom.', olympiad: 'Ol.', macedonian: 'Mac.'
     };
     return SHORT[id] || id;

@@ -21,7 +21,7 @@ const I18N = {
       byzantine: 'Byzantine',
       seleucid: 'Seleucid', syriac: 'Syriac', rumi: 'R\u016bm\u012b',
       egyptian: 'Egyptian',
-      auc: 'Ab Urbe Condita', roman: 'Roman', spanish: 'Spanish Era', antiochene: 'Antiochene Era',
+      roman: 'Roman', spanish: 'Spanish Era', antiochene: 'Antiochene Era',
       olympiad: 'Olympiad', macedonian: 'Macedonian',
       hebrew: 'Hebrew', babylonian: 'Babylonian',
       bp: 'Before Present', human: 'Human Era'
@@ -132,6 +132,7 @@ const I18N = {
       'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'
     ],
     zodiacLabel: 'Zodiac sign',
+    astroLabel: 'Astro',
     eclipseLabel: 'Solar eclipse',
     eclipseViewMap: 'View eclipse map',
     eclipseViewCatalogue: 'Eclipse catalogue',
@@ -377,6 +378,7 @@ const I18N = {
     copied: 'Copied!',
     clearHistory: 'Clear',
     noHistory: 'No conversions yet',
+    resultHint: 'Enter a year and press Convert to see the result',
     langName: 'English',
     aiPlaceholder: 'Ask AI: e.g. "Battle of Hattin", "15 Ramadan 1445", "death of Harun al-Rashid"...',
     aiLimit: 'Daily limit reached (10/10). Resets at midnight.',
@@ -406,7 +408,7 @@ const I18N = {
       byzantine: 'Bizanty\u0144ski',
       seleucid: 'Seleucydzki', syriac: 'Syryjski', rumi: 'R\u016bm\u012b (osma\u0144ski)',
       egyptian: 'Egipski',
-      auc: 'Ab Urbe Condita', roman: 'Rzymski', spanish: 'Era hiszpa\u0144ska', antiochene: 'Era antioche\u0144ska',
+      roman: 'Rzymski', spanish: 'Era hiszpa\u0144ska', antiochene: 'Era antioche\u0144ska',
       olympiad: 'Olimpiady', macedonian: 'Macedo\u0144ski',
       hebrew: 'Hebrajski', babylonian: 'Babilo\u0144ski',
       bp: 'Przed tera\u017aniejszo\u015bci\u0105', human: 'Era ludzka'
@@ -517,6 +519,7 @@ const I18N = {
       'Waga', 'Skorpion', 'Strzelec', 'Kozioro\u017cec', 'Wodnik', 'Ryby'
     ],
     zodiacLabel: 'Znak zodiaku',
+    astroLabel: 'Astro',
     eclipseLabel: 'Za\u0107mienie S\u0142o\u0144ca',
     eclipseViewMap: 'Zobacz map\u0119 za\u0107mienia',
     eclipseViewCatalogue: 'Katalog za\u0107mie\u0144',
@@ -762,6 +765,7 @@ const I18N = {
     copied: 'Skopiowano!',
     clearHistory: 'Wyczyść',
     noHistory: 'Brak przeliczeń',
+    resultHint: 'Wpisz rok i naciśnij Przelicz, aby zobaczyć wynik',
     langName: 'Polski',
     aiPlaceholder: 'Zapytaj AI: np. "bitwa pod Hattin", "15 Ramadan 1445", "zgon Haruna ar-Raszida"...',
     aiLimit: 'Dzienny limit wyczerpany (10/10). Reset o p\u00f3\u0142nocy.',
@@ -791,7 +795,7 @@ const I18N = {
       byzantine: '\u0628\u064a\u0632\u0646\u0637\u064a',
       seleucid: '\u0633\u0644\u0648\u0642\u064a', syriac: '\u0633\u0631\u064a\u0627\u0646\u064a', rumi: '\u0631\u0648\u0645\u064a',
       egyptian: '\u0645\u0635\u0631\u064a',
-      auc: '\u0645\u0646\u0630 \u062a\u0623\u0633\u064a\u0633 \u0631\u0648\u0645\u0627', roman: '\u0631\u0648\u0645\u0627\u0646\u064a', spanish: '\u0627\u0644\u062a\u0642\u0648\u064a\u0645 \u0627\u0644\u0625\u0633\u0628\u0627\u0646\u064a', antiochene: '\u0627\u0644\u062a\u0642\u0648\u064a\u0645 \u0627\u0644\u0623\u0646\u0637\u0627\u0643\u064a',
+      roman: '\u0631\u0648\u0645\u0627\u0646\u064a', spanish: '\u0627\u0644\u062a\u0642\u0648\u064a\u0645 \u0627\u0644\u0625\u0633\u0628\u0627\u0646\u064a', antiochene: '\u0627\u0644\u062a\u0642\u0648\u064a\u0645 \u0627\u0644\u0623\u0646\u0637\u0627\u0643\u064a',
       olympiad: '\u0627\u0644\u0623\u0648\u0644\u0645\u0628\u064a\u0627\u062f', macedonian: '\u0645\u0642\u062f\u0648\u0646\u064a',
       hebrew: '\u0639\u0628\u0631\u064a', babylonian: '\u0628\u0627\u0628\u0644\u064a',
       bp: '\u0642\u0628\u0644 \u0627\u0644\u062d\u0627\u0636\u0631', human: '\u0627\u0644\u062a\u0642\u0648\u064a\u0645 \u0627\u0644\u0628\u0634\u0631\u064a'
@@ -902,6 +906,7 @@ const I18N = {
       '\u0627\u0644\u0645\u064a\u0632\u0627\u0646', '\u0627\u0644\u0639\u0642\u0631\u0628', '\u0627\u0644\u0642\u0648\u0633', '\u0627\u0644\u062c\u062f\u064a', '\u0627\u0644\u062f\u0644\u0648', '\u0627\u0644\u062d\u0648\u062a'
     ],
     zodiacLabel: '\u0628\u0631\u062c \u0627\u0644\u0641\u0644\u0643',
+    astroLabel: '\u0641\u0644\u0643',
     eclipseLabel: '\u0643\u0633\u0648\u0641 \u0627\u0644\u0634\u0645\u0633',
     eclipseViewMap: '\u0639\u0631\u0636 \u062e\u0631\u064a\u0637\u0629 \u0627\u0644\u0643\u0633\u0648\u0641',
     eclipseViewCatalogue: '\u0641\u0647\u0631\u0633 \u0627\u0644\u0643\u0633\u0648\u0641\u0627\u062a',
@@ -1147,6 +1152,7 @@ const I18N = {
     copied: 'تم النسخ!',
     clearHistory: 'مسح',
     noHistory: 'لا توجد تحويلات بعد',
+    resultHint: 'أدخل السنة واضغط تحويل لعرض النتيجة',
     langName: '\u0627\u0644\u0639\u0631\u0628\u064a\u0629',
     aiPlaceholder: '\u0627\u0633\u0623\u0644 \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064a: \u0645\u062b\u0644\u0627\u064b "\u0645\u0639\u0631\u0643\u0629 \u062d\u0637\u064a\u0646"\u060c "15 \u0631\u0645\u0636\u0627\u0646 1445"\u060c "\u0648\u0641\u0627\u0629 \u0647\u0627\u0631\u0648\u0646 \u0627\u0644\u0631\u0634\u064a\u062f"...',
     aiLimit: '\u062a\u0645 \u0627\u0633\u062a\u0646\u0641\u0627\u062f \u0627\u0644\u062d\u062f \u0627\u0644\u064a\u0648\u0645\u064a (10/10). \u064a\u062a\u062c\u062f\u062f \u0639\u0646\u062f \u0645\u0646\u062a\u0635\u0641 \u0627\u0644\u0644\u064a\u0644.',
@@ -1176,7 +1182,7 @@ const I18N = {
       byzantine: 'Bizanca',
       seleucid: 'Selekida', syriac: 'Siria', rumi: 'Rumia',
       egyptian: 'Egipta',
-      auc: 'Ab Urbe Condita', roman: 'Romia', spanish: 'Hispana Erao', antiochene: 'Antio\u0125ia Erao',
+      roman: 'Romia', spanish: 'Hispana Erao', antiochene: 'Antio\u0125ia Erao',
       olympiad: 'Olimpiado', macedonian: 'Makedona',
       hebrew: 'Hebrea', babylonian: 'Babilona',
       bp: 'Anta\u016d la nuno', human: 'Homara Erao'
@@ -1287,6 +1293,7 @@ const I18N = {
       'Pesilo', 'Skorpio', 'Sagitario', 'Kaprikorno', 'Akvario', 'Fi\u015doj'
     ],
     zodiacLabel: 'Zodiaka signo',
+    astroLabel: 'Astro',
     eclipseLabel: 'Suna eklipso',
     eclipseViewMap: 'Vidi eklipso-mapon',
     eclipseViewCatalogue: 'Eklipso-katalogo',
@@ -1532,6 +1539,7 @@ const I18N = {
     copied: 'Kopiita!',
     clearHistory: 'Forviŝi',
     noHistory: 'Ankoraŭ neniuj konvertoj',
+    resultHint: 'Enigu jaron kaj premu Konverti por vidi la rezulton',
     langName: 'Esperanto',
     aiPlaceholder: 'Demandu AI: ekz. "Batalo de Hattin", "15 Ramadano 1445", "morto de Harun al-Ra\u015did"...',
     aiLimit: '\u0108iutaga limo atingita (10/10). Renovigas je noktomezo.',

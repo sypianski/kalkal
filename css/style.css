@@ -2520,20 +2520,21 @@ html[dir="rtl"] .copy-btn {
 }
 
 .history-title {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: 0.72rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--ink-400);
   margin: 0;
+  text-align: start;
 }
 
 .history-title::after {
   content: ' \25BE';
 }
 
-.history-toggle.active .history-title::after {
+.history-header.active .history-title::after {
   content: ' \25B4';
 }
 
@@ -2543,12 +2544,11 @@ html[dir="rtl"] .copy-btn {
 
 .history-clear {
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.62rem;
   color: var(--ink-400);
   background: none;
-  border: 1px solid var(--ink-300);
-  border-radius: var(--radius-sm);
-  padding: 0.2em 0.6em;
+  border: none;
+  padding: 0;
   cursor: pointer;
   transition: color 0.15s ease, border-color 0.15s ease;
   display: none;
@@ -3796,22 +3796,23 @@ html[dir="rtl"] body .ecl-table tr.notable td:first-child {
 }
 
 .history-header {
-  margin-block-end: var(--space-md);
-  border-block-end: 2px solid #000;
-  padding-block-end: var(--space-xs);
+  padding: var(--space-md) var(--space-xl);
 }
 
 .history-title {
+  font-family: var(--brut-mono);
   font-weight: 700;
-  letter-spacing: 0.25em;
-  font-size: 0.65rem;
-  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.72rem;
+  color: #999;
+}
+
+.history-header:hover .history-title {
+  color: #000;
 }
 
 .history-clear {
-  border: 1px solid #ccc;
-  border-radius: 0;
-  font-weight: 500;
+  font-family: var(--brut-mono);
   font-size: 0.6rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;

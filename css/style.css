@@ -1653,7 +1653,8 @@ html[dir="rtl"] .btn-convert:hover svg {
 .contextual-list {
   display: grid;
   grid-template-columns: auto 1fr auto 1fr;
-  gap: var(--space-xs, 0.25rem) var(--space-sm, 0.5rem);
+  column-gap: var(--space-md, 1rem);
+  row-gap: var(--space-xs, 0.25rem);
   align-items: baseline;
 }
 
@@ -1676,6 +1677,7 @@ html[dir="rtl"] .btn-convert:hover svg {
   font-size: 0.82rem;
   color: var(--ink-700, #4a3f30);
   line-height: 1.4;
+  padding-inline-end: var(--space-lg, 1.5rem);
 }
 
 /* ---- Eclipse result ---- */

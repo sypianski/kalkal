@@ -46,24 +46,24 @@
 
     <p class="ecl-intro" id="ecl-intro">A catalogue of major solar eclipses visible from the Middle East and Eastern Mediterranean between 1 and 1500 CE. Eclipse data is sourced from NASA's Five Millennium Canon of Solar Eclipses. Notable eclipses — those documented in historical chronicles or coinciding with major events — are highlighted. Click any date to convert it in the main calculator.</p>
 
-    <div class="ecl-stats">
-      <div class="ecl-stat">
+    <div class="ecl-stats-grid">
+      <div class="ecl-stat-tile">
         <span class="ecl-stat-num" id="ecl-count-total">0</span>
         <span class="ecl-stat-label" data-stat="total">Total eclipses</span>
       </div>
-      <div class="ecl-stat">
+      <div class="ecl-stat-tile">
         <span class="ecl-stat-num" id="ecl-count-notable">0</span>
         <span class="ecl-stat-label" data-stat="notable">Historically documented</span>
       </div>
-      <div class="ecl-stat">
+      <div class="ecl-stat-tile">
         <span class="ecl-stat-num" id="ecl-count-total-type">0</span>
         <span class="ecl-stat-label" data-stat="totalType">Total (type)</span>
       </div>
-      <div class="ecl-stat">
+      <div class="ecl-stat-tile">
         <span class="ecl-stat-num" id="ecl-count-annular">0</span>
         <span class="ecl-stat-label" data-stat="annular">Annular</span>
       </div>
-      <div class="ecl-stat">
+      <div class="ecl-stat-tile">
         <span class="ecl-stat-num" id="ecl-count-hybrid">0</span>
         <span class="ecl-stat-label" data-stat="hybrid">Hybrid</span>
       </div>
@@ -320,7 +320,7 @@
           var table = mkEl('table', { cls: 'ecl-table' });
           var thead = document.createElement('thead');
           var headerRow = document.createElement('tr');
-          [t.colDate, t.colType, t.colMag, t.colMap, t.colNasa].forEach(function(txt) {
+          [t.colDate, t.colType, t.colMag, t.colMap].forEach(function(txt) {
             var th = document.createElement('th');
             th.textContent = txt;
             headerRow.appendChild(th);
@@ -362,11 +362,15 @@
         }
         tr.appendChild(tdMap);
 
-        // NASA link cell
-        var tdNasa = document.createElement('td');
-        var nasaLink = mkEl('a', { cls: 'ecl-nasa', text: '\u21d7', href: nasaUrl(e[0], e[1], e[2]), target: '_blank', rel: 'noopener' });
-        tdNasa.appendChild(nasaLink);
-        tr.appendChild(tdNasa);
+        // NASA link on row click
+        var nasa = nasaUrl(e[0], e[1], e[2]);
+        tr.setAttribute('data-nasa', nasa);
+        tr.style.cursor = 'pointer';
+        tr.title = 'NASA';
+        tr.addEventListener('click', function(ev) {
+          if (ev.target.closest('a')) return;
+          window.open(this.getAttribute('data-nasa'), '_blank', 'noopener');
+        });
 
         tbody.appendChild(tr);
       });

@@ -1822,19 +1822,17 @@ html[dir="rtl"] .btn-convert:hover svg {
   margin-block-end: var(--space-xl);
 }
 
-/* --- Stats: observatory instrument panels --- */
+/* --- Stats: individual tiles --- */
 
-.ecl-stats {
-  display: flex;
+.ecl-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
   gap: var(--space-sm);
-  flex-wrap: wrap;
   margin-block-end: var(--space-xl);
 }
 
-.ecl-stat {
-  flex: 1 1 6rem;
-  text-align: center;
-  padding: 0.9rem 0.6rem 0.7rem;
+.ecl-stat-tile {
+  padding: 0.9rem 1rem 0.7rem;
   background: var(--parchment-100);
   border: var(--border-subtle);
   border-radius: var(--radius-lg);
@@ -1857,15 +1855,23 @@ html[dir="rtl"] .btn-convert:hover svg {
   text-transform: uppercase;
 }
 
+/* --- Two-column masonry for century cards --- */
+
+#ecl-table-container {
+  columns: 2;
+  column-gap: var(--space-lg);
+}
+
 /* --- Century headings: astronomical ledger dividers --- */
 
 .ecl-century-card {
-  margin-block-end: var(--space-xl);
+  margin-block-end: var(--space-lg);
   background: var(--parchment-100);
   border: var(--border-subtle);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
   overflow: hidden;
+  break-inside: avoid;
 }
 
 .ecl-century-card:first-of-type {
@@ -1950,12 +1956,11 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
 
 .ecl-table .ecl-mag {
   font-family: var(--font-mono);
-  text-align: right;
+  text-align: left;
 }
 
-/* Type badges */
 .ecl-table .ecl-type {
-  text-align: center;
+  text-align: left;
 }
 
 .ecl-type-badge {
@@ -3564,16 +3569,16 @@ html[dir="rtl"] body .copy-btn {
 }
 
 /* Eclipses catalogue page — brutalist */
-.ecl-stats {
-  gap: 0;
+.ecl-stats-grid {
+  gap: var(--space-sm);
 }
 
-.ecl-stat {
+.ecl-stat-tile {
   background: var(--brut-surface);
   border: 3px solid var(--brut-ink);
   border-radius: 0;
   box-shadow: 4px 4px 0 var(--brut-ink);
-  padding: 0.8rem 0.5rem 0.6rem;
+  padding: 0.8rem 1rem 0.6rem;
 }
 
 .ecl-stat-num {
@@ -3714,6 +3719,12 @@ html[dir="rtl"] body .ecl-table tr.notable td:first-child {
   font-size: 0.7rem;
   border-top: 3px solid var(--brut-ink);
   padding-top: var(--space-md);
+}
+
+@media (max-width: 800px) {
+  #ecl-table-container {
+    columns: 1;
+  }
 }
 
 .ecl-map-wrap {

@@ -1412,6 +1412,14 @@
   const historyList = $('#history-list');
   const historyPanel = $('#history-panel');
   const historyClearBtn = $('#history-clear');
+  const historyToggle = $('#history-toggle');
+  const historyContent = $('#history-content');
+
+  historyToggle.addEventListener('click', function(e) {
+    if (e.target === historyClearBtn) return;
+    historyContent.classList.toggle('hidden');
+    historyToggle.classList.toggle('active');
+  });
 
   function getHistory() {
     try { return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; }

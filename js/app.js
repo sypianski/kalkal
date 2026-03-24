@@ -1378,10 +1378,18 @@
     // Show refine card (target calendar + month/day)
     if (refineCard) refineCard.hidden = false;
 
-    // Astro card (separate tile)
+    // Astro card (collapsible tile)
     while (astroCard.firstChild) astroCard.removeChild(astroCard.firstChild);
     if (astroElements && astroElements.length > 0) {
-      astroElements.forEach(node => { if (node) astroCard.appendChild(node); });
+      var astroToggle = el('button', { type: 'button', class: 'astro-card-toggle', text: t.astroLabel || 'Astro' });
+      var astroContent = el('div', { class: 'astro-card-content hidden' });
+      astroElements.forEach(node => { if (node) astroContent.appendChild(node); });
+      astroToggle.addEventListener('click', function() {
+        astroContent.classList.toggle('hidden');
+        astroToggle.classList.toggle('active');
+      });
+      astroCard.appendChild(astroToggle);
+      astroCard.appendChild(astroContent);
       astroCard.hidden = false;
     } else {
       astroCard.hidden = true;

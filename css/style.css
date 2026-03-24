@@ -2179,13 +2179,50 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
   border: var(--border-subtle);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
-  padding: var(--space-lg) var(--space-xl);
+  padding: 0;
+  overflow: hidden;
+}
+
+.astro-card[hidden] {
+  display: none;
+}
+
+.astro-card-toggle {
+  display: block;
+  width: 100%;
+  padding: var(--space-md) var(--space-xl);
+  background: transparent;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-400);
+  cursor: pointer;
+  text-align: start;
+}
+
+.astro-card-toggle::after {
+  content: ' \25BE';
+}
+
+.astro-card-toggle.active::after {
+  content: ' \25B4';
+}
+
+.astro-card-toggle:hover {
+  color: var(--ink-700);
+}
+
+.astro-card-content {
+  padding: 0 var(--space-xl) var(--space-xl);
   display: flex;
   flex-direction: column;
   gap: var(--space-xs);
 }
 
-.astro-card[hidden] {
+.astro-card-content.hidden {
   display: none;
 }
 
@@ -3232,7 +3269,19 @@ body[data-page="calendars"] .main-content--prose {
   border: 3px solid var(--brut-ink);
   border-radius: 0;
   box-shadow: 8px 8px 0 #000;
-  padding: var(--space-lg) var(--space-xl);
+  padding: 0;
+}
+
+.astro-card-toggle {
+  font-family: var(--brut-mono);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: #999;
+  padding: var(--space-md) var(--space-xl);
+}
+
+.astro-card-toggle:hover {
+  color: #000;
 }
 
 .contextual-list dt {

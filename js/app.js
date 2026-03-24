@@ -403,6 +403,7 @@
   const resultPanel = $('#result-panel');
   const resultBody = $('#result-body');
   const breakdownPanel = $('#breakdown-panel');
+  const astroCard = $('#astro-card');
   const errorPanel = $('#form-error');
   const appTitle = $('#app-title');
   const appSubtitle = $('#app-subtitle');
@@ -804,12 +805,10 @@
       var srcPrio = VARIANT_PRIORITY[src.id] || 99;
       var tgtPrio = VARIANT_PRIORITY[tgt.id] || 99;
       if (srcPrio <= tgtPrio) {
-        // Source is primary (groups), target is secondary (toggle)
         secondaryCal = tgt;
         srcVars = src.variants.slice();
         tgtVars = [tgt._variant];
       } else {
-        // Target is primary (groups), source is secondary (toggle)
         secondaryCal = src;
         srcVars = [src._variant];
         tgtVars = tgt.variants.slice();
@@ -854,12 +853,15 @@
     var showVarLabels = groupList.length > 1;
     var primaryJd = groupList[0].jd;
 
-    // Source info — use default variant for month names
     if (hasSrcVars) src._variant = src.defaultVariant;
     var srcNames = src.monthNames(t);
 
+    // Result header: calendar name + source info
     var elements = [
-      el('p', { class: 'result-label', text: t.calendars[src.id] }),
+      el('div', { class: 'result-header' },
+        el('span', { class: 'result-header-cal', text: t.calendars[tgt.id] }),
+        el('span', { class: 'result-header-src', text: t.calendars[src.id] + ' ' + y })
+      ),
     ];
 
     // Toggle for secondary source calendar
@@ -879,9 +881,6 @@
       });
       elements.push(srcBar);
     }
-
-    elements.push(el('p', { class: 'result-secondary', text: d + ' ' + srcNames[m - 1] + ' ' + y }));
-    elements.push(el('p', { class: 'result-label', text: t.calendars[tgt.id] }));
 
     // Toggle for secondary target calendar
     if (secondaryCal === tgt) {
@@ -907,11 +906,7 @@
       if (tgt.id === 'roman' && g.result.day) {
         elements.push(el('p', { class: 'result-main', text: Cal.romanDayNotation(g.result.month, g.result.day, tgt.isLeap(g.result.year)) + ' ' + g.result.year + ' AUC' }));
       } else {
-        var mainEl = el('p', { class: 'result-main' },
-          el('span', { class: 'result-date', text: g.result.day + ' ' + g.tgtNames[g.result.month - 1] + ' ' + g.result.year }),
-          el('span', { class: 'result-dow', text: t.weekdays[g.dow] })
-        );
-        elements.push(mainEl);
+        elements.push(el('p', { class: 'result-main', text: g.result.day + ' ' + g.tgtNames[g.result.month - 1] + ' ' + g.result.year }));
       }
       if (showVarLabels && g.labels.length > 0) {
         elements.push(el('p', { class: 'result-variant-label', text: g.labels.join(', ') }));
@@ -936,12 +931,19 @@
     if (tgt.id === 'gregorian' && primaryJd < 2299160.5) {
       elements.push(el('p', { class: 'result-note', text: t.julianDateNote }));
     }
-    // Astro panel (zodiac + moon + events, hidden by default, toggled by astro button)
-    var astroPanel = el('div', { class: 'astro-panel hidden' });
+
+    // Contextual calendars — aligned two-column grid
+    var contextPanel = buildContextualPanel(primaryJd, src.id, tgt.id, t);
+    if (contextPanel) {
+      elements.push(contextPanel);
+    }
+
+    // Build astro content for separate card
+    var astroElements = [];
     var zi = Cal.getZodiacSign(primaryJd);
     var zodiacSymbol = '\u2648\u2649\u264A\u264B\u264C\u264D\u264E\u264F\u2650\u2651\u2652\u2653'[zi];
-    astroPanel.appendChild(el('p', { class: 'result-zodiac', text: zodiacSymbol + ' ' + t.zodiacSigns[zi] }));
-    elements.push(astroPanel);
+    astroElements.push(el('p', { class: 'result-zodiac', text: zodiacSymbol + ' ' + t.zodiacSigns[zi] }));
+
     // Eclipse check
     if (typeof Eclipses !== 'undefined') {
       var ecl = Eclipses.lookup(primaryJd);
@@ -969,7 +971,7 @@
           mapLink.textContent = ecl.noteKey ? (t.eclipseViewMap || 'View eclipse map') : (t.eclipseViewCatalogue || 'Eclipse catalogue');
           eclEl.appendChild(mapLink);
         }
-        elements.push(eclEl);
+        astroElements.push(eclEl);
       }
     }
     // Astronomy: moon phase, comets, supernovae, conjunctions
@@ -981,7 +983,7 @@
         el('span', { class: 'astro-text', text: (t.moonPhaseLabel || 'Moon phase') + ': ' + phaseName }),
         el('span', { class: 'astro-detail', text: moon.age + ' ' + (t.moonAge || 'day') + ' \u2022 ' + moon.illumination + '% ' + (t.moonIllumination || 'illuminated') })
       );
-      astroPanel.appendChild(moonEl);
+      astroElements.push(moonEl);
       var comet = Astronomy.lookupComet(primaryJd);
       if (comet) {
         var cName = (t.cometNames && t.cometNames[comet.id]) || comet.id;
@@ -992,7 +994,7 @@
         if (comet.noteKey && t.cometNotes && t.cometNotes[comet.noteKey]) {
           cEl.appendChild(el('p', { class: 'astro-note', text: t.cometNotes[comet.noteKey] }));
         }
-        astroPanel.appendChild(cEl);
+        astroElements.push(cEl);
       }
       var sn = Astronomy.lookupSupernova(primaryJd);
       if (sn) {
@@ -1004,7 +1006,7 @@
         if (sn.noteKey && t.supernovaNotes && t.supernovaNotes[sn.noteKey]) {
           snEl.appendChild(el('p', { class: 'astro-note', text: t.supernovaNotes[sn.noteKey] }));
         }
-        astroPanel.appendChild(snEl);
+        astroElements.push(snEl);
       }
       var conj = Astronomy.lookupConjunction(primaryJd);
       if (conj) {
@@ -1018,21 +1020,12 @@
         if (conj.noteKey && t.conjunctionNotes && t.conjunctionNotes[conj.noteKey]) {
           conjEl.appendChild(el('p', { class: 'astro-note', text: t.conjunctionNotes[conj.noteKey] }));
         }
-        astroPanel.appendChild(conjEl);
+        astroElements.push(conjEl);
       }
     }
-    astroPanel.appendChild(buildMeta([[t.jdn, String(primaryJd)]]));
-    // Contextual calendars panel
-    var contextPanel = buildContextualPanel(primaryJd, src.id, tgt.id, t);
-    if (contextPanel) {
-      var astroIdx = elements.indexOf(astroPanel);
-      if (astroIdx >= 0) {
-        elements.splice(astroIdx, 0, contextPanel);
-      } else {
-        elements.push(contextPanel);
-      }
-    }
-    showResult(elements);
+    astroElements.push(buildMeta([[t.jdn, String(primaryJd)]]));
+
+    showResult(elements, null, null, astroElements);
   }
 
   function convertRange(src, tgt, y1, m1, d1, y2, m2, d2, t) {
@@ -1105,7 +1098,7 @@
       ),
       isProlepticGregorian ? el('p', { class: 'result-note', text: t.julianDateNote }) : null,
     ];
-    const contextPanel = buildContextualPanel(Math.floor((jdStart + jdEnd) / 2), src.id, tgt.id, t);
+    const contextPanel = buildContextualPanel(jdStart, src.id, tgt.id, t, jdEnd);
     if (contextPanel) rangeElements.push(contextPanel);
     if (astroResult) rangeElements.push(astroResult.panel);
     showResult(rangeElements, breakdown, astroResult ? astroResult.highlights : null);
@@ -1177,7 +1170,7 @@
       ),
       isProlepticGregorian ? el('p', { class: 'result-note', text: t.julianDateNote }) : null,
     ];
-    const contextPanel = buildContextualPanel(Math.floor((jdStart + jdEnd) / 2), src.id, tgt.id, t);
+    const contextPanel = buildContextualPanel(jdStart, src.id, tgt.id, t, jdEnd);
     if (contextPanel) yearElements.push(contextPanel);
     if (astroResult) yearElements.push(astroResult.panel);
     showResult(yearElements, [table], astroResult ? astroResult.highlights : null);
@@ -1301,7 +1294,8 @@
     return dl;
   }
 
-  function buildContextualPanel(jd, srcId, tgtId, t) {
+  function buildContextualPanel(jd, srcId, tgtId, t, jdEnd) {
+    const isRange = jdEnd !== undefined;
     const matches = [];
     for (const id of CONTEXTUAL_PRIORITY) {
       if (id === srcId || id === tgtId) continue;
@@ -1312,7 +1306,11 @@
       const result = cal.fromJD(jd);
       const names = cal.monthNames(t);
       let dateStr;
-      if (id === 'roman' && result.day) {
+      if (isRange) {
+        const endResult = cal.fromJD(jdEnd);
+        const range = fmtDateRange(names, result, endResult);
+        dateStr = range.startStr + ' \u2013 ' + range.endStr;
+      } else if (id === 'roman' && result.day) {
         dateStr = Cal.romanDayNotation(result.month, result.day, cal.isLeap(result.year)) + ' ' + result.year + ' AUC';
       } else {
         dateStr = result.day + ' ' + names[result.month - 1] + ' ' + result.year;
@@ -1331,7 +1329,7 @@
     );
   }
 
-  function showResult(elements, breakdownElements, rangeHighlights) {
+  function showResult(elements, breakdownElements, rangeHighlights, astroElements) {
     while (resultBody.firstChild) resultBody.removeChild(resultBody.firstChild);
     elements.forEach(node => { if (node) resultBody.appendChild(node); });
     const t = I18N[currentLang] || I18N.en;
@@ -1347,7 +1345,7 @@
     });
     resultBody.appendChild(copyBtn);
 
-    // Astro toggle button (zodiac + moon phase + events) — button above, panel below
+    // Legacy: handle inline astro-panel for range conversions
     const astroPanelEl = resultBody.querySelector('.astro-panel');
     if (astroPanelEl) {
       const astroBtnIcon = el('span', { class: 'astro-btn-icon', text: '\u263D' });
@@ -1360,7 +1358,6 @@
         astroPanelEl.classList.toggle('hidden');
         astroBtn.classList.toggle('active');
       });
-      // Range highlights: show event summary as a pill extension next to the button
       if (rangeHighlights && rangeHighlights.length > 0) {
         const pillWrap = el('div', { class: 'astro-pill' });
         pillWrap.appendChild(astroBtn);
@@ -1372,7 +1369,6 @@
         pillWrap.appendChild(summaryEl);
         astroPanelEl.parentNode.insertBefore(pillWrap, astroPanelEl);
       } else {
-        // Insert button before the panel so panel opens below the button
         astroPanelEl.parentNode.insertBefore(astroBtn, astroPanelEl);
       }
     }
@@ -1381,6 +1377,15 @@
 
     // Show refine card (target calendar + month/day)
     if (refineCard) refineCard.hidden = false;
+
+    // Astro card (separate tile)
+    while (astroCard.firstChild) astroCard.removeChild(astroCard.firstChild);
+    if (astroElements && astroElements.length > 0) {
+      astroElements.forEach(node => { if (node) astroCard.appendChild(node); });
+      astroCard.hidden = false;
+    } else {
+      astroCard.hidden = true;
+    }
 
     // Breakdown panel (collapsible — click header to expand)
     while (breakdownPanel.firstChild) breakdownPanel.removeChild(breakdownPanel.firstChild);
@@ -1478,7 +1483,7 @@
       resStr = r1.year === r2.year ? String(r1.year) : r1.year + '\u2013' + r2.year;
     }
 
-    return srcStr + ' ' + srcShort + '  \u2192  ' + resStr + ' ' + tgtShort;
+    return { src: srcStr + ' ' + srcShort, res: resStr + ' ' + tgtShort };
   }
 
   function renderHistory() {
@@ -1496,7 +1501,10 @@
     hist.forEach((entry, i) => {
       const summary = buildHistorySummary(entry);
       const li = el('li', { class: 'history-item' });
-      const btn = el('button', { class: 'history-entry', text: summary });
+      const btn = el('button', { class: 'history-entry' },
+        el('span', { class: 'history-src', text: typeof summary === 'string' ? summary : summary.src }),
+        typeof summary === 'object' ? el('span', { class: 'history-res', text: summary.res }) : null
+      );
       const removeBtn = el('button', { class: 'history-remove', 'aria-label': 'Remove', text: '\u00d7' });
 
       btn.addEventListener('click', () => loadHistoryEntry(entry));

@@ -1319,7 +1319,7 @@
       if (matches.length >= CONTEXTUAL_MAX) break;
     }
     if (matches.length === 0) return null;
-    const dl = el('dl', { class: 'result-meta contextual-list' });
+    const dl = el('dl', { class: 'contextual-list' });
     matches.forEach(([label, value]) => {
       dl.appendChild(el('div', null, el('dt', { text: label }), el('dd', { text: value })));
     });

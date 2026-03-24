@@ -638,6 +638,23 @@ html[dir="rtl"] .site-title {
   margin-block-end: var(--space-xl);
 }
 
+.meth-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-lg);
+  margin-block-end: var(--space-xl);
+}
+
+@media (min-width: 760px) {
+  .meth-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.meth-grid .meth-section {
+  margin-block-end: 0;
+}
+
 .meth-section {
   margin-block-end: var(--space-xl);
   padding: var(--space-lg) var(--space-xl);
@@ -828,29 +845,44 @@ html[dir="rtl"] .site-title {
   list-style: none;
   padding: 0;
   font-size: 0.85rem;
-  line-height: 1.8;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+}
+
+@media (min-width: 760px) {
+  .meth-links {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 .meth-links li {
-  margin-block-end: var(--space-xs);
-  padding-inline-start: 1em;
-  text-indent: -1em;
+  padding: 0;
+  text-indent: 0;
 }
 
 .meth-links li::before {
-  content: "\203A\00a0";
-  color: var(--gold);
-  font-weight: 700;
+  display: none;
 }
 
 .meth-links a {
   color: var(--rust);
   text-decoration: none;
   font-weight: 600;
+  display: block;
+  line-height: 1.4;
 }
 
 .meth-links a:hover {
   text-decoration: underline;
+}
+
+.meth-link-desc {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--ink-500);
+  line-height: 1.5;
+  margin-block-start: 0.15em;
 }
 
 .back-link {
@@ -2082,8 +2114,44 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
   margin-block-start: var(--space-lg);
-  padding: var(--space-xl);
+  padding: 0;
   overflow-x: auto;
+}
+
+.breakdown-toggle {
+  display: block;
+  width: 100%;
+  padding: var(--space-md) var(--space-xl);
+  background: transparent;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-400);
+  cursor: pointer;
+  text-align: start;
+}
+
+.breakdown-toggle::after {
+  content: ' \25BE';
+}
+
+.breakdown-toggle.active::after {
+  content: ' \25B4';
+}
+
+.breakdown-toggle:hover {
+  color: var(--ink-700);
+}
+
+.breakdown-content {
+  padding: 0 var(--space-xl) var(--space-xl);
+}
+
+.breakdown-content.hidden {
+  display: none;
 }
 
 .copy-btn {
@@ -2592,13 +2660,7 @@ html[dir="rtl"] .copy-btn {
   }
 
   .result-card {
-    border-inline-start: 3px solid #000;
-    margin-block-start: 0;
-    border-block-start: none;
-  }
-
-  .converter-card {
-    border: none;
+    margin-block-start: var(--space-lg);
   }
 
 }
@@ -2784,16 +2846,16 @@ body[data-page="calendars"] .main-content--prose {
 /* ---- Converter grid: asymmetric ---- */
 .converter-grid {
   grid-template-columns: 300px 1fr;
-  gap: 0;
-  align-items: stretch;
+  gap: var(--space-lg);
+  align-items: start;
 }
 
 /* ---- Left card: dense control panel ---- */
 .converter-card {
   background: #000;
-  border: none;
+  border: 3px solid #000;
   border-radius: 0;
-  box-shadow: none;
+  box-shadow: 8px 8px 0 #000;
 }
 
 .converter-form {
@@ -2976,7 +3038,6 @@ body[data-page="calendars"] .main-content--prose {
 .result-card {
   background: var(--brut-surface);
   border: 3px solid #000;
-  border-inline-start: none;
   border-radius: 0;
   box-shadow: 8px 8px 0 #000;
   margin-block-start: 0;
@@ -2996,6 +3057,18 @@ body[data-page="calendars"] .main-content--prose {
   border-radius: 0;
   box-shadow: 8px 8px 0 #000;
   margin-block-start: var(--space-lg);
+}
+
+.breakdown-toggle {
+  font-family: var(--brut-mono);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: #999;
+  padding: var(--space-md) var(--space-xl);
+}
+
+.breakdown-toggle:hover {
+  color: #000;
 }
 
 /* Result panel */
@@ -4010,8 +4083,9 @@ html[dir="rtl"] body .ecl-table tr.notable td:first-child {
   font-family: var(--brut-mono);
 }
 
-.meth-links li::before {
-  color: var(--brut-ink);
+.meth-link-desc {
+  font-family: var(--brut-mono);
+  color: #666;
 }
 
 .meth-links a {
@@ -4020,6 +4094,7 @@ html[dir="rtl"] body .ecl-table tr.notable td:first-child {
   background: transparent;
   border-block-end: 2px solid #000;
   padding: 0;
+  display: inline;
   font-weight: 700;
 }
 

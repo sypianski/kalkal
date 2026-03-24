@@ -411,6 +411,7 @@
   const fromMonthSelect = $('#from-month');
   const fromVariantsBar = $('#from-variants');
   const toVariantsBar = $('#to-variants');
+  const refineCard = $('#refine-card');
 
   // ---- Variant bar (disabled — variants now shown in results) ----
 
@@ -424,6 +425,7 @@
       updateMonthSelects();
     } else {
       updateVariantBar(toVariantsBar, toCalInput);
+      if (resultPanel.classList.contains('has-result')) convert();
     }
   }
 
@@ -1091,10 +1093,7 @@
 
     const isProlepticGregorian = tgt.id === 'gregorian' && jdEnd < 2299160.5;
     const astroResult = buildRangeAstroPanel(jdStart, jdEnd, tgt, tgtNames, t);
-    const breakdown = monthRows.length > 1 ? [
-      el('p', { class: 'result-label', text: t.monthBreakdown }),
-      table
-    ] : null;
+    const breakdown = monthRows.length > 1 ? [table] : null;
     const rangeElements = [
       el('p', { class: 'result-label', text: srcLabel }),
       el('p', { class: 'result-secondary', text: srcStartStr + ' \u2013 ' + srcEndStr }),
@@ -1181,10 +1180,7 @@
     const contextPanel = buildContextualPanel(Math.floor((jdStart + jdEnd) / 2), src.id, tgt.id, t);
     if (contextPanel) yearElements.push(contextPanel);
     if (astroResult) yearElements.push(astroResult.panel);
-    showResult(yearElements, [
-      el('p', { class: 'result-label', text: t.monthBreakdown }),
-      table
-    ], astroResult ? astroResult.highlights : null);
+    showResult(yearElements, [table], astroResult ? astroResult.highlights : null);
   }
 
   // Build astro panel for a JDN range (year/month conversions).
@@ -1383,10 +1379,21 @@
 
     resultPanel.classList.add('has-result');
 
-    // Breakdown panel (table etc.)
+    // Show refine card (target calendar + month/day)
+    if (refineCard) refineCard.hidden = false;
+
+    // Breakdown panel (collapsible — click header to expand)
     while (breakdownPanel.firstChild) breakdownPanel.removeChild(breakdownPanel.firstChild);
     if (breakdownElements && breakdownElements.length > 0) {
-      breakdownElements.forEach(node => { if (node) breakdownPanel.appendChild(node); });
+      var bdHeader = el('button', { type: 'button', class: 'breakdown-toggle', text: t.monthBreakdown || 'Month breakdown' });
+      var bdContent = el('div', { class: 'breakdown-content hidden' });
+      breakdownElements.forEach(node => { if (node) bdContent.appendChild(node); });
+      bdHeader.addEventListener('click', function () {
+        bdContent.classList.toggle('hidden');
+        bdHeader.classList.toggle('active');
+      });
+      breakdownPanel.appendChild(bdHeader);
+      breakdownPanel.appendChild(bdContent);
       breakdownPanel.hidden = false;
     } else {
       breakdownPanel.hidden = true;
@@ -1511,9 +1518,8 @@
     const t = I18N[currentLang];
     // Set calendar inputs
     fromCalInput.value = t.calendars[entry.fromCal] || entry.fromCal;
-    toCalInput.value = t.calendars[entry.toCal] || entry.toCal;
+    toCalInput.value = entry.toCal !== 'human' ? (t.calendars[entry.toCal] || entry.toCal) : '';
     onCalendarChange(fromCalInput);
-    onCalendarChange(toCalInput);
 
     // Set date fields
     $('#from-year').value = entry.year;
@@ -1591,12 +1597,11 @@
     if (params.get('d')) $('#from-day').value = params.get('d');
     convert();
   } else {
-    // Default: Hijri → Human Era
+    // Default: Hijri source, Human Era target (implicit)
     var t = I18N[currentLang] || I18N.en;
     fromCalInput.value = t.calendars.hijri || 'Hijri';
-    toCalInput.value = t.calendars.human || 'Human Era';
+    toCalInput.value = '';
     onCalendarChange(fromCalInput);
-    onCalendarChange(toCalInput);
     updateMonthSelects();
   }
 

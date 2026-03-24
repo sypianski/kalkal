@@ -46,6 +46,8 @@
 
     <p class="meth-intro">kalkal is a zero-dependency, client-side date converter built entirely with arithmetic algorithms. All conversions are deterministic, reproducible, and independently verifiable.</p>
 
+    <div class="meth-grid">
+
     <section class="meth-section" data-meth="methJDN">
       <h2 class="meth-title">Julian Day Number as Universal Pivot</h2>
       <p class="meth-body">All date conversions in kalkal pass through the Julian Day Number (JDN) — a continuous count of days since the beginning of the Julian Period on 1 January 4713 BCE (Julian proleptic calendar). Each calendar system implements two functions: one to convert a date into a JDN, and one to convert a JDN back into a date in that calendar. To convert from calendar A to calendar B, we compute A → JDN → B. This approach avoids the combinatorial explosion of writing direct conversion functions between every pair of calendars.</p>
@@ -54,15 +56,11 @@
       </aside>
     </section>
 
-    <div class="divider"><span class="divider-ornament">&#10022;</span></div>
-
     <section class="meth-section" data-meth="methArchitecture">
       <h2 class="meth-title">Architecture and Construction</h2>
       <p class="meth-body">kalkal runs entirely in the browser with zero external dependencies and no build step. The computational engine is a single JavaScript module (Cal) exposing toJD() and fromJD() functions for each of the 24 supported calendar systems. A separate registry maps each calendar to its Cal functions, handling UI concerns like variant selection (e.g. the 4 tabular Hijri variants, 3 Byzantine Anno Mundi variants, 2 Seleucid reckonings) independently from the algorithms. Internationalization covers 4 languages (EN, PL, AR, EO) with full RTL support for Arabic.</p>
       <p class="meth-body2">Nearly all algorithms are purely arithmetic — no astronomical calculations, no external API calls, no lookup tables of observed data. The one exception is the Babylonian calendar, which uses the Parker &amp; Dubberstein observational tables for 626 BCE&ndash;45 CE (with an arithmetic fallback outside that range). For all other calendars, every conversion is reproducible: the same input always produces the same output regardless of platform, locale, or network state.</p>
     </section>
-
-    <div class="divider"><span class="divider-ornament">&#10022;</span></div>
 
     <section class="meth-section" data-meth="methAlgorithms">
       <h2 class="meth-title">Algorithm Sources</h2>
@@ -72,13 +70,13 @@
       </aside>
     </section>
 
-    <div class="divider"><span class="divider-ornament">&#10022;</span></div>
-
     <section class="meth-section" data-meth="methValidation">
       <h2 class="meth-title">Validation and Verification</h2>
       <p class="meth-body">Every calendar conversion is validated through three independent methods. First, round-trip testing: for each calendar, a date is converted to JDN and back, confirming that fromJD(toJD(date)) === date across hundreds of test cases spanning epochs, boundaries, and modern dates. Second, cross-verification against independent implementations: the Fourmilab algorithm (public domain), the browser's Intl.DateTimeFormat API, and Python's hijri-converter library. Third, spot-checking known historical dates (e.g. Battle of Badr = 17 Ramadan 2 AH = 13 March 624 CE Julian, Fall of Baghdad = 10 February 1258 CE) against published scholarly sources.</p>
       <p class="meth-body2">Tests run in Node.js by loading the browser-targeted Cal module. No test framework is used — the verification scripts output pass/fail counts directly, making the test suite itself auditable with zero dependencies.</p>
     </section>
+
+    </div>
 
     <div class="divider"><span class="divider-ornament">&#10022;</span></div>
 
@@ -158,15 +156,15 @@
       </div>
 
       <ul class="meth-links">
-        <li><a href="https://www.fourmilab.ch/documents/calendar/" target="_blank" rel="noopener">Fourmilab Calendar Converter</a> &mdash; John Walker's classic multi-calendar converter (~8&ndash;11 calendars)</li>
-        <li><a href="https://calendarhome.com/calculate/convert-a-date" target="_blank" rel="noopener">CalendarHome Convert-a-Date</a> &mdash; multi-calendar reference and conversion tools (~11 calendars)</li>
-        <li><a href="https://www.epistemeacademy.org/calendars/page_convert.html" target="_blank" rel="noopener">Episteme Academy</a> &mdash; multi-calendar converter including Chinese, Attic, and Hindu calendars (19 calendars)</li>
-        <li><a href="https://webspace.science.uu.nl/~gent0113/islam/islam_tabcal_converter.htm" target="_blank" rel="noopener">Utrecht University / van Gent</a> &mdash; Islamic&ndash;Western converter with 8 tabular Hijri variants (7 calendars)</li>
-        <li><a href="https://www.muqawwim.com/" target="_blank" rel="noopener">Muqawwim</a> &mdash; calendar converter for Near East historians (6 calendars)</li>
-        <li><a href="https://www.calendar-converter.com/" target="_blank" rel="noopener">Calendar-Converter.com</a> &mdash; multi-calendar converter with Minguo and Thai Solar (10 calendars)</li>
-        <li><a href="https://www.islamicfinder.org/islamic-calendar/" target="_blank" rel="noopener">IslamicFinder</a> &mdash; Hijri&ndash;Gregorian converter with prayer times</li>
-        <li><a href="https://www.hebcal.com/converter/" target="_blank" rel="noopener">Hebcal</a> &mdash; Hebrew&ndash;Gregorian date converter</li>
-        <li><a href="https://www.iranchamber.com/calendar/converter/iranian_calendar_converter.php" target="_blank" rel="noopener">Iran Chamber</a> &mdash; Solar Hijri / Iranian calendar converter</li>
+        <li><a href="https://www.fourmilab.ch/documents/calendar/" target="_blank" rel="noopener">Fourmilab Calendar Converter</a><span class="meth-link-desc">John Walker's classic multi-calendar converter (~8&ndash;11 calendars)</span></li>
+        <li><a href="https://calendarhome.com/calculate/convert-a-date" target="_blank" rel="noopener">CalendarHome Convert-a-Date</a><span class="meth-link-desc">Multi-calendar reference and conversion tools (~11 calendars)</span></li>
+        <li><a href="https://www.epistemeacademy.org/calendars/page_convert.html" target="_blank" rel="noopener">Episteme Academy</a><span class="meth-link-desc">Multi-calendar converter including Chinese, Attic, and Hindu calendars (19 calendars)</span></li>
+        <li><a href="https://webspace.science.uu.nl/~gent0113/islam/islam_tabcal_converter.htm" target="_blank" rel="noopener">Utrecht University / van Gent</a><span class="meth-link-desc">Islamic&ndash;Western converter with 8 tabular Hijri variants (7 calendars)</span></li>
+        <li><a href="https://www.muqawwim.com/" target="_blank" rel="noopener">Muqawwim</a><span class="meth-link-desc">Calendar converter for Near East historians (6 calendars)</span></li>
+        <li><a href="https://www.calendar-converter.com/" target="_blank" rel="noopener">Calendar-Converter.com</a><span class="meth-link-desc">Multi-calendar converter with Minguo and Thai Solar (10 calendars)</span></li>
+        <li><a href="https://www.islamicfinder.org/islamic-calendar/" target="_blank" rel="noopener">IslamicFinder</a><span class="meth-link-desc">Hijri&ndash;Gregorian converter with prayer times</span></li>
+        <li><a href="https://www.hebcal.com/converter/" target="_blank" rel="noopener">Hebcal</a><span class="meth-link-desc">Hebrew&ndash;Gregorian date converter</span></li>
+        <li><a href="https://www.iranchamber.com/calendar/converter/iranian_calendar_converter.php" target="_blank" rel="noopener">Iran Chamber</a><span class="meth-link-desc">Solar Hijri / Iranian calendar converter</span></li>
       </ul>
     </section>
 

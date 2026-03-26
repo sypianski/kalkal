@@ -2179,39 +2179,13 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
   padding: var(--space-lg) var(--space-xl) var(--space-xl);
 }
 
-/* Target calendar button in result */
-.result-cal-btn {
-  display: inline-block;
-  font-family: var(--font-body);
-  font-size: 0.62rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--ink-400);
-  background: transparent;
-  border: 1px solid var(--ink-300, #bbb);
-  border-radius: 3px;
-  padding: 0.2em 0.6em;
-  margin-inline-start: 0.6em;
-  cursor: pointer;
-  vertical-align: middle;
-  line-height: 1.4;
-}
-
-.result-cal-btn:hover {
-  color: var(--ink-700);
-  border-color: var(--ink-500);
-}
-
-/* Target calendar input wrapper */
-.to-calendar-wrap {
+/* Target calendar dropdown field */
+.to-calendar-field {
   position: relative;
-  display: none;
 }
 
-.to-calendar-wrap.is-open {
-  display: block;
-  margin-block-end: var(--space-sm);
+.to-calendar-field[hidden] {
+  display: none;
 }
 
 .to-calendar-input {
@@ -3392,24 +3366,11 @@ body[data-page="calendars"] .main-content--prose {
   letter-spacing: 0.05em;
 }
 
-/* Target calendar button (brutalist) */
-.result-cal-btn {
-  font-family: var(--brut-mono);
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  border: 2px solid #000;
-  border-radius: 0;
-  color: #666;
-  padding: 0.15em 0.5em;
+/* Target calendar dropdown (brutalist) */
+.to-calendar-field {
+  margin-block-end: var(--space-sm);
 }
 
-.result-cal-btn:hover {
-  background: #000;
-  color: #fff;
-  border-color: #000;
-}
-
-/* Target calendar input (brutalist) */
 .to-calendar-input {
   font-family: var(--brut-mono);
   font-weight: 700;

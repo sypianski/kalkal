@@ -17,7 +17,14 @@
   const aiResult = $('#ai-result');
 
   function getLang() {
-    return localStorage.getItem('kalkal-lang') || 'en';
+    const stored = localStorage.getItem('kalkal-lang');
+    if (stored) return stored;
+    const supported = ['en', 'pl', 'ar', 'eo'];
+    for (const tag of navigator.languages || [navigator.language]) {
+      const code = tag.toLowerCase().split('-')[0];
+      if (supported.includes(code)) return code;
+    }
+    return 'en';
   }
 
   function t(key) {

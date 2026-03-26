@@ -443,7 +443,16 @@ const SEASON_LABELS = {
 (() => {
   'use strict';
 
-  const currentLang = localStorage.getItem('kalkal-lang') || 'en';
+  function detectLang() {
+    const supported = ['en', 'pl', 'ar', 'eo'];
+    for (const tag of navigator.languages || [navigator.language]) {
+      const code = tag.toLowerCase().split('-')[0];
+      if (supported.includes(code)) return code;
+    }
+    return 'en';
+  }
+
+  const currentLang = localStorage.getItem('kalkal-lang') || detectLang();
 
   function setPageLang(lang) {
     localStorage.setItem('kalkal-lang', lang);

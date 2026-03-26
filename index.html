@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Charis+SIL:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Sans:wght@400;500;600&family=Noto+Sans+Mono:wght@400;500&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=9">
+  <link rel="stylesheet" href="css/style.css?v=10">
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#f0f0ec">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -92,11 +92,6 @@
 
         <div class="refine-card" id="refine-card" hidden>
           <div class="refine-field">
-            <input type="text" id="to-calendar" class="refine-input" autocomplete="off">
-            <label for="to-calendar" class="refine-label" data-i18n="targetCalendar">Convert to</label>
-            <div class="variant-bar" id="to-variants"></div>
-          </div>
-          <div class="refine-field">
             <input type="text" id="from-month" class="refine-input" autocomplete="off" readonly>
             <label for="from-month" class="refine-label" data-i18n="month">Month</label>
           </div>
@@ -110,6 +105,11 @@
 
       <div class="converter-right">
 
+        <div class="to-calendar-wrap" id="to-calendar-wrap">
+          <input type="text" id="to-calendar" class="to-calendar-input" autocomplete="off">
+          <div class="variant-bar" id="to-variants"></div>
+        </div>
+
         <section class="result-card result-panel" id="result-panel" aria-live="polite">
           <div class="result-body" id="result-body">
             <p class="result-placeholder" id="result-placeholder">
@@ -117,6 +117,12 @@
               <span class="result-placeholder-text" data-i18n="resultHint"></span>
             </p>
           </div>
+        </section>
+
+        <section class="contextual-card" id="contextual-card" hidden>
+        </section>
+
+        <section class="outofera-card" id="outofera-card" hidden>
         </section>
 
         <section class="astro-card" id="astro-card" hidden>

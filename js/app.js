@@ -404,6 +404,8 @@
   const resultBody = $('#result-body');
   const breakdownPanel = $('#breakdown-panel');
   const astroCard = $('#astro-card');
+  const contextualCard = $('#contextual-card');
+  const outOfEraCard = $('#outofera-card');
   const errorPanel = $('#form-error');
   const appTitle = $('#app-title');
   const appSubtitle = $('#app-subtitle');
@@ -426,6 +428,9 @@
       updateMonthSelects();
     } else {
       updateVariantBar(toVariantsBar, toCalInput);
+      // Close the target calendar picker
+      var wrap = document.getElementById('to-calendar-wrap');
+      if (wrap) wrap.classList.remove('is-open');
       if (resultPanel.classList.contains('has-result')) convert();
     }
   }
@@ -856,13 +861,7 @@
     if (hasSrcVars) src._variant = src.defaultVariant;
     var srcNames = src.monthNames(t);
 
-    // Result header: calendar name + source info
-    var elements = [
-      el('div', { class: 'result-header' },
-        el('span', { class: 'result-header-cal', text: t.calendars[tgt.id] }),
-        el('span', { class: 'result-header-src', text: t.calendars[src.id] + ' ' + y })
-      ),
-    ];
+    var elements = [];
 
     // Toggle for secondary source calendar
     if (secondaryCal === src) {
@@ -903,11 +902,24 @@
     // Target results per variant group
     for (var gi = 0; gi < groupList.length; gi++) {
       var g = groupList[gi];
+      var dateText;
       if (tgt.id === 'roman' && g.result.day) {
-        elements.push(el('p', { class: 'result-main', text: Cal.romanDayNotation(g.result.month, g.result.day, tgt.isLeap(g.result.year)) + ' ' + g.result.year + ' AUC' }));
+        dateText = Cal.romanDayNotation(g.result.month, g.result.day, tgt.isLeap(g.result.year)) + ' ' + g.result.year + ' AUC';
       } else {
-        elements.push(el('p', { class: 'result-main', text: g.result.day + ' ' + g.tgtNames[g.result.month - 1] + ' ' + g.result.year }));
+        dateText = g.result.day + ' ' + g.tgtNames[g.result.month - 1] + ' ' + g.result.year;
       }
+      // Result line with target calendar button
+      var tgtBtn = el('button', { type: 'button', class: 'result-cal-btn', text: t.calendars[tgt.id] });
+      tgtBtn.addEventListener('click', function() {
+        var wrap = document.getElementById('to-calendar-wrap');
+        wrap.classList.add('is-open');
+        toCalInput.focus();
+      });
+      var mainLine = el('p', { class: 'result-main' },
+        el('span', { text: dateText }),
+        tgtBtn
+      );
+      elements.push(mainLine);
       if (showVarLabels && g.labels.length > 0) {
         elements.push(el('p', { class: 'result-variant-label', text: g.labels.join(', ') }));
       }
@@ -930,12 +942,6 @@
     }
     if (tgt.id === 'gregorian' && primaryJd < 2299160.5) {
       elements.push(el('p', { class: 'result-note', text: t.julianDateNote }));
-    }
-
-    // Contextual calendars — aligned two-column grid
-    var contextPanel = buildContextualPanel(primaryJd, src.id, tgt.id, t);
-    if (contextPanel) {
-      elements.push(contextPanel);
     }
 
     // Build astro content for separate card
@@ -1025,7 +1031,7 @@
     }
     astroElements.push(buildMeta([[t.jdn, String(primaryJd)]]));
 
-    showResult(elements, null, null, astroElements);
+    showResult(elements, null, null, astroElements, { jd: primaryJd, srcId: src.id, tgtId: tgt.id });
   }
 
   function convertRange(src, tgt, y1, m1, d1, y2, m2, d2, t) {
@@ -1098,10 +1104,8 @@
       ),
       isProlepticGregorian ? el('p', { class: 'result-note', text: t.julianDateNote }) : null,
     ];
-    const contextPanel = buildContextualPanel(jdStart, src.id, tgt.id, t, jdEnd);
-    if (contextPanel) rangeElements.push(contextPanel);
     if (astroResult) rangeElements.push(astroResult.panel);
-    showResult(rangeElements, breakdown, astroResult ? astroResult.highlights : null);
+    showResult(rangeElements, breakdown, astroResult ? astroResult.highlights : null, null, { jd: jdStart, jdEnd: jdEnd, srcId: src.id, tgtId: tgt.id });
   }
 
   function convertYearRange(src, tgt, year, t) {
@@ -1149,31 +1153,18 @@
     });
     table.appendChild(tbody);
 
-    const yearInfo = el('div', { class: 'year-info' },
-      el('span', { class: 'year-info-item' },
-        el('span', { class: 'year-info-val', text: String(src.yearLength(year)) }),
-        ' ' + t.totalDays
-      ),
-      src.isLeap(year) ? el('span', { class: 'year-info-item' },
-        el('span', { class: 'calendar-tag', text: t.leapYear })
-      ) : null
-    );
-
     const isProlepticGregorian = tgt.id === 'gregorian' && jdEnd < 2299160.5;
     const astroResult = buildRangeAstroPanel(jdStart, jdEnd, tgt, tgtNames, t);
     const yearElements = [
       el('p', { class: 'result-label', text: year + ' ' + srcLabel }),
-      yearInfo,
       el('p', { class: 'result-span' },
         el('span', { class: 'date-val', text: tgtStartStr }), ' \u2013 ',
         el('span', { class: 'date-val', text: tgtEndStr })
       ),
       isProlepticGregorian ? el('p', { class: 'result-note', text: t.julianDateNote }) : null,
     ];
-    const contextPanel = buildContextualPanel(jdStart, src.id, tgt.id, t, jdEnd);
-    if (contextPanel) yearElements.push(contextPanel);
     if (astroResult) yearElements.push(astroResult.panel);
-    showResult(yearElements, [table], astroResult ? astroResult.highlights : null);
+    showResult(yearElements, [table], astroResult ? astroResult.highlights : null, null, { jd: jdStart, jdEnd: jdEnd, srcId: src.id, tgtId: tgt.id });
   }
 
   // Build astro panel for a JDN range (year/month conversions).
@@ -1316,20 +1307,53 @@
         dateStr = result.day + ' ' + names[result.month - 1] + ' ' + result.year;
       }
       matches.push([t.calendars[id], dateStr]);
-      if (matches.length >= CONTEXTUAL_MAX) break;
+    }
+    if (matches.length === 0) return null;
+    const wrapper = el('div', { class: 'contextual-panel' });
+    const heading = el('p', { class: 'contextual-heading', text: t.contextualLabel || 'Also in use' });
+    const dl = el('dl', { class: 'contextual-list' });
+    matches.forEach(([label, value]) => {
+      dl.appendChild(el('div', null, el('dt', { text: label }), el('dd', { text: value })));
+    });
+    wrapper.appendChild(heading);
+    wrapper.appendChild(dl);
+    return wrapper;
+  }
+
+  // Build panel for calendars NOT in use for the given era
+  function buildOutOfEraPanel(jd, srcId, tgtId, t, jdEnd) {
+    const isRange = jdEnd !== undefined;
+    const matches = [];
+    for (const id of CONTEXTUAL_PRIORITY) {
+      if (id === srcId || id === tgtId) continue;
+      const cal = CALENDARS[id];
+      if (!cal || !cal.historicalRange) continue;
+      const [lo, hi] = cal.historicalRange;
+      // Only include if OUT of range
+      if (jd >= lo && jd <= hi) continue;
+      const result = cal.fromJD(jd);
+      const names = cal.monthNames(t);
+      let dateStr;
+      if (isRange) {
+        const endResult = cal.fromJD(jdEnd);
+        const range = fmtDateRange(names, result, endResult);
+        dateStr = range.startStr + ' \u2013 ' + range.endStr;
+      } else if (id === 'roman' && result.day) {
+        dateStr = Cal.romanDayNotation(result.month, result.day, cal.isLeap(result.year)) + ' ' + result.year + ' AUC';
+      } else {
+        dateStr = result.day + ' ' + names[result.month - 1] + ' ' + result.year;
+      }
+      matches.push([t.calendars[id], dateStr]);
     }
     if (matches.length === 0) return null;
     const dl = el('dl', { class: 'contextual-list' });
     matches.forEach(([label, value]) => {
       dl.appendChild(el('div', null, el('dt', { text: label }), el('dd', { text: value })));
     });
-    return el('div', { class: 'contextual-panel' },
-      el('p', { class: 'contextual-heading', text: t.contextualLabel || 'Also in use' }),
-      dl
-    );
+    return dl;
   }
 
-  function showResult(elements, breakdownElements, rangeHighlights, astroElements) {
+  function showResult(elements, breakdownElements, rangeHighlights, astroElements, contextInfo) {
     while (resultBody.firstChild) resultBody.removeChild(resultBody.firstChild);
     elements.forEach(node => { if (node) resultBody.appendChild(node); });
     const t = I18N[currentLang] || I18N.en;
@@ -1337,7 +1361,8 @@
     copyBtn.type = 'button';
     copyBtn.addEventListener('click', function () {
       const mainEl = resultBody.querySelector('.result-main');
-      const text = mainEl ? mainEl.textContent.trim() : resultBody.innerText.trim();
+      const dateSpan = mainEl ? mainEl.querySelector('span') : null;
+      const text = dateSpan ? dateSpan.textContent.trim() : (mainEl ? mainEl.textContent.trim() : resultBody.innerText.trim());
       navigator.clipboard.writeText(text).then(function () {
         copyBtn.textContent = t.copied;
         setTimeout(function () { copyBtn.textContent = t.copyResult; }, 1500);
@@ -1375,8 +1400,41 @@
 
     resultPanel.classList.add('has-result');
 
-    // Show refine card (target calendar + month/day)
+    // Show refine card (month/day)
     if (refineCard) refineCard.hidden = false;
+
+    // Contextual calendars tile (expanded by default)
+    while (contextualCard.firstChild) contextualCard.removeChild(contextualCard.firstChild);
+    if (contextInfo) {
+      var ctxPanel = buildContextualPanel(contextInfo.jd, contextInfo.srcId, contextInfo.tgtId, t, contextInfo.jdEnd);
+      if (ctxPanel) {
+        contextualCard.appendChild(ctxPanel);
+        contextualCard.hidden = false;
+      } else {
+        contextualCard.hidden = true;
+      }
+
+      // Out-of-era calendars tile (collapsed by default)
+      while (outOfEraCard.firstChild) outOfEraCard.removeChild(outOfEraCard.firstChild);
+      var ooePanel = buildOutOfEraPanel(contextInfo.jd, contextInfo.srcId, contextInfo.tgtId, t, contextInfo.jdEnd);
+      if (ooePanel) {
+        var ooeToggle = el('button', { type: 'button', class: 'outofera-toggle', text: t.otherCalendarsLabel || 'Other calendars' });
+        var ooeContent = el('div', { class: 'outofera-content hidden' });
+        ooeContent.appendChild(ooePanel);
+        ooeToggle.addEventListener('click', function() {
+          ooeContent.classList.toggle('hidden');
+          ooeToggle.classList.toggle('active');
+        });
+        outOfEraCard.appendChild(ooeToggle);
+        outOfEraCard.appendChild(ooeContent);
+        outOfEraCard.hidden = false;
+      } else {
+        outOfEraCard.hidden = true;
+      }
+    } else {
+      contextualCard.hidden = true;
+      outOfEraCard.hidden = true;
+    }
 
     // Astro card (collapsible tile)
     while (astroCard.firstChild) astroCard.removeChild(astroCard.firstChild);
@@ -1605,6 +1663,15 @@
 
   setupAutocomplete(fromCalInput);
   setupAutocomplete(toCalInput);
+
+  // Close target calendar wrap on blur
+  toCalInput.addEventListener('blur', function() {
+    setTimeout(function() {
+      var wrap = document.getElementById('to-calendar-wrap');
+      if (wrap) wrap.classList.remove('is-open');
+    }, 200);
+  });
+
   setLang(currentLang);
   renderHistory();
 

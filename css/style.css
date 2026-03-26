@@ -1107,7 +1107,7 @@ html[dir="rtl"] .ai-input {
   overflow: visible;
 }
 
-/* ---- Refine Card (target calendar + month/day) ---- */
+/* ---- Refine Card (month/day) ---- */
 
 .refine-card {
   background: var(--parchment-100);
@@ -2177,6 +2177,128 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
 .result-body {
   position: relative;
   padding: var(--space-lg) var(--space-xl) var(--space-xl);
+}
+
+/* Target calendar button in result */
+.result-cal-btn {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-400);
+  background: transparent;
+  border: 1px solid var(--ink-300, #bbb);
+  border-radius: 3px;
+  padding: 0.2em 0.6em;
+  margin-inline-start: 0.6em;
+  cursor: pointer;
+  vertical-align: middle;
+  line-height: 1.4;
+}
+
+.result-cal-btn:hover {
+  color: var(--ink-700);
+  border-color: var(--ink-500);
+}
+
+/* Target calendar input wrapper */
+.to-calendar-wrap {
+  position: relative;
+  display: none;
+}
+
+.to-calendar-wrap.is-open {
+  display: block;
+  margin-block-end: var(--space-sm);
+}
+
+.to-calendar-input {
+  display: block;
+  width: 100%;
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  color: var(--ink-700);
+  background: var(--parchment-100);
+  border: 1px solid var(--ink-300, #bbb);
+  border-radius: var(--radius-lg);
+  padding: var(--space-sm) var(--space-md);
+  outline: none;
+}
+
+.to-calendar-input:focus {
+  border-color: var(--rust);
+}
+
+/* Contextual calendars tile (expanded) */
+.contextual-card {
+  background: var(--parchment-100);
+  border: var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-lg) var(--space-xl);
+  overflow: hidden;
+}
+
+.contextual-card[hidden] {
+  display: none;
+}
+
+.contextual-card .contextual-panel {
+  margin-block-start: 0;
+  padding-block-start: 0;
+  border-block-start: none;
+}
+
+/* Out-of-era calendars tile (collapsed) */
+.outofera-card {
+  background: var(--parchment-100);
+  border: var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 0;
+  overflow: hidden;
+}
+
+.outofera-card[hidden] {
+  display: none;
+}
+
+.outofera-toggle {
+  display: block;
+  width: 100%;
+  padding: var(--space-md) var(--space-xl);
+  background: transparent;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-400);
+  cursor: pointer;
+  text-align: start;
+}
+
+.outofera-toggle::after {
+  content: ' \25BE';
+}
+
+.outofera-toggle.active::after {
+  content: ' \25B4';
+}
+
+.outofera-toggle:hover {
+  color: var(--ink-700);
+}
+
+.outofera-content {
+  padding: 0 var(--space-xl) var(--space-xl);
+}
+
+.outofera-content.hidden {
+  display: none;
 }
 
 /* Astro card (separate tile) */
@@ -3268,6 +3390,67 @@ body[data-page="calendars"] .main-content--prose {
   font-family: var(--brut-mono);
   color: #999;
   letter-spacing: 0.05em;
+}
+
+/* Target calendar button (brutalist) */
+.result-cal-btn {
+  font-family: var(--brut-mono);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  border: 2px solid #000;
+  border-radius: 0;
+  color: #666;
+  padding: 0.15em 0.5em;
+}
+
+.result-cal-btn:hover {
+  background: #000;
+  color: #fff;
+  border-color: #000;
+}
+
+/* Target calendar input (brutalist) */
+.to-calendar-input {
+  font-family: var(--brut-mono);
+  font-weight: 700;
+  border: 2px solid #000;
+  border-radius: 0;
+  background: var(--brut-surface);
+  color: #000;
+}
+
+.to-calendar-input:focus {
+  border-color: #000;
+  background: #f5f5f0;
+}
+
+/* Contextual card (brutalist) */
+.contextual-card {
+  background: var(--brut-surface);
+  border: 3px solid var(--brut-ink);
+  border-radius: 0;
+  box-shadow: 8px 8px 0 #000;
+  padding: var(--space-lg) var(--space-xl);
+}
+
+/* Out-of-era card (brutalist) */
+.outofera-card {
+  background: var(--brut-surface);
+  border: 3px solid var(--brut-ink);
+  border-radius: 0;
+  box-shadow: 8px 8px 0 #000;
+}
+
+.outofera-toggle {
+  font-family: var(--brut-mono);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: #999;
+  padding: var(--space-md) var(--space-xl);
+}
+
+.outofera-toggle:hover {
+  color: #000;
 }
 
 .astro-card {

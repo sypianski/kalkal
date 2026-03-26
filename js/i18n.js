@@ -132,8 +132,8 @@ const I18N = {
       'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'
     ],
     zodiacLabel: 'Zodiac sign',
-    contextualLabel: 'In other calendars used around that time:',
-    otherCalendarsLabel: 'Other calendars',
+    contextualLabel: 'Contemporaneous calendars',
+    otherCalendarsLabel: 'Proleptic conversions',
     astroLabel: 'Astro',
     eclipseLabel: 'Solar eclipse',
     eclipseViewMap: 'View eclipse map',
@@ -521,8 +521,8 @@ const I18N = {
       'Waga', 'Skorpion', 'Strzelec', 'Kozioro\u017cec', 'Wodnik', 'Ryby'
     ],
     zodiacLabel: 'Znak zodiaku',
-    contextualLabel: 'W innych kalendarzach u\u017cywanych w tym okresie:',
-    otherCalendarsLabel: 'Inne kalendarze',
+    contextualLabel: 'Kalendarze wsp\u00f3\u0142czesne',
+    otherCalendarsLabel: 'Konwersje proleptyczne',
     astroLabel: 'Astro',
     eclipseLabel: 'Za\u0107mienie S\u0142o\u0144ca',
     eclipseViewMap: 'Zobacz map\u0119 za\u0107mienia',
@@ -910,8 +910,8 @@ const I18N = {
       '\u0627\u0644\u0645\u064a\u0632\u0627\u0646', '\u0627\u0644\u0639\u0642\u0631\u0628', '\u0627\u0644\u0642\u0648\u0633', '\u0627\u0644\u062c\u062f\u064a', '\u0627\u0644\u062f\u0644\u0648', '\u0627\u0644\u062d\u0648\u062a'
     ],
     zodiacLabel: '\u0628\u0631\u062c \u0627\u0644\u0641\u0644\u0643',
-    contextualLabel: '\u0641\u064a \u062a\u0642\u0627\u0648\u064a\u0645 \u0623\u062e\u0631\u0649 \u0645\u0633\u062a\u062e\u062f\u0645\u0629 \u0641\u064a \u062a\u0644\u0643 \u0627\u0644\u0641\u062a\u0631\u0629:',
-    otherCalendarsLabel: '\u062a\u0642\u0627\u0648\u064a\u0645 \u0623\u062e\u0631\u0649',
+    contextualLabel: '\u062a\u0642\u0627\u0648\u064a\u0645 \u0645\u0639\u0627\u0635\u0631\u0629',
+    otherCalendarsLabel: '\u062a\u062d\u0648\u064a\u0644\u0627\u062a \u0627\u0633\u062a\u0628\u0627\u0642\u064a\u0629',
     astroLabel: '\u0641\u0644\u0643',
     eclipseLabel: '\u0643\u0633\u0648\u0641 \u0627\u0644\u0634\u0645\u0633',
     eclipseViewMap: '\u0639\u0631\u0636 \u062e\u0631\u064a\u0637\u0629 \u0627\u0644\u0643\u0633\u0648\u0641',
@@ -1299,8 +1299,8 @@ const I18N = {
       'Pesilo', 'Skorpio', 'Sagitario', 'Kaprikorno', 'Akvario', 'Fi\u015doj'
     ],
     zodiacLabel: 'Zodiaka signo',
-    contextualLabel: 'En aliaj kalendaroj uzataj en tiu periodo:',
-    otherCalendarsLabel: 'Aliaj kalendaroj',
+    contextualLabel: 'Samtempaj kalendaroj',
+    otherCalendarsLabel: 'Prolepsaj konvertoj',
     astroLabel: 'Astro',
     eclipseLabel: 'Suna eklipso',
     eclipseViewMap: 'Vidi eklipso-mapon',

@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'kalkal-v11';
+const CACHE_VERSION = 'kalkal-v12';
 const CORE_ASSETS = [
   '/',
   '/index.html',

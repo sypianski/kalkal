@@ -2179,9 +2179,15 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
   padding: var(--space-lg) var(--space-xl) var(--space-xl);
 }
 
-/* Target calendar dropdown field */
+/* Target calendar dropdown field — styled as a tile */
 .to-calendar-field {
   position: relative;
+  background: var(--parchment-100);
+  border: var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-md) var(--space-xl);
+  overflow: visible;
 }
 
 .to-calendar-field[hidden] {
@@ -2194,38 +2200,20 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
   font-family: var(--font-display);
   font-size: 0.9rem;
   color: var(--ink-700);
-  background: var(--parchment-100);
-  border: 1px solid var(--ink-300, #bbb);
-  border-radius: var(--radius-lg);
-  padding: var(--space-sm) var(--space-md);
+  background: transparent;
+  border: none;
+  border-block-end: 1px solid var(--ink-300, #bbb);
+  padding: 0.3em 0;
   outline: none;
 }
 
 .to-calendar-input:focus {
-  border-color: var(--rust);
+  border-block-end-color: var(--rust);
 }
 
-/* Contextual calendars tile (expanded) */
-.contextual-card {
-  background: var(--parchment-100);
-  border: var(--border-subtle);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
-  padding: var(--space-lg) var(--space-xl);
-  overflow: hidden;
-}
+/* ---- Unified tile system ---- */
 
-.contextual-card[hidden] {
-  display: none;
-}
-
-.contextual-card .contextual-panel {
-  margin-block-start: 0;
-  padding-block-start: 0;
-  border-block-start: none;
-}
-
-/* Out-of-era calendars tile (collapsed) */
+.contextual-card,
 .outofera-card {
   background: var(--parchment-100);
   border: var(--border-subtle);
@@ -2235,11 +2223,19 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
   overflow: hidden;
 }
 
+.contextual-card[hidden],
 .outofera-card[hidden] {
   display: none;
 }
 
-.outofera-toggle {
+.contextual-card .contextual-panel {
+  margin-block-start: 0;
+  padding-block-start: 0;
+  border-block-start: none;
+}
+
+/* Shared toggle for all tiles */
+.tile-toggle {
   display: block;
   width: 100%;
   padding: var(--space-md) var(--space-xl);
@@ -2255,23 +2251,23 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
   text-align: start;
 }
 
-.outofera-toggle::after {
+.tile-toggle::after {
   content: ' \25BE';
 }
 
-.outofera-toggle.active::after {
+.tile-toggle.active::after {
   content: ' \25B4';
 }
 
-.outofera-toggle:hover {
+.tile-toggle:hover {
   color: var(--ink-700);
 }
 
-.outofera-content {
+.tile-content {
   padding: 0 var(--space-xl) var(--space-xl);
 }
 
-.outofera-content.hidden {
+.tile-content.hidden {
   display: none;
 }
 
@@ -3366,35 +3362,29 @@ body[data-page="calendars"] .main-content--prose {
   letter-spacing: 0.05em;
 }
 
-/* Target calendar dropdown (brutalist) */
+/* Target calendar field (brutalist) */
 .to-calendar-field {
-  margin-block-end: var(--space-sm);
+  background: var(--brut-surface);
+  border: 3px solid var(--brut-ink);
+  border-radius: 0;
+  box-shadow: 8px 8px 0 #000;
+  padding: var(--space-md) var(--space-xl);
 }
 
 .to-calendar-input {
   font-family: var(--brut-mono);
   font-weight: 700;
-  border: 2px solid #000;
-  border-radius: 0;
-  background: var(--brut-surface);
   color: #000;
+  border-block-end: 2px solid #000;
 }
 
 .to-calendar-input:focus {
-  border-color: #000;
+  border-block-end-color: #000;
   background: #f5f5f0;
 }
 
-/* Contextual card (brutalist) */
-.contextual-card {
-  background: var(--brut-surface);
-  border: 3px solid var(--brut-ink);
-  border-radius: 0;
-  box-shadow: 8px 8px 0 #000;
-  padding: var(--space-lg) var(--space-xl);
-}
-
-/* Out-of-era card (brutalist) */
+/* Contextual & out-of-era cards (brutalist) */
+.contextual-card,
 .outofera-card {
   background: var(--brut-surface);
   border: 3px solid var(--brut-ink);
@@ -3402,7 +3392,8 @@ body[data-page="calendars"] .main-content--prose {
   box-shadow: 8px 8px 0 #000;
 }
 
-.outofera-toggle {
+/* Unified tile toggle (brutalist) */
+.tile-toggle {
   font-family: var(--brut-mono);
   font-weight: 700;
   letter-spacing: 0.2em;
@@ -3410,7 +3401,7 @@ body[data-page="calendars"] .main-content--prose {
   padding: var(--space-md) var(--space-xl);
 }
 
-.outofera-toggle:hover {
+.tile-toggle:hover {
   color: #000;
 }
 
@@ -3422,17 +3413,6 @@ body[data-page="calendars"] .main-content--prose {
   padding: 0;
 }
 
-.astro-card-toggle {
-  font-family: var(--brut-mono);
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  color: #999;
-  padding: var(--space-md) var(--space-xl);
-}
-
-.astro-card-toggle:hover {
-  color: #000;
-}
 
 .contextual-list dt {
   font-family: var(--brut-mono);

@@ -1311,15 +1311,11 @@
       matches.push([t.calendars[id], dateStr]);
     }
     if (matches.length === 0) return null;
-    const wrapper = el('div', { class: 'contextual-panel' });
-    const heading = el('p', { class: 'contextual-heading', text: t.contextualLabel || 'Also in use' });
     const dl = el('dl', { class: 'contextual-list' });
     matches.forEach(([label, value]) => {
       dl.appendChild(el('div', null, el('dt', { text: label }), el('dd', { text: value })));
     });
-    wrapper.appendChild(heading);
-    wrapper.appendChild(dl);
-    return wrapper;
+    return dl;
   }
 
   // Build panel for calendars NOT in use for the given era
@@ -1401,28 +1397,43 @@
 
     resultPanel.classList.add('has-result');
 
-    // Show target calendar dropdown and refine card (month/day)
+    // Show target calendar dropdown (pre-filled) and refine card (month/day)
     var toCalField = document.getElementById('to-calendar-field');
-    if (toCalField) toCalField.hidden = false;
+    if (toCalField) {
+      toCalField.hidden = false;
+      // Pre-fill with current target calendar name
+      var tgtCal = resolveCalendar(toCalInput.value) || CALENDARS.human;
+      if (!toCalInput.value.trim()) {
+        toCalInput.value = t.calendars[tgtCal.id] || '';
+      }
+    }
     if (refineCard) refineCard.hidden = false;
 
-    // Contextual calendars tile (expanded by default)
+    // Contextual calendars tile (expanded, with tile toggle header)
     while (contextualCard.firstChild) contextualCard.removeChild(contextualCard.firstChild);
     if (contextInfo) {
       var ctxPanel = buildContextualPanel(contextInfo.jd, contextInfo.srcId, contextInfo.tgtId, t, contextInfo.jdEnd);
       if (ctxPanel) {
-        contextualCard.appendChild(ctxPanel);
+        var ctxToggle = el('button', { type: 'button', class: 'tile-toggle active', text: t.contextualLabel || 'Contemporaneous calendars' });
+        var ctxContent = el('div', { class: 'tile-content' });
+        ctxContent.appendChild(ctxPanel);
+        ctxToggle.addEventListener('click', function() {
+          ctxContent.classList.toggle('hidden');
+          ctxToggle.classList.toggle('active');
+        });
+        contextualCard.appendChild(ctxToggle);
+        contextualCard.appendChild(ctxContent);
         contextualCard.hidden = false;
       } else {
         contextualCard.hidden = true;
       }
 
-      // Out-of-era calendars tile (collapsed by default)
+      // Out-of-era calendars tile (collapsed)
       while (outOfEraCard.firstChild) outOfEraCard.removeChild(outOfEraCard.firstChild);
       var ooePanel = buildOutOfEraPanel(contextInfo.jd, contextInfo.srcId, contextInfo.tgtId, t, contextInfo.jdEnd);
       if (ooePanel) {
-        var ooeToggle = el('button', { type: 'button', class: 'outofera-toggle', text: t.otherCalendarsLabel || 'Other calendars' });
-        var ooeContent = el('div', { class: 'outofera-content hidden' });
+        var ooeToggle = el('button', { type: 'button', class: 'tile-toggle', text: t.otherCalendarsLabel || 'Proleptic conversions' });
+        var ooeContent = el('div', { class: 'tile-content hidden' });
         ooeContent.appendChild(ooePanel);
         ooeToggle.addEventListener('click', function() {
           ooeContent.classList.toggle('hidden');
@@ -1439,11 +1450,34 @@
       outOfEraCard.hidden = true;
     }
 
-    // Astro card (collapsible tile)
+    // Astro card (collapsible tile — auto-expand if meaningful content beyond JDN)
     while (astroCard.firstChild) astroCard.removeChild(astroCard.firstChild);
     if (astroElements && astroElements.length > 0) {
-      var astroToggle = el('button', { type: 'button', class: 'astro-card-toggle', text: t.astroLabel || 'Astro' });
-      var astroContent = el('div', { class: 'astro-card-content hidden' });
+      // Check if there's meaningful content (eclipses, comets, supernovae, conjunctions)
+      var hasMeaningful = astroElements.some(function(node) {
+        if (!node || !node.classList) return false;
+        return node.classList.contains('result-eclipse') ||
+               node.classList.contains('result-comet') ||
+               node.classList.contains('result-supernova') ||
+               node.classList.contains('result-conjunction') ||
+               node.classList.contains('result-astro');
+      });
+      // Build summary hints for the header
+      var astroHints = [];
+      astroElements.forEach(function(node) {
+        if (!node || !node.classList) return;
+        if (node.classList.contains('result-eclipse')) astroHints.push('\u25D0');
+        if (node.classList.contains('result-comet')) astroHints.push('\u2604');
+        if (node.classList.contains('result-supernova')) astroHints.push('\u2726');
+        if (node.classList.contains('result-conjunction')) astroHints.push('\u2728');
+      });
+      var astroTitle = t.astroLabel || 'Astro';
+      if (astroHints.length > 0) {
+        astroTitle += ' \u00b7 ' + astroHints.join(' ');
+      }
+      var startExpanded = hasMeaningful;
+      var astroToggle = el('button', { type: 'button', class: 'tile-toggle' + (startExpanded ? ' active' : ''), text: astroTitle });
+      var astroContent = el('div', { class: 'tile-content' + (startExpanded ? '' : ' hidden') });
       astroElements.forEach(node => { if (node) astroContent.appendChild(node); });
       astroToggle.addEventListener('click', function() {
         astroContent.classList.toggle('hidden');
@@ -1456,11 +1490,11 @@
       astroCard.hidden = true;
     }
 
-    // Breakdown panel (collapsible — click header to expand)
+    // Breakdown panel (collapsible)
     while (breakdownPanel.firstChild) breakdownPanel.removeChild(breakdownPanel.firstChild);
     if (breakdownElements && breakdownElements.length > 0) {
-      var bdHeader = el('button', { type: 'button', class: 'breakdown-toggle', text: t.monthBreakdown || 'Month breakdown' });
-      var bdContent = el('div', { class: 'breakdown-content hidden' });
+      var bdHeader = el('button', { type: 'button', class: 'tile-toggle', text: t.monthBreakdown || 'Month breakdown' });
+      var bdContent = el('div', { class: 'tile-content hidden' });
       breakdownElements.forEach(node => { if (node) bdContent.appendChild(node); });
       bdHeader.addEventListener('click', function () {
         bdContent.classList.toggle('hidden');

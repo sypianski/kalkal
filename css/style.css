@@ -3096,12 +3096,6 @@ body[data-page="calendars"] .main-content--prose {
   align-items: start;
 }
 
-@media (max-width: 800px) {
-  .converter-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
 /* ---- Left card: dense control panel ---- */
 .converter-card {
   background: #000;
@@ -4807,12 +4801,23 @@ body {
    MOBILE BOTTOM NAV — replaces inline page-nav on small screens
    ============================================================ */
 
+@media (max-width: 800px) {
+  .converter-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
 @media (max-width: 600px) {
-  /* ---- Header: compact single row ---- */
+
+  /* ---- HEADER: single tight strip ---- */
+  .site-header {
+    padding: 0.4em 0.6em !important;
+  }
+
   .header-inner {
     flex-direction: row !important;
     align-items: center !important;
-    gap: var(--space-sm);
+    gap: 0.3em;
   }
 
   html[dir="rtl"] .header-inner {
@@ -4820,16 +4825,250 @@ body {
     align-items: center !important;
   }
 
+  .brand { min-width: 0; }
+
   .site-title {
-    font-size: 0.85rem;
-    letter-spacing: 0.15em;
+    font-size: 0.7rem !important;
+    letter-spacing: 0.08em !important;
+    white-space: nowrap;
   }
 
-  .site-subtitle {
-    display: none;
+  .site-subtitle { display: none; }
+
+  .lang-switcher {
+    margin-inline-start: auto;
+    border-width: 1px !important;
   }
 
-  /* ---- Page nav → fixed bottom tab bar ---- */
+  .lang-btn {
+    min-width: 28px !important;
+    min-height: 28px !important;
+    padding: 0.2em 0.35em !important;
+    font-size: 0.55rem !important;
+  }
+
+  /* ---- CONTENT: aggressive squeeze ---- */
+  .main-content {
+    padding: 0.5em 0.5em 3.5em !important;
+    overflow-x: hidden;
+  }
+
+  .converter-grid {
+    gap: 0.5em !important;
+  }
+
+  /* Converter card (black form) */
+  .converter-card {
+    border-width: 2px !important;
+    box-shadow: 4px 4px 0 #000 !important;
+    max-width: 100%;
+  }
+
+  .converter-form {
+    padding: 0.6em 0.7em !important;
+    gap: 0.4em !important;
+  }
+
+  .form-label {
+    font-size: 0.55rem !important;
+    margin-block-end: 1px !important;
+  }
+
+  .input-cal {
+    font-size: 0.85rem !important;
+    padding: 0.2em 0 !important;
+  }
+
+  .input-num {
+    font-size: 0.85rem !important;
+    padding: 0.2em 0 !important;
+  }
+
+  .btn-convert {
+    font-size: 0.75rem !important;
+    min-height: 36px !important;
+    padding: 0.4em 1em !important;
+  }
+
+  /* Refine card (month/day) */
+  .refine-card {
+    padding: 0.5em 0.7em !important;
+    border-width: 2px !important;
+    box-shadow: 4px 4px 0 #000 !important;
+    max-width: 100%;
+  }
+
+  .refine-input {
+    font-size: 0.85rem !important;
+    padding: 0.15em 0 !important;
+  }
+
+  .refine-label {
+    font-size: 0.5rem !important;
+    margin-block-start: 0.15em !important;
+  }
+
+  .refine-field {
+    margin-block-start: 0.4em !important;
+  }
+
+  /* Results */
+  .result-panel {
+    max-width: 100%;
+    border-width: 2px !important;
+    box-shadow: 4px 4px 0 #000 !important;
+  }
+
+  .result-body {
+    padding: 0.5em !important;
+  }
+
+  .result-panel .result-main {
+    font-size: 0.85rem !important;
+    word-break: break-word;
+    letter-spacing: 0 !important;
+    margin-block-end: 0.5em !important;
+  }
+
+  .result-panel .result-dow {
+    font-size: 0.65rem !important;
+  }
+
+  .result-panel .result-secondary {
+    font-size: 0.72rem !important;
+  }
+
+  .result-meta {
+    font-size: 0.65rem !important;
+    gap: 0.2em 0.5em !important;
+    margin-block-start: 0.5em !important;
+    padding-block-start: 0.4em !important;
+  }
+
+  .result-meta dt {
+    font-size: 0.5rem !important;
+  }
+
+  /* Copy button: below text, not overlapping */
+  .copy-btn {
+    position: static !important;
+    display: block !important;
+    width: 100%;
+    margin-block-start: 0.4em;
+    text-align: center;
+    min-height: 32px !important;
+    min-width: unset !important;
+    padding: 0.3em 0.6em !important;
+    font-size: 0.55rem !important;
+  }
+
+  html[dir="rtl"] .copy-btn {
+    right: unset !important;
+    left: unset !important;
+  }
+
+  /* Result body needs to not be position:relative for static copy-btn */
+  .result-body {
+    position: relative;
+  }
+
+  /* Contextual results: single column on mobile */
+  .contextual-list {
+    grid-template-columns: 1fr !important;
+    gap: 0.4em !important;
+  }
+
+  .contextual-list dt {
+    font-size: 0.5rem !important;
+    white-space: normal !important;
+  }
+
+  .contextual-list dd {
+    font-size: 0.7rem !important;
+    word-break: break-word;
+  }
+
+  .contextual-heading {
+    font-size: 0.5rem !important;
+    margin-block-end: 0.3em !important;
+  }
+
+  .contextual-panel {
+    margin-block-start: 0.5em !important;
+    padding-block-start: 0.4em !important;
+  }
+
+  .tile-toggle {
+    padding: 0.4em 0.6em !important;
+    font-size: 0.6rem !important;
+  }
+
+  .tile-content {
+    padding: 0 0.6em 0.6em !important;
+  }
+
+  /* Contextual / astro / breakdown cards */
+  .contextual-card,
+  .outofera-card,
+  .astro-card,
+  .breakdown-card {
+    border-width: 2px !important;
+    box-shadow: 4px 4px 0 #000 !important;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  /* History: single column */
+  .history-entry {
+    grid-template-columns: 1fr !important;
+    gap: 0.15em !important;
+    font-size: 0.72rem !important;
+  }
+
+  /* History */
+  .history-panel {
+    padding: 0 !important;
+  }
+
+  .history-header {
+    padding: 0.4em 0.5em !important;
+  }
+
+  .history-title {
+    font-size: 0.65rem !important;
+  }
+
+  /* Footer */
+  .site-footer {
+    padding: 0.5em 0 0.3em !important;
+  }
+
+  .footer-note {
+    font-size: 0.6rem !important;
+    line-height: 1.4 !important;
+  }
+
+  /* To-calendar field */
+  .to-calendar-field {
+    max-width: 100%;
+  }
+
+  .to-calendar-input {
+    font-size: 0.85rem !important;
+  }
+
+  /* Variant buttons */
+  .variant-bar {
+    gap: 0.2em !important;
+  }
+
+  .variant-btn {
+    font-size: 0.55rem !important;
+    padding: 0.25em 0.5em !important;
+    min-height: 28px !important;
+  }
+
+  /* ---- BOTTOM NAV BAR ---- */
   .page-nav {
     position: fixed;
     bottom: 0;
@@ -4838,13 +5077,11 @@ body {
     z-index: 9000;
     background: #000;
     display: flex !important;
-    justify-content: stretch;
     gap: 0 !important;
     margin: 0 !important;
     padding: 0;
     padding-bottom: env(safe-area-inset-bottom, 0px);
-    border-top: 3px solid #222;
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+    border-top: 2px solid #333;
   }
 
   .page-nav a {
@@ -4853,76 +5090,46 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 0.5em 0.2em 0.45em !important;
-    min-height: 56px !important;
+    padding: 0.35em 0.1em 0.3em !important;
+    min-height: 44px !important;
     font-family: var(--brut-mono) !important;
-    font-size: 0.48rem !important;
+    font-size: 0.42rem !important;
     font-weight: 700 !important;
     text-transform: uppercase;
-    letter-spacing: 0.18em !important;
+    letter-spacing: 0.12em !important;
     color: #555 !important;
     background: transparent !important;
     border: none !important;
-    border-top: 3px solid transparent !important;
+    border-top: 2px solid transparent !important;
     border-radius: 0 !important;
     text-decoration: none;
     transition: color 0.15s ease, border-color 0.15s ease;
-    position: relative;
   }
 
-  /* Geometric icons via ::before */
   .page-nav a::before {
     display: block;
-    font-size: 1.15rem;
+    font-size: 0.95rem;
     line-height: 1;
-    margin-bottom: 0.3em;
-    font-style: normal;
-    font-weight: 400;
+    margin-bottom: 0.15em;
   }
 
   .page-nav a[href="index.html"]::before,
-  .page-nav a[href="/"]::before           { content: "\21C4"; /* ⇄ */ }
-  .page-nav a[href="calendars.html"]::before { content: "\25A6"; /* ▦ */ }
-  .page-nav a[href="methodology.html"]::before { content: "\25C6"; /* ◆ */ }
-  .page-nav a[href="eclipses.html"]::before { content: "\25D0"; /* ◐ */ }
+  .page-nav a[href="/"]::before           { content: "\21C4"; }
+  .page-nav a[href="calendars.html"]::before { content: "\25A6"; }
+  .page-nav a[href="methodology.html"]::before { content: "\25C6"; }
+  .page-nav a[href="eclipses.html"]::before { content: "\25D0"; }
 
-  .page-nav a:hover {
-    color: #888 !important;
-    background: transparent !important;
-  }
+  .page-nav a:hover        { color: #888 !important; background: transparent !important; }
+  .page-nav a.active        { color: #fff !important; background: transparent !important; border-top-color: #fff !important; }
+  .page-nav a.active::before { color: #fff; }
 
-  .page-nav a.active {
-    color: #fff !important;
-    background: transparent !important;
-    border-top-color: #fff !important;
-  }
-
-  .page-nav a.active::before {
-    color: #fff;
-  }
-
-  /* ---- Body padding to clear the bottom bar ---- */
-  body {
-    padding-bottom: 62px;
-  }
-
-  .site-footer {
-    padding-block-end: var(--space-md);
-  }
-
-  /* Install banner: above the bottom bar */
-  .install-banner {
-    bottom: 62px;
-  }
+  /* ---- Body clearance for bottom bar ---- */
+  body { padding-bottom: 48px; }
+  .install-banner { bottom: 48px; }
 }
 
-/* Standalone mode: extra bottom padding for safe-area + bottom nav */
+/* Standalone + mobile: safe-area */
 @media (display-mode: standalone) and (max-width: 600px) {
-  body {
-    padding-bottom: calc(62px + env(safe-area-inset-bottom, 0px));
-  }
-
-  .page-nav {
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-  }
+  body { padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px)); }
+  .page-nav { padding-bottom: env(safe-area-inset-bottom, 0px); }
 }

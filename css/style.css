@@ -3096,6 +3096,12 @@ body[data-page="calendars"] .main-content--prose {
   align-items: start;
 }
 
+@media (max-width: 800px) {
+  .converter-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ---- Left card: dense control panel ---- */
 .converter-card {
   background: #000;
@@ -4795,4 +4801,128 @@ body {
 :focus-visible {
   outline: 2px solid #000;
   outline-offset: 2px;
+}
+
+/* ============================================================
+   MOBILE BOTTOM NAV — replaces inline page-nav on small screens
+   ============================================================ */
+
+@media (max-width: 600px) {
+  /* ---- Header: compact single row ---- */
+  .header-inner {
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: var(--space-sm);
+  }
+
+  html[dir="rtl"] .header-inner {
+    flex-direction: row-reverse !important;
+    align-items: center !important;
+  }
+
+  .site-title {
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+  }
+
+  .site-subtitle {
+    display: none;
+  }
+
+  /* ---- Page nav → fixed bottom tab bar ---- */
+  .page-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9000;
+    background: #000;
+    display: flex !important;
+    justify-content: stretch;
+    gap: 0 !important;
+    margin: 0 !important;
+    padding: 0;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    border-top: 3px solid #222;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+  }
+
+  .page-nav a {
+    flex: 1;
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5em 0.2em 0.45em !important;
+    min-height: 56px !important;
+    font-family: var(--brut-mono) !important;
+    font-size: 0.48rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.18em !important;
+    color: #555 !important;
+    background: transparent !important;
+    border: none !important;
+    border-top: 3px solid transparent !important;
+    border-radius: 0 !important;
+    text-decoration: none;
+    transition: color 0.15s ease, border-color 0.15s ease;
+    position: relative;
+  }
+
+  /* Geometric icons via ::before */
+  .page-nav a::before {
+    display: block;
+    font-size: 1.15rem;
+    line-height: 1;
+    margin-bottom: 0.3em;
+    font-style: normal;
+    font-weight: 400;
+  }
+
+  .page-nav a[href="index.html"]::before,
+  .page-nav a[href="/"]::before           { content: "\21C4"; /* ⇄ */ }
+  .page-nav a[href="calendars.html"]::before { content: "\25A6"; /* ▦ */ }
+  .page-nav a[href="methodology.html"]::before { content: "\25C6"; /* ◆ */ }
+  .page-nav a[href="eclipses.html"]::before { content: "\25D0"; /* ◐ */ }
+
+  .page-nav a:hover {
+    color: #888 !important;
+    background: transparent !important;
+  }
+
+  .page-nav a.active {
+    color: #fff !important;
+    background: transparent !important;
+    border-top-color: #fff !important;
+  }
+
+  .page-nav a.active::before {
+    color: #fff;
+  }
+
+  /* ---- Body padding to clear the bottom bar ---- */
+  body {
+    padding-bottom: 62px;
+  }
+
+  .site-footer {
+    padding-block-end: var(--space-md);
+  }
+
+  /* Install banner: above the bottom bar */
+  .install-banner {
+    bottom: 62px;
+  }
+}
+
+/* Standalone mode: extra bottom padding for safe-area + bottom nav */
+@media (display-mode: standalone) and (max-width: 600px) {
+  body {
+    padding-bottom: calc(62px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .page-nav {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
 }

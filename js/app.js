@@ -1287,6 +1287,20 @@
     return dl;
   }
 
+  // Build a <dd> that allows line-break before ' – ' via <wbr>, invisible when copied
+  function dateDd(dateStr) {
+    var dd = document.createElement('dd');
+    var dashIdx = dateStr.indexOf(' \u2013 ');
+    if (dashIdx >= 0) {
+      dd.appendChild(document.createTextNode(dateStr.slice(0, dashIdx)));
+      dd.appendChild(document.createElement('wbr'));
+      dd.appendChild(document.createTextNode(dateStr.slice(dashIdx)));
+    } else {
+      dd.textContent = dateStr;
+    }
+    return dd;
+  }
+
   function buildContextualPanel(jd, srcId, tgtId, t, jdEnd) {
     const isRange = jdEnd !== undefined;
     const matches = [];
@@ -1313,7 +1327,7 @@
     if (matches.length === 0) return null;
     const dl = el('dl', { class: 'contextual-list' });
     matches.forEach(([label, value]) => {
-      dl.appendChild(el('div', null, el('dt', { text: label }), el('dd', { text: value })));
+      dl.appendChild(el('div', null, el('dt', { text: label }), dateDd(value)));
     });
     return dl;
   }
@@ -1346,7 +1360,7 @@
     if (matches.length === 0) return null;
     const dl = el('dl', { class: 'contextual-list' });
     matches.forEach(([label, value]) => {
-      dl.appendChild(el('div', null, el('dt', { text: label }), el('dd', { text: value })));
+      dl.appendChild(el('div', null, el('dt', { text: label }), dateDd(value)));
     });
     return dl;
   }

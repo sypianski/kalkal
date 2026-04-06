@@ -1,0 +1,6 @@
+- [ ] Add more calendar systems (Yazgerdi, French Republican, etc. if missing)
+- [ ] Improve mobile UX based on recent layout changes
+- [ ] Expand test coverage for edge cases (leap years, era boundaries)
+- [ ] Add historical event annotations to date results
+- [ ] Optimize service worker caching strategy
+- [ ] Complete eclipse data integration for broader date ranges

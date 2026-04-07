@@ -2,7 +2,6 @@
 // Extracted from app.js for React Native
 
 import { Cal } from './cal';
-import { T } from './i18n';
 
 export const VARIANT_LABELS: Record<string, string> = {
   IIc: 'W\u00fcstenfeld',
@@ -33,7 +32,16 @@ export interface CalendarDef {
   isLeap(y: number): boolean;
   monthCount: number;
   monthNames(t: any): string[];
+  historicalRange?: [number, number] | null;
 }
+
+// Priority order for contextual/out-of-era calendar panels
+export const CONTEXTUAL_PRIORITY: string[] = [
+  'gregorian', 'hijri', 'julian', 'hebrew', 'coptic', 'byzantine',
+  'seleucid', 'syriac', 'solarHijri', 'yazdgerdi', 'armenian',
+  'ethiopian', 'roman', 'babylonian', 'macedonian', 'antiochene',
+  'egyptian', 'olympiad', 'spanish', 'ilkhani', 'rumi'
+];
 
 export const CALENDARS: Record<string, CalendarDef> = {
   hijri: {
@@ -47,7 +55,8 @@ export const CALENDARS: Record<string, CalendarDef> = {
     yearLength(y) { return Cal.hijriYearLength(y, this._variant); },
     isLeap(y) { return Cal.isHijriLeapYear(y, this._variant); },
     monthCount: 12,
-    monthNames: (t) => t.hijriMonths
+    monthNames: (t) => t.hijriMonths,
+    historicalRange: [1948440, Infinity]
   },
   julian: {
     id: 'julian',
@@ -57,7 +66,8 @@ export const CALENDARS: Record<string, CalendarDef> = {
     yearLength: (y) => Cal.isJulianLeapYear(y) ? 366 : 365,
     isLeap: (y) => Cal.isJulianLeapYear(y),
     monthCount: 12,
-    monthNames: (t) => t.gregorianMonths
+    monthNames: (t) => t.gregorianMonths,
+    historicalRange: [1704987, 2305448]
   },
   gregorian: {
     id: 'gregorian',
@@ -76,7 +86,8 @@ export const CALENDARS: Record<string, CalendarDef> = {
     },
     isLeap: (y) => y < 1582 ? Cal.isJulianLeapYear(y) : Cal.isGregorianLeapYear(y),
     monthCount: 12,
-    monthNames: (t) => t.gregorianMonths
+    monthNames: (t) => t.gregorianMonths,
+    historicalRange: [0, Infinity]
   },
   coptic: {
     id: 'coptic',
@@ -86,7 +97,8 @@ export const CALENDARS: Record<string, CalendarDef> = {
     yearLength: (y) => Cal.copticYearLength(y),
     isLeap: (y) => Cal.isCopticLeapYear(y),
     monthCount: 13,
-    monthNames: (t) => t.copticMonths
+    monthNames: (t) => t.copticMonths,
+    historicalRange: [1825030, Infinity]
   },
   ethiopian: {
     id: 'ethiopian',
@@ -96,7 +108,8 @@ export const CALENDARS: Record<string, CalendarDef> = {
     yearLength: (y) => Cal.ethiopianYearLength(y),
     isLeap: (y) => Cal.isEthiopianLeapYear(y),
     monthCount: 13,
-    monthNames: (t) => t.ethiopianMonths
+    monthNames: (t) => t.ethiopianMonths,
+    historicalRange: [2269509, Infinity]
   },
   yazdgerdi: {
     id: 'yazdgerdi',
@@ -127,7 +140,8 @@ export const CALENDARS: Record<string, CalendarDef> = {
       return false;
     },
     monthCount: 13,
-    monthNames: (t) => t.persianMonths
+    monthNames: (t) => t.persianMonths,
+    historicalRange: [1952063, Infinity]
   },
   armenian: {
     id: 'armenian',
@@ -137,7 +151,8 @@ export const CALENDARS: Record<string, CalendarDef> = {
     yearLength: () => Cal.armenianYearLength(),
     isLeap: () => false,
     monthCount: 13,
-    monthNames: (t) => t.armenianMonths
+    monthNames: (t) => t.armenianMonths,
+    historicalRange: [1922711, Infinity]
   },
   solarHijri: {
     id: 'solarHijri',
@@ -147,7 +162,8 @@ export const CALENDARS: Record<string, CalendarDef> = {
     yearLength: (y) => Cal.solarHijriYearLength(y),
     isLeap: (y) => Cal.isSolarHijriLeapYear(y),
     monthCount: 12,
-    monthNames: (t) => t.persianMonths
+    monthNames: (t) => t.persianMonths,
+    historicalRange: [2115376, Infinity]
   },
   ilkhani: {
     id: 'ilkhani',
@@ -157,7 +173,8 @@ export const CALENDARS: Record<string, CalendarDef> = {
     yearLength: (y) => Cal.ilkhaniYearLength(y),
     isLeap: (y) => Cal.isIlkhaniLeapYear(y),
     monthCount: 12,
-    monthNames: (t) => t.persianMonths
+    monthNames: (t) => t.persianMonths,
+    historicalRange: [2196585, 2208640]
   },
   byzantine: {
     id: 'byzantine',
@@ -194,7 +211,8 @@ export const CALENDARS: Record<string, CalendarDef> = {
       if (this._variant === 'Alexandrian') return t.alexandrianMonths;
       if (this._variant === 'ChronPasch') return t.alexandrianMonths;
       return t.byzantineMonths;
-    }
+    },
+    historicalRange: [1903683, 2251545]
   },
   seleucid: {
     id: 'seleucid',
@@ -219,7 +237,8 @@ export const CALENDARS: Record<string, CalendarDef> = {
     monthCount: 12,
     monthNames(t) {
       return this._variant === 'Babylonian' ? t.seleucidBabMonths : t.seleucidMonths;
-    }
+    },
+    historicalRange: [1574638, 2086673]
   },
   syriac: {
     id: 'syriac',
@@ -229,7 +248,8 @@ export const CALENDARS: Record<string, CalendarDef> = {
     yearLength: (y) => Cal.syriacYearLength(y),
     isLeap: (y) => Cal.isSyriacLeapYear(y),
     monthCount: 12,
-    monthNames: (t) => t.syriacMonths
+    monthNames: (t) => t.syriacMonths,
+    historicalRange: [1574638, 2086673]
   },
   rumi: {
     id: 'rumi',
@@ -239,7 +259,8 @@ export const CALENDARS: Record<string, CalendarDef> = {
     yearLength: (y) => Cal.rumiYearLength(y),
     isLeap: (y) => Cal.isRumiLeapYear(y),
     monthCount: 12,
-    monthNames: (t) => t.gregorianMonths
+    monthNames: (t) => t.gregorianMonths,
+    historicalRange: [2393109, 2424516]
   },
   egyptian: {
     id: 'egyptian',
@@ -249,7 +270,8 @@ export const CALENDARS: Record<string, CalendarDef> = {
     yearLength: () => Cal.egyptianYearLength(),
     isLeap: () => false,
     monthCount: 13,
-    monthNames: (t) => t.egyptianMonths
+    monthNames: (t) => t.egyptianMonths,
+    historicalRange: [957449, 1713064]
   },
   auc: {
     id: 'auc',
@@ -269,7 +291,8 @@ export const CALENDARS: Record<string, CalendarDef> = {
     yearLength: (y) => Cal.aucYearLength(y),
     isLeap: (y) => Cal.isAucLeapYear(y),
     monthCount: 12,
-    monthNames: (t) => t.romanMonths
+    monthNames: (t) => t.romanMonths,
+    historicalRange: [1413478, 1903683]
   },
   spanish: {
     id: 'spanish',
@@ -279,7 +302,8 @@ export const CALENDARS: Record<string, CalendarDef> = {
     yearLength: (y) => Cal.spanishYearLength(y),
     isLeap: (y) => Cal.isSpanishLeapYear(y),
     monthCount: 12,
-    monthNames: (t) => t.gregorianMonths
+    monthNames: (t) => t.gregorianMonths,
+    historicalRange: [1704610, 2232400]
   },
   antiochene: {
     id: 'antiochene',
@@ -289,7 +313,8 @@ export const CALENDARS: Record<string, CalendarDef> = {
     yearLength: (y) => Cal.antiocheneYearLength(y),
     isLeap: (y) => Cal.isAntiocheneLeapYear(y),
     monthCount: 12,
-    monthNames: (t) => t.seleucidMonths
+    monthNames: (t) => t.seleucidMonths,
+    historicalRange: [1574638, 2086673]
   },
   olympiad: {
     id: 'olympiad',
@@ -299,7 +324,8 @@ export const CALENDARS: Record<string, CalendarDef> = {
     yearLength: (y) => Cal.olympiadYearLength(y),
     isLeap: (y) => Cal.isOlympiadLeapYear(y),
     monthCount: 12,
-    monthNames: (t) => t.gregorianMonths
+    monthNames: (t) => t.gregorianMonths,
+    historicalRange: [1405084, 1867157]
   },
   macedonian: {
     id: 'macedonian',
@@ -309,7 +335,8 @@ export const CALENDARS: Record<string, CalendarDef> = {
     yearLength: (y) => Cal.macedonianYearLength(y),
     isLeap: (y) => Cal.isMacedonianLeapYear(y),
     monthCount: 12,
-    monthNames: (t) => t.macedonianMonths
+    monthNames: (t) => t.macedonianMonths,
+    historicalRange: [1574638, 1903683]
   },
   hebrew: {
     id: 'hebrew',
@@ -319,7 +346,8 @@ export const CALENDARS: Record<string, CalendarDef> = {
     yearLength: (y) => Cal.hebrewYearLength(y),
     isLeap: (y) => Cal.isHebrewLeapYear(y),
     monthCount: 13,
-    monthNames: (t) => t.hebrewMonths
+    monthNames: (t) => t.hebrewMonths,
+    historicalRange: [0, Infinity]
   },
   babylonian: {
     id: 'babylonian',
@@ -329,7 +357,8 @@ export const CALENDARS: Record<string, CalendarDef> = {
     yearLength: (y) => Cal.babylonianYearLength(y),
     isLeap: (y) => Cal.isBabylonianLeapYear(y),
     monthCount: 13,
-    monthNames: (t) => t.babylonianMonths
+    monthNames: (t) => t.babylonianMonths,
+    historicalRange: [1414609, 1721058]
   },
   bp: {
     id: 'bp',
@@ -339,7 +368,8 @@ export const CALENDARS: Record<string, CalendarDef> = {
     yearLength: (y) => Cal.bpYearLength(y),
     isLeap: (y) => Cal.isBPLeapYear(y),
     monthCount: 12,
-    monthNames: (t) => t.gregorianMonths
+    monthNames: (t) => t.gregorianMonths,
+    historicalRange: null
   },
   human: {
     id: 'human',
@@ -352,7 +382,8 @@ export const CALENDARS: Record<string, CalendarDef> = {
     yearLength(y) { return Cal.humanYearLength(y, this._variant); },
     isLeap(y) { return Cal.isHumanLeapYear(y, this._variant); },
     monthCount: 12,
-    monthNames: (t) => t.gregorianMonths
+    monthNames: (t) => t.gregorianMonths,
+    historicalRange: null
   }
 };
 

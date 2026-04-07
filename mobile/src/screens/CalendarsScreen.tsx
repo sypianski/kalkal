@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTheme } from '../theme/ThemeContext';
+import { useT } from '../i18n/LanguageContext';
 import { BrutalistCard } from '../components/BrutalistCard';
 
 const CALENDARS_DATA = [
@@ -150,7 +151,7 @@ const CALENDARS_DATA = [
   },
 ];
 
-function CalendarCard({ cal, theme }: { cal: typeof CALENDARS_DATA[0]; theme: any }) {
+function CalendarCard({ cal, theme, T }: { cal: typeof CALENDARS_DATA[0]; theme: any; T: any }) {
   const [expanded, setExpanded] = useState(false);
   const isBrut = theme.name === 'brutalist';
   const typeColor = isBrut
@@ -181,13 +182,13 @@ function CalendarCard({ cal, theme }: { cal: typeof CALENDARS_DATA[0]; theme: an
             ? { color: theme.colors.text, backgroundColor: theme.colors.accent, paddingHorizontal: 8, paddingVertical: 4, alignSelf: 'flex-start', fontWeight: '900' }
             : { color: theme.colors.accent }
         ]}>
-          {expanded ? 'SHOW LESS' : 'SHOW MORE'}
+          {(expanded ? T.showLess : T.showMore).toUpperCase()}
         </Text>
       </TouchableOpacity>
       {expanded && (
         <>
           <Text style={[cardStyles.body, { color: theme.colors.text }]}>{cal.body}</Text>
-          <Text style={[cardStyles.monthLabel, { color: isBrut ? theme.colors.text : theme.colors.textMuted }, isBrut && { backgroundColor: '#000', color: theme.colors.accent, paddingHorizontal: 8, paddingVertical: 4, alignSelf: 'flex-start' }]}>Months</Text>
+          <Text style={[cardStyles.monthLabel, { color: isBrut ? theme.colors.text : theme.colors.textMuted }, isBrut && { backgroundColor: '#000', color: theme.colors.accent, paddingHorizontal: 8, paddingVertical: 4, alignSelf: 'flex-start' }]}>{T.monthsLabel}</Text>
           <Text style={[cardStyles.months, { color: theme.colors.textSecondary }]}>{cal.months}</Text>
         </>
       )}
@@ -197,16 +198,17 @@ function CalendarCard({ cal, theme }: { cal: typeof CALENDARS_DATA[0]; theme: an
 
 export function CalendarsScreen() {
   const { theme } = useTheme();
+  const T = useT();
   const isBrut = theme.name === 'brutalist';
 
   return (
     <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <Text style={[styles.title, { color: theme.colors.text, letterSpacing: isBrut ? 3 : 0 }]}>Calendar Systems</Text>
+      <Text style={[styles.title, { color: theme.colors.text, letterSpacing: isBrut ? 3 : 0 }]}>{T.calendarsScreenTitle}</Text>
       <Text style={[styles.subtitle, { color: isBrut ? theme.colors.accent : theme.colors.textSecondary, letterSpacing: isBrut ? 2 : 0 }]}>
-        {CALENDARS_DATA.length} calendar systems supported
+        {CALENDARS_DATA.length} {T.calendarsScreenSubtitle}
       </Text>
       {CALENDARS_DATA.map(cal => (
-        <CalendarCard key={cal.id} cal={cal} theme={theme} />
+        <CalendarCard key={cal.id} cal={cal} theme={theme} T={T} />
       ))}
       <View style={{ height: 40 }} />
     </ScrollView>

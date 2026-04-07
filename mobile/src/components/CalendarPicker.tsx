@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Modal, TouchableOpacity, TextInput, ScrollView, StyleSheet } from 'react-native';
 import { useTheme } from '../theme/ThemeContext';
 import { CALENDARS, CALENDAR_GROUPS, VARIANT_LABELS } from '../engine/calendars';
-import { T } from '../engine/i18n';
+import { useT } from '../i18n/LanguageContext';
 
 interface Props {
   value: string | null;
@@ -12,6 +12,7 @@ interface Props {
 
 export function CalendarPicker({ value, onSelect, label }: Props) {
   const { theme } = useTheme();
+  const T = useT();
   const [visible, setVisible] = useState(false);
   const [search, setSearch] = useState('');
 
@@ -46,12 +47,12 @@ export function CalendarPicker({ value, onSelect, label }: Props) {
           ]}>
             <Text style={[styles.modalTitle, { color: theme.name === 'brutalist' ? '#fff' : theme.colors.text }]}>{label}</Text>
             <TouchableOpacity onPress={() => setVisible(false)}>
-              <Text style={[styles.closeBtn, { color: theme.colors.accent }]}>Done</Text>
+              <Text style={[styles.closeBtn, { color: theme.colors.accent }]}>{T.doneLabel}</Text>
             </TouchableOpacity>
           </View>
           <TextInput
             style={[styles.searchInput, { borderColor: theme.colors.border, color: theme.colors.text, backgroundColor: theme.colors.surface, borderRadius: theme.borderRadius, borderWidth: theme.borderWidth }]}
-            placeholder="Search..."
+            placeholder={T.searchPlaceholder}
             placeholderTextColor={theme.colors.textMuted}
             value={search}
             onChangeText={setSearch}

@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text } from 'react-native';
 import { ThemeProvider, useTheme } from './src/theme/ThemeContext';
+import { LanguageProvider, useT } from './src/i18n/LanguageContext';
 import { ConverterScreen } from './src/screens/ConverterScreen';
 import { CalendarsScreen } from './src/screens/CalendarsScreen';
 import { MethodologyScreen } from './src/screens/MethodologyScreen';
@@ -21,6 +22,7 @@ function TabIcon({ label, focused }: { label: string; focused: boolean }) {
 
 function AppTabs() {
   const { theme } = useTheme();
+  const t = useT();
 
   return (
     <>
@@ -45,9 +47,9 @@ function AppTabs() {
           },
         })}
       >
-        <Tab.Screen name="Converter" component={ConverterScreen} />
-        <Tab.Screen name="Calendars" component={CalendarsScreen} />
-        <Tab.Screen name="Methodology" component={MethodologyScreen} />
+        <Tab.Screen name="Converter" component={ConverterScreen} options={{ tabBarLabel: t.navConverter }} />
+        <Tab.Screen name="Calendars" component={CalendarsScreen} options={{ tabBarLabel: t.navCalendars }} />
+        <Tab.Screen name="Methodology" component={MethodologyScreen} options={{ tabBarLabel: t.navMethodology }} />
       </Tab.Navigator>
     </>
   );
@@ -56,9 +58,11 @@ function AppTabs() {
 export default function App() {
   return (
     <ThemeProvider>
-      <NavigationContainer>
-        <AppTabs />
-      </NavigationContainer>
+      <LanguageProvider>
+        <NavigationContainer>
+          <AppTabs />
+        </NavigationContainer>
+      </LanguageProvider>
     </ThemeProvider>
   );
 }

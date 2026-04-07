@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { useTheme } from '../theme/ThemeContext';
+import { useT } from '../i18n/LanguageContext';
 import { BrutalistCard } from '../components/BrutalistCard';
 
 const SECTIONS = [
@@ -32,13 +33,14 @@ const SECTIONS = [
 
 export function MethodologyScreen() {
   const { theme } = useTheme();
+  const T = useT();
   const isBrut = theme.name === 'brutalist';
 
   return (
     <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <Text style={[styles.title, { color: theme.colors.text, letterSpacing: isBrut ? 3 : 0 }]}>Methodology</Text>
+      <Text style={[styles.title, { color: theme.colors.text, letterSpacing: isBrut ? 3 : 0 }]}>{T.methodologyTitle}</Text>
       <Text style={[styles.subtitle, { color: isBrut ? theme.colors.accent : theme.colors.textSecondary, letterSpacing: isBrut ? 2 : 0 }]}>
-        How kalkal calculates and verifies
+        {T.methodologySubtitle}
       </Text>
       {SECTIONS.map((section, i) => (
         <BrutalistCard key={i}>

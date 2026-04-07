@@ -2,27 +2,31 @@ import React, { useState, useCallback, useRef } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, Dimensions } from 'react-native';
 import { useTheme } from '../theme/ThemeContext';
 import { Cal } from '../engine/cal';
-import { T } from '../engine/i18n';
-import { CALENDARS, CalendarDef } from '../engine/calendars';
+import { useT } from '../i18n/LanguageContext';
+import { CALENDARS, CalendarDef, CONTEXTUAL_PRIORITY } from '../engine/calendars';
 import { Astronomy } from '../engine/astronomy';
 import { CalendarPicker } from '../components/CalendarPicker';
 import { VariantBar } from '../components/VariantBar';
 import { ThemeToggle } from '../components/ThemeToggle';
+import { LanguageToggle } from '../components/LanguageToggle';
 import { BrutalistCard } from '../components/BrutalistCard';
+import { Tile } from '../components/Tile';
 import { useHistory, HistoryEntry } from '../hooks/useHistory';
 
-type ResultData = { type: 'date'; lines: ResultLine[] }
-  | { type: 'range'; lines: ResultLine[]; table?: TableRow[] }
+type ResultData = { type: 'date'; lines: ResultLine[]; astro?: ResultLine[]; contextual?: CalendarEntry[]; outOfEra?: CalendarEntry[] }
+  | { type: 'range'; lines: ResultLine[]; table?: TableRow[]; astro?: ResultLine[]; contextual?: CalendarEntry[]; outOfEra?: CalendarEntry[] }
   | { type: 'error'; message: string }
   | null;
 
 interface ResultLine { label?: string; text: string; style?: 'main' | 'secondary' | 'label' | 'meta' | 'note' }
 interface TableRow { month: string; days: number; range: string }
+interface CalendarEntry { label: string; value: string }
 
 type Page = 'input' | 'result';
 
 export function ConverterScreen() {
   const { theme } = useTheme();
+  const T = useT();
   const isBrut = theme.name === 'brutalist';
   const history = useHistory();
   const scrollRef = useRef<ScrollView>(null);
@@ -64,25 +68,25 @@ export function ConverterScreen() {
     else setToVariant('');
   };
 
-  const convert = () => {
+  const runConversion = (recordHistory: boolean): boolean => {
     const src = getSrc();
     const tgt = getTgt();
-    if (!src) { setResult({ type: 'error', message: 'Select source calendar' }); setPage('result'); return; }
-    if (!tgt) { setResult({ type: 'error', message: 'Select target calendar' }); setPage('result'); return; }
-    if (src.id === tgt.id) { setResult({ type: 'error', message: T.errSameCal }); setPage('result'); return; }
+    if (!src) { setResult({ type: 'error', message: 'Select source calendar' }); return true; }
+    if (!tgt) { setResult({ type: 'error', message: 'Select target calendar' }); return true; }
+    if (src.id === tgt.id) { setResult({ type: 'error', message: T.errSameCal }); return true; }
 
     const y = parseInt(year, 10);
-    if (!y || y < 1) { setResult({ type: 'error', message: T.errNoYear }); setPage('result'); return; }
+    if (!y || y < 1) { setResult({ type: 'error', message: T.errNoYear }); return true; }
 
     const m = parseInt(month, 10) || null;
     const d = parseInt(day, 10) || null;
 
     if (m && (m < 1 || m > src.monthCount)) {
-      setResult({ type: 'error', message: T.errInvalidMonth }); setPage('result'); return;
+      setResult({ type: 'error', message: T.errInvalidMonth }); return true;
     }
     if (d && m) {
       const maxDay = src.monthLength(y, m);
-      if (d < 1 || d > maxDay) { setResult({ type: 'error', message: T.errInvalidDay }); setPage('result'); return; }
+      if (d < 1 || d > maxDay) { setResult({ type: 'error', message: T.errInvalidDay }); return true; }
     }
 
     if (d && m) {
@@ -93,19 +97,118 @@ export function ConverterScreen() {
       convertYear(src, tgt, y);
     }
 
-    history.add({
-      fromCal: src.id, toCal: tgt.id,
-      year: y, month: m, day: d,
-      variant: src._variant || null
-    });
+    if (recordHistory) {
+      history.add({
+        fromCal: src.id, toCal: tgt.id,
+        year: y, month: m, day: d,
+        variant: src._variant || null
+      });
+    }
+    return true;
+  };
 
+  const convert = () => {
+    runConversion(true);
     setPage('result');
     scrollRef.current?.scrollTo({ y: 0, animated: false });
+  };
+
+  const reconvertWithSrcVariant = (v: string) => {
+    setFromVariant(v);
+    const cal = CALENDARS[fromCal];
+    if (cal?.variants) cal._variant = v;
+    const src = cal; const tgt = CALENDARS[toCal];
+    if (src && tgt) {
+      if (src.variants) src._variant = v;
+      if (tgt.variants && toVariant) tgt._variant = toVariant;
+      reRender(src, tgt);
+    }
+  };
+
+  const reconvertWithTgtCal = (id: string) => {
+    if (id === fromCal) return;
+    setToCal(id);
+    const cal = CALENDARS[id];
+    let v = '';
+    if (cal?.variants) {
+      v = cal.defaultVariant || cal.variants[0];
+      setToVariant(v);
+      cal._variant = v;
+    } else {
+      setToVariant('');
+    }
+    const src = CALENDARS[fromCal];
+    if (src && cal) {
+      if (src.variants && fromVariant) src._variant = fromVariant;
+      reRender(src, cal);
+    }
+  };
+
+  const reconvertWithTgtVariant = (v: string) => {
+    setToVariant(v);
+    const cal = CALENDARS[toCal];
+    if (cal?.variants) cal._variant = v;
+    const src = CALENDARS[fromCal]; const tgt = cal;
+    if (src && tgt) {
+      if (src.variants && fromVariant) src._variant = fromVariant;
+      if (tgt.variants) tgt._variant = v;
+      reRender(src, tgt);
+    }
+  };
+
+  const reRender = (src: CalendarDef, tgt: CalendarDef) => {
+    const y = parseInt(year, 10);
+    if (!y) return;
+    const m = parseInt(month, 10) || null;
+    const d = parseInt(day, 10) || null;
+    if (d && m) convertDate(src, tgt, y, m, d);
+    else if (m) convertMonth(src, tgt, y, m);
+    else convertYear(src, tgt, y);
   };
 
   const goBack = () => {
     setPage('input');
     scrollRef.current?.scrollTo({ y: 0, animated: false });
+  };
+
+  const formatCalDate = (cal: CalendarDef, jd: number, t: any): string => {
+    const r = cal.fromJD(jd);
+    const names = cal.monthNames(t);
+    if (cal.id === 'roman' && r.day) {
+      return `${Cal.romanDayNotation(r.month, r.day, cal.isLeap(r.year))} ${r.year} AUC`;
+    }
+    return `${r.day} ${names[r.month - 1]} ${r.year}`;
+  };
+
+  const formatCalRange = (cal: CalendarDef, jd: number, jdEnd: number, t: any): string => {
+    return `${formatCalDate(cal, jd, t)} \u2013 ${formatCalDate(cal, jdEnd, t)}`;
+  };
+
+  // Build the contextual & out-of-era calendar entries (mirrors web's
+  // buildContextualPanel / buildOutOfEraPanel from js/app.js).
+  const buildContextualLists = (
+    jd: number,
+    srcId: string,
+    tgtId: string,
+    t: any,
+    jdEnd?: number
+  ): { contextual: CalendarEntry[]; outOfEra: CalendarEntry[] } => {
+    const contextual: CalendarEntry[] = [];
+    const outOfEra: CalendarEntry[] = [];
+    for (const id of CONTEXTUAL_PRIORITY) {
+      if (id === srcId || id === tgtId) continue;
+      const cal = CALENDARS[id];
+      if (!cal || !cal.historicalRange) continue;
+      const [lo, hi] = cal.historicalRange;
+      const inRange = jd >= lo && jd <= hi;
+      const value = jdEnd !== undefined
+        ? formatCalRange(cal, jd, jdEnd, t)
+        : formatCalDate(cal, jd, t);
+      const entry = { label: (t.calendars as any)[id] || id, value };
+      if (inRange) contextual.push(entry);
+      else outOfEra.push(entry);
+    }
+    return { contextual, outOfEra };
   };
 
   const convertDate = (src: CalendarDef, tgt: CalendarDef, y: number, m: number, d: number) => {
@@ -143,25 +246,27 @@ export function ConverterScreen() {
       lines.push({ text: T.julianDateNote, style: 'note' });
     }
 
+    const astro: ResultLine[] = [];
+
     const zi = Cal.getZodiacSign(jd);
     const zodiacSymbol = '\u2648\u2649\u264A\u264B\u264C\u264D\u264E\u264F\u2650\u2651\u2652\u2653'[zi];
-    lines.push({ text: `${zodiacSymbol} ${T.zodiacSigns[zi]}`, style: 'meta' });
+    astro.push({ text: `${zodiacSymbol} ${T.zodiacSigns[zi]}`, style: 'meta' });
 
     const moon = Astronomy.moonPhase(jd);
     const phaseName = (T.moonPhases as any)?.[moon.name] || moon.name;
-    lines.push({ text: `${moon.icon} ${phaseName} \u2014 ${T.moonAge}: ${moon.age}d, ${moon.illumination}%`, style: 'meta' });
+    astro.push({ text: `${moon.icon} ${phaseName} \u2014 ${T.moonAge}: ${moon.age}d, ${moon.illumination}%`, style: 'meta' });
 
     const comet = Astronomy.lookupComet(jd);
     if (comet) {
       const cometName = (T.cometNames as any)?.[comet.id] || comet.id;
       const note = comet.noteKey ? (T.cometNotes as any)?.[comet.noteKey] : null;
-      lines.push({ text: `\u2604\uFE0F ${T.cometLabel}: ${cometName} (${comet.year})${note ? ' \u2014 ' + note : ''}`, style: 'meta' });
+      astro.push({ text: `\u2604\uFE0F ${T.cometLabel}: ${cometName} (${comet.year})${note ? ' \u2014 ' + note : ''}`, style: 'meta' });
     }
 
     const sn = Astronomy.lookupSupernova(jd);
     if (sn) {
       const note = sn.noteKey ? (T.supernovaNotes as any)?.[sn.noteKey] : null;
-      lines.push({ text: `\u2B50 ${T.supernovaLabel}: ${sn.constellation} (mag ${sn.peakMag})${note ? ' \u2014 ' + note : ''}`, style: 'meta' });
+      astro.push({ text: `\u2B50 ${T.supernovaLabel}: ${sn.constellation} (mag ${sn.peakMag})${note ? ' \u2014 ' + note : ''}`, style: 'meta' });
     }
 
     const conj = Astronomy.lookupConjunction(jd);
@@ -170,11 +275,12 @@ export function ConverterScreen() {
       const p2 = Astronomy.planetName(conj.planet2, T);
       const sep = conj.separation < 60 ? `${conj.separation}'` : `${(conj.separation / 60).toFixed(1)}\u00b0`;
       const note = conj.noteKey ? (T.conjunctionNotes as any)?.[conj.noteKey] : null;
-      lines.push({ text: `${T.conjunctionLabel}: ${p1}\u2013${p2} (${sep})${note ? ' \u2014 ' + note : ''}`, style: 'meta' });
+      astro.push({ text: `${T.conjunctionLabel}: ${p1}\u2013${p2} (${sep})${note ? ' \u2014 ' + note : ''}`, style: 'meta' });
     }
 
     lines.push({ text: `${T.jdn}: ${jd}`, style: 'meta' });
-    setResult({ type: 'date', lines });
+    const { contextual, outOfEra } = buildContextualLists(jd, src.id, tgt.id, T);
+    setResult({ type: 'date', lines, astro, contextual, outOfEra });
   };
 
   const convertMonth = (src: CalendarDef, tgt: CalendarDef, y: number, m: number) => {
@@ -216,7 +322,8 @@ export function ConverterScreen() {
     }
     if (table.length > 1) lines.push({ text: T.monthBreakdown, style: 'label' });
     lines.push({ text: `${T.jdn}: ${jdStart} \u2013 ${jdEnd}`, style: 'meta' });
-    setResult({ type: 'range', lines, table: table.length > 1 ? table : undefined });
+    const { contextual, outOfEra } = buildContextualLists(jdStart, src.id, tgt.id, T, jdEnd);
+    setResult({ type: 'range', lines, table: table.length > 1 ? table : undefined, contextual, outOfEra });
   };
 
   const convertYear = (src: CalendarDef, tgt: CalendarDef, y: number) => {
@@ -253,7 +360,8 @@ export function ConverterScreen() {
     }
 
     lines.push({ text: `${T.jdn}: ${jdStart} \u2013 ${jdEnd}`, style: 'meta' });
-    setResult({ type: 'range', lines, table });
+    const { contextual, outOfEra } = buildContextualLists(jdStart, src.id, tgt.id, T, jdEnd);
+    setResult({ type: 'range', lines, table, contextual, outOfEra });
   };
 
   const loadHistoryEntry = (entry: HistoryEntry) => {
@@ -360,7 +468,7 @@ export function ConverterScreen() {
                   style={[styles.monthItemFull, { borderColor: theme.colors.border, borderWidth: theme.borderWidth, marginTop: 6 }, !month && { backgroundColor: theme.colors.accent }]}
                   onPress={() => setMonth('')}
                 >
-                  <Text style={[styles.monthItemName, { color: !month ? (isBrut ? '#000' : theme.colors.buttonText) : theme.colors.text }]}>Whole year</Text>
+                  <Text style={[styles.monthItemName, { color: !month ? (isBrut ? '#000' : theme.colors.buttonText) : theme.colors.text }]}>{T.wholeYear}</Text>
                 </TouchableOpacity>
               </>
             );
@@ -424,6 +532,7 @@ export function ConverterScreen() {
           </View>
         )}
 
+        <LanguageToggle />
         <ThemeToggle />
         <View style={{ height: 40 }} />
       </ScrollView>
@@ -438,8 +547,44 @@ export function ConverterScreen() {
         style={[styles.backBtn, { borderColor: theme.colors.border, borderWidth: theme.borderWidth }]}
         onPress={goBack}
       >
-        <Text style={[styles.backBtnText, { color: theme.colors.text }]}>← {isBrut ? 'BACK' : 'Back'}</Text>
+        <Text style={[styles.backBtnText, { color: theme.colors.text }]}>← {isBrut ? T.backLabel.toUpperCase() : T.backLabel}</Text>
       </TouchableOpacity>
+
+      {/* Pre-filled target calendar — change to re-convert */}
+      {result && result.type !== 'error' && (
+        <BrutalistCard>
+          <CalendarPicker value={toCal} onSelect={reconvertWithTgtCal} label={T.targetCalendar} />
+        </BrutalistCard>
+      )}
+
+      {result && result.type !== 'error' && (srcCal?.variants || tgtCal?.variants) && (
+        <BrutalistCard>
+          {srcCal?.variants && (
+            <>
+              <Text style={[styles.fieldLabel, { color: theme.colors.textSecondary }]}>
+                {(T.calendars as any)[srcCal.id] || srcCal.id}
+              </Text>
+              <VariantBar
+                variants={srcCal.variants}
+                selected={fromVariant || srcCal.defaultVariant || srcCal.variants[0]}
+                onSelect={reconvertWithSrcVariant}
+              />
+            </>
+          )}
+          {tgtCal?.variants && (
+            <>
+              <Text style={[styles.fieldLabel, { color: theme.colors.textSecondary, marginTop: srcCal?.variants ? 10 : 0 }]}>
+                {(T.calendars as any)[tgtCal.id] || tgtCal.id}
+              </Text>
+              <VariantBar
+                variants={tgtCal.variants}
+                selected={toVariant || tgtCal.defaultVariant || tgtCal.variants[0]}
+                onSelect={reconvertWithTgtVariant}
+              />
+            </>
+          )}
+        </BrutalistCard>
+      )}
 
       {result && (
         <BrutalistCard>
@@ -461,9 +606,9 @@ export function ConverterScreen() {
               {result.type === 'range' && result.table && (
                 <View style={[styles.table, { borderColor: theme.colors.border, borderWidth: theme.borderWidth }]}>
                   <View style={[styles.tableHeader, { backgroundColor: theme.colors.surfaceAlt }]}>
-                    <Text style={[styles.tableCell, styles.tableCellMonth, { color: isBrut ? theme.colors.accent : theme.colors.text, fontWeight: '900' as const }]}>Month</Text>
-                    <Text style={[styles.tableCell, styles.tableCellDays, { color: isBrut ? theme.colors.accent : theme.colors.text, fontWeight: '900' as const }]}>Days</Text>
-                    <Text style={[styles.tableCell, styles.tableCellRange, { color: isBrut ? theme.colors.accent : theme.colors.text, fontWeight: '900' as const }]}>Range</Text>
+                    <Text style={[styles.tableCell, styles.tableCellMonth, { color: isBrut ? theme.colors.accent : theme.colors.text, fontWeight: '900' as const }]}>{T.tableMonth}</Text>
+                    <Text style={[styles.tableCell, styles.tableCellDays, { color: isBrut ? theme.colors.accent : theme.colors.text, fontWeight: '900' as const }]}>{T.tableDays}</Text>
+                    <Text style={[styles.tableCell, styles.tableCellRange, { color: isBrut ? theme.colors.accent : theme.colors.text, fontWeight: '900' as const }]}>{T.tableRange}</Text>
                   </View>
                   {result.table.map((row, i) => (
                     <View key={i} style={[styles.tableRow, { borderTopColor: theme.colors.border }]}>
@@ -479,6 +624,49 @@ export function ConverterScreen() {
         </BrutalistCard>
       )}
 
+      {/* Contemporaneous calendars (expanded by default) */}
+      {result && result.type !== 'error' && result.contextual && result.contextual.length > 0 && (
+        <Tile title={(T as any).contextualLabel || 'Contemporaneous calendars'} defaultExpanded>
+          {result.contextual.map((entry, i) => (
+            <View key={i} style={styles.calEntryRow}>
+              <Text style={[styles.calEntryLabel, { color: theme.colors.textMuted }]} numberOfLines={1}>
+                {entry.label}
+              </Text>
+              <Text style={[styles.calEntryValue, { color: theme.colors.text }]} numberOfLines={2}>
+                {entry.value}
+              </Text>
+            </View>
+          ))}
+        </Tile>
+      )}
+
+      {/* Proleptic conversions (out-of-era, collapsed by default) */}
+      {result && result.type !== 'error' && result.outOfEra && result.outOfEra.length > 0 && (
+        <Tile title={(T as any).otherCalendarsLabel || 'Proleptic conversions'}>
+          {result.outOfEra.map((entry, i) => (
+            <View key={i} style={styles.calEntryRow}>
+              <Text style={[styles.calEntryLabel, { color: theme.colors.textMuted }]} numberOfLines={1}>
+                {entry.label}
+              </Text>
+              <Text style={[styles.calEntryValue, { color: theme.colors.text }]} numberOfLines={2}>
+                {entry.value}
+              </Text>
+            </View>
+          ))}
+        </Tile>
+      )}
+
+      {/* Astro collapsible tile (unified) */}
+      {result && result.type === 'date' && result.astro && result.astro.length > 0 && (
+        <Tile title={(T as any).astroLabel || 'Astro'}>
+          {result.astro.map((line, i) => (
+            <Text key={i} style={[styles.resultMeta, { color: theme.colors.textMuted }]}>
+              {line.text}
+            </Text>
+          ))}
+        </Tile>
+      )}
+
       {/* Convert again */}
       <TouchableOpacity
         style={[styles.convertBtn, {
@@ -489,7 +677,7 @@ export function ConverterScreen() {
         }]}
         onPress={goBack}
       >
-        <Text style={[styles.convertBtnText, { color: theme.colors.buttonText, letterSpacing: isBrut ? 3 : 0 }]}>← {isBrut ? 'NEW CONVERSION' : 'New conversion'}</Text>
+        <Text style={[styles.convertBtnText, { color: theme.colors.buttonText, letterSpacing: isBrut ? 3 : 0 }]}>← {isBrut ? T.newConversion.toUpperCase() : T.newConversion}</Text>
       </TouchableOpacity>
 
       <View style={{ height: 40 }} />
@@ -531,6 +719,9 @@ const styles = StyleSheet.create({
   resultSecondary: { fontSize: 16, marginBottom: 2, fontWeight: '600' },
   resultMeta: { fontSize: 13, marginTop: 6 },
   resultNote: { fontSize: 13, fontStyle: 'italic', marginTop: 8 },
+  calEntryRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', paddingVertical: 6, gap: 12 },
+  calEntryLabel: { fontSize: 12, fontWeight: '900', textTransform: 'uppercase', letterSpacing: 1, flex: 1 },
+  calEntryValue: { fontSize: 14, fontWeight: '700', flex: 1.6, textAlign: 'right' },
   table: { marginTop: 12 },
   tableHeader: { flexDirection: 'row', padding: 8 },
   tableRow: { flexDirection: 'row', padding: 8, borderTopWidth: 2 },

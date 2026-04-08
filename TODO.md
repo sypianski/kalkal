@@ -19,6 +19,9 @@
 ## Changes to the Android app (rebuild per new TODO logic)
 - [x] Start screen: calendar picker (default Hijri), custom NumPad, OK → Converter, Info button
 - [x] Rebuild ConverterScreen: FROM/TO dropdowns with live results on top, month grid, custom in-app numeric keypad (no system keyboard), muted Information button at the bottom
+- [x] ConverterScreen: NumPad hidden by default, appears only when user taps year or day field (Done button to dismiss)
+- [x] ConverterScreen: Month picker changed from 3-column grid to vertical list (one row per month)
+- [x] ConverterScreen: Selector order changed to year → month → day
 - [x] Info screen with tabbed layout (Calendars & Methodology + back button to Converter)
 - [x] use /frontend-desing to improve the general design
 - [x] don't use yellow

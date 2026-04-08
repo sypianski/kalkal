@@ -156,7 +156,7 @@ function CalendarCard({ cal, theme, T }: { cal: typeof CALENDARS_DATA[0]; theme:
   const isBrut = theme.name === 'brutalist';
   const typeColor = isBrut
     ? theme.colors.accent
-    : cal.type.includes('Lunar') ? '#2f6b60' : cal.type.includes('wandering') ? '#b8860b' : theme.colors.accent;
+    : cal.type.includes('Lunar') ? '#2f6b60' : cal.type.includes('wandering') ? '#a15c2c' : theme.colors.accent;
 
   return (
     <BrutalistCard>

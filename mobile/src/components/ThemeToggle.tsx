@@ -19,7 +19,7 @@ export function ThemeToggle() {
       }]}
       onPress={toggleTheme}
     >
-      <Text style={[styles.text, { color: theme.colors.text }]}>
+      <Text style={[styles.text, { color: theme.name === 'brutalist' ? theme.colors.accentText : theme.colors.text }]}>
         {themeName === 'manuscript' ? 'Manuscript' : 'Brutalist'}
       </Text>
     </TouchableOpacity>

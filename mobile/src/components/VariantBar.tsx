@@ -27,7 +27,7 @@ export function VariantBar({ variants, selected, onSelect }: Props) {
             ]}
             onPress={() => onSelect(v)}
           >
-            <Text style={[styles.btnText, { color: active ? theme.colors.buttonText : theme.colors.text }]}>
+            <Text style={[styles.btnText, { color: active ? theme.colors.accentText : theme.colors.text }]}>
               {VARIANT_LABELS[v] || v}
             </Text>
           </TouchableOpacity>

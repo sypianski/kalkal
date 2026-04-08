@@ -38,9 +38,12 @@ export function StartScreen({ navigation }: Props) {
       {/* Top area: title + picker + year display */}
       <View style={styles.top}>
         {/* App name */}
-        <Text style={[styles.appTitle, { color: isBrut ? theme.colors.text : theme.colors.accent }]}>
-          {T.appTitle}
-        </Text>
+        <View style={styles.titleWrap}>
+          <Text style={[styles.appTitle, { color: isBrut ? theme.colors.text : theme.colors.accent }]}>
+            {T.appTitle}
+          </Text>
+          <View style={[styles.titleRule, { backgroundColor: theme.colors.accent }]} />
+        </View>
 
         {/* Calendar picker */}
         <View style={[
@@ -144,12 +147,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 16,
   },
+  titleWrap: {
+    marginBottom: 8,
+    alignItems: 'flex-start',
+  },
   appTitle: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: '900',
     textTransform: 'uppercase',
-    letterSpacing: 2,
-    marginBottom: 8,
+    letterSpacing: 3,
+  },
+  titleRule: {
+    height: 3,
+    width: 56,
+    marginTop: 6,
   },
   pickerWrapper: {
     paddingHorizontal: 12,

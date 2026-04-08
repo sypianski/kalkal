@@ -170,7 +170,7 @@ export function ConverterScreen({ route, navigation }: Props) {
   });
 
   const fieldTextColor = (isActive: boolean) =>
-    isActive ? (isBrut ? '#000' : theme.colors.text) : theme.colors.text;
+    isActive ? (isBrut ? theme.colors.accentText : theme.colors.text) : theme.colors.text;
 
   const keypadKeys: (string | 'back' | 'clear')[] = [
     '1', '2', '3',
@@ -251,7 +251,7 @@ export function ConverterScreen({ route, navigation }: Props) {
                       <Text
                         style={[
                           styles.monthItemName,
-                          { color: isActive ? (isBrut ? '#000' : theme.colors.text) : theme.colors.text },
+                          { color: isActive ? (isBrut ? theme.colors.accentText : theme.colors.text) : theme.colors.text },
                         ]}
                         numberOfLines={1}
                       >
@@ -271,7 +271,7 @@ export function ConverterScreen({ route, navigation }: Props) {
             ]}
             onPress={() => setMonth(null)}
           >
-            <Text style={[styles.monthItemName, { color: month === null ? (isBrut ? '#000' : theme.colors.text) : theme.colors.textSecondary }]}>
+            <Text style={[styles.monthItemName, { color: month === null ? (isBrut ? theme.colors.accentText : theme.colors.text) : theme.colors.textSecondary }]}>
               {T.wholeYear || 'Whole year'}
             </Text>
           </TouchableOpacity>
@@ -284,7 +284,7 @@ export function ConverterScreen({ route, navigation }: Props) {
             onPress={() => setActive('year')}
             activeOpacity={0.7}
           >
-            <Text style={[styles.fieldLabel, { color: active === 'year' && isBrut ? '#000' : theme.colors.textSecondary }]}>{T.year}</Text>
+            <Text style={[styles.fieldLabel, { color: active === 'year' && isBrut ? theme.colors.accentText : theme.colors.textSecondary }]}>{T.year}</Text>
             <Text style={[styles.fieldValue, { color: fieldTextColor(active === 'year') }]}>
               {year || '\u2014'}
             </Text>
@@ -294,7 +294,7 @@ export function ConverterScreen({ route, navigation }: Props) {
             onPress={() => setActive('day')}
             activeOpacity={0.7}
           >
-            <Text style={[styles.fieldLabel, { color: active === 'day' && isBrut ? '#000' : theme.colors.textSecondary }]}>{T.day}</Text>
+            <Text style={[styles.fieldLabel, { color: active === 'day' && isBrut ? theme.colors.accentText : theme.colors.textSecondary }]}>{T.day}</Text>
             <Text style={[styles.fieldValue, { color: fieldTextColor(active === 'day') }]}>
               {day || '\u2014'}
             </Text>
@@ -346,11 +346,11 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
 
   // Top result display
-  resultText: { fontSize: 16, fontWeight: '700' },
-  resultMain: { fontSize: 20, fontWeight: '900' },
-  weekday: { fontSize: 13, marginTop: 4, fontWeight: '600' },
+  resultText: { fontSize: 17, fontWeight: '700', letterSpacing: 0.3 },
+  resultMain: { fontSize: 22, fontWeight: '900', letterSpacing: 0.5 },
+  weekday: { fontSize: 12, marginTop: 6, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 1.4 },
   errorText: { fontSize: 14, fontWeight: '700' },
-  arrow: { fontSize: 18, textAlign: 'center', marginTop: -6, marginBottom: 2, fontWeight: '900' },
+  arrow: { fontSize: 20, textAlign: 'center', marginTop: -4, marginBottom: 4, fontWeight: '900' },
 
   // Month grid
   sectionLabel: { fontSize: 11, fontWeight: '900', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 8 },

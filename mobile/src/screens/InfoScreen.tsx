@@ -188,7 +188,7 @@ function CalendarCard({ cal, theme, T }: { cal: typeof CALENDARS_DATA[0]; theme:
   const isBrut = theme.name === 'brutalist';
   const typeColor = isBrut
     ? theme.colors.accent
-    : cal.type.includes('Lunar') ? '#2f6b60' : cal.type.includes('wandering') ? '#b8860b' : theme.colors.accent;
+    : cal.type.includes('Lunar') ? '#2f6b60' : cal.type.includes('wandering') ? '#a15c2c' : theme.colors.accent;
 
   return (
     <BrutalistCard>
@@ -211,7 +211,7 @@ function CalendarCard({ cal, theme, T }: { cal: typeof CALENDARS_DATA[0]; theme:
         <Text style={[
           cardStyles.toggle,
           isBrut
-            ? { color: theme.colors.text, backgroundColor: theme.colors.accent, paddingHorizontal: 8, paddingVertical: 4, alignSelf: 'flex-start', fontWeight: '900' }
+            ? { color: theme.colors.accentText, backgroundColor: theme.colors.accent, paddingHorizontal: 8, paddingVertical: 4, alignSelf: 'flex-start', fontWeight: '900' }
             : { color: theme.colors.accent }
         ]}>
           {(expanded ? T.showLess : T.showMore).toUpperCase()}
@@ -339,17 +339,18 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingTop: 14,
+    paddingBottom: 12,
     borderBottomWidth: 1,
   },
   backButton: {
     paddingVertical: 4,
   },
   backText: {
-    fontSize: 14,
-    fontWeight: '700',
+    fontSize: 13,
+    fontWeight: '900',
     textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    letterSpacing: 1.5,
   },
   tabBar: {
     flexDirection: 'row',

@@ -32,7 +32,7 @@ export function LanguageToggle() {
           >
             <Text style={[
               styles.text,
-              { color: active ? (isBrut ? '#000' : theme.colors.text) : theme.colors.textSecondary },
+              { color: active ? (isBrut ? theme.colors.accentText : theme.colors.text) : theme.colors.textSecondary },
             ]}>
               {label}
             </Text>

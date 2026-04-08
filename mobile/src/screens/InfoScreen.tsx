@@ -184,7 +184,7 @@ const METHODOLOGY_SECTIONS = [
 ];
 
 function CalendarCard({ cal, theme, T }: { cal: typeof CALENDARS_DATA[0]; theme: any; T: any }) {
-  const [expanded, setExpanded] = React.useState(false);
+  const [expanded, setExpanded] = useState(false);
   const isBrut = theme.name === 'brutalist';
   const typeColor = isBrut
     ? theme.colors.accent
@@ -230,7 +230,7 @@ function CalendarCard({ cal, theme, T }: { cal: typeof CALENDARS_DATA[0]; theme:
 
 export function InfoScreen() {
   const navigation = useNavigation();
-  const [activeTab, setActiveTab] = React.useState<InfoTab>('calendars');
+  const [activeTab, setActiveTab] = useState<InfoTab>('calendars');
   const { theme } = useTheme();
   const T = useT();
   const isBrut = theme.name === 'brutalist';

@@ -15,3 +15,10 @@
 - [x] Group calendars by cultural sphere in picker (`0e94654`)
 - [x] Verify Parker & Dubberstein Babylonian tables present in `mobile/src/engine/cal.js`
 - [x] Verify Human Era variants present
+- [x] Start screen: calendar picker (default Hijri), custom NumPad, OK → Converter, Info button (branch: android/start-screen)
+
+## Mobile app (next steps)
+- [ ] ConverterScreen: consider hiding system keyboard triggers entirely (current input page still has TextInput for month/day — swap to NumPad or picker)
+- [ ] InfoScreen: expand with calendar-by-calendar descriptions (reuse CalendarsScreen content)
+- [ ] Start screen: persist last-used calendar in AsyncStorage
+- [ ] Test start screen UX on physical device / Expo Go

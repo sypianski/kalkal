@@ -10,7 +10,7 @@ import { InfoScreen } from './src/screens/InfoScreen';
 
 export type RootStackParamList = {
   Start: undefined;
-  Converter: { calendarId: string; year: number };
+  Converter: { calendarId: string; year: number; toCalendarId?: string };
   Info: undefined;
 };
 

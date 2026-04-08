@@ -1,5 +1,13 @@
-import React, { useState, useCallback, useMemo } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Modal } from 'react-native';
+import React, { useCallback, useMemo, useState } from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  StyleSheet,
+  Modal,
+  Platform,
+} from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useTheme } from '../theme/ThemeContext';
 import { Cal } from '../engine/cal';
@@ -7,7 +15,6 @@ import { useT } from '../i18n/LanguageContext';
 import { CALENDARS, CalendarDef } from '../engine/calendars';
 import { CalendarPicker } from '../components/CalendarPicker';
 import { VariantBar } from '../components/VariantBar';
-import { BrutalistCard } from '../components/BrutalistCard';
 import type { RootStackParamList } from '../../App';
 
 type ActiveField = 'year' | 'day';
@@ -19,16 +26,19 @@ export function ConverterScreen({ route, navigation }: Props) {
   const T = useT();
   const isBrut = theme.name === 'brutalist';
 
-  const initCal = route.params?.calendarId ?? 'gregorian';
-  const initYear = route.params?.year != null ? String(route.params.year) : '2024';
-  const initToCal = initCal === 'hijri' ? 'gregorian' : 'hijri';
+  const initFrom = route.params?.calendarId ?? 'hijri';
+  const initYear = route.params?.year != null ? String(route.params.year) : '';
+  const initTo =
+    route.params?.toCalendarId ??
+    (initFrom === 'gregorian' ? 'hijri' : 'gregorian');
+
   const initVariant = (() => {
-    const cal = CALENDARS[initCal];
+    const cal = CALENDARS[initFrom];
     return cal?.variants ? (cal.defaultVariant ?? cal.variants[0]) : '';
   })();
 
-  const [fromCal, setFromCal] = useState<string>(initCal);
-  const [toCal, setToCal] = useState<string>(initToCal);
+  const [fromCal, setFromCal] = useState<string>(initFrom);
+  const [toCal, setToCal] = useState<string>(initTo);
   const [fromVariant, setFromVariant] = useState<string>(initVariant);
   const [toVariant, setToVariant] = useState<string>('');
   const [year, setYear] = useState(initYear);
@@ -37,6 +47,7 @@ export function ConverterScreen({ route, navigation }: Props) {
   const [active, setActive] = useState<ActiveField>('year');
   const [numpadVisible, setNumpadVisible] = useState(false);
   const [monthPickerVisible, setMonthPickerVisible] = useState(false);
+  const [convertTick, setConvertTick] = useState(0);
 
   const getSrc = useCallback((): CalendarDef | null => {
     const cal = CALENDARS[fromCal];
@@ -60,8 +71,8 @@ export function ConverterScreen({ route, navigation }: Props) {
     const cal = CALENDARS[id];
     if (cal?.variants) setFromVariant(cal.defaultVariant || cal.variants[0]);
     else setFromVariant('');
-    // Clamp month if new calendar has fewer months
     if (month && cal && month > cal.monthCount) setMonth(1);
+    if (id === toCal) setToCal(id === 'gregorian' ? 'hijri' : 'gregorian');
   };
 
   const onToCalChange = (id: string) => {
@@ -72,17 +83,16 @@ export function ConverterScreen({ route, navigation }: Props) {
     else setToVariant('');
   };
 
-  // Live conversion
+  // Live conversion — recomputed on each field change or CONVERT press.
   const conversion = useMemo(() => {
+    void convertTick;
     if (!srcCal || !tgtCal) return null;
     const y = parseInt(year, 10);
     if (!y || y < 1) return { error: T.errNoYear };
     const m = month;
     const d = parseInt(day, 10);
 
-    if (m && (m < 1 || m > srcCal.monthCount)) {
-      return { error: T.errInvalidMonth };
-    }
+    if (m && (m < 1 || m > srcCal.monthCount)) return { error: T.errInvalidMonth };
     if (d && m) {
       const maxDay = srcCal.monthLength(y, m);
       if (d < 1 || d > maxDay) return { error: T.errInvalidDay };
@@ -113,7 +123,6 @@ export function ConverterScreen({ route, navigation }: Props) {
           jd: jdStart,
         };
       }
-      // year only
       const jdStart = srcCal.toJD(y, 1, 1);
       const lastMonth = srcCal.monthCount;
       const jdEnd = srcCal.toJD(y, lastMonth, srcCal.monthLength(y, lastMonth));
@@ -127,53 +136,26 @@ export function ConverterScreen({ route, navigation }: Props) {
     } catch (e: any) {
       return { error: e?.message || 'Conversion error' };
     }
-  }, [srcCal, tgtCal, year, month, day, monthNames, tgtMonthNames, T]);
+  }, [srcCal, tgtCal, year, month, day, monthNames, tgtMonthNames, T, convertTick]);
 
-  // Custom keypad handlers
+  // Keypad handlers
   const pressDigit = (d: string) => {
-    if (active === 'year') {
-      setYear(prev => (prev.length >= 6 ? prev : prev + d));
-    } else {
-      setDay(prev => {
-        const next = prev.length >= 2 ? prev : prev + d;
-        return next;
-      });
-    }
+    if (active === 'year') setYear(prev => (prev.length >= 6 ? prev : prev + d));
+    else setDay(prev => (prev.length >= 2 ? prev : prev + d));
   };
-
   const pressBackspace = () => {
     if (active === 'year') setYear(prev => prev.slice(0, -1));
     else setDay(prev => prev.slice(0, -1));
   };
-
   const pressClear = () => {
     if (active === 'year') setYear('');
     else setDay('');
   };
 
-  const openInfo = () => {
-    try { navigation.navigate('Info'); } catch {}
-  };
-
-  const handleYearTap = () => {
-    setActive('year');
+  const openNumpad = (which: ActiveField) => {
+    setActive(which);
     setNumpadVisible(true);
   };
-
-  const handleDayTap = () => {
-    setActive('day');
-    setNumpadVisible(true);
-  };
-
-  const fieldBoxStyle = (isActive: boolean) => ({
-    borderColor: isActive ? theme.colors.accent : theme.colors.border,
-    borderWidth: theme.borderWidth,
-    backgroundColor: isActive ? (isBrut ? theme.colors.accent : theme.colors.surfaceAlt) : theme.colors.surface,
-    borderRadius: theme.borderRadius,
-  });
-
-  const fieldTextColor = (isActive: boolean) =>
-    isActive ? (isBrut ? theme.colors.accentText : theme.colors.text) : theme.colors.text;
 
   const keypadKeys: (string | 'back' | 'clear')[] = [
     '1', '2', '3',
@@ -182,107 +164,310 @@ export function ConverterScreen({ route, navigation }: Props) {
     'clear', '0', 'back',
   ];
 
-  // Month list items (flat vertical list)
   const monthItems = useMemo(() => {
     if (!srcCal) return [] as { num: number; name: string }[];
     return monthNames.map((name, i) => ({ num: i + 1, name }));
   }, [srcCal, monthNames]);
 
+  const hasError = conversion && 'error' in conversion;
+  const hasResult = conversion && !('error' in conversion);
+
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 12 }}
-        keyboardShouldPersistTaps="handled"
-      >
-        {/* ─── TOP: FROM + TO with live results ─── */}
-        <BrutalistCard>
-          <CalendarPicker value={fromCal} onSelect={onFromCalChange} label={T.fromCalendar} />
-          {srcCal?.variants && (
-            <View style={{ marginTop: 8 }}>
-              <VariantBar
-                variants={srcCal.variants}
-                selected={fromVariant || srcCal.defaultVariant || srcCal.variants[0]}
-                onSelect={(v) => { setFromVariant(v); srcCal._variant = v; }}
-              />
-            </View>
-          )}
-          <Text style={[styles.resultText, { color: theme.colors.text, marginTop: 10 }]} numberOfLines={2}>
-            {conversion && !('error' in conversion) ? conversion.sourceText : '\u2014'}
-          </Text>
-        </BrutalistCard>
-
-        <Text style={[styles.arrow, { color: isBrut ? theme.colors.accent : theme.colors.textMuted }]}>{'\u2193'}</Text>
-
-        <BrutalistCard>
-          <CalendarPicker value={toCal} onSelect={onToCalChange} label={T.targetCalendar} />
-          {tgtCal?.variants && (
-            <View style={{ marginTop: 8 }}>
-              <VariantBar
-                variants={tgtCal.variants}
-                selected={toVariant || tgtCal.defaultVariant || tgtCal.variants[0]}
-                onSelect={(v) => { setToVariant(v); tgtCal._variant = v; }}
-              />
-            </View>
-          )}
-          {conversion && 'error' in conversion ? (
-            <Text style={[styles.errorText, { color: theme.colors.error, marginTop: 10 }]}>{conversion.error}</Text>
-          ) : (
-            <>
-              <Text style={[styles.resultMain, { color: theme.colors.text, marginTop: 10, borderBottomWidth: isBrut ? 3 : 0, borderBottomColor: theme.colors.accent, paddingBottom: isBrut ? 4 : 0 }]} numberOfLines={2}>
-                {conversion ? conversion.targetText : '\u2014'}
-              </Text>
-              {conversion && 'weekday' in conversion && conversion.weekday && (
-                <Text style={[styles.weekday, { color: theme.colors.textSecondary }]}>{conversion.weekday}</Text>
-              )}
-            </>
-          )}
-        </BrutalistCard>
-
-        {/* ─── YEAR FIELD ─── */}
+      {/* ── Masthead (mini) ───────────────────────────────────── */}
+      <View style={styles.masthead}>
         <TouchableOpacity
-          style={[styles.fieldBox, fieldBoxStyle(active === 'year' && numpadVisible), { marginBottom: 10 }]}
-          onPress={handleYearTap}
+          onPress={() => navigation.goBack()}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        >
+          <Text style={[styles.backGlyph, { color: theme.colors.accent }]}>{'\u2190'}</Text>
+        </TouchableOpacity>
+        <Text style={[styles.mastheadTitle, { color: theme.colors.text }]} numberOfLines={1}>
+          {T.appTitle}
+        </Text>
+        <View style={[styles.mastheadRule, { backgroundColor: theme.colors.accent }]} />
+      </View>
+
+      {/* ── FROM row ──────────────────────────────────────────── */}
+      <Field label={T.fromCalendar} numeral="I" />
+      <View
+        style={[
+          styles.pickerFrame,
+          {
+            borderColor: theme.colors.border,
+            borderWidth: theme.borderWidth,
+            borderRadius: theme.borderRadius,
+            backgroundColor: theme.colors.surface,
+          },
+        ]}
+      >
+        <CalendarPicker value={fromCal} onSelect={onFromCalChange} label={''} />
+        {srcCal?.variants && (
+          <View style={{ marginTop: 6 }}>
+            <VariantBar
+              variants={srcCal.variants}
+              selected={fromVariant || srcCal.defaultVariant || srcCal.variants[0]}
+              onSelect={(v) => { setFromVariant(v); srcCal._variant = v; }}
+            />
+          </View>
+        )}
+      </View>
+
+      {/* ── YEAR · MONTH · DAY row ────────────────────────────── */}
+      <Field label={`${T.year} · ${T.month} · ${T.day}`} numeral="II" />
+      <View style={styles.ymdRow}>
+        {/* YEAR */}
+        <TouchableOpacity
+          style={[
+            styles.ymdCell,
+            styles.ymdYear,
+            fieldBoxStyle(theme, active === 'year' && numpadVisible),
+          ]}
+          onPress={() => openNumpad('year')}
           activeOpacity={0.7}
         >
-          <Text style={[styles.fieldLabel, { color: active === 'year' && numpadVisible && isBrut ? theme.colors.accentText : theme.colors.textSecondary }]}>{T.year}</Text>
-          <Text style={[styles.fieldValue, { color: fieldTextColor(active === 'year' && numpadVisible) }]}>
+          <Text
+            style={[
+              styles.ymdLabel,
+              {
+                color:
+                  active === 'year' && numpadVisible && isBrut
+                    ? theme.colors.accentText
+                    : theme.colors.textMuted,
+              },
+            ]}
+          >
+            {T.year}
+          </Text>
+          <Text
+            style={[
+              styles.ymdValue,
+              {
+                color:
+                  active === 'year' && numpadVisible && isBrut
+                    ? theme.colors.accentText
+                    : theme.colors.text,
+              },
+            ]}
+            numberOfLines={1}
+          >
             {year || '\u2014'}
           </Text>
         </TouchableOpacity>
 
-        {/* ─── MONTH DROPDOWN ─── */}
+        {/* MONTH */}
         <TouchableOpacity
-          style={[styles.fieldBox, fieldBoxStyle(false), { marginBottom: 10 }]}
+          style={[styles.ymdCell, styles.ymdMonth, fieldBoxStyle(theme, false)]}
           onPress={() => setMonthPickerVisible(true)}
           activeOpacity={0.7}
         >
-          <Text style={[styles.fieldLabel, { color: theme.colors.textSecondary }]}>{T.month}</Text>
-          <Text style={[styles.fieldValue, { color: theme.colors.text }]} numberOfLines={1}>
+          <Text style={[styles.ymdLabel, { color: theme.colors.textMuted }]}>
+            {T.month}
+          </Text>
+          <Text
+            style={[styles.ymdValue, { color: theme.colors.text, fontSize: 15 }]}
+            numberOfLines={1}
+          >
             {month === null
-              ? (T.wholeYear || 'Whole year')
-              : (monthNames[(month ?? 1) - 1] ? `${month}. ${monthNames[month - 1]}` : '\u2014')}
+              ? (T.wholeYear || '—')
+              : (monthNames[(month ?? 1) - 1]
+                ? monthNames[month - 1]
+                : '\u2014')}
           </Text>
         </TouchableOpacity>
 
-        {/* ─── DAY FIELD ─── */}
+        {/* DAY */}
         <TouchableOpacity
-          style={[styles.fieldBox, fieldBoxStyle(active === 'day' && numpadVisible), { marginTop: 10 }]}
-          onPress={handleDayTap}
+          style={[
+            styles.ymdCell,
+            styles.ymdDay,
+            fieldBoxStyle(theme, active === 'day' && numpadVisible),
+          ]}
+          onPress={() => openNumpad('day')}
           activeOpacity={0.7}
         >
-          <Text style={[styles.fieldLabel, { color: active === 'day' && numpadVisible && isBrut ? theme.colors.accentText : theme.colors.textSecondary }]}>{T.day}</Text>
-          <Text style={[styles.fieldValue, { color: fieldTextColor(active === 'day' && numpadVisible) }]}>
+          <Text
+            style={[
+              styles.ymdLabel,
+              {
+                color:
+                  active === 'day' && numpadVisible && isBrut
+                    ? theme.colors.accentText
+                    : theme.colors.textMuted,
+              },
+            ]}
+          >
+            {T.day}
+          </Text>
+          <Text
+            style={[
+              styles.ymdValue,
+              {
+                color:
+                  active === 'day' && numpadVisible && isBrut
+                    ? theme.colors.accentText
+                    : theme.colors.text,
+              },
+            ]}
+            numberOfLines={1}
+          >
             {day || '\u2014'}
           </Text>
         </TouchableOpacity>
-      </ScrollView>
+      </View>
 
-      {/* ─── CUSTOM KEYPAD (shown on demand) ─── */}
+      {/* ── TO row ────────────────────────────────────────────── */}
+      <Field label={T.targetCalendar} numeral="III" />
+      <View
+        style={[
+          styles.pickerFrame,
+          {
+            borderColor: theme.colors.border,
+            borderWidth: theme.borderWidth,
+            borderRadius: theme.borderRadius,
+            backgroundColor: theme.colors.surface,
+          },
+        ]}
+      >
+        <CalendarPicker value={toCal} onSelect={onToCalChange} label={''} />
+        {tgtCal?.variants && (
+          <View style={{ marginTop: 6 }}>
+            <VariantBar
+              variants={tgtCal.variants}
+              selected={toVariant || tgtCal.defaultVariant || tgtCal.variants[0]}
+              onSelect={(v) => { setToVariant(v); tgtCal._variant = v; }}
+            />
+          </View>
+        )}
+      </View>
+
+      {/* ── CONVERT button ────────────────────────────────────── */}
+      <TouchableOpacity
+        style={[
+          styles.convertBtn,
+          {
+            backgroundColor: theme.colors.buttonBg,
+            borderColor: theme.colors.buttonBg,
+            borderWidth: isBrut ? 3 : theme.borderWidth,
+            borderRadius: theme.borderRadius,
+          },
+        ]}
+        onPress={() => setConvertTick(t => t + 1)}
+        activeOpacity={0.8}
+      >
+        <Text
+          style={[
+            styles.convertText,
+            { color: isBrut ? theme.colors.accent : theme.colors.buttonText },
+          ]}
+        >
+          {T.startGo}
+        </Text>
+        <Text style={[styles.convertGlyph, { color: theme.colors.accent }]}>{'\u2193'}</Text>
+      </TouchableOpacity>
+
+      {/* ── RESULT (grows to fill, always fits) ───────────────── */}
+      <View
+        style={[
+          styles.resultFrame,
+          {
+            borderColor: theme.colors.border,
+            borderWidth: theme.borderWidth,
+            borderRadius: theme.borderRadius,
+            backgroundColor: theme.colors.cardBg,
+          },
+        ]}
+      >
+        <View style={styles.resultHeadRow}>
+          <Text style={[styles.resultEyebrow, { color: theme.colors.textMuted }]}>
+            {'\u00a7'} RESULT
+          </Text>
+          <View style={[styles.resultRule, { backgroundColor: theme.colors.accent }]} />
+        </View>
+
+        {hasError ? (
+          <View style={styles.resultBody}>
+            <Text
+              style={[styles.resultErrorText, { color: theme.colors.error }]}
+              numberOfLines={2}
+              adjustsFontSizeToFit
+            >
+              {(conversion as any).error}
+            </Text>
+          </View>
+        ) : hasResult ? (
+          <View style={styles.resultBody}>
+            <Text
+              style={[styles.resultSource, { color: theme.colors.textSecondary }]}
+              numberOfLines={1}
+              adjustsFontSizeToFit
+            >
+              {(conversion as any).sourceText}
+            </Text>
+            <Text
+              style={[styles.resultArrow, { color: theme.colors.accent }]}
+            >
+              {'\u2193'}
+            </Text>
+            <Text
+              style={[
+                styles.resultMain,
+                {
+                  color: theme.colors.text,
+                  borderBottomColor: theme.colors.accent,
+                  borderBottomWidth: isBrut ? 3 : 1,
+                },
+              ]}
+              numberOfLines={2}
+              adjustsFontSizeToFit
+              minimumFontScale={0.5}
+            >
+              {(conversion as any).targetText}
+            </Text>
+            {'weekday' in (conversion as any) && (conversion as any).weekday ? (
+              <Text style={[styles.resultWeekday, { color: theme.colors.textSecondary }]}>
+                {(conversion as any).weekday}
+              </Text>
+            ) : null}
+          </View>
+        ) : (
+          <View style={styles.resultBody}>
+            <Text style={[styles.resultMain, { color: theme.colors.textMuted }]}>
+              {'\u2014'}
+            </Text>
+          </View>
+        )}
+      </View>
+
+      {/* ── INFO (inconspicuous, bottom) ──────────────────────── */}
+      <TouchableOpacity
+        onPress={() => navigation.navigate('Info')}
+        style={styles.infoBtn}
+        hitSlop={{ top: 8, bottom: 8, left: 20, right: 20 }}
+      >
+        <View style={[styles.infoDot, { backgroundColor: theme.colors.textMuted }]} />
+        <Text style={[styles.infoBtnText, { color: theme.colors.textMuted }]}>
+          {T.startInfo || T.navMethodology || 'Info'}
+        </Text>
+      </TouchableOpacity>
+
+      {/* ── CUSTOM KEYPAD (shown on demand) ──────────────────── */}
       {numpadVisible && (
-        <View style={[styles.keypadContainer, { backgroundColor: theme.colors.surface, borderTopColor: theme.colors.border, borderTopWidth: theme.borderWidth }]}>
+        <View
+          style={[
+            styles.keypadContainer,
+            {
+              backgroundColor: theme.colors.surface,
+              borderTopColor: theme.colors.border,
+              borderTopWidth: theme.borderWidth,
+            },
+          ]}
+        >
           <TouchableOpacity
-            style={[styles.keypadDoneBtn, { borderColor: theme.colors.border, borderBottomWidth: theme.borderWidth }]}
+            style={[
+              styles.keypadDoneBtn,
+              { borderColor: theme.colors.border, borderBottomWidth: theme.borderWidth },
+            ]}
             onPress={() => setNumpadVisible(false)}
           >
             <Text style={[styles.keypadDoneText, { color: theme.colors.textSecondary }]}>
@@ -319,16 +504,27 @@ export function ConverterScreen({ route, navigation }: Props) {
         </View>
       )}
 
-      {/* ─── MONTH PICKER MODAL ─── */}
-      <Modal visible={monthPickerVisible} animationType="slide" presentationStyle="pageSheet" onRequestClose={() => setMonthPickerVisible(false)}>
+      {/* ── MONTH PICKER MODAL ─────────────────────────────── */}
+      <Modal
+        visible={monthPickerVisible}
+        animationType="slide"
+        presentationStyle="pageSheet"
+        onRequestClose={() => setMonthPickerVisible(false)}
+      >
         <View style={[styles.modal, { backgroundColor: theme.colors.background }]}>
-          <View style={[
-            styles.modalHeader,
-            isBrut && { backgroundColor: '#000', paddingTop: 16, paddingBottom: 16 }
-          ]}>
-            <Text style={[styles.modalTitle, { color: isBrut ? '#fff' : theme.colors.text }]}>{T.month}</Text>
+          <View
+            style={[
+              styles.modalHeader,
+              isBrut && { backgroundColor: '#000', paddingTop: 16, paddingBottom: 16 },
+            ]}
+          >
+            <Text style={[styles.modalTitle, { color: isBrut ? '#fff' : theme.colors.text }]}>
+              {T.month}
+            </Text>
             <TouchableOpacity onPress={() => setMonthPickerVisible(false)}>
-              <Text style={[styles.closeBtn, { color: theme.colors.accent }]}>{T.doneLabel}</Text>
+              <Text style={[styles.closeBtn, { color: theme.colors.accent }]}>
+                {T.doneLabel}
+              </Text>
             </TouchableOpacity>
           </View>
           <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16 }}>
@@ -339,7 +535,11 @@ export function ConverterScreen({ route, navigation }: Props) {
                   key={num}
                   style={[
                     styles.monthItem,
-                    { borderColor: theme.colors.border, borderWidth: theme.borderWidth, borderRadius: theme.borderRadius },
+                    {
+                      borderColor: theme.colors.border,
+                      borderWidth: theme.borderWidth,
+                      borderRadius: theme.borderRadius,
+                    },
                     isActive && { backgroundColor: theme.colors.accent },
                   ]}
                   onPress={() => { setMonth(num); setMonthPickerVisible(false); }}
@@ -347,7 +547,11 @@ export function ConverterScreen({ route, navigation }: Props) {
                   <Text
                     style={[
                       styles.monthItemName,
-                      { color: isActive ? (isBrut ? theme.colors.accentText : theme.colors.text) : theme.colors.text },
+                      {
+                        color: isActive
+                          ? (isBrut ? theme.colors.accentText : theme.colors.text)
+                          : theme.colors.text,
+                      },
                     ]}
                     numberOfLines={1}
                   >
@@ -359,56 +563,273 @@ export function ConverterScreen({ route, navigation }: Props) {
             <TouchableOpacity
               style={[
                 styles.wholeYearBtn,
-                { borderColor: theme.colors.border, borderWidth: theme.borderWidth, borderRadius: theme.borderRadius },
+                {
+                  borderColor: theme.colors.border,
+                  borderWidth: theme.borderWidth,
+                  borderRadius: theme.borderRadius,
+                },
                 month === null && { backgroundColor: theme.colors.accent },
               ]}
               onPress={() => { setMonth(null); setMonthPickerVisible(false); }}
             >
-              <Text style={[styles.monthItemName, { color: month === null ? (isBrut ? theme.colors.accentText : theme.colors.text) : theme.colors.textSecondary }]}>
+              <Text
+                style={[
+                  styles.monthItemName,
+                  {
+                    color:
+                      month === null
+                        ? (isBrut ? theme.colors.accentText : theme.colors.text)
+                        : theme.colors.textSecondary,
+                  },
+                ]}
+              >
                 {T.wholeYear || 'Whole year'}
               </Text>
             </TouchableOpacity>
           </ScrollView>
         </View>
       </Modal>
-
-      {/* ─── INFO BUTTON (muted, bottom) ─── */}
-      <TouchableOpacity onPress={openInfo} style={styles.infoBtn} hitSlop={{ top: 8, bottom: 8, left: 20, right: 20 }}>
-        <Text style={[styles.infoBtnText, { color: theme.colors.textMuted }]}>
-          {T.navMethodology || 'Information'}
-        </Text>
-      </TouchableOpacity>
     </View>
   );
 }
 
+function Field({ label, numeral }: { label: string; numeral: string }) {
+  const { theme } = useTheme();
+  return (
+    <View style={styles.fieldLabelRow}>
+      <Text style={[styles.fieldNumeral, { color: theme.colors.accent }]}>{numeral}.</Text>
+      <Text style={[styles.fieldLabelText, { color: theme.colors.textSecondary }]} numberOfLines={1}>
+        {label}
+      </Text>
+      <View style={[styles.fieldRule, { backgroundColor: theme.colors.border }]} />
+    </View>
+  );
+}
+
+const fieldBoxStyle = (theme: any, isActive: boolean) => ({
+  borderColor: isActive ? theme.colors.accent : theme.colors.border,
+  borderWidth: theme.borderWidth,
+  backgroundColor: isActive
+    ? (theme.name === 'brutalist' ? theme.colors.accent : theme.colors.surfaceAlt)
+    : theme.colors.surface,
+  borderRadius: theme.borderRadius,
+});
+
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  scroll: { flex: 1 },
+  container: {
+    flex: 1,
+    paddingHorizontal: 14,
+    paddingTop: Platform.OS === 'android' ? 26 : 44,
+    paddingBottom: 6,
+  },
 
-  // Top result display
-  resultText: { fontSize: 17, fontWeight: '700', letterSpacing: 0.3 },
-  resultMain: { fontSize: 22, fontWeight: '900', letterSpacing: 0.5 },
-  weekday: { fontSize: 12, marginTop: 6, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 1.4 },
-  errorText: { fontSize: 14, fontWeight: '700' },
-  arrow: { fontSize: 20, textAlign: 'center', marginTop: -4, marginBottom: 4, fontWeight: '900' },
+  // Mini masthead
+  masthead: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 6,
+  },
+  backGlyph: {
+    fontSize: 22,
+    fontWeight: '900',
+    paddingRight: 2,
+  },
+  mastheadTitle: {
+    fontSize: 13,
+    fontWeight: '900',
+    textTransform: 'uppercase',
+    letterSpacing: 2,
+  },
+  mastheadRule: {
+    flex: 1,
+    height: 3,
+    marginLeft: 4,
+  },
 
-  // Month list
-  sectionLabel: { fontSize: 11, fontWeight: '900', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 8 },
-  monthItem: { paddingHorizontal: 12, paddingVertical: 11, marginBottom: 4 },
-  monthItemName: { fontSize: 14, fontWeight: '700' },
-  wholeYearBtn: { marginTop: 4, paddingVertical: 11, paddingHorizontal: 12 },
+  // Field labels (II. YEAR · MONTH · DAY ─────)
+  fieldLabelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 8,
+    marginBottom: 4,
+    gap: 6,
+  },
+  fieldNumeral: {
+    fontSize: 10,
+    fontWeight: '900',
+    letterSpacing: 1,
+  },
+  fieldLabelText: {
+    fontSize: 9,
+    fontWeight: '900',
+    textTransform: 'uppercase',
+    letterSpacing: 1.6,
+    flexShrink: 1,
+  },
+  fieldRule: {
+    flex: 1,
+    height: 1,
+    opacity: 0.4,
+  },
 
-  // Year / Day fields (standalone rows)
-  fieldBox: { paddingVertical: 12, paddingHorizontal: 12, alignItems: 'center' },
-  fieldLabel: { fontSize: 10, fontWeight: '900', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 2 },
-  fieldValue: { fontSize: 22, fontWeight: '900' },
+  // Picker wrappers
+  pickerFrame: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+  },
+
+  // YMD row
+  ymdRow: {
+    flexDirection: 'row',
+    gap: 6,
+  },
+  ymdCell: {
+    paddingVertical: 8,
+    paddingHorizontal: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  ymdYear: { flex: 1.6 },
+  ymdMonth: { flex: 1.8 },
+  ymdDay: { flex: 1 },
+  ymdLabel: {
+    fontSize: 9,
+    fontWeight: '900',
+    textTransform: 'uppercase',
+    letterSpacing: 1.3,
+    marginBottom: 1,
+  },
+  ymdValue: {
+    fontSize: 19,
+    fontWeight: '900',
+  },
+
+  // Convert
+  convertBtn: {
+    marginTop: 10,
+    paddingVertical: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 12,
+  },
+  convertText: {
+    fontSize: 16,
+    fontWeight: '900',
+    textTransform: 'uppercase',
+    letterSpacing: 2,
+  },
+  convertGlyph: {
+    fontSize: 18,
+    fontWeight: '900',
+  },
+
+  // Result (grows to fill remaining space)
+  resultFrame: {
+    flex: 1,
+    marginTop: 10,
+    padding: 14,
+    justifyContent: 'space-between',
+  },
+  resultHeadRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  resultEyebrow: {
+    fontSize: 10,
+    fontWeight: '900',
+    letterSpacing: 2,
+  },
+  resultRule: {
+    flex: 1,
+    height: 3,
+  },
+  resultBody: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 4,
+  },
+  resultSource: {
+    fontSize: 13,
+    fontWeight: '700',
+    letterSpacing: 0.4,
+    textAlign: 'center',
+  },
+  resultArrow: {
+    fontSize: 18,
+    fontWeight: '900',
+    marginVertical: 4,
+  },
+  resultMain: {
+    fontSize: 26,
+    fontWeight: '900',
+    letterSpacing: 0.4,
+    textAlign: 'center',
+    paddingBottom: 4,
+    paddingHorizontal: 4,
+  },
+  resultWeekday: {
+    fontSize: 11,
+    marginTop: 6,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 1.6,
+  },
+  resultErrorText: {
+    fontSize: 14,
+    fontWeight: '700',
+    textAlign: 'center',
+  },
+
+  // Info (bottom)
+  infoBtn: {
+    alignSelf: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 7,
+    paddingVertical: 8,
+    paddingBottom: 10,
+    opacity: 0.65,
+  },
+  infoDot: {
+    width: 4,
+    height: 4,
+  },
+  infoBtnText: {
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 2,
+    textTransform: 'uppercase',
+  },
 
   // Keypad
-  keypadContainer: { },
-  keypadDoneBtn: { alignItems: 'flex-end', paddingHorizontal: 16, paddingVertical: 6 },
-  keypadDoneText: { fontSize: 13, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 1 },
-  keypad: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 8, paddingTop: 4, paddingBottom: 4 },
+  keypadContainer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  keypadDoneBtn: {
+    alignItems: 'flex-end',
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+  },
+  keypadDoneText: {
+    fontSize: 13,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+  },
+  keypad: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    paddingHorizontal: 8,
+    paddingTop: 4,
+    paddingBottom: 8,
+  },
   keypadKey: {
     width: '31.33%',
     marginHorizontal: '1%',
@@ -417,15 +838,39 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  keypadKeyText: { fontSize: 22, fontWeight: '900' },
-
-  // Info button
-  infoBtn: { alignItems: 'center', paddingVertical: 6, paddingBottom: 10 },
-  infoBtnText: { fontSize: 11, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 1.5, opacity: 0.55 },
+  keypadKeyText: {
+    fontSize: 22,
+    fontWeight: '900',
+  },
 
   // Month picker modal
   modal: { flex: 1, paddingTop: 16 },
-  modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingBottom: 12 },
-  modalTitle: { fontSize: 20, fontWeight: '900', textTransform: 'uppercase', letterSpacing: 1 },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingBottom: 12,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: '900',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+  },
   closeBtn: { fontSize: 17, fontWeight: '700' },
+  monthItem: {
+    paddingHorizontal: 12,
+    paddingVertical: 11,
+    marginBottom: 4,
+  },
+  monthItemName: {
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  wholeYearBtn: {
+    marginTop: 4,
+    paddingVertical: 11,
+    paddingHorizontal: 12,
+  },
 });

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   StyleSheet,
   StatusBar,
   Platform,
+  ScrollView,
 } from 'react-native';
 import { useTheme } from '../theme/ThemeContext';
 import { useT } from '../i18n/LanguageContext';
@@ -16,117 +17,181 @@ import type { RootStackParamList } from '../../App';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Start'>;
 
+// Per TEMPLATE.md: TO is hidden unless FROM is one of these linear/era calendars.
+const NEEDS_EXPLICIT_TO = new Set(['human', 'bp', 'gregorian']);
+
 export function StartScreen({ navigation }: Props) {
   const { theme } = useTheme();
   const T = useT();
   const isBrut = theme.name === 'brutalist';
 
-  const [calendarId, setCalendarId] = useState('hijri');
+  const [fromCal, setFromCal] = useState('hijri');
+  const [toCal, setToCal] = useState('gregorian');
   const [year, setYear] = useState('');
 
-  const canGo = year.length > 0;
+  const showTo = useMemo(() => NEEDS_EXPLICIT_TO.has(fromCal), [fromCal]);
+  const canGo = year.length > 0 && (!showTo || toCal !== fromCal);
 
-  const handleGo = () => {
+  const handleConvert = () => {
     if (!canGo) return;
-    navigation.navigate('Converter', { calendarId, year: parseInt(year, 10) });
+    navigation.navigate('Converter', {
+      calendarId: fromCal,
+      year: parseInt(year, 10),
+      toCalendarId: showTo ? toCal : undefined,
+    });
+  };
+
+  const handleFromChange = (id: string) => {
+    setFromCal(id);
+    // If the newly-picked FROM would clash with default TO, nudge TO away.
+    if (id === 'gregorian' && toCal === 'gregorian') setToCal('hijri');
   };
 
   return (
     <View style={[styles.root, { backgroundColor: theme.colors.background }]}>
-      <StatusBar barStyle={isBrut ? 'light-content' : 'dark-content'} />
+      <StatusBar barStyle="dark-content" />
 
-      {/* Top area: title + picker + year display */}
-      <View style={styles.top}>
-        {/* App name */}
-        <View style={styles.titleWrap}>
-          <Text style={[styles.appTitle, { color: isBrut ? theme.colors.text : theme.colors.accent }]}>
+      <ScrollView
+        contentContainerStyle={styles.scrollBody}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
+        {/* ── Masthead ───────────────────────────────────────────── */}
+        <View style={styles.masthead}>
+          <Text style={[styles.eyebrow, { color: theme.colors.textMuted }]}>
+            {'\u00a7'} CALENDAR · CONVERTER
+          </Text>
+          <Text style={[styles.appTitle, { color: theme.colors.text }]}>
             {T.appTitle}
           </Text>
-          <View style={[styles.titleRule, { backgroundColor: theme.colors.accent }]} />
+          <View style={styles.rubricRow}>
+            <View style={[styles.rubricBar, { backgroundColor: theme.colors.accent }]} />
+            <View style={[styles.rubricBar, styles.rubricBarShort, { backgroundColor: theme.colors.border }]} />
+          </View>
         </View>
 
-        {/* Calendar picker */}
-        <View style={[
-          styles.pickerWrapper,
-          {
-            borderColor: theme.colors.border,
-            borderWidth: theme.borderWidth,
-            borderRadius: theme.borderRadius,
-            backgroundColor: theme.colors.surface,
-          },
-        ]}>
+        {/* ── FROM ───────────────────────────────────────────────── */}
+        <SectionLabel n="I" label={T.fromCalendar} />
+        <View
+          style={[
+            styles.pickerFrame,
+            {
+              borderColor: theme.colors.border,
+              borderWidth: theme.borderWidth,
+              borderRadius: theme.borderRadius,
+              backgroundColor: theme.colors.surface,
+            },
+          ]}
+        >
           <CalendarPicker
-            value={calendarId}
-            onSelect={setCalendarId}
-            label={T.startCalendarLabel}
+            value={fromCal}
+            onSelect={handleFromChange}
+            label={''}
           />
         </View>
 
-        {/* Year display */}
-        <View style={[
-          styles.yearDisplay,
-          {
-            borderColor: canGo
-              ? (isBrut ? theme.colors.accent : theme.colors.accent)
-              : theme.colors.border,
-            borderWidth: isBrut ? 3 : theme.borderWidth,
-            borderRadius: theme.borderRadius,
-            backgroundColor: theme.colors.surface,
-          },
-        ]}>
-          <Text style={[
-            styles.yearLabel,
-            { color: theme.colors.textSecondary },
-          ]}>
-            {T.year}
-          </Text>
-          <Text style={[
-            styles.yearValue,
-            { color: year ? theme.colors.text : theme.colors.textMuted },
-          ]}>
+        {/* ── TO (conditional) ───────────────────────────────────── */}
+        {showTo && (
+          <>
+            <SectionLabel n="II" label={T.targetCalendar} />
+            <View
+              style={[
+                styles.pickerFrame,
+                {
+                  borderColor: theme.colors.border,
+                  borderWidth: theme.borderWidth,
+                  borderRadius: theme.borderRadius,
+                  backgroundColor: theme.colors.surface,
+                },
+              ]}
+            >
+              <CalendarPicker
+                value={toCal}
+                onSelect={setToCal}
+                label={''}
+              />
+            </View>
+          </>
+        )}
+
+        {/* ── YEAR display ───────────────────────────────────────── */}
+        <SectionLabel n={showTo ? 'III' : 'II'} label={T.year} />
+        <View
+          style={[
+            styles.yearFrame,
+            {
+              borderColor: year ? theme.colors.accent : theme.colors.border,
+              borderWidth: isBrut ? 3 : theme.borderWidth,
+              borderRadius: theme.borderRadius,
+              backgroundColor: theme.colors.cardBg,
+            },
+          ]}
+        >
+          <Text
+            style={[
+              styles.yearValue,
+              { color: year ? theme.colors.text : theme.colors.textMuted },
+            ]}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+          >
             {year || T.startYearPlaceholder}
           </Text>
+          {year ? (
+            <View style={[styles.yearCaret, { backgroundColor: theme.colors.accent }]} />
+          ) : null}
         </View>
-      </View>
 
-      {/* NumPad */}
-      <View style={styles.padArea}>
-        <NumPad value={year} onChange={setYear} maxLength={6} />
-      </View>
+        {/* ── NumPad ─────────────────────────────────────────────── */}
+        <View style={styles.padArea}>
+          <NumPad value={year} onChange={setYear} maxLength={6} />
+        </View>
 
-      {/* OK button */}
-      <TouchableOpacity
-        style={[
-          styles.okBtn,
-          {
-            backgroundColor: canGo ? theme.colors.buttonBg : theme.colors.surface,
-            borderColor: canGo ? theme.colors.buttonBg : theme.colors.border,
-            borderWidth: isBrut ? 3 : theme.borderWidth,
-            borderRadius: theme.borderRadius,
-          },
-        ]}
-        onPress={handleGo}
-        disabled={!canGo}
-        activeOpacity={0.7}
-      >
-        <Text style={[
-          styles.okText,
-          {
-            color: canGo
-              ? (isBrut ? theme.colors.accent : theme.colors.buttonText)
-              : theme.colors.textMuted,
-          },
-        ]}>
-          {T.startGo}
-        </Text>
-      </TouchableOpacity>
+        {/* ── CONVERT button ─────────────────────────────────────── */}
+        <TouchableOpacity
+          style={[
+            styles.convertBtn,
+            {
+              backgroundColor: canGo ? theme.colors.buttonBg : theme.colors.surface,
+              borderColor: canGo ? theme.colors.buttonBg : theme.colors.border,
+              borderWidth: isBrut ? 3 : theme.borderWidth,
+              borderRadius: theme.borderRadius,
+            },
+          ]}
+          onPress={handleConvert}
+          disabled={!canGo}
+          activeOpacity={0.75}
+        >
+          <Text
+            style={[
+              styles.convertText,
+              {
+                color: canGo
+                  ? (isBrut ? theme.colors.accent : theme.colors.buttonText)
+                  : theme.colors.textMuted,
+              },
+            ]}
+          >
+            {T.startGo}
+          </Text>
+          <Text
+            style={[
+              styles.convertGlyph,
+              { color: canGo ? theme.colors.accent : theme.colors.textMuted },
+            ]}
+          >
+            {'\u2192'}
+          </Text>
+        </TouchableOpacity>
+      </ScrollView>
 
-      {/* Info link */}
+      {/* ── INFO — inconspicuous, fixed at the very bottom ───────── */}
       <TouchableOpacity
         style={styles.infoBtn}
         onPress={() => navigation.navigate('Info')}
         activeOpacity={0.6}
       >
+        <View style={[styles.infoDot, { backgroundColor: theme.colors.textMuted }]} />
         <Text style={[styles.infoText, { color: theme.colors.textMuted }]}>
           {T.startInfo}
         </Text>
@@ -135,75 +200,153 @@ export function StartScreen({ navigation }: Props) {
   );
 }
 
+function SectionLabel({ n, label }: { n: string; label: string }) {
+  const { theme } = useTheme();
+  return (
+    <View style={styles.sectionLabelRow}>
+      <Text style={[styles.sectionNumeral, { color: theme.colors.accent }]}>{n}.</Text>
+      <Text style={[styles.sectionLabel, { color: theme.colors.textSecondary }]}>{label}</Text>
+      <View style={[styles.sectionRule, { backgroundColor: theme.colors.border }]} />
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   root: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingTop: Platform.OS === 'android' ? 36 : 56,
-    paddingBottom: 24,
+    paddingTop: Platform.OS === 'android' ? 32 : 52,
   },
-  top: {
-    flex: 1,
-    justifyContent: 'center',
-    gap: 16,
+  scrollBody: {
+    paddingBottom: 18,
   },
-  titleWrap: {
-    marginBottom: 8,
-    alignItems: 'flex-start',
+
+  // Masthead
+  masthead: {
+    marginBottom: 18,
+  },
+  eyebrow: {
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 2.2,
   },
   appTitle: {
-    fontSize: 32,
+    fontSize: 34,
     fontWeight: '900',
     textTransform: 'uppercase',
-    letterSpacing: 3,
+    letterSpacing: 2,
+    marginTop: 4,
   },
-  titleRule: {
-    height: 3,
+  rubricRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 8,
+    gap: 6,
+  },
+  rubricBar: {
+    height: 4,
     width: 56,
-    marginTop: 6,
   },
-  pickerWrapper: {
-    paddingHorizontal: 12,
-    paddingVertical: 4,
+  rubricBarShort: {
+    width: 18,
+    height: 2,
   },
-  yearDisplay: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+
+  // Section labels: "I. FROM ─────"
+  sectionLabelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 14,
+    marginBottom: 6,
+    gap: 8,
   },
-  yearLabel: {
+  sectionNumeral: {
     fontSize: 11,
     fontWeight: '900',
-    textTransform: 'uppercase',
-    letterSpacing: 1.5,
-    marginBottom: 2,
+    letterSpacing: 1,
   },
-  yearValue: {
-    fontSize: 36,
+  sectionLabel: {
+    fontSize: 10,
     fontWeight: '900',
+    textTransform: 'uppercase',
     letterSpacing: 2,
   },
-  padArea: {
-    marginBottom: 16,
+  sectionRule: {
+    flex: 1,
+    height: 1,
+    marginLeft: 4,
+    opacity: 0.4,
   },
-  okBtn: {
-    paddingVertical: 18,
+
+  // Calendar picker wrapper
+  pickerFrame: {
+    paddingHorizontal: 10,
+    paddingVertical: 2,
+  },
+
+  // Year display
+  yearFrame: {
+    paddingHorizontal: 18,
+    paddingVertical: 14,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 12,
+    minHeight: 78,
   },
-  okText: {
-    fontSize: 20,
+  yearValue: {
+    fontSize: 44,
+    fontWeight: '900',
+    letterSpacing: 3,
+  },
+  yearCaret: {
+    width: 20,
+    height: 3,
+    marginTop: 6,
+  },
+
+  // Numpad
+  padArea: {
+    marginTop: 14,
+  },
+
+  // Convert button
+  convertBtn: {
+    marginTop: 16,
+    paddingVertical: 18,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 14,
+  },
+  convertText: {
+    fontSize: 19,
     fontWeight: '900',
     textTransform: 'uppercase',
-    letterSpacing: 2,
+    letterSpacing: 2.2,
   },
+  convertGlyph: {
+    fontSize: 22,
+    fontWeight: '900',
+  },
+
+  // Info (bottom, unobtrusive)
   infoBtn: {
+    alignSelf: 'center',
+    flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 8,
+    paddingVertical: 10,
+    paddingBottom: 14,
+    gap: 7,
+    opacity: 0.65,
+  },
+  infoDot: {
+    width: 4,
+    height: 4,
+    borderRadius: 0,
   },
   infoText: {
-    fontSize: 13,
-    fontWeight: '500',
-    letterSpacing: 0.5,
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 2,
+    textTransform: 'uppercase',
   },
 });

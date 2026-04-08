@@ -15,3 +15,4 @@
 - [x] Group calendars by cultural sphere in picker (`0e94654`)
 - [x] Verify Parker & Dubberstein Babylonian tables present in `mobile/src/engine/cal.js`
 - [x] Verify Human Era variants present
+- [x] Info screen with tabbed layout (Calendars & Methodology + back button to Converter)

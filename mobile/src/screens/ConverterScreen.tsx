@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useTheme } from '../theme/ThemeContext';
 import { Cal } from '../engine/cal';
 import { useT } from '../i18n/LanguageContext';
@@ -8,20 +8,30 @@ import { CALENDARS, CalendarDef } from '../engine/calendars';
 import { CalendarPicker } from '../components/CalendarPicker';
 import { VariantBar } from '../components/VariantBar';
 import { BrutalistCard } from '../components/BrutalistCard';
+import type { RootStackParamList } from '../../App';
 
 type ActiveField = 'year' | 'day';
 
-export function ConverterScreen() {
+type Props = NativeStackScreenProps<RootStackParamList, 'Converter'>;
+
+export function ConverterScreen({ route, navigation }: Props) {
   const { theme } = useTheme();
   const T = useT();
-  const navigation = useNavigation<any>();
   const isBrut = theme.name === 'brutalist';
 
-  const [fromCal, setFromCal] = useState<string>('gregorian');
-  const [toCal, setToCal] = useState<string>('hijri');
-  const [fromVariant, setFromVariant] = useState<string>('');
+  const initCal = route.params?.calendarId ?? 'gregorian';
+  const initYear = route.params?.year != null ? String(route.params.year) : '2024';
+  const initToCal = initCal === 'hijri' ? 'gregorian' : 'hijri';
+  const initVariant = (() => {
+    const cal = CALENDARS[initCal];
+    return cal?.variants ? (cal.defaultVariant ?? cal.variants[0]) : '';
+  })();
+
+  const [fromCal, setFromCal] = useState<string>(initCal);
+  const [toCal, setToCal] = useState<string>(initToCal);
+  const [fromVariant, setFromVariant] = useState<string>(initVariant);
   const [toVariant, setToVariant] = useState<string>('');
-  const [year, setYear] = useState('2024');
+  const [year, setYear] = useState(initYear);
   const [month, setMonth] = useState<number | null>(1);
   const [day, setDay] = useState('1');
   const [active, setActive] = useState<ActiveField>('year');
@@ -140,7 +150,7 @@ export function ConverterScreen() {
   };
 
   const openInfo = () => {
-    try { navigation.navigate('Methodology'); } catch {}
+    try { navigation.navigate('Info'); } catch {}
   };
 
   // Build month grid columns (3 columns)

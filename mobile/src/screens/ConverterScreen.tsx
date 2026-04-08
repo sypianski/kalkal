@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Modal } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useTheme } from '../theme/ThemeContext';
 import { Cal } from '../engine/cal';
@@ -36,6 +36,7 @@ export function ConverterScreen({ route, navigation }: Props) {
   const [day, setDay] = useState('1');
   const [active, setActive] = useState<ActiveField>('year');
   const [numpadVisible, setNumpadVisible] = useState(false);
+  const [monthPickerVisible, setMonthPickerVisible] = useState(false);
 
   const getSrc = useCallback((): CalendarDef | null => {
     const cal = CALENDARS[fromCal];
@@ -250,46 +251,19 @@ export function ConverterScreen({ route, navigation }: Props) {
           </Text>
         </TouchableOpacity>
 
-        {/* ─── MONTH PICKER (vertical list) ─── */}
-        <BrutalistCard>
-          <Text style={[styles.sectionLabel, { color: theme.colors.textSecondary }]}>{T.month}</Text>
-          {monthItems.map(({ num, name }) => {
-            const isActive = month === num;
-            return (
-              <TouchableOpacity
-                key={num}
-                style={[
-                  styles.monthItem,
-                  { borderColor: theme.colors.border, borderWidth: theme.borderWidth, borderRadius: theme.borderRadius },
-                  isActive && { backgroundColor: theme.colors.accent },
-                ]}
-                onPress={() => setMonth(num)}
-              >
-                <Text
-                  style={[
-                    styles.monthItemName,
-                    { color: isActive ? (isBrut ? theme.colors.accentText : theme.colors.text) : theme.colors.text },
-                  ]}
-                  numberOfLines={1}
-                >
-                  {num}. {name}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-          <TouchableOpacity
-            style={[
-              styles.wholeYearBtn,
-              { borderColor: theme.colors.border, borderWidth: theme.borderWidth, borderRadius: theme.borderRadius },
-              month === null && { backgroundColor: theme.colors.accent },
-            ]}
-            onPress={() => setMonth(null)}
-          >
-            <Text style={[styles.monthItemName, { color: month === null ? (isBrut ? theme.colors.accentText : theme.colors.text) : theme.colors.textSecondary }]}>
-              {T.wholeYear || 'Whole year'}
-            </Text>
-          </TouchableOpacity>
-        </BrutalistCard>
+        {/* ─── MONTH DROPDOWN ─── */}
+        <TouchableOpacity
+          style={[styles.fieldBox, fieldBoxStyle(false), { marginBottom: 10 }]}
+          onPress={() => setMonthPickerVisible(true)}
+          activeOpacity={0.7}
+        >
+          <Text style={[styles.fieldLabel, { color: theme.colors.textSecondary }]}>{T.month}</Text>
+          <Text style={[styles.fieldValue, { color: theme.colors.text }]} numberOfLines={1}>
+            {month === null
+              ? (T.wholeYear || 'Whole year')
+              : (monthNames[(month ?? 1) - 1] ? `${month}. ${monthNames[month - 1]}` : '\u2014')}
+          </Text>
+        </TouchableOpacity>
 
         {/* ─── DAY FIELD ─── */}
         <TouchableOpacity
@@ -345,6 +319,59 @@ export function ConverterScreen({ route, navigation }: Props) {
         </View>
       )}
 
+      {/* ─── MONTH PICKER MODAL ─── */}
+      <Modal visible={monthPickerVisible} animationType="slide" presentationStyle="pageSheet" onRequestClose={() => setMonthPickerVisible(false)}>
+        <View style={[styles.modal, { backgroundColor: theme.colors.background }]}>
+          <View style={[
+            styles.modalHeader,
+            isBrut && { backgroundColor: '#000', paddingTop: 16, paddingBottom: 16 }
+          ]}>
+            <Text style={[styles.modalTitle, { color: isBrut ? '#fff' : theme.colors.text }]}>{T.month}</Text>
+            <TouchableOpacity onPress={() => setMonthPickerVisible(false)}>
+              <Text style={[styles.closeBtn, { color: theme.colors.accent }]}>{T.doneLabel}</Text>
+            </TouchableOpacity>
+          </View>
+          <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16 }}>
+            {monthItems.map(({ num, name }) => {
+              const isActive = month === num;
+              return (
+                <TouchableOpacity
+                  key={num}
+                  style={[
+                    styles.monthItem,
+                    { borderColor: theme.colors.border, borderWidth: theme.borderWidth, borderRadius: theme.borderRadius },
+                    isActive && { backgroundColor: theme.colors.accent },
+                  ]}
+                  onPress={() => { setMonth(num); setMonthPickerVisible(false); }}
+                >
+                  <Text
+                    style={[
+                      styles.monthItemName,
+                      { color: isActive ? (isBrut ? theme.colors.accentText : theme.colors.text) : theme.colors.text },
+                    ]}
+                    numberOfLines={1}
+                  >
+                    {num}. {name}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+            <TouchableOpacity
+              style={[
+                styles.wholeYearBtn,
+                { borderColor: theme.colors.border, borderWidth: theme.borderWidth, borderRadius: theme.borderRadius },
+                month === null && { backgroundColor: theme.colors.accent },
+              ]}
+              onPress={() => { setMonth(null); setMonthPickerVisible(false); }}
+            >
+              <Text style={[styles.monthItemName, { color: month === null ? (isBrut ? theme.colors.accentText : theme.colors.text) : theme.colors.textSecondary }]}>
+                {T.wholeYear || 'Whole year'}
+              </Text>
+            </TouchableOpacity>
+          </ScrollView>
+        </View>
+      </Modal>
+
       {/* ─── INFO BUTTON (muted, bottom) ─── */}
       <TouchableOpacity onPress={openInfo} style={styles.infoBtn} hitSlop={{ top: 8, bottom: 8, left: 20, right: 20 }}>
         <Text style={[styles.infoBtnText, { color: theme.colors.textMuted }]}>
@@ -395,4 +422,10 @@ const styles = StyleSheet.create({
   // Info button
   infoBtn: { alignItems: 'center', paddingVertical: 6, paddingBottom: 10 },
   infoBtnText: { fontSize: 11, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 1.5, opacity: 0.55 },
+
+  // Month picker modal
+  modal: { flex: 1, paddingTop: 16 },
+  modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingBottom: 12 },
+  modalTitle: { fontSize: 20, fontWeight: '900', textTransform: 'uppercase', letterSpacing: 1 },
+  closeBtn: { fontSize: 17, fontWeight: '700' },
 });

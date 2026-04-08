@@ -35,6 +35,7 @@ export function ConverterScreen({ route, navigation }: Props) {
   const [month, setMonth] = useState<number | null>(1);
   const [day, setDay] = useState('1');
   const [active, setActive] = useState<ActiveField>('year');
+  const [numpadVisible, setNumpadVisible] = useState(false);
 
   const getSrc = useCallback((): CalendarDef | null => {
     const cal = CALENDARS[fromCal];
@@ -153,14 +154,15 @@ export function ConverterScreen({ route, navigation }: Props) {
     try { navigation.navigate('Info'); } catch {}
   };
 
-  // Build month grid columns (3 columns)
-  const monthCols = useMemo(() => {
-    if (!srcCal) return [] as { num: number; name: string }[][];
-    const items = monthNames.map((name, i) => ({ num: i + 1, name }));
-    const cols: { num: number; name: string }[][] = [[], [], []];
-    items.forEach((item, i) => { cols[i % 3].push(item); });
-    return cols;
-  }, [srcCal, monthNames]);
+  const handleYearTap = () => {
+    setActive('year');
+    setNumpadVisible(true);
+  };
+
+  const handleDayTap = () => {
+    setActive('day');
+    setNumpadVisible(true);
+  };
 
   const fieldBoxStyle = (isActive: boolean) => ({
     borderColor: isActive ? theme.colors.accent : theme.colors.border,
@@ -178,6 +180,12 @@ export function ConverterScreen({ route, navigation }: Props) {
     '7', '8', '9',
     'clear', '0', 'back',
   ];
+
+  // Month list items (flat vertical list)
+  const monthItems = useMemo(() => {
+    if (!srcCal) return [] as { num: number; name: string }[];
+    return monthNames.map((name, i) => ({ num: i + 1, name }));
+  }, [srcCal, monthNames]);
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
@@ -230,39 +238,45 @@ export function ConverterScreen({ route, navigation }: Props) {
           )}
         </BrutalistCard>
 
-        {/* ─── MONTH PICKER ─── */}
+        {/* ─── YEAR FIELD ─── */}
+        <TouchableOpacity
+          style={[styles.fieldBox, fieldBoxStyle(active === 'year' && numpadVisible), { marginBottom: 10 }]}
+          onPress={handleYearTap}
+          activeOpacity={0.7}
+        >
+          <Text style={[styles.fieldLabel, { color: active === 'year' && numpadVisible && isBrut ? '#000' : theme.colors.textSecondary }]}>{T.year}</Text>
+          <Text style={[styles.fieldValue, { color: fieldTextColor(active === 'year' && numpadVisible) }]}>
+            {year || '\u2014'}
+          </Text>
+        </TouchableOpacity>
+
+        {/* ─── MONTH PICKER (vertical list) ─── */}
         <BrutalistCard>
           <Text style={[styles.sectionLabel, { color: theme.colors.textSecondary }]}>{T.month}</Text>
-          <View style={styles.monthGrid}>
-            {monthCols.map((col, ci) => (
-              <View key={ci} style={styles.monthCol}>
-                {col.map(({ num, name }) => {
-                  const isActive = month === num;
-                  return (
-                    <TouchableOpacity
-                      key={num}
-                      style={[
-                        styles.monthItem,
-                        { borderColor: theme.colors.border, borderWidth: theme.borderWidth, borderRadius: theme.borderRadius },
-                        isActive && { backgroundColor: theme.colors.accent },
-                      ]}
-                      onPress={() => setMonth(num)}
-                    >
-                      <Text
-                        style={[
-                          styles.monthItemName,
-                          { color: isActive ? (isBrut ? '#000' : theme.colors.text) : theme.colors.text },
-                        ]}
-                        numberOfLines={1}
-                      >
-                        {num}. {name}
-                      </Text>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
-            ))}
-          </View>
+          {monthItems.map(({ num, name }) => {
+            const isActive = month === num;
+            return (
+              <TouchableOpacity
+                key={num}
+                style={[
+                  styles.monthItem,
+                  { borderColor: theme.colors.border, borderWidth: theme.borderWidth, borderRadius: theme.borderRadius },
+                  isActive && { backgroundColor: theme.colors.accent },
+                ]}
+                onPress={() => setMonth(num)}
+              >
+                <Text
+                  style={[
+                    styles.monthItemName,
+                    { color: isActive ? (isBrut ? '#000' : theme.colors.text) : theme.colors.text },
+                  ]}
+                  numberOfLines={1}
+                >
+                  {num}. {name}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
           <TouchableOpacity
             style={[
               styles.wholeYearBtn,
@@ -277,59 +291,59 @@ export function ConverterScreen({ route, navigation }: Props) {
           </TouchableOpacity>
         </BrutalistCard>
 
-        {/* ─── YEAR / DAY fields (tap to select, no system keyboard) ─── */}
-        <View style={styles.fieldRow}>
-          <TouchableOpacity
-            style={[styles.fieldBox, fieldBoxStyle(active === 'year')]}
-            onPress={() => setActive('year')}
-            activeOpacity={0.7}
-          >
-            <Text style={[styles.fieldLabel, { color: active === 'year' && isBrut ? '#000' : theme.colors.textSecondary }]}>{T.year}</Text>
-            <Text style={[styles.fieldValue, { color: fieldTextColor(active === 'year') }]}>
-              {year || '\u2014'}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.fieldBox, fieldBoxStyle(active === 'day')]}
-            onPress={() => setActive('day')}
-            activeOpacity={0.7}
-          >
-            <Text style={[styles.fieldLabel, { color: active === 'day' && isBrut ? '#000' : theme.colors.textSecondary }]}>{T.day}</Text>
-            <Text style={[styles.fieldValue, { color: fieldTextColor(active === 'day') }]}>
-              {day || '\u2014'}
-            </Text>
-          </TouchableOpacity>
-        </View>
+        {/* ─── DAY FIELD ─── */}
+        <TouchableOpacity
+          style={[styles.fieldBox, fieldBoxStyle(active === 'day' && numpadVisible), { marginTop: 10 }]}
+          onPress={handleDayTap}
+          activeOpacity={0.7}
+        >
+          <Text style={[styles.fieldLabel, { color: active === 'day' && numpadVisible && isBrut ? '#000' : theme.colors.textSecondary }]}>{T.day}</Text>
+          <Text style={[styles.fieldValue, { color: fieldTextColor(active === 'day' && numpadVisible) }]}>
+            {day || '\u2014'}
+          </Text>
+        </TouchableOpacity>
       </ScrollView>
 
-      {/* ─── CUSTOM KEYPAD (pinned) ─── */}
-      <View style={[styles.keypad, { backgroundColor: theme.colors.surface, borderTopColor: theme.colors.border, borderTopWidth: theme.borderWidth }]}>
-        {keypadKeys.map((k, i) => (
+      {/* ─── CUSTOM KEYPAD (shown on demand) ─── */}
+      {numpadVisible && (
+        <View style={[styles.keypadContainer, { backgroundColor: theme.colors.surface, borderTopColor: theme.colors.border, borderTopWidth: theme.borderWidth }]}>
           <TouchableOpacity
-            key={i}
-            style={[
-              styles.keypadKey,
-              {
-                borderColor: theme.colors.border,
-                borderWidth: isBrut ? 2 : 1,
-                borderRadius: theme.borderRadius,
-                backgroundColor: theme.colors.cardBg,
-              },
-            ]}
-            onPress={() => {
-              if (k === 'back') pressBackspace();
-              else if (k === 'clear') pressClear();
-              else pressDigit(k);
-            }}
-            onLongPress={() => { if (k === 'back') pressClear(); }}
-            activeOpacity={0.6}
+            style={[styles.keypadDoneBtn, { borderColor: theme.colors.border, borderBottomWidth: theme.borderWidth }]}
+            onPress={() => setNumpadVisible(false)}
           >
-            <Text style={[styles.keypadKeyText, { color: theme.colors.text }]}>
-              {k === 'back' ? '\u232B' : k === 'clear' ? 'C' : k}
+            <Text style={[styles.keypadDoneText, { color: theme.colors.textSecondary }]}>
+              {T.doneLabel || 'Done'}
             </Text>
           </TouchableOpacity>
-        ))}
-      </View>
+          <View style={styles.keypad}>
+            {keypadKeys.map((k, i) => (
+              <TouchableOpacity
+                key={i}
+                style={[
+                  styles.keypadKey,
+                  {
+                    borderColor: theme.colors.border,
+                    borderWidth: isBrut ? 2 : 1,
+                    borderRadius: theme.borderRadius,
+                    backgroundColor: theme.colors.cardBg,
+                  },
+                ]}
+                onPress={() => {
+                  if (k === 'back') pressBackspace();
+                  else if (k === 'clear') pressClear();
+                  else pressDigit(k);
+                }}
+                onLongPress={() => { if (k === 'back') pressClear(); }}
+                activeOpacity={0.6}
+              >
+                <Text style={[styles.keypadKeyText, { color: theme.colors.text }]}>
+                  {k === 'back' ? '\u232B' : k === 'clear' ? 'C' : k}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      )}
 
       {/* ─── INFO BUTTON (muted, bottom) ─── */}
       <TouchableOpacity onPress={openInfo} style={styles.infoBtn} hitSlop={{ top: 8, bottom: 8, left: 20, right: 20 }}>
@@ -352,22 +366,22 @@ const styles = StyleSheet.create({
   errorText: { fontSize: 14, fontWeight: '700' },
   arrow: { fontSize: 18, textAlign: 'center', marginTop: -6, marginBottom: 2, fontWeight: '900' },
 
-  // Month grid
+  // Month list
   sectionLabel: { fontSize: 11, fontWeight: '900', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 8 },
-  monthGrid: { flexDirection: 'row', gap: 6 },
-  monthCol: { flex: 1, gap: 6 },
-  monthItem: { paddingHorizontal: 8, paddingVertical: 10, alignItems: 'center', justifyContent: 'center' },
-  monthItemName: { fontSize: 12, fontWeight: '700' },
-  wholeYearBtn: { marginTop: 6, paddingVertical: 10, alignItems: 'center' },
+  monthItem: { paddingHorizontal: 12, paddingVertical: 11, marginBottom: 4 },
+  monthItemName: { fontSize: 14, fontWeight: '700' },
+  wholeYearBtn: { marginTop: 4, paddingVertical: 11, paddingHorizontal: 12 },
 
-  // Year / Day fields
-  fieldRow: { flexDirection: 'row', gap: 12, marginBottom: 12 },
-  fieldBox: { flex: 1, paddingVertical: 12, paddingHorizontal: 12, alignItems: 'center' },
+  // Year / Day fields (standalone rows)
+  fieldBox: { paddingVertical: 12, paddingHorizontal: 12, alignItems: 'center' },
   fieldLabel: { fontSize: 10, fontWeight: '900', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 2 },
   fieldValue: { fontSize: 22, fontWeight: '900' },
 
   // Keypad
-  keypad: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 8, paddingTop: 8, paddingBottom: 4 },
+  keypadContainer: { },
+  keypadDoneBtn: { alignItems: 'flex-end', paddingHorizontal: 16, paddingVertical: 6 },
+  keypadDoneText: { fontSize: 13, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 1 },
+  keypad: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 8, paddingTop: 4, paddingBottom: 4 },
   keypadKey: {
     width: '31.33%',
     marginHorizontal: '1%',

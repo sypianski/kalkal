@@ -6,16 +6,14 @@ import { Text } from 'react-native';
 import { ThemeProvider, useTheme } from './src/theme/ThemeContext';
 import { LanguageProvider, useT } from './src/i18n/LanguageContext';
 import { ConverterScreen } from './src/screens/ConverterScreen';
-import { CalendarsScreen } from './src/screens/CalendarsScreen';
-import { MethodologyScreen } from './src/screens/MethodologyScreen';
+import { InfoScreen } from './src/screens/InfoScreen';
 
 const Tab = createBottomTabNavigator();
 
 function TabIcon({ label, focused }: { label: string; focused: boolean }) {
   const icons: Record<string, string> = {
     Converter: '\u2194\uFE0F',
-    Calendars: '\u{1F4C5}',
-    Methodology: '\u{1F4D6}',
+    Info: 'ℹ️',
   };
   return <Text style={{ fontSize: 20, opacity: focused ? 1 : 0.5 }}>{icons[label] || '\u2022'}</Text>;
 }
@@ -48,8 +46,11 @@ function AppTabs() {
         })}
       >
         <Tab.Screen name="Converter" component={ConverterScreen} options={{ tabBarLabel: t.navConverter }} />
-        <Tab.Screen name="Calendars" component={CalendarsScreen} options={{ tabBarLabel: t.navCalendars }} />
-        <Tab.Screen name="Methodology" component={MethodologyScreen} options={{ tabBarLabel: t.navMethodology }} />
+        <Tab.Screen
+          name="Info"
+          component={InfoScreen}
+          options={{ tabBarLabel: t.navInfo || 'Info' }}
+        />
       </Tab.Navigator>
     </>
   );

@@ -19,6 +19,7 @@
 ## Changes to the Android app (rebuild per new TODO logic)
 - [x] Start screen: calendar picker (default Hijri), custom NumPad, OK → Converter, Info button
 - [x] Rebuild ConverterScreen: FROM/TO dropdowns with live results on top, month grid, custom in-app numeric keypad (no system keyboard), muted Information button at the bottom
+- [x] Info screen with tabbed layout (Calendars & Methodology + back button to Converter)
 - [ ] Restore / relocate language + theme toggles (removed from ConverterScreen — decide where they live, likely Info or a new Settings entry)
 - [ ] Restore / relocate history, Astro tile, and contextual/out-of-era calendar panels (removed from ConverterScreen — either as a details screen or a secondary panel)
 - [ ] Verify custom keypad layout on small screens (keypad is bottom-pinned; top section scrolls)

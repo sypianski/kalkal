@@ -12,6 +12,8 @@ import { LanguageToggle } from '../components/LanguageToggle';
 import { BrutalistCard } from '../components/BrutalistCard';
 import { Tile } from '../components/Tile';
 import { useHistory, HistoryEntry } from '../hooks/useHistory';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../../App';
 
 type ResultData = { type: 'date'; lines: ResultLine[]; astro?: ResultLine[]; contextual?: CalendarEntry[]; outOfEra?: CalendarEntry[] }
   | { type: 'range'; lines: ResultLine[]; table?: TableRow[]; astro?: ResultLine[]; contextual?: CalendarEntry[]; outOfEra?: CalendarEntry[] }
@@ -24,19 +26,28 @@ interface CalendarEntry { label: string; value: string }
 
 type Page = 'input' | 'result';
 
-export function ConverterScreen() {
+type Props = NativeStackScreenProps<RootStackParamList, 'Converter'>;
+
+export function ConverterScreen({ route, navigation }: Props) {
   const { theme } = useTheme();
   const T = useT();
   const isBrut = theme.name === 'brutalist';
   const history = useHistory();
   const scrollRef = useRef<ScrollView>(null);
 
-  const [page, setPage] = useState<Page>('input');
-  const [fromCal, setFromCal] = useState<string>('gregorian');
-  const [toCal, setToCal] = useState<string>('hijri');
-  const [fromVariant, setFromVariant] = useState<string>('');
+  const initCal = route.params?.calendarId ?? 'hijri';
+  const initYear = route.params?.year ? String(route.params.year) : '';
+  const initVariant = (() => {
+    const cal = CALENDARS[initCal];
+    return cal?.variants ? (cal.defaultVariant ?? cal.variants[0]) : '';
+  })();
+
+  const [page, setPage] = useState<Page>(initYear ? 'input' : 'input');
+  const [fromCal, setFromCal] = useState<string>(initCal);
+  const [toCal, setToCal] = useState<string>(initCal === 'hijri' ? 'gregorian' : 'hijri');
+  const [fromVariant, setFromVariant] = useState<string>(initVariant);
   const [toVariant, setToVariant] = useState<string>('');
-  const [year, setYear] = useState('');
+  const [year, setYear] = useState(initYear);
   const [month, setMonth] = useState('');
   const [day, setDay] = useState('');
   const [result, setResult] = useState<ResultData>(null);
@@ -388,6 +399,12 @@ export function ConverterScreen() {
   if (page === 'input') {
     return (
       <ScrollView ref={scrollRef} style={[styles.container, { backgroundColor: theme.colors.background }]} keyboardShouldPersistTaps="handled">
+        <TouchableOpacity
+          style={[styles.backBtn, { borderColor: theme.colors.border, borderWidth: theme.borderWidth }]}
+          onPress={() => navigation.goBack()}
+        >
+          <Text style={[styles.backBtnText, { color: theme.colors.text }]}>← {isBrut ? T.backLabel.toUpperCase() : T.backLabel}</Text>
+        </TouchableOpacity>
         <Text style={[styles.title, { color: theme.colors.text, letterSpacing: isBrut ? 3 : 0 }]}>{T.appTitle}</Text>
         <Text style={[styles.subtitle, { color: isBrut ? theme.colors.accent : theme.colors.textSecondary, letterSpacing: isBrut ? 2 : 0 }]}>{T.appSubtitle}</Text>
 

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useTheme } from '../theme/ThemeContext';
 import { useT } from '../i18n/LanguageContext';
 import { CalendarsScreen } from './CalendarsScreen';
@@ -7,7 +8,8 @@ import { MethodologyScreen } from './MethodologyScreen';
 
 type InfoTab = 'calendars' | 'methodology';
 
-export function InfoScreen({ navigation }: { navigation: any }) {
+export function InfoScreen() {
+  const navigation = useNavigation();
   const [activeTab, setActiveTab] = useState<InfoTab>('calendars');
   const { theme } = useTheme();
   const T = useT();

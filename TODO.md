@@ -1,4 +1,6 @@
 ## Web
+- [x] Language change updates all calendar names/months/UI strings reactively (input fields now retranslate on lang switch)
+- [x] Settings button in mobile bottom nav (language + Hijri variant selection, persisted in localStorage)
 - [ ] Add more calendar systems (French Republican, etc. if missing)
 - [x] Improve mobile UX based on recent layout changes (cursor+chevron on month, dropdown fix, month+day side-by-side)
 - [x] Hide result placeholder until Convert is pressed (mobile UX)

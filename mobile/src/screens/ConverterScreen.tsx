@@ -298,48 +298,48 @@ export function ConverterScreen({ route, navigation }: Props) {
         )}
       </View>
 
-      {/* ── YEAR · MONTH · DAY row ────────────────────────────── */}
+      {/* ── YEAR (full width) ─────────────────────────────────── */}
       <Field label={`${T.year} · ${T.month} · ${T.day}`} numeral="II" />
-      <View style={styles.ymdRow}>
-        {/* YEAR */}
-        <TouchableOpacity
+      <TouchableOpacity
+        style={[
+          styles.ymdCell,
+          styles.ymdYear,
+          fieldBoxStyle(theme, active === 'year' && numpadVisible),
+        ]}
+        onPress={() => openNumpad('year')}
+        activeOpacity={0.7}
+      >
+        <Text
           style={[
-            styles.ymdCell,
-            styles.ymdYear,
-            fieldBoxStyle(theme, active === 'year' && numpadVisible),
+            styles.ymdLabel,
+            {
+              color:
+                active === 'year' && numpadVisible && isBrut
+                  ? theme.colors.accentText
+                  : theme.colors.textMuted,
+            },
           ]}
-          onPress={() => openNumpad('year')}
-          activeOpacity={0.7}
         >
-          <Text
-            style={[
-              styles.ymdLabel,
-              {
-                color:
-                  active === 'year' && numpadVisible && isBrut
-                    ? theme.colors.accentText
-                    : theme.colors.textMuted,
-              },
-            ]}
-          >
-            {T.year}
-          </Text>
-          <Text
-            style={[
-              styles.ymdValue,
-              {
-                color:
-                  active === 'year' && numpadVisible && isBrut
-                    ? theme.colors.accentText
-                    : theme.colors.text,
-              },
-            ]}
-            numberOfLines={1}
-          >
-            {year || '\u2014'}
-          </Text>
-        </TouchableOpacity>
+          {T.year}
+        </Text>
+        <Text
+          style={[
+            styles.ymdValue,
+            {
+              color:
+                active === 'year' && numpadVisible && isBrut
+                  ? theme.colors.accentText
+                  : theme.colors.text,
+            },
+          ]}
+          numberOfLines={1}
+        >
+          {year || '\u2014'}
+        </Text>
+      </TouchableOpacity>
 
+      {/* ── MONTH · DAY row ───────────────────────────────────── */}
+      <View style={styles.ymdRow}>
         {/* MONTH */}
         <TouchableOpacity
           style={[styles.ymdCell, styles.ymdMonth, fieldBoxStyle(theme, false)]}
@@ -911,7 +911,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  ymdYear: { flex: 1.6 },
+  ymdYear: { flex: 1 },
   ymdMonth: { flex: 1.8 },
   ymdDay: { flex: 1 },
   ymdLabel: {

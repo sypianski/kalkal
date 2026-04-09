@@ -13,7 +13,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useTheme } from '../theme/ThemeContext';
 import { Cal } from '../engine/cal';
 import { useT } from '../i18n/LanguageContext';
-import { CALENDARS, CalendarDef, CONTEXTUAL_PRIORITY } from '../engine/calendars';
+import { CALENDARS, CalendarDef } from '../engine/calendars';
 import { CalendarPicker } from '../components/CalendarPicker';
 import { VariantBar } from '../components/VariantBar';
 import { Tile } from '../components/Tile';
@@ -23,8 +23,6 @@ import type { RootStackParamList } from '../../App';
 const HISTORY_KEY = 'kalkal-history';
 const HISTORY_MAX = 8;
 
-// Max contextual calendars shown (uses CONTEXTUAL_PRIORITY order from calendars.ts)
-const CONTEXTUAL_MAX = 7;
 
 type HistoryEntry = {
   sourceText: string;
@@ -225,25 +223,6 @@ export function ConverterScreen({ route, navigation }: Props) {
 
   const hasError = conversion && 'error' in conversion;
   const hasResult = conversion && !('error' in conversion);
-
-  // Contextual calendars: convert JD to a set of other calendars
-  const contextualResults = useMemo(() => {
-    if (!hasResult || !('weekday' in (conversion as any))) return null; // full date only
-    const jd = (conversion as any).jd as number;
-    if (!jd) return null;
-    const shown = CONTEXTUAL_PRIORITY.filter(id => id !== fromCal && id !== toCal).slice(0, CONTEXTUAL_MAX);
-    return shown.flatMap(id => {
-      const cal = CALENDARS[id];
-      if (!cal) return [];
-      try {
-        const r = cal.fromJD(jd);
-        const names = cal.monthNames(T);
-        const dateStr = `${r.day} ${names[r.month - 1]} ${r.year}`;
-        const name = T.calendarNames?.[id] || id;
-        return [{ id, name, dateStr }];
-      } catch { return []; }
-    });
-  }, [hasResult, conversion, fromCal, toCal, T]);
 
   // Astro data for JD
   const astroData = useMemo(() => {
@@ -528,22 +507,6 @@ export function ConverterScreen({ route, navigation }: Props) {
             </View>
           )}
         </View>
-
-        {/* ── CONTEXTUAL CALENDARS TILE ─────────────────────── */}
-        {contextualResults && contextualResults.length > 0 && (
-          <Tile title={T.contextualLabel || 'Contemporaneous calendars'}>
-            {contextualResults.map(({ id, name, dateStr }) => (
-              <View key={id} style={styles.contextRow}>
-                <Text style={[styles.contextName, { color: theme.colors.textMuted }]} numberOfLines={1}>
-                  {name}
-                </Text>
-                <Text style={[styles.contextDate, { color: theme.colors.text }]} numberOfLines={1}>
-                  {dateStr}
-                </Text>
-              </View>
-            ))}
-          </Tile>
-        )}
 
         {/* ── ASTRO TILE ────────────────────────────────────── */}
         {astroData && (
@@ -1071,28 +1034,6 @@ const styles = StyleSheet.create({
   keypadKeyText: {
     fontSize: 22,
     fontWeight: '900',
-  },
-
-  // Contextual calendars
-  contextRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 4,
-    gap: 8,
-  },
-  contextName: {
-    fontSize: 11,
-    fontWeight: '700',
-    textTransform: 'uppercase',
-    letterSpacing: 0.8,
-    flex: 1,
-  },
-  contextDate: {
-    fontSize: 13,
-    fontWeight: '700',
-    textAlign: 'right',
-    flex: 1.2,
   },
 
   // Astro tile

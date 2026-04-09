@@ -569,6 +569,10 @@
   // ---- Language ----
 
   function setLang(lang) {
+    // Resolve current calendar selections before switching language
+    const prevSrcCal = resolveCalendar(fromCalInput.value);
+    const prevTgtCal = resolveCalendar(toCalInput.value);
+
     currentLang = lang;
     localStorage.setItem('kalkal-lang', lang);
 
@@ -589,9 +593,13 @@
       if (t[key]) node.placeholder = t[key];
     });
 
-    $$('.lang-btn', langSwitcher).forEach(btn => {
+    $$('.lang-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.lang === lang);
     });
+
+    // Update calendar input values to the new language's names
+    if (prevSrcCal) fromCalInput.value = t.calendars[prevSrcCal.id] || fromCalInput.value;
+    if (prevTgtCal) toCalInput.value = t.calendars[prevTgtCal.id] || toCalInput.value;
 
     updateMonthSelects();
     updateVariantBar(fromVariantsBar, fromCalInput);

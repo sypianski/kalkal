@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from '../theme/ThemeContext';
 import { useT } from '../i18n/LanguageContext';
 import { CalendarPicker } from '../components/CalendarPicker';
@@ -19,6 +20,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Start'>;
 
 // Per TEMPLATE.md: TO is hidden unless FROM is one of these linear/era calendars.
 const NEEDS_EXPLICIT_TO = new Set(['human', 'bp', 'gregorian']);
+const CALENDAR_STORAGE_KEY = 'kalkal-last-calendar';
 
 export function StartScreen({ navigation }: Props) {
   const { theme } = useTheme();
@@ -28,6 +30,18 @@ export function StartScreen({ navigation }: Props) {
   const [fromCal, setFromCal] = useState('hijri');
   const [toCal, setToCal] = useState('gregorian');
   const [year, setYear] = useState('');
+
+  // Load last-used calendar from AsyncStorage on mount
+  useEffect(() => {
+    AsyncStorage.getItem(CALENDAR_STORAGE_KEY).then(saved => {
+      if (saved) setFromCal(saved);
+    });
+  }, []);
+
+  // Save calendar selection whenever it changes
+  useEffect(() => {
+    AsyncStorage.setItem(CALENDAR_STORAGE_KEY, fromCal);
+  }, [fromCal]);
 
   const showTo = useMemo(() => NEEDS_EXPLICIT_TO.has(fromCal), [fromCal]);
   const canGo = year.length > 0 && (!showTo || toCal !== fromCal);

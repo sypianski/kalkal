@@ -1147,7 +1147,12 @@
     const isProlepticGregorian = tgt.id === 'gregorian' && jdEnd < 2299160.5;
     const astroResult = buildRangeAstroPanel(jdStart, jdEnd, tgt, tgtNames, t);
     const breakdown = monthRows.length > 1 ? [table] : null;
+
+    // Build range bridge — two-column layout with year big, day+month small
+    var rangeBridge = buildRangeBridge(startResult, endResult, tgtNames, tgt, t);
+
     const rangeElements = [
+      rangeBridge,
       el('p', { class: 'result-span' },
         el('span', { class: 'date-val', text: tgtStartStr }),
         ' \u2013 ',
@@ -1211,7 +1216,12 @@
 
     const isProlepticGregorian = tgt.id === 'gregorian' && jdEnd < 2299160.5;
     const astroResult = buildRangeAstroPanel(jdStart, jdEnd, tgt, tgtNames, t);
+
+    // Build range bridge — two-column layout with year big, day+month small
+    var rangeBridge = buildRangeBridge(startResult, endResult, tgtNames, tgt, t);
+
     const yearElements = [
+      rangeBridge,
       el('p', { class: 'result-span' },
         el('span', { class: 'date-val', text: tgtStartStr }), ' \u2013 ',
         el('span', { class: 'date-val', text: tgtEndStr })
@@ -1331,6 +1341,36 @@
   // ---- Helpers ----
 
   // Format "day month [year]" — omit year from start when both years match
+  function buildRangeBridge(startResult, endResult, tgtNames, tgt, t) {
+    var tgtCalName = t.calendars[tgt.id] || tgt.id;
+
+    var startYear = tgt.id === 'roman' ? (startResult.year + '\u00a0AUC') : String(startResult.year);
+    var endYear = tgt.id === 'roman' ? (endResult.year + '\u00a0AUC') : String(endResult.year);
+    var startDetail = startResult.day + '\u00a0' + (tgtNames[startResult.month - 1] || '');
+    var endDetail = endResult.day + '\u00a0' + (tgtNames[endResult.month - 1] || '');
+
+    var bridge = el('div', { class: 'range-bridge' });
+
+    // Start column
+    var startCol = el('div', { class: 'range-col range-col-start' });
+    startCol.appendChild(el('span', { class: 'range-cal-label', text: tgtCalName }));
+    startCol.appendChild(el('span', { class: 'range-year', text: startYear }));
+    startCol.appendChild(el('span', { class: 'range-detail', text: startDetail }));
+    bridge.appendChild(startCol);
+
+    // Arrow
+    bridge.appendChild(el('span', { class: 'range-arrow', text: '\u2192' }));
+
+    // End column
+    var endCol = el('div', { class: 'range-col range-col-end' });
+    endCol.appendChild(el('span', { class: 'range-cal-label', text: '\u00a0' }));
+    endCol.appendChild(el('span', { class: 'range-year', text: endYear }));
+    endCol.appendChild(el('span', { class: 'range-detail', text: endDetail }));
+    bridge.appendChild(endCol);
+
+    return bridge;
+  }
+
   function fmtDateRange(names, s, e) {
     const startStr = s.day + ' ' + names[s.month - 1] + (s.year === e.year ? '' : ' ' + s.year);
     const endStr = e.day + ' ' + names[e.month - 1] + ' ' + e.year;

@@ -388,7 +388,10 @@ const I18N = {
     aiLoading: 'Thinking...',
     aiSetKey: 'Set API key',
     aiKeyPrompt: 'Enter your Gemini API key:',
-    aiRemaining: 'remaining today'
+    aiRemaining: 'remaining today',
+    settings: 'Settings',
+    language: 'Language',
+    theme: 'Theme'
   },
 
   pl: {
@@ -777,7 +780,10 @@ const I18N = {
     aiLoading: 'My\u015bl\u0119...',
     aiSetKey: 'Ustaw klucz API',
     aiKeyPrompt: 'Podaj klucz API Gemini:',
-    aiRemaining: 'pozosta\u0142o dzi\u015b'
+    aiRemaining: 'pozosta\u0142o dzi\u015b',
+    settings: 'Ustawienia',
+    language: 'J\u0119zyk',
+    theme: 'Motyw'
   },
 
   ar: {
@@ -1166,7 +1172,10 @@ const I18N = {
     aiLoading: '\u062c\u0627\u0631\u064d \u0627\u0644\u062a\u0641\u0643\u064a\u0631...',
     aiSetKey: '\u0623\u062f\u062e\u0644 \u0645\u0641\u062a\u0627\u062d API',
     aiKeyPrompt: '\u0623\u062f\u062e\u0644 \u0645\u0641\u062a\u0627\u062d Gemini API:',
-    aiRemaining: '\u0645\u062a\u0628\u0642\u064a \u0627\u0644\u064a\u0648\u0645'
+    aiRemaining: '\u0645\u062a\u0628\u0642\u064a \u0627\u0644\u064a\u0648\u0645',
+    settings: '\u0627\u0644\u0625\u0639\u062f\u0627\u062f\u0627\u062a',
+    language: '\u0627\u0644\u0644\u063a\u0629',
+    theme: '\u0627\u0644\u0633\u0645\u0629'
   },
 
   eo: {
@@ -1555,6 +1564,9 @@ const I18N = {
     aiLoading: 'Pensas...',
     aiSetKey: 'Agordi API-\u015dlosilon',
     aiKeyPrompt: 'Enigu vian Gemini API-\u015dlosilon:',
-    aiRemaining: 'restas hodia\u016d'
+    aiRemaining: 'restas hodia\u016d',
+    settings: 'Agordoj',
+    language: 'Lingvo',
+    theme: 'Temo'
   }
 };

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -8,14 +8,31 @@ import {
   Modal,
   Platform,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useTheme } from '../theme/ThemeContext';
 import { Cal } from '../engine/cal';
 import { useT } from '../i18n/LanguageContext';
-import { CALENDARS, CalendarDef } from '../engine/calendars';
+import { CALENDARS, CalendarDef, CONTEXTUAL_PRIORITY } from '../engine/calendars';
 import { CalendarPicker } from '../components/CalendarPicker';
 import { VariantBar } from '../components/VariantBar';
+import { Tile } from '../components/Tile';
+import { Astronomy } from '../engine/astronomy';
 import type { RootStackParamList } from '../../App';
+
+const HISTORY_KEY = 'kalkal-history';
+const HISTORY_MAX = 8;
+
+// Max contextual calendars shown (uses CONTEXTUAL_PRIORITY order from calendars.ts)
+const CONTEXTUAL_MAX = 7;
+
+type HistoryEntry = {
+  sourceText: string;
+  targetText: string;
+  fromCal: string;
+  toCal: string;
+  ts: number;
+};
 
 type ActiveField = 'year' | 'day';
 
@@ -48,6 +65,16 @@ export function ConverterScreen({ route, navigation }: Props) {
   const [numpadVisible, setNumpadVisible] = useState(false);
   const [monthPickerVisible, setMonthPickerVisible] = useState(false);
   const [convertTick, setConvertTick] = useState(0);
+  const [history, setHistory] = useState<HistoryEntry[]>([]);
+  const prevConversionRef = useRef<string>('');
+
+  useEffect(() => {
+    AsyncStorage.getItem(HISTORY_KEY).then(raw => {
+      if (raw) {
+        try { setHistory(JSON.parse(raw)); } catch {}
+      }
+    });
+  }, []);
 
   const getSrc = useCallback((): CalendarDef | null => {
     const cal = CALENDARS[fromCal];
@@ -138,6 +165,33 @@ export function ConverterScreen({ route, navigation }: Props) {
     }
   }, [srcCal, tgtCal, year, month, day, monthNames, tgtMonthNames, T, convertTick]);
 
+  // Save successful full-date conversions to history
+  useEffect(() => {
+    if (!conversion || 'error' in conversion) return;
+    if (!('weekday' in conversion)) return; // only full date (not year-only or month-only)
+    const key = `${conversion.sourceText}→${conversion.targetText}`;
+    if (key === prevConversionRef.current) return;
+    prevConversionRef.current = key;
+    const entry: HistoryEntry = {
+      sourceText: conversion.sourceText,
+      targetText: conversion.targetText,
+      fromCal,
+      toCal,
+      ts: Date.now(),
+    };
+    setHistory(prev => {
+      const filtered = prev.filter(h => h.sourceText !== entry.sourceText || h.fromCal !== entry.fromCal);
+      const next = [entry, ...filtered].slice(0, HISTORY_MAX);
+      AsyncStorage.setItem(HISTORY_KEY, JSON.stringify(next));
+      return next;
+    });
+  }, [conversion, fromCal, toCal]);
+
+  const clearHistory = () => {
+    setHistory([]);
+    AsyncStorage.removeItem(HISTORY_KEY);
+  };
+
   // Keypad handlers
   const pressDigit = (d: string) => {
     if (active === 'year') setYear(prev => (prev.length >= 6 ? prev : prev + d));
@@ -171,6 +225,37 @@ export function ConverterScreen({ route, navigation }: Props) {
 
   const hasError = conversion && 'error' in conversion;
   const hasResult = conversion && !('error' in conversion);
+
+  // Contextual calendars: convert JD to a set of other calendars
+  const contextualResults = useMemo(() => {
+    if (!hasResult || !('weekday' in (conversion as any))) return null; // full date only
+    const jd = (conversion as any).jd as number;
+    if (!jd) return null;
+    const shown = CONTEXTUAL_PRIORITY.filter(id => id !== fromCal && id !== toCal).slice(0, CONTEXTUAL_MAX);
+    return shown.flatMap(id => {
+      const cal = CALENDARS[id];
+      if (!cal) return [];
+      try {
+        const r = cal.fromJD(jd);
+        const names = cal.monthNames(T);
+        const dateStr = `${r.day} ${names[r.month - 1]} ${r.year}`;
+        const name = T.calendarNames?.[id] || id;
+        return [{ id, name, dateStr }];
+      } catch { return []; }
+    });
+  }, [hasResult, conversion, fromCal, toCal, T]);
+
+  // Astro data for JD
+  const astroData = useMemo(() => {
+    if (!hasResult) return null;
+    const jd = (conversion as any).jd as number;
+    if (!jd) return null;
+    const moon = Astronomy.moonPhase(jd);
+    const comet = Astronomy.lookupComet(jd);
+    const sn = Astronomy.lookupSupernova(jd);
+    const conj = Astronomy.lookupConjunction(jd);
+    return { moon, comet, sn, conj };
+  }, [hasResult, conversion]);
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
@@ -366,90 +451,226 @@ export function ConverterScreen({ route, navigation }: Props) {
         <Text style={[styles.convertGlyph, { color: theme.colors.accent }]}>{'\u2193'}</Text>
       </TouchableOpacity>
 
-      {/* ── RESULT (grows to fill, always fits) ───────────────── */}
-      <View
-        style={[
-          styles.resultFrame,
-          {
-            borderColor: theme.colors.border,
-            borderWidth: theme.borderWidth,
-            borderRadius: theme.borderRadius,
-            backgroundColor: theme.colors.cardBg,
-          },
-        ]}
+      {/* ── SCROLLABLE RESULT AREA ────────────────────────────── */}
+      <ScrollView
+        style={styles.resultScroll}
+        contentContainerStyle={styles.resultScrollContent}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
-        <View style={styles.resultHeadRow}>
-          <Text style={[styles.resultEyebrow, { color: theme.colors.textMuted }]}>
-            {'\u00a7'} RESULT
-          </Text>
-          <View style={[styles.resultRule, { backgroundColor: theme.colors.accent }]} />
+        {/* Main result card */}
+        <View
+          style={[
+            styles.resultFrame,
+            {
+              borderColor: theme.colors.border,
+              borderWidth: theme.borderWidth,
+              borderRadius: theme.borderRadius,
+              backgroundColor: theme.colors.cardBg,
+            },
+          ]}
+        >
+          <View style={styles.resultHeadRow}>
+            <Text style={[styles.resultEyebrow, { color: theme.colors.textMuted }]}>
+              {'\u00a7'} RESULT
+            </Text>
+            <View style={[styles.resultRule, { backgroundColor: theme.colors.accent }]} />
+          </View>
+
+          {hasError ? (
+            <View style={styles.resultBody}>
+              <Text
+                style={[styles.resultErrorText, { color: theme.colors.error }]}
+                numberOfLines={2}
+                adjustsFontSizeToFit
+              >
+                {(conversion as any).error}
+              </Text>
+            </View>
+          ) : hasResult ? (
+            <View style={styles.resultBody}>
+              <Text
+                style={[styles.resultSource, { color: theme.colors.textSecondary }]}
+                numberOfLines={1}
+                adjustsFontSizeToFit
+              >
+                {(conversion as any).sourceText}
+              </Text>
+              <Text style={[styles.resultArrow, { color: theme.colors.accent }]}>
+                {'\u2193'}
+              </Text>
+              <Text
+                style={[
+                  styles.resultMain,
+                  {
+                    color: theme.colors.text,
+                    borderBottomColor: theme.colors.accent,
+                    borderBottomWidth: isBrut ? 3 : 1,
+                  },
+                ]}
+                numberOfLines={2}
+                adjustsFontSizeToFit
+                minimumFontScale={0.5}
+              >
+                {(conversion as any).targetText}
+              </Text>
+              {'weekday' in (conversion as any) && (conversion as any).weekday ? (
+                <Text style={[styles.resultWeekday, { color: theme.colors.textSecondary }]}>
+                  {(conversion as any).weekday}
+                </Text>
+              ) : null}
+            </View>
+          ) : (
+            <View style={styles.resultBody}>
+              <Text style={[styles.resultMain, { color: theme.colors.textMuted }]}>
+                {'\u2014'}
+              </Text>
+            </View>
+          )}
         </View>
 
-        {hasError ? (
-          <View style={styles.resultBody}>
-            <Text
-              style={[styles.resultErrorText, { color: theme.colors.error }]}
-              numberOfLines={2}
-              adjustsFontSizeToFit
-            >
-              {(conversion as any).error}
-            </Text>
-          </View>
-        ) : hasResult ? (
-          <View style={styles.resultBody}>
-            <Text
-              style={[styles.resultSource, { color: theme.colors.textSecondary }]}
-              numberOfLines={1}
-              adjustsFontSizeToFit
-            >
-              {(conversion as any).sourceText}
-            </Text>
-            <Text
-              style={[styles.resultArrow, { color: theme.colors.accent }]}
-            >
-              {'\u2193'}
-            </Text>
-            <Text
-              style={[
-                styles.resultMain,
-                {
-                  color: theme.colors.text,
-                  borderBottomColor: theme.colors.accent,
-                  borderBottomWidth: isBrut ? 3 : 1,
-                },
-              ]}
-              numberOfLines={2}
-              adjustsFontSizeToFit
-              minimumFontScale={0.5}
-            >
-              {(conversion as any).targetText}
-            </Text>
-            {'weekday' in (conversion as any) && (conversion as any).weekday ? (
-              <Text style={[styles.resultWeekday, { color: theme.colors.textSecondary }]}>
-                {(conversion as any).weekday}
-              </Text>
-            ) : null}
-          </View>
-        ) : (
-          <View style={styles.resultBody}>
-            <Text style={[styles.resultMain, { color: theme.colors.textMuted }]}>
-              {'\u2014'}
-            </Text>
-          </View>
+        {/* ── CONTEXTUAL CALENDARS TILE ─────────────────────── */}
+        {contextualResults && contextualResults.length > 0 && (
+          <Tile title={T.contextualLabel || 'Contemporaneous calendars'}>
+            {contextualResults.map(({ id, name, dateStr }) => (
+              <View key={id} style={styles.contextRow}>
+                <Text style={[styles.contextName, { color: theme.colors.textMuted }]} numberOfLines={1}>
+                  {name}
+                </Text>
+                <Text style={[styles.contextDate, { color: theme.colors.text }]} numberOfLines={1}>
+                  {dateStr}
+                </Text>
+              </View>
+            ))}
+          </Tile>
         )}
-      </View>
 
-      {/* ── INFO (inconspicuous, bottom) ──────────────────────── */}
-      <TouchableOpacity
-        onPress={() => navigation.navigate('Info')}
-        style={styles.infoBtn}
-        hitSlop={{ top: 8, bottom: 8, left: 20, right: 20 }}
-      >
-        <View style={[styles.infoDot, { backgroundColor: theme.colors.textMuted }]} />
-        <Text style={[styles.infoBtnText, { color: theme.colors.textMuted }]}>
-          {T.startInfo || T.navMethodology || 'Info'}
-        </Text>
-      </TouchableOpacity>
+        {/* ── ASTRO TILE ────────────────────────────────────── */}
+        {astroData && (
+          <Tile title={T.astroLabel || 'Astro'}>
+            {/* Moon phase */}
+            <View style={styles.astroRow}>
+              <Text style={[styles.astroIcon, { color: theme.colors.text }]}>
+                {astroData.moon.icon}
+              </Text>
+              <View style={{ flex: 1 }}>
+                <Text style={[styles.astroLabel, { color: theme.colors.textMuted }]}>
+                  {T.moonPhaseLabel || 'Moon phase'}
+                </Text>
+                <Text style={[styles.astroValue, { color: theme.colors.text }]}>
+                  {T.moonPhases?.[astroData.moon.name] || astroData.moon.name}
+                  {' · '}
+                  {astroData.moon.illumination}% {T.moonIllumination || 'illuminated'}
+                  {' · '}
+                  {T.moonAge || 'day'} {astroData.moon.age}
+                </Text>
+              </View>
+            </View>
+            {/* Comet */}
+            {astroData.comet && (
+              <View style={styles.astroRow}>
+                <Text style={[styles.astroIcon, { color: theme.colors.text }]}>{'☄'}</Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={[styles.astroLabel, { color: theme.colors.textMuted }]}>
+                    {T.cometLabel || 'Comet'}
+                  </Text>
+                  <Text style={[styles.astroValue, { color: theme.colors.text }]}>
+                    {T.cometNames?.[astroData.comet.id] || astroData.comet.id}
+                    {astroData.comet.daysFromPerihelion !== 0
+                      ? ` (${astroData.comet.daysFromPerihelion > 0 ? '+' : ''}${astroData.comet.daysFromPerihelion}d)`
+                      : ''}
+                  </Text>
+                  {astroData.comet.noteKey && T.cometNotes?.[astroData.comet.noteKey] && (
+                    <Text style={[styles.astroNote, { color: theme.colors.textMuted }]}>
+                      {T.cometNotes[astroData.comet.noteKey]}
+                    </Text>
+                  )}
+                </View>
+              </View>
+            )}
+            {/* Supernova */}
+            {astroData.sn && (
+              <View style={styles.astroRow}>
+                <Text style={[styles.astroIcon, { color: theme.colors.text }]}>{'✦'}</Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={[styles.astroLabel, { color: theme.colors.textMuted }]}>
+                    {T.supernovaLabel || 'Supernova'}
+                  </Text>
+                  <Text style={[styles.astroValue, { color: theme.colors.text }]}>
+                    {astroData.sn.id}
+                    {astroData.sn.daysSinceFirst !== 0
+                      ? ` (+${astroData.sn.daysSinceFirst}d)`
+                      : ''}
+                  </Text>
+                  {astroData.sn.noteKey && T.supernovaNotes?.[astroData.sn.noteKey] && (
+                    <Text style={[styles.astroNote, { color: theme.colors.textMuted }]}>
+                      {T.supernovaNotes[astroData.sn.noteKey]}
+                    </Text>
+                  )}
+                </View>
+              </View>
+            )}
+            {/* Conjunction */}
+            {astroData.conj && (
+              <View style={styles.astroRow}>
+                <Text style={[styles.astroIcon, { color: theme.colors.text }]}>{'♃'}</Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={[styles.astroLabel, { color: theme.colors.textMuted }]}>
+                    {T.conjunctionLabel || 'Conjunction'}
+                  </Text>
+                  <Text style={[styles.astroValue, { color: theme.colors.text }]}>
+                    {Astronomy.planetName(astroData.conj.planet1, T)}
+                    {' & '}
+                    {Astronomy.planetName(astroData.conj.planet2, T)}
+                    {` ${astroData.conj.separation}'`}
+                    {astroData.conj.daysFromClosest !== 0
+                      ? ` (${astroData.conj.daysFromClosest > 0 ? '+' : ''}${astroData.conj.daysFromClosest}d)`
+                      : ''}
+                  </Text>
+                  {astroData.conj.noteKey && T.conjunctionNotes?.[astroData.conj.noteKey] && (
+                    <Text style={[styles.astroNote, { color: theme.colors.textMuted }]}>
+                      {T.conjunctionNotes[astroData.conj.noteKey]}
+                    </Text>
+                  )}
+                </View>
+              </View>
+            )}
+          </Tile>
+        )}
+
+        {/* ── HISTORY TILE ──────────────────────────────────── */}
+        {history.length > 0 && (
+          <Tile title={T.history || 'History'}>
+            {history.map((h, i) => (
+              <View key={i} style={[styles.historyRow, i > 0 && { borderTopColor: theme.colors.border, borderTopWidth: 1 }]}>
+                <Text style={[styles.historyFrom, { color: theme.colors.textMuted }]} numberOfLines={1}>
+                  {h.sourceText}
+                </Text>
+                <Text style={[styles.historyTo, { color: theme.colors.text }]} numberOfLines={1}>
+                  {h.targetText}
+                </Text>
+              </View>
+            ))}
+            <TouchableOpacity onPress={clearHistory} style={styles.clearHistoryBtn}>
+              <Text style={[styles.clearHistoryText, { color: theme.colors.textMuted }]}>
+                {T.clearHistory || 'Clear'}
+              </Text>
+            </TouchableOpacity>
+          </Tile>
+        )}
+
+        {/* ── INFO (inconspicuous, bottom) ──────────────────── */}
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Info')}
+          style={styles.infoBtn}
+          hitSlop={{ top: 8, bottom: 8, left: 20, right: 20 }}
+        >
+          <View style={[styles.infoDot, { backgroundColor: theme.colors.textMuted }]} />
+          <Text style={[styles.infoBtnText, { color: theme.colors.textMuted }]}>
+            {T.startInfo || T.navMethodology || 'Info'}
+          </Text>
+        </TouchableOpacity>
+      </ScrollView>
 
       {/* ── CUSTOM KEYPAD (shown on demand) ──────────────────── */}
       {numpadVisible && (
@@ -725,12 +946,21 @@ const styles = StyleSheet.create({
     fontWeight: '900',
   },
 
-  // Result (grows to fill remaining space)
-  resultFrame: {
+  // Scrollable result area
+  resultScroll: {
     flex: 1,
     marginTop: 10,
+  },
+  resultScrollContent: {
+    paddingBottom: 16,
+  },
+
+  // Result card
+  resultFrame: {
+    minHeight: 110,
     padding: 14,
     justifyContent: 'space-between',
+    marginBottom: 10,
   },
   resultHeadRow: {
     flexDirection: 'row',
@@ -841,6 +1071,85 @@ const styles = StyleSheet.create({
   keypadKeyText: {
     fontSize: 22,
     fontWeight: '900',
+  },
+
+  // Contextual calendars
+  contextRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 4,
+    gap: 8,
+  },
+  contextName: {
+    fontSize: 11,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 0.8,
+    flex: 1,
+  },
+  contextDate: {
+    fontSize: 13,
+    fontWeight: '700',
+    textAlign: 'right',
+    flex: 1.2,
+  },
+
+  // Astro tile
+  astroRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 10,
+    paddingVertical: 6,
+  },
+  astroIcon: {
+    fontSize: 20,
+    width: 28,
+    textAlign: 'center',
+  },
+  astroLabel: {
+    fontSize: 10,
+    fontWeight: '900',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    marginBottom: 2,
+  },
+  astroValue: {
+    fontSize: 13,
+    fontWeight: '700',
+    lineHeight: 18,
+  },
+  astroNote: {
+    fontSize: 11,
+    lineHeight: 16,
+    marginTop: 2,
+    fontStyle: 'italic',
+  },
+
+  // History tile
+  historyRow: {
+    paddingVertical: 6,
+  },
+  historyFrom: {
+    fontSize: 11,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    marginBottom: 1,
+  },
+  historyTo: {
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  clearHistoryBtn: {
+    marginTop: 8,
+    alignSelf: 'flex-end',
+  },
+  clearHistoryText: {
+    fontSize: 10,
+    fontWeight: '900',
+    textTransform: 'uppercase',
+    letterSpacing: 1.5,
   },
 
   // Month picker modal

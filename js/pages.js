@@ -689,4 +689,54 @@ const SEASON_LABELS = {
   }
 
   setPageLang(currentLang);
+
+  // ---- Settings panel (mobile) ----
+  (function() {
+    var btn = document.getElementById('nav-settings-btn');
+    var panel = document.getElementById('settings-panel');
+    var backdrop = document.getElementById('settings-backdrop');
+    if (!btn || !panel) return;
+
+    var storedVariant = localStorage.getItem('kalkal-hijri-variant') || 'IIc';
+
+    function openSettings() {
+      panel.classList.add('open');
+      backdrop.classList.add('open');
+      panel.querySelectorAll('.settings-lang-btn').forEach(function(b) {
+        b.classList.toggle('active', b.dataset.lang === currentLang);
+      });
+      panel.querySelectorAll('.settings-variant-btn').forEach(function(b) {
+        b.classList.toggle('active', b.dataset.variant === storedVariant);
+      });
+    }
+
+    function closeSettings() {
+      panel.classList.remove('open');
+      backdrop.classList.remove('open');
+    }
+
+    btn.addEventListener('click', openSettings);
+    backdrop.addEventListener('click', closeSettings);
+    var closeBtn = panel.querySelector('.settings-close');
+    if (closeBtn) closeBtn.addEventListener('click', closeSettings);
+
+    panel.querySelectorAll('.settings-lang-btn').forEach(function(b) {
+      b.addEventListener('click', function() {
+        setPageLang(b.dataset.lang);
+        panel.querySelectorAll('.settings-lang-btn').forEach(function(x) {
+          x.classList.toggle('active', x.dataset.lang === b.dataset.lang);
+        });
+      });
+    });
+
+    panel.querySelectorAll('.settings-variant-btn').forEach(function(b) {
+      b.addEventListener('click', function() {
+        storedVariant = b.dataset.variant;
+        localStorage.setItem('kalkal-hijri-variant', storedVariant);
+        panel.querySelectorAll('.settings-variant-btn').forEach(function(x) {
+          x.classList.toggle('active', x.dataset.variant === storedVariant);
+        });
+      });
+    });
+  })();
 })();

@@ -15,6 +15,9 @@
 
   let currentLang = localStorage.getItem('kalkal-lang') || detectLang();
 
+  // Preferred Hijri variant (persisted across sessions)
+  const storedHijriVariant = localStorage.getItem('kalkal-hijri-variant');
+
   // Calendar registry
   const CALENDARS = {
     hijri: {
@@ -349,6 +352,12 @@
       historicalRange: null
     }
   };
+
+  // Apply persisted Hijri variant preference
+  if (storedHijriVariant && CALENDARS.hijri.variants.includes(storedHijriVariant)) {
+    CALENDARS.hijri._variant = storedHijriVariant;
+    CALENDARS.hijri.defaultVariant = storedHijriVariant;
+  }
 
   // Contextual calendars: priority order and max count for "also in use" panel
   const CONTEXTUAL_PRIORITY = [
@@ -1717,6 +1726,54 @@
 
   // Clear errors on any input change
   form.addEventListener('input', () => clearError());
+
+  // ---- Settings panel (mobile) ----
+  (function() {
+    const btn = $('#nav-settings-btn');
+    const panel = $('#settings-panel');
+    const backdrop = $('#settings-backdrop');
+    if (!btn || !panel) return;
+
+    function openSettings() {
+      panel.classList.add('open');
+      backdrop.classList.add('open');
+      // Sync active states
+      panel.querySelectorAll('.settings-lang-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.lang === currentLang);
+      });
+      const activeVariant = CALENDARS.hijri._variant;
+      panel.querySelectorAll('.settings-variant-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.variant === activeVariant);
+      });
+    }
+
+    function closeSettings() {
+      panel.classList.remove('open');
+      backdrop.classList.remove('open');
+    }
+
+    btn.addEventListener('click', openSettings);
+    backdrop.addEventListener('click', closeSettings);
+    panel.querySelector('.settings-close')?.addEventListener('click', closeSettings);
+
+    panel.querySelectorAll('.settings-lang-btn').forEach(b => {
+      b.addEventListener('click', () => {
+        setLang(b.dataset.lang);
+        panel.querySelectorAll('.settings-lang-btn').forEach(x => x.classList.toggle('active', x.dataset.lang === b.dataset.lang));
+      });
+    });
+
+    panel.querySelectorAll('.settings-variant-btn').forEach(b => {
+      b.addEventListener('click', () => {
+        const v = b.dataset.variant;
+        CALENDARS.hijri._variant = v;
+        CALENDARS.hijri.defaultVariant = v;
+        localStorage.setItem('kalkal-hijri-variant', v);
+        panel.querySelectorAll('.settings-variant-btn').forEach(x => x.classList.toggle('active', x.dataset.variant === v));
+        if (resultPanel.classList.contains('has-result')) convert();
+      });
+    });
+  })();
 
   // ---- Init ----
 

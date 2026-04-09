@@ -5513,7 +5513,7 @@ body {
   /* Refine card: transparent 2-column grid — MONTH and DAY side by side */
   .refine-card {
     display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
+    grid-template-columns: 2fr 1fr !important;
     gap: 10px !important;
     background: transparent !important;
     border: 0 !important;
@@ -5854,20 +5854,60 @@ body {
     color: #fff !important;
   }
 
-  /* ---- Ancillary cards keep consistent brutalist weight ---- */
+  /* ---- Hide non-essential result cards on mobile ---- */
   .contextual-card,
   .outofera-card,
-  .astro-card,
   .breakdown-card {
+    display: none !important;
+  }
+
+  /* ---- Astro card: collapsed toggle styled like Convert button ---- */
+  .astro-card {
     border: 2.5px solid #000 !important;
     box-shadow: 5px 5px 0 #000 !important;
     margin: 0 !important;
     max-width: 100% !important;
+    background: var(--parchment-100) !important;
   }
+  .astro-card-toggle {
+    min-height: 58px !important;
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    font-family: var(--brut-mono) !important;
+    font-size: 0.95rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.18em !important;
+    text-transform: uppercase !important;
+    color: #000 !important;
+    background: transparent !important;
+    border: 0 !important;
+    padding: 0 1.3em !important;
+  }
+
+  /* ---- History panel: collapsed header styled like Convert button ---- */
   .history-panel {
-    margin: 4px 0 0 0 !important;
-    border-top: 2px dashed #000 !important;
-    padding-top: 6px !important;
+    margin: 0 !important;
+    border: 2.5px solid #000 !important;
+    box-shadow: 5px 5px 0 #000 !important;
+    background: var(--parchment-100) !important;
+    padding: 0 !important;
+  }
+  .history-header {
+    min-height: 58px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 0 1.3em !important;
+  }
+  .history-title {
+    font-family: var(--brut-mono) !important;
+    font-size: 0.95rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.18em !important;
+    text-transform: uppercase !important;
+    color: #000 !important;
   }
 
   /* ---- Footer INFO: inconspicuous, bottom of column ---- */

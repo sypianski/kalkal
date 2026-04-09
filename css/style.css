@@ -5222,6 +5222,11 @@ body {
   .page-nav a[href="methodology.html"]::before { content: "\25C6"; }
   .page-nav a[href="eclipses.html"]::before { content: "\25D0"; }
 
+  /* Hide eclipses link on mobile */
+  .page-nav a[href="eclipses.html"] {
+    display: none !important;
+  }
+
   .page-nav a:hover        { color: #888 !important; background: transparent !important; }
   .page-nav a.active        { color: #fff !important; background: transparent !important; border-top-color: #fff !important; }
   .page-nav a.active::before { color: #fff; }
@@ -5336,7 +5341,11 @@ body {
 
   /* ---- Body clearance for bottom bar ---- */
   body { padding-bottom: 48px; }
-  .install-banner { bottom: 48px; }
+
+  /* Hide install banner on mobile */
+  .install-banner {
+    display: none !important;
+  }
 }
 
 /* Standalone + mobile: safe-area */

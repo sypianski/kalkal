@@ -1,4 +1,7 @@
 ## Web
+- [x] Add table of contents with anchor links to methodology.html
+- [x] Remove Install KalKal prompt/button from mobile view
+- [x] Remove Eclipses link from mobile nav bar
 - [ ] Add more calendar systems (French Republican, etc. if missing)
 - [ ] Improve mobile UX based on recent layout changes
 - [ ] Expand test coverage for edge cases (leap years, era boundaries)

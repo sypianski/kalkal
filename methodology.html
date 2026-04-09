@@ -46,9 +46,21 @@
 
     <p class="meth-intro">kalkal is a zero-dependency, client-side date converter built entirely with arithmetic algorithms. All conversions are deterministic, reproducible, and independently verifiable.</p>
 
+    <nav class="meth-toc">
+      <h2 class="meth-toc-title">Contents</h2>
+      <ol class="meth-toc-list">
+        <li><a href="#methJDN">Julian Day Number as Universal Pivot</a></li>
+        <li><a href="#methArchitecture">Architecture and Construction</a></li>
+        <li><a href="#methAlgorithms">Algorithm Sources</a></li>
+        <li><a href="#methValidation">Validation and Verification</a></li>
+        <li><a href="#methSources">Sources and References</a></li>
+        <li><a href="#methLinks">Coverage and Similar Tools</a></li>
+      </ol>
+    </nav>
+
     <div class="meth-grid">
 
-    <section class="meth-section" data-meth="methJDN">
+    <section class="meth-section" id="methJDN" data-meth="methJDN">
       <h2 class="meth-title">Julian Day Number as Universal Pivot</h2>
       <p class="meth-body">All date conversions in kalkal pass through the Julian Day Number (JDN) — a continuous count of days since the beginning of the Julian Period on 1 January 4713 BCE (Julian proleptic calendar). Each calendar system implements two functions: one to convert a date into a JDN, and one to convert a JDN back into a date in that calendar. To convert from calendar A to calendar B, we compute A → JDN → B. This approach avoids the combinatorial explosion of writing direct conversion functions between every pair of calendars.</p>
       <aside class="meth-aside">
@@ -56,13 +68,13 @@
       </aside>
     </section>
 
-    <section class="meth-section" data-meth="methArchitecture">
+    <section class="meth-section" id="methArchitecture" data-meth="methArchitecture">
       <h2 class="meth-title">Architecture and Construction</h2>
       <p class="meth-body">kalkal runs entirely in the browser with zero external dependencies and no build step. The computational engine is a single JavaScript module (Cal) exposing toJD() and fromJD() functions for each of the 24 supported calendar systems. A separate registry maps each calendar to its Cal functions, handling UI concerns like variant selection (e.g. the 4 tabular Hijri variants, 3 Byzantine Anno Mundi variants, 2 Seleucid reckonings) independently from the algorithms. Internationalization covers 4 languages (EN, PL, AR, EO) with full RTL support for Arabic.</p>
       <p class="meth-body2">Nearly all algorithms are purely arithmetic — no astronomical calculations, no external API calls, no lookup tables of observed data. The one exception is the Babylonian calendar, which uses the Parker &amp; Dubberstein observational tables for 626 BCE&ndash;45 CE (with an arithmetic fallback outside that range). For all other calendars, every conversion is reproducible: the same input always produces the same output regardless of platform, locale, or network state.</p>
     </section>
 
-    <section class="meth-section" data-meth="methAlgorithms">
+    <section class="meth-section" id="methAlgorithms" data-meth="methAlgorithms">
       <h2 class="meth-title">Algorithm Sources</h2>
       <p class="meth-body">Gregorian and Julian conversions follow the algorithms in Meeus (1998). The tabular Hijri calendar uses a 30-year cycle with 4 historical leap-year variants (IIc/Wüstenfeld as default). The Solar Hijri uses the 2820-year arithmetic cycle from Birashk, refined by Borkowski; the Ilkhanid (Kh&#x101;n&#x12b;) calendar shares this algorithm with a different epoch (1302 CE), supplemented by the 12-year Turkic-Mongol animal cycle. Coptic, Ethiopian, Egyptian, Yazdgerdi, and Armenian calendars use epoch-offset arithmetic from Reingold &amp; Dershowitz (2018). The Hebrew calendar implements the full molad-based rules from the same source. The Babylonian calendar uses the Hebrew calendar's molad arithmetic as an approximation, with Nisan-based year start and Nabonassar era offset (747 BCE); historical Babylonian months began at observed first crescent, so this approximation may differ by &plusmn;1 day. Byzantine (3 Anno Mundi variants: Constantinople, Alexandrian, Chronicon Paschale), Seleucid (Macedonian and Babylonian reckonings), Antiochene, Syriac, Rumi, AUC, Roman, Spanish Era, Olympiad, and Macedonian calendars are Julian-based with epoch offsets. The Roman calendar adds traditional day notation (Kalends, Nones, Ides). The 15-year Indiction cycle is displayed alongside Byzantine dates.</p>
       <aside class="meth-aside meth-aside--warning">
@@ -70,7 +82,7 @@
       </aside>
     </section>
 
-    <section class="meth-section" data-meth="methValidation">
+    <section class="meth-section" id="methValidation" data-meth="methValidation">
       <h2 class="meth-title">Validation and Verification</h2>
       <p class="meth-body">Every calendar conversion is validated through three independent methods. First, round-trip testing: for each calendar, a date is converted to JDN and back, confirming that fromJD(toJD(date)) === date across hundreds of test cases spanning epochs, boundaries, and modern dates. Second, cross-verification against independent implementations: the Fourmilab algorithm (public domain), the browser's Intl.DateTimeFormat API, and Python's hijri-converter library. Third, spot-checking known historical dates (e.g. Battle of Badr = 17 Ramadan 2 AH = 13 March 624 CE Julian, Fall of Baghdad = 10 February 1258 CE) against published scholarly sources.</p>
       <p class="meth-body2">Tests run in Node.js by loading the browser-targeted Cal module. No test framework is used — the verification scripts output pass/fail counts directly, making the test suite itself auditable with zero dependencies.</p>
@@ -80,7 +92,7 @@
 
     <div class="divider"><span class="divider-ornament">&#10022;</span></div>
 
-    <section class="meth-section" data-meth="methSources">
+    <section class="meth-section" id="methSources" data-meth="methSources">
       <h2 class="meth-title">Sources and References</h2>
       <ol class="meth-sources">
         <li>Richards, E. G. <em>Mapping Time: The Calendar and its History</em>. Oxford University Press, 1998.</li>
@@ -94,7 +106,7 @@
 
     <div class="divider"><span class="divider-ornament">&#10022;</span></div>
 
-    <section class="meth-section" data-meth="methLinks">
+    <section class="meth-section" id="methLinks" data-meth="methLinks">
       <h2 class="meth-title">Coverage and Similar Tools</h2>
       <p class="meth-body">kalkal supports 24 calendar systems, with a particular focus on historical Near Eastern and ancient calendars absent from other multi-calendar converters. Among the surveyed tools below, none include the Byzantine, Seleucid, Syriac, Macedonian, Antiochene, AUC (Ab Urbe Condita), Spanish Era, or Olympiad calendars; only the Utrecht converter offers the Rumi and ancient Egyptian calendars alongside kalkal. kalkal also offers 4 tabular Hijri variants, 3 Byzantine Anno Mundi variants (Constantinople, Alexandrian, Chronicon Paschale), and 2 Seleucid variants (Macedonian, Babylonian). Among surveyed tools, only the Utrecht University converter offers more Hijri variants (8).</p>
 

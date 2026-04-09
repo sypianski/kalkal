@@ -1593,6 +1593,9 @@ const MOBILE_EXTRA = {
     infoMethodBody: 'All conversions flow through the Julian Day Number (JDN) as a universal intermediary. Each calendar has a toJD() and fromJD() function. This ensures precision and cross-verification across all 20+ supported systems.',
     infoCalTitle: 'Calendar systems',
     infoCalBody: 'Supports Hijri (4 tabular variants), Gregorian, Julian, Coptic, Ethiopian, Hebrew, Byzantine, Solar Hijri, Syriac, Seleucid, Armenian, Babylonian, Macedonian, Roman, Egyptian, Olympiad, Spanish Era, Ilkhanid, Human Era, and Before Present.',
+    settings: 'Settings',
+    language: 'Language',
+    theme: 'Theme',
   },
   pl: {
     wholeYear: 'Ca\u0142y rok',
@@ -1620,6 +1623,9 @@ const MOBILE_EXTRA = {
     infoMethodBody: 'Wszystkie konwersje przebiegaj\u0105 przez Juliański Numer Dnia (JDN) jako universal intermediary. Ka\u017cdy kalendarz ma funkcje toJD() i fromJD(). Zapewnia to precyzj\u0119 i mo\u017cliwo\u015b\u0107 wzajemnej weryfikacji dla ponad 20 system\u00f3w.',
     infoCalTitle: 'Systemy kalendarzowe',
     infoCalBody: 'Obs\u0142uguje: Hidżri (4 warianty tabelaryczne), Gregoria\u0144ski, Julia\u0144ski, Koptyjski, Etiopski, Hebrajski, Bizan\u0442\u0438\u0439ski, Irański, Syryjski, Seleucydów, Armenia\u0144ski, Babilo\u0144ski, Makedo\u0144ski, Roma\u0144ski, Egipski, Olimpiady, Ery Hiszpa\u0144skiej, Ilchanatu, Ery Ludzkiej i Before Present.',
+    settings: 'Ustawienia',
+    language: 'Język',
+    theme: 'Motyw',
   },
   ar: {
     wholeYear: '\u0627\u0644\u0633\u0646\u0629 \u0628\u0623\u0643\u0645\u0644\u0647\u0627',
@@ -1647,6 +1653,9 @@ const MOBILE_EXTRA = {
     infoMethodBody: '\u062a\u0645\u0631 \u062c\u0645\u064a\u0639 \u0627\u0644\u062a\u062d\u0648\u064a\u0644\u0627\u062a \u0639\u0628\u0631 \u0631\u0642\u0645 \u0627\u0644\u064a\u0648\u0645 \u0627\u0644\u062c\u064a\u0648\u0644\u064a\u0627\u0646\u064a (JDN) \u0648\u0633\u064a\u0637\u0627\u064b \u0639\u0627\u0644\u0645\u064a\u0627\u064b.',
     infoCalTitle: '\u0623\u0646\u0638\u0645\u0629 \u0627\u0644\u062a\u0642\u0627\u0648\u064a\u0645',
     infoCalBody: '\u064a\u062f\u0639\u0645 \u0623\u0643\u062b\u0631 \u0645\u0646 20 \u0646\u0638\u0627\u0645\u0627\u064b \u062a\u0642\u0648\u064a\u0645\u064a\u0627\u064b.',
+    settings: '\u0627\u0644\u0625\u0639\u062f\u0627\u062f\u0627\u062a',
+    language: '\u0627\u0644\u0644\u063a\u0629',
+    theme: '\u0627\u0644\u0633\u0645\u0629',
   },
   eo: {
     wholeYear: 'Tuta jaro',
@@ -1674,6 +1683,9 @@ const MOBILE_EXTRA = {
     infoMethodBody: '\u0108iuj konvertoj iras tra la Julia\u0125 Tagnumero (JDN) kiel universala peranto.',
     infoCalTitle: 'Kalendaraj sistemoj',
     infoCalBody: 'Subtenas pli ol 20 kalendarajn sistemojn.',
+    settings: 'Agordoj',
+    language: 'Lingvo',
+    theme: 'Temo',
   },
 };
 

@@ -13,7 +13,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useTheme } from '../theme/ThemeContext';
 import { Cal } from '../engine/cal';
 import { useT } from '../i18n/LanguageContext';
-import { CALENDARS, CalendarDef, CONTEXTUAL_PRIORITY } from '../engine/calendars';
+import { CALENDARS, CalendarDef, CONTEXTUAL_PRIORITY, VARIANT_LABELS } from '../engine/calendars';
 import { CalendarPicker } from '../components/CalendarPicker';
 import { VariantBar } from '../components/VariantBar';
 import { Tile } from '../components/Tile';
@@ -136,7 +136,11 @@ export function ConverterScreen({ route, navigation }: Props) {
         const targetText = tgtCal.id === 'roman' && r.day
           ? `${Cal.romanDayNotation(r.month, r.day, tgtCal.isLeap(r.year))} ${r.year} AUC`
           : `${r.day} ${tgtMonthNames[r.month - 1]} ${r.year}`;
-        return { sourceText, targetText, weekday: T.weekdays[dow], jd };
+        return {
+          sourceText, targetText, weekday: T.weekdays[dow], jd,
+          srcYear: y, srcMonthDay: `${d} ${monthNames[m - 1]}`,
+          tgtYear: r.year, tgtMonthDay: `${r.day} ${tgtMonthNames[r.month - 1]}`,
+        };
       }
       if (m) {
         const mLen = srcCal.monthLength(y, m);
@@ -489,36 +493,118 @@ export function ConverterScreen({ route, navigation }: Props) {
             </View>
           ) : hasResult ? (
             <View style={styles.resultBody}>
-              <Text
-                style={[styles.resultSource, { color: theme.colors.textSecondary }]}
-                numberOfLines={1}
-                adjustsFontSizeToFit
-              >
-                {(conversion as any).sourceText}
-              </Text>
-              <Text style={[styles.resultArrow, { color: theme.colors.accent }]}>
-                {'\u2193'}
-              </Text>
-              <Text
-                style={[
-                  styles.resultMain,
-                  {
-                    color: theme.colors.text,
-                    borderBottomColor: theme.colors.accent,
-                    borderBottomWidth: isBrut ? 3 : 1,
-                  },
-                ]}
-                numberOfLines={2}
-                adjustsFontSizeToFit
-                minimumFontScale={0.5}
-              >
-                {(conversion as any).targetText}
-              </Text>
-              {'weekday' in (conversion as any) && (conversion as any).weekday ? (
-                <Text style={[styles.resultWeekday, { color: theme.colors.textSecondary }]}>
-                  {(conversion as any).weekday}
-                </Text>
-              ) : null}
+              {/* Bridge layout for full-date conversions */}
+              {'srcYear' in (conversion as any) ? (
+                <>
+                  <View style={styles.bridgeRow}>
+                    {/* Source column */}
+                    <View style={styles.bridgeCol}>
+                      <Text style={[styles.bridgeLabel, { color: theme.colors.textMuted }]}>
+                        {T.fromCalendar}
+                      </Text>
+                      <Text
+                        style={[styles.bridgeYear, { color: theme.colors.text }]}
+                        numberOfLines={1}
+                        adjustsFontSizeToFit
+                      >
+                        {(conversion as any).srcYear}
+                      </Text>
+                      <Text
+                        style={[styles.bridgeMonthDay, { color: theme.colors.textSecondary }]}
+                        numberOfLines={1}
+                        adjustsFontSizeToFit
+                      >
+                        {(conversion as any).srcMonthDay}
+                      </Text>
+                      <Text style={[styles.bridgeCalName, { color: theme.colors.textMuted }]} numberOfLines={1}>
+                        {(T.calendars as any)?.[fromCal] || fromCal}
+                      </Text>
+                      {fromVariant ? (
+                        <Text style={[styles.bridgeVariant, { color: theme.colors.textMuted }]}>
+                          {VARIANT_LABELS[fromVariant] || fromVariant}
+                        </Text>
+                      ) : null}
+                    </View>
+
+                    {/* Arrow divider */}
+                    <View style={styles.bridgeDivider}>
+                      <View style={[styles.bridgeDividerLine, { backgroundColor: theme.colors.accent }]} />
+                      <Text style={[styles.bridgeArrow, { color: theme.colors.accent }]}>{'\u2192'}</Text>
+                      <View style={[styles.bridgeDividerLine, { backgroundColor: theme.colors.accent }]} />
+                    </View>
+
+                    {/* Target column */}
+                    <View style={styles.bridgeCol}>
+                      <Text style={[styles.bridgeLabel, { color: theme.colors.textMuted }]}>
+                        {T.targetCalendar}
+                      </Text>
+                      <Text
+                        style={[
+                          styles.bridgeYear,
+                          {
+                            color: theme.colors.text,
+                            borderBottomColor: theme.colors.accent,
+                            borderBottomWidth: isBrut ? 3 : 1,
+                          },
+                        ]}
+                        numberOfLines={1}
+                        adjustsFontSizeToFit
+                      >
+                        {(conversion as any).tgtYear}
+                      </Text>
+                      <Text
+                        style={[styles.bridgeMonthDay, { color: theme.colors.textSecondary }]}
+                        numberOfLines={1}
+                        adjustsFontSizeToFit
+                      >
+                        {(conversion as any).tgtMonthDay}
+                      </Text>
+                      <Text style={[styles.bridgeCalName, { color: theme.colors.textMuted }]} numberOfLines={1}>
+                        {(T.calendars as any)?.[toCal] || toCal}
+                      </Text>
+                      {toVariant ? (
+                        <Text style={[styles.bridgeVariant, { color: theme.colors.textMuted }]}>
+                          {VARIANT_LABELS[toVariant] || toVariant}
+                        </Text>
+                      ) : null}
+                    </View>
+                  </View>
+                  {'weekday' in (conversion as any) && (conversion as any).weekday ? (
+                    <Text style={[styles.resultWeekday, { color: theme.colors.textSecondary }]}>
+                      {(conversion as any).weekday}
+                    </Text>
+                  ) : null}
+                </>
+              ) : (
+                /* Month-only or year-only: keep simple display */
+                <>
+                  <Text
+                    style={[styles.resultSource, { color: theme.colors.textSecondary }]}
+                    numberOfLines={1}
+                    adjustsFontSizeToFit
+                  >
+                    {(conversion as any).sourceText}
+                  </Text>
+                  <Text style={[styles.resultArrow, { color: theme.colors.accent }]}>
+                    {'\u2193'}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.resultMain,
+                      {
+                        color: theme.colors.text,
+                        borderBottomColor: theme.colors.accent,
+                        borderBottomWidth: isBrut ? 3 : 1,
+                      },
+                    ]}
+                    numberOfLines={2}
+                    adjustsFontSizeToFit
+                    minimumFontScale={0.5}
+                  >
+                    {(conversion as any).targetText}
+                  </Text>
+                </>
+              )}
             </View>
           ) : (
             <View style={styles.resultBody}>
@@ -957,7 +1043,7 @@ const styles = StyleSheet.create({
 
   // Result card
   resultFrame: {
-    minHeight: 110,
+    minHeight: 130,
     padding: 14,
     justifyContent: 'space-between',
     marginBottom: 10,
@@ -1012,6 +1098,71 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '700',
     textAlign: 'center',
+  },
+
+  // Bridge layout
+  bridgeRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    gap: 0,
+    width: '100%',
+    paddingVertical: 4,
+  },
+  bridgeCol: {
+    flex: 1,
+    alignItems: 'center',
+    paddingHorizontal: 4,
+  },
+  bridgeLabel: {
+    fontSize: 8,
+    fontWeight: '900',
+    textTransform: 'uppercase',
+    letterSpacing: 1.5,
+    marginBottom: 4,
+  },
+  bridgeYear: {
+    fontSize: 32,
+    fontWeight: '900',
+    textAlign: 'center',
+    paddingBottom: 2,
+    paddingHorizontal: 4,
+  },
+  bridgeMonthDay: {
+    fontSize: 13,
+    fontWeight: '700',
+    textAlign: 'center',
+    marginTop: 4,
+  },
+  bridgeCalName: {
+    fontSize: 10,
+    fontWeight: '900',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    marginTop: 4,
+    textAlign: 'center',
+  },
+  bridgeVariant: {
+    fontSize: 9,
+    fontWeight: '700',
+    fontStyle: 'italic',
+    marginTop: 1,
+    textAlign: 'center',
+  },
+  bridgeDivider: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 28,
+    paddingTop: 22,
+  },
+  bridgeDividerLine: {
+    width: 1,
+    height: 14,
+  },
+  bridgeArrow: {
+    fontSize: 16,
+    fontWeight: '900',
+    marginVertical: 2,
   },
 
   // Info (bottom)

@@ -905,24 +905,57 @@
       elements.push(tgtBar);
     }
 
-    // Target results per variant group
-    for (var gi = 0; gi < groupList.length; gi++) {
-      var g = groupList[gi];
-      var dateText;
-      if (tgt.id === 'roman' && g.result.day) {
-        dateText = Cal.romanDayNotation(g.result.month, g.result.day, tgt.isLeap(g.result.year)) + ' ' + g.result.year + ' AUC';
-      } else {
-        dateText = g.result.day + ' ' + g.tgtNames[g.result.month - 1] + ' ' + g.result.year;
+    // Build result bridge — prominent year-comparison layout
+    var g0 = groupList[0];
+    var srcCalName = t.calendars[src.id] || src.id;
+    var tgtCalName = t.calendars[tgt.id] || tgt.id;
+    var srcMonthName = srcNames[m - 1] || '';
+    var srcDetail = srcMonthName ? (d + '\u00a0' + srcMonthName) : String(d);
+    var tgtMonth0 = g0.tgtNames[g0.result.month - 1] || '';
+    var tgtYearStr = tgt.id === 'roman' ? (g0.result.year + '\u00a0AUC') : String(g0.result.year);
+    var tgtDetail;
+    if (tgt.id === 'roman' && g0.result.day) {
+      tgtDetail = Cal.romanDayNotation(g0.result.month, g0.result.day, tgt.isLeap(g0.result.year));
+    } else {
+      tgtDetail = tgtMonth0 ? (g0.result.day + '\u00a0' + tgtMonth0) : '';
+    }
+
+    var bridge = el('div', { class: 'result-bridge' });
+    bridge.appendChild(el('span', { class: 'bridge-label bridge-src-cal', text: srcCalName }));
+    bridge.appendChild(el('span', { class: 'bridge-mid-top' }));
+    bridge.appendChild(el('span', { class: 'bridge-label bridge-tgt-cal', text: tgtCalName }));
+    bridge.appendChild(el('span', { class: 'bridge-src-year', text: String(y) }));
+    bridge.appendChild(el('span', { class: 'bridge-arrow' }, '\u2192'));
+    bridge.appendChild(el('span', { class: 'bridge-tgt-year', text: tgtYearStr }));
+    bridge.appendChild(el('span', { class: 'bridge-label bridge-src-detail', text: srcDetail }));
+    bridge.appendChild(el('span', { class: 'bridge-mid-bot' }));
+    bridge.appendChild(el('span', { class: 'bridge-label bridge-tgt-detail', text: tgtDetail }));
+    elements.push(bridge);
+
+    // Hidden element for copy-button (full target date string)
+    var copyText = tgtDetail ? (tgtDetail + ' ' + tgtYearStr) : tgtYearStr;
+    var copyEl = el('span', { class: 'result-main' });
+    copyEl.textContent = copyText;
+    copyEl.style.display = 'none';
+    elements.push(copyEl);
+
+    // Alternate variant results below bridge (when multiple variant groups differ)
+    if (showVarLabels) {
+      for (var gi = 0; gi < groupList.length; gi++) {
+        var g = groupList[gi];
+        if (g.labels.length === 0) continue;
+        var altText;
+        if (tgt.id === 'roman' && g.result.day) {
+          altText = Cal.romanDayNotation(g.result.month, g.result.day, tgt.isLeap(g.result.year)) + ' ' + g.result.year + ' AUC';
+        } else {
+          altText = g.result.day + ' ' + g.tgtNames[g.result.month - 1] + ' ' + g.result.year;
+        }
+        elements.push(el('p', { class: 'result-variant-label', text: g.labels.join(', ') + ': ' + altText }));
       }
-      var mainLine = el('p', { class: 'result-main', text: dateText });
-      elements.push(mainLine);
-      if (showVarLabels && g.labels.length > 0) {
-        elements.push(el('p', { class: 'result-variant-label', text: g.labels.join(', ') }));
-      }
-      if (tgt.id === 'byzantine') {
-        var ind = Cal.indictionFromJD(g.jd);
-        elements.push(el('p', { class: 'result-secondary result-indiction', text: (t.indictionLabel || 'Indiction') + ' ' + ind }));
-      }
+    }
+    if (tgt.id === 'byzantine') {
+      var ind = Cal.indictionFromJD(g0.jd);
+      elements.push(el('p', { class: 'result-secondary result-indiction', text: (t.indictionLabel || 'Indiction') + ' ' + ind }));
     }
 
     var primaryResult = groupList[0].result;
@@ -1409,6 +1442,7 @@
       }
     }
 
+    resultPanel.hidden = false;
     resultPanel.classList.add('has-result');
 
     // Show target calendar dropdown (pre-filled) and refine card (month/day)

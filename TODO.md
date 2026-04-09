@@ -1,6 +1,8 @@
 ## Web
 - [ ] Add more calendar systems (French Republican, etc. if missing)
 - [x] Improve mobile UX based on recent layout changes (cursor+chevron on month, dropdown fix, month+day side-by-side)
+- [x] Hide result placeholder until Convert is pressed (mobile UX)
+- [x] Result box redesign: bridge layout (big year → big year, calendar name + month/day detail)
 - [ ] Expand test coverage for edge cases (leap years, era boundaries)
 - [ ] Add historical event annotations to date results
 - [ ] Optimize service worker caching strategy

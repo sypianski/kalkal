@@ -12,7 +12,7 @@
 - [ ] Optimize service worker caching strategy
 - [ ] Complete eclipse data integration for broader date ranges
 
-## Mobile app (parity with web)
+## Mobile web view
 - [x] Multi-language support (PL, AR with RTL via I18nManager, EO) — currently EN only
 - [x] Astro section as collapsible tile (matching web `33aa97f`)
 - [x] Unified tile system for contextual / out-of-era calendars in results (`a3e221d`, `612f929`)
@@ -21,6 +21,21 @@
 - [x] Group calendars by cultural sphere in picker (`0e94654`)
 - [x] Verify Parker & Dubberstein Babylonian tables present in `mobile/src/engine/cal.js`
 - [x] Verify Human Era variants present
+- [ ] Settings in the bottom bar
+  - [ ] Redesign the button with frontend design (add icon)
+  - [ ] Include variants in all calendars that have variants, not only hijri
+- [ ] Remove the disclaimer below History
+- [ ] Make bottom bar bigger
+- [ ] Remove language buttons from the tom bar
+- [ ] Merge top bar and bottom bar into one bar (frontend-design)
+- [ ] Result should be organized into two sections within one box
+  - [ ] first line big letters: year
+  - [ ] second line small letters: day and month
+  - [ ] for ranges have start and end date with its own two lines as in two columns separated by an arrow sign (use frontend-design)
+- [ ] Make result graphically more prominent
+- [ ] Remove boxes with additional calendars (contemp. and not prolept.) and wiht monthy overview
+- [ ] make History and collapsed Astro box full width and as tall as the convert button
+- [ ] make Month box wider and Day box narrower 
 
 ## Changes to the Android app (rebuild per new TODO logic)
 - [x] Start screen: calendar picker (default Hijri), custom NumPad, OK → Converter, Info button

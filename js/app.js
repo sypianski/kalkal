@@ -353,11 +353,19 @@
     }
   };
 
-  // Apply persisted Hijri variant preference
+  // Apply persisted variant preferences
   if (storedHijriVariant && CALENDARS.hijri.variants.includes(storedHijriVariant)) {
     CALENDARS.hijri._variant = storedHijriVariant;
     CALENDARS.hijri.defaultVariant = storedHijriVariant;
   }
+  ['byzantine', 'seleucid', 'yazdgerdi'].forEach(calId => {
+    const stored = localStorage.getItem(`kalkal-${calId}-variant`);
+    const cal = CALENDARS[calId];
+    if (stored && cal && cal.variants && cal.variants.includes(stored)) {
+      cal._variant = stored;
+      cal.defaultVariant = stored;
+    }
+  });
 
   // Contextual calendars: priority order and max count for "also in use" panel
   const CONTEXTUAL_PRIORITY = [
@@ -1768,16 +1776,23 @@
     const backdrop = $('#settings-backdrop');
     if (!btn || !panel) return;
 
+    // Calendars with variants in settings
+    const SETTINGS_CALENDARS = ['hijri', 'byzantine', 'seleucid', 'yazdgerdi'];
+
     function openSettings() {
       panel.classList.add('open');
       backdrop.classList.add('open');
-      // Sync active states
+      // Sync active language
       panel.querySelectorAll('.settings-lang-btn').forEach(b => {
         b.classList.toggle('active', b.dataset.lang === currentLang);
       });
-      const activeVariant = CALENDARS.hijri._variant;
-      panel.querySelectorAll('.settings-variant-btn').forEach(b => {
-        b.classList.toggle('active', b.dataset.variant === activeVariant);
+      // Sync active variant for each calendar group
+      SETTINGS_CALENDARS.forEach(calId => {
+        const cal = CALENDARS[calId];
+        if (!cal) return;
+        panel.querySelectorAll(`.settings-variant-btn[data-cal="${calId}"]`).forEach(b => {
+          b.classList.toggle('active', b.dataset.variant === cal._variant);
+        });
       });
     }
 
@@ -1800,10 +1815,13 @@
     panel.querySelectorAll('.settings-variant-btn').forEach(b => {
       b.addEventListener('click', () => {
         const v = b.dataset.variant;
-        CALENDARS.hijri._variant = v;
-        CALENDARS.hijri.defaultVariant = v;
-        localStorage.setItem('kalkal-hijri-variant', v);
-        panel.querySelectorAll('.settings-variant-btn').forEach(x => x.classList.toggle('active', x.dataset.variant === v));
+        const calId = b.dataset.cal;
+        const cal = CALENDARS[calId];
+        if (!cal) return;
+        cal._variant = v;
+        cal.defaultVariant = v;
+        localStorage.setItem(`kalkal-${calId}-variant`, v);
+        panel.querySelectorAll(`.settings-variant-btn[data-cal="${calId}"]`).forEach(x => x.classList.toggle('active', x.dataset.variant === v));
         if (resultPanel.classList.contains('has-result')) convert();
       });
     });

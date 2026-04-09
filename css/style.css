@@ -4908,6 +4908,29 @@ body {
   .converter-grid {
     grid-template-columns: 1fr !important;
   }
+
+  /* Full-width form fields */
+  .converter-form .form-field--year {
+    max-width: none !important;
+  }
+  .form-field--cal,
+  .form-field--year,
+  .form-field--action,
+  .refine-card,
+  .refine-field,
+  .to-calendar-field {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Hide eclipses link and install banner on all mobile */
+  .page-nav a[href="eclipses.html"] {
+    display: none !important;
+  }
+  .install-banner {
+    display: none !important;
+  }
 }
 
 @media (max-width: 600px) {

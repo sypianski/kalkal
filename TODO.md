@@ -4,7 +4,6 @@
 - [x] Add table of contents with anchor links to methodology.html
 - [x] Remove Install KalKal prompt/button from mobile view
 - [x] Remove Eclipses link from mobile nav bar
-- [ ] Add more calendar systems (French Republican, etc. if missing)
 - [x] Improve mobile UX based on recent layout changes (cursor+chevron on month, dropdown fix, month+day side-by-side)
 - [x] Hide result placeholder until Convert is pressed (mobile UX)
 - [x] Result box redesign: bridge layout (big year → big year, calendar name + month/day detail)

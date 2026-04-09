@@ -36,4 +36,10 @@
 - [x] Verify custom keypad layout on small screens (keypad is bottom-pinned; top section scrolls)
 - [x] Localize keypad labels if needed (C / ⌫ currently symbolic, works across languages)
 - [x] Start screen: persist last-used calendar in AsyncStorage
-- [ ] Manual test on device: live conversion, variant switching, month grid for 13-month calendars (Coptic, Ethiopian, Armenian, etc.)
+- [x] Manual test on device: live conversion, variant switching, month grid for 13-month calendars (Coptic, Ethiopian, Armenian, etc.)
+- [x] Month box wider than the day box
+- [x] All other boxes span whole screen width
+- [x] Settings tab opens with visible label
+- [x] Language options moved to the settings tab
+- [x] Result box display added
+- [x] Month breakdowns and contextual calendars hidden from mobile/android versions

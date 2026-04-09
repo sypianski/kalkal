@@ -4,8 +4,10 @@ import { useNavigation } from '@react-navigation/native';
 import { useTheme } from '../theme/ThemeContext';
 import { useT } from '../i18n/LanguageContext';
 import { BrutalistCard } from '../components/BrutalistCard';
+import { LanguageToggle } from '../components/LanguageToggle';
+import { ThemeToggle } from '../components/ThemeToggle';
 
-type InfoTab = 'calendars' | 'methodology';
+type InfoTab = 'calendars' | 'methodology' | 'settings';
 
 // Calendar data (matches CalendarsScreen)
 const CALENDARS_DATA = [
@@ -299,6 +301,31 @@ export function InfoScreen() {
             {T.navMethodology}
           </Text>
         </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => setActiveTab('settings')}
+          style={[
+            styles.tabButton,
+            activeTab === 'settings' && [
+              styles.tabButtonActive,
+              { borderBottomColor: theme.colors.tabActive, backgroundColor: isBrut ? theme.colors.background : 'transparent' }
+            ],
+            { borderBottomColor: theme.colors.border }
+          ]}
+          activeOpacity={0.7}
+        >
+          <Text
+            style={[
+              styles.tabLabel,
+              {
+                color: activeTab === 'settings' ? theme.colors.tabActive : theme.colors.tabInactive,
+                fontWeight: activeTab === 'settings' ? '900' : '700'
+              }
+            ]}
+          >
+            {T.settings || 'Settings'}
+          </Text>
+        </TouchableOpacity>
       </View>
 
       {/* Content */}
@@ -310,7 +337,7 @@ export function InfoScreen() {
             ))}
             <View style={{ height: 40 }} />
           </>
-        ) : (
+        ) : activeTab === 'methodology' ? (
           <>
             {METHODOLOGY_SECTIONS.map((section, i) => (
               <BrutalistCard key={i}>
@@ -325,6 +352,33 @@ export function InfoScreen() {
                 <Text style={[styles.sectionBody, { color: theme.colors.text }]}>{section.body}</Text>
               </BrutalistCard>
             ))}
+            <View style={{ height: 40 }} />
+          </>
+        ) : (
+          <>
+            <View style={{ height: 24 }} />
+            <BrutalistCard>
+              <Text style={[styles.sectionTitle, isBrut
+                ? { color: theme.colors.text, borderBottomWidth: 3, borderBottomColor: theme.colors.accent, paddingBottom: 4, alignSelf: 'flex-start' }
+                : { color: theme.colors.accent }
+              ]}>
+                {T.language || 'Language'}
+              </Text>
+              <View style={{ marginTop: 12 }}>
+                <LanguageToggle />
+              </View>
+            </BrutalistCard>
+            <BrutalistCard>
+              <Text style={[styles.sectionTitle, isBrut
+                ? { color: theme.colors.text, borderBottomWidth: 3, borderBottomColor: theme.colors.accent, paddingBottom: 4, alignSelf: 'flex-start' }
+                : { color: theme.colors.accent }
+              ]}>
+                {T.theme || 'Theme'}
+              </Text>
+              <View style={{ marginTop: 12 }}>
+                <ThemeToggle />
+              </View>
+            </BrutalistCard>
             <View style={{ height: 40 }} />
           </>
         )}

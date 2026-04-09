@@ -25,8 +25,8 @@
 - [x] Info screen with tabbed layout (Calendars & Methodology + back button to Converter)
 - [x] use /frontend-desing to improve the general design
 - [x] don't use yellow
-- [ ] Restore / relocate language + theme toggles (removed from ConverterScreen — decide where they live, likely Info or a new Settings entry)
-- [ ] Restore / relocate history, Astro tile, and contextual/out-of-era calendar panels (removed from ConverterScreen — either as a details screen or a secondary panel)
+- [x] Restore / relocate language + theme toggles — added as Settings tab in InfoScreen
+- [x] Restore / relocate history, Astro tile, and contextual/out-of-era calendar panels — collapsible Tiles in scrollable result area of ConverterScreen
 - [ ] Verify custom keypad layout on small screens (keypad is bottom-pinned; top section scrolls)
 - [ ] Localize keypad labels if needed (C / ⌫ currently symbolic, works across languages)
 - [ ] Start screen: persist last-used calendar in AsyncStorage

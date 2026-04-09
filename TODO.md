@@ -1,6 +1,7 @@
 ## Web
 - [ ] Add more calendar systems (French Republican, etc. if missing)
 - [x] Hide result placeholder until Convert is pressed (mobile UX)
+- [x] Result box redesign: bridge layout (big year → big year, calendar name + month/day detail)
 - [ ] Improve mobile UX based on recent layout changes
 - [ ] Expand test coverage for edge cases (leap years, era boundaries)
 - [ ] Add historical event annotations to date results

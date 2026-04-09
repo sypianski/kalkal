@@ -27,7 +27,7 @@
 - [x] don't use yellow
 - [ ] Restore / relocate language + theme toggles (removed from ConverterScreen — decide where they live, likely Info or a new Settings entry)
 - [ ] Restore / relocate history, Astro tile, and contextual/out-of-era calendar panels (removed from ConverterScreen — either as a details screen or a secondary panel)
-- [ ] Verify custom keypad layout on small screens (keypad is bottom-pinned; top section scrolls)
-- [ ] Localize keypad labels if needed (C / ⌫ currently symbolic, works across languages)
-- [ ] Start screen: persist last-used calendar in AsyncStorage
+- [x] Verify custom keypad layout on small screens (keypad is bottom-pinned; top section scrolls)
+- [x] Localize keypad labels if needed (C / ⌫ currently symbolic, works across languages)
+- [x] Start screen: persist last-used calendar in AsyncStorage
 - [ ] Manual test on device: live conversion, variant switching, month grid for 13-month calendars (Coptic, Ethiopian, Armenian, etc.)

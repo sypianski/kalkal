@@ -1,6 +1,6 @@
 ## Web
 - [ ] Add more calendar systems (French Republican, etc. if missing)
-- [ ] Improve mobile UX based on recent layout changes
+- [x] Improve mobile UX based on recent layout changes (cursor+chevron on month, dropdown fix, month+day side-by-side)
 - [ ] Expand test coverage for edge cases (leap years, era boundaries)
 - [ ] Add historical event annotations to date results
 - [ ] Optimize service worker caching strategy

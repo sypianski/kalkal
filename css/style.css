@@ -5165,13 +5165,11 @@ body {
   .converter-left,
   .converter-right,
   .converter-card,
-  .converter-form,
-  .refine-card {
+  .converter-form {
     display: contents !important;
   }
   /* Respect the [hidden] attribute even through display:contents */
   .refine-card[hidden],
-  .refine-card[hidden] .refine-field,
   .to-calendar-field[hidden] {
     display: none !important;
   }
@@ -5186,6 +5184,19 @@ body {
     padding: 0 !important;
     margin: 0 !important;
     max-width: none !important;
+  }
+
+  /* Refine card: transparent 2-column grid — MONTH and DAY side by side */
+  .refine-card {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
   }
 
   /* ---- Shared slab styling for each form step ---- */
@@ -5233,17 +5244,16 @@ body {
   /* ---- TEMPLATE.md ordering ---- */
   .form-field--cal            { order: 1 !important; }
   .form-field--year           { order: 2 !important; }
-  .refine-field:first-child   { order: 3 !important; }
-  .refine-field:nth-child(2)  { order: 4 !important; }
-  .to-calendar-field          { order: 5 !important; }
-  .form-error                 { order: 6 !important; }
-  .form-field--action         { order: 7 !important; }
-  .result-panel               { order: 8 !important; }
-  .contextual-card            { order: 9 !important; }
-  .outofera-card              { order: 10 !important; }
-  .astro-card                 { order: 11 !important; }
-  .breakdown-card             { order: 12 !important; }
-  .history-panel              { order: 13 !important; }
+  .refine-card                { order: 3 !important; }
+  .to-calendar-field          { order: 4 !important; }
+  .form-error                 { order: 5 !important; }
+  .form-field--action         { order: 6 !important; }
+  .result-panel               { order: 7 !important; }
+  .contextual-card            { order: 8 !important; }
+  .outofera-card              { order: 9 !important; }
+  .astro-card                 { order: 10 !important; }
+  .breakdown-card             { order: 11 !important; }
+  .history-panel              { order: 12 !important; }
 
   /* Hide the original inline labels (numbered markers replace them) */
   .form-field--cal > .form-label,
@@ -5315,12 +5325,28 @@ body {
 
   /* Autocomplete dropdown anchored inside slab — escape overflow */
   .form-field--cal .cal-suggestions,
-  .to-calendar-field .cal-suggestions {
+  .to-calendar-field .cal-suggestions,
+  .refine-field .cal-suggestions {
     inset-inline-start: -2.5px !important;
     inset-inline-end: -2.5px !important;
     min-width: calc(100% + 5px) !important;
     border: 2.5px solid #000 !important;
     box-shadow: 5px 5px 0 #000 !important;
+  }
+
+  /* Month field: pointer cursor + dropdown chevron indicator */
+  .refine-field:first-child .refine-input {
+    cursor: pointer !important;
+  }
+  .refine-field:first-child::after {
+    content: "▾";
+    position: absolute;
+    inset-inline-end: 14px;
+    bottom: 12px;
+    font-size: 1rem;
+    line-height: 1;
+    color: #000;
+    pointer-events: none;
   }
 
   /* Form error: slim red strip above CONVERT */

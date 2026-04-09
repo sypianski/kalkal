@@ -1409,6 +1409,7 @@
       }
     }
 
+    resultPanel.hidden = false;
     resultPanel.classList.add('has-result');
 
     // Show target calendar dropdown (pre-filled) and refine card (month/day)

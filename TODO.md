@@ -33,7 +33,7 @@
   - [ ] second line small letters: day and month
   - [ ] for ranges have start and end date with its own two lines as in two columns separated by an arrow sign (use frontend-design)
 - [ ] Make result graphically more prominent
-- [ ] Remove boxes with additional calendars (contemp. and not prolept.) and wiht monthy overview
+- [ ] Remove boxes with additional calendars (contemp. and not prolept.) and with monthly overview
 - [ ] make History and collapsed Astro box full width and as tall as the convert button
 - [ ] make Month box wider and Day box narrower 
 

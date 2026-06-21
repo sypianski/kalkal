@@ -5286,14 +5286,14 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 0.6em 0.1em 0.5em !important;
-    min-height: 64px !important;
+    padding: 0.5em 0.1em 0.4em !important;
+    min-height: 72px !important;
     font-family: var(--brut-mono) !important;
-    font-size: 0.5rem !important;
+    font-size: 0.55rem !important;
     font-weight: 700 !important;
     text-transform: uppercase;
-    letter-spacing: 0.1em !important;
-    color: #555 !important;
+    letter-spacing: 0.08em !important;
+    color: #666 !important;
     background: transparent !important;
     border: none !important;
     border-top: 3px solid transparent !important;
@@ -5304,9 +5304,9 @@ body {
 
   .page-nav a::before {
     display: block;
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     line-height: 1;
-    margin-bottom: 0.25em;
+    margin-bottom: 0.3em;
   }
 
   .page-nav a[href="index.html"]::before,
@@ -5321,9 +5321,9 @@ body {
   }
 
   /* Author link */
-  .page-nav a.nav-author-link::before { content: "\270E"; }
+  .page-nav a.nav-author-link::before { content: "\2767"; }
 
-  .page-nav a:hover        { color: #aaa !important; background: transparent !important; }
+  .page-nav a:hover         { color: #bbb !important; background: transparent !important; }
   .page-nav a.active        { color: #fff !important; background: transparent !important; border-top-color: #fff !important; }
   .page-nav a.active::before { color: #fff; }
 
@@ -5341,14 +5341,14 @@ body {
     align-items: center;
     justify-content: center;
     gap: 0.25em;
-    padding: 0.6em 0.1em 0.5em !important;
-    min-height: 64px !important;
+    padding: 0.5em 0.1em 0.4em !important;
+    min-height: 72px !important;
     font-family: var(--brut-mono) !important;
-    font-size: 0.5rem !important;
+    font-size: 0.55rem !important;
     font-weight: 700 !important;
     text-transform: uppercase;
-    letter-spacing: 0.1em !important;
-    color: #555 !important;
+    letter-spacing: 0.08em !important;
+    color: #666 !important;
     background: transparent !important;
     border: none !important;
     border-top: 3px solid transparent !important;
@@ -5451,7 +5451,7 @@ body {
   }
 
   /* ---- Body clearance for bottom bar ---- */
-  body { padding-bottom: 64px; }
+  body { padding-bottom: 72px; }
 
   /* Hide install banner on mobile */
   .install-banner {
@@ -5461,7 +5461,7 @@ body {
 
 /* Standalone + mobile: safe-area */
 @media (display-mode: standalone) and (max-width: 600px) {
-  body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)); }
+  body { padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px)); }
   .page-nav { padding-bottom: env(safe-area-inset-bottom, 0px); }
 }
 
@@ -5968,4 +5968,81 @@ body {
   .to-calendar-field { padding: 16px 11px 10px !important; }
   .btn-convert { font-size: 0.82rem !important; letter-spacing: 0.14em !important; }
   .result-panel .result-main { font-size: 0.92rem !important; }
+}
+
+/* ============================================================================
+   ABOUT PAGE
+   ============================================================================ */
+
+.about-page {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-md);
+}
+
+.about-card {
+  background: var(--parchment-100);
+  border: 4px solid var(--ink-900);
+  border-radius: var(--radius-lg);
+  box-shadow: 6px 6px 0 var(--ink-900);
+  padding: var(--space-xl) var(--space-lg);
+}
+
+.about-name {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--ink-900);
+  margin: 0 0 var(--space-md);
+  letter-spacing: -0.01em;
+}
+
+.about-bio {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--ink-700);
+  margin: 0 0 var(--space-lg);
+}
+
+.about-links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.about-link {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.75em 1em;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-decoration: none;
+  border: 2px solid var(--ink-900);
+  border-radius: var(--radius-sm);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.about-link--primary {
+  background: var(--ink-900);
+  color: var(--parchment-100);
+}
+
+.about-link--primary:hover {
+  background: var(--ink-700);
+}
+
+.about-link--kofi {
+  background: transparent;
+  color: var(--ink-900);
+}
+
+.about-link--kofi:hover {
+  background: var(--parchment-200);
+}
+
+.about-link-icon {
+  font-size: 1.1em;
 }

@@ -6022,8 +6022,8 @@ body {
 .about-link {
   display: flex;
   align-items: center;
-  gap: 0.6em;
-  padding: 0.75em 1em;
+  justify-content: center;
+  padding: 0.8em 1em;
   font-family: var(--font-display);
   font-size: 0.95rem;
   font-weight: 700;
@@ -6033,24 +6033,27 @@ body {
   transition: background 0.15s ease, color 0.15s ease;
 }
 
-.about-link--primary {
+.about-link--kofi {
   background: var(--ink-900);
   color: var(--parchment-100);
 }
 
-.about-link--primary:hover {
+.about-link--kofi:hover {
   background: var(--ink-700);
 }
 
-.about-link--kofi {
+.about-link--secondary {
   background: transparent;
+  color: var(--ink-700);
+  font-weight: 600;
+  border-color: var(--ink-300);
+}
+
+.about-link--secondary:hover {
+  background: var(--parchment-200);
   color: var(--ink-900);
 }
 
-.about-link--kofi:hover {
-  background: var(--parchment-200);
-}
-
-.about-link-icon {
-  font-size: 1.1em;
+.about-bio + .about-bio {
+  margin-top: calc(-1 * var(--space-sm));
 }

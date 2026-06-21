@@ -511,29 +511,39 @@
 
       // Clear option
       var clearItem = el('div', { class: 'cal-item', text: '\u2014' });
-      clearItem.addEventListener('mousedown', function(e) {
+      function clearMonth(e) {
         e.preventDefault();
         input.value = '';
         input.dataset.monthValue = '';
         hide();
         input.classList.remove('has-error');
         if (resultPanel.classList.contains('has-result')) convert();
-      });
+      }
+      clearItem.addEventListener('mousedown', clearMonth);
+      clearItem.addEventListener('touchstart', clearMonth, { passive: false });
       dropdown.appendChild(clearItem);
 
       monthData.forEach(function(m) {
         var item = el('div', { class: 'cal-item', text: m.name });
-        item.addEventListener('mousedown', function(e) {
+        function selectMonth(e) {
           e.preventDefault();
           input.value = m.name;
           input.dataset.monthValue = String(m.num);
           hide();
           input.classList.remove('has-error');
           if (resultPanel.classList.contains('has-result')) convert();
-        });
+        }
+        item.addEventListener('mousedown', selectMonth);
+        item.addEventListener('touchstart', selectMonth, { passive: false });
         dropdown.appendChild(item);
       });
-      input.parentNode.appendChild(dropdown);
+      document.body.appendChild(dropdown);
+      const rect = input.getBoundingClientRect();
+      dropdown.style.position = 'fixed';
+      dropdown.style.top = rect.bottom + 'px';
+      dropdown.style.left = rect.left + 'px';
+      dropdown.style.width = rect.width + 'px';
+      dropdown.style.minWidth = rect.width + 'px';
       activeIndex = -1;
     }
 
@@ -558,7 +568,7 @@
 
     input.addEventListener('focus', show);
     input.addEventListener('click', show);
-    input.addEventListener('blur', function() { setTimeout(hide, 150); });
+    input.addEventListener('blur', function() { setTimeout(hide, 300); });
 
     input.addEventListener('keydown', function(e) {
       if (!dropdown) return;
@@ -665,13 +675,15 @@
         const itemsWrap = el('div', { class: 'cal-group-items' });
         g.items.forEach(m => {
           const item = el('div', { class: 'cal-item', text: m.name });
-          item.addEventListener('mousedown', e => {
+          function selectItem(e) {
             e.preventDefault();
             input.value = m.name;
             hide();
             input.classList.remove('has-error');
             onCalendarChange(input);
-          });
+          }
+          item.addEventListener('mousedown', selectItem);
+          item.addEventListener('touchstart', selectItem, { passive: false });
           itemsWrap.appendChild(item);
         });
         const group = el('div', { class: 'cal-group' },
@@ -680,8 +692,19 @@
         );
         dropdown.appendChild(group);
       });
-      input.parentNode.appendChild(dropdown);
+      document.body.appendChild(dropdown);
+      positionDropdown();
       activeIndex = -1;
+    }
+
+    function positionDropdown() {
+      if (!dropdown) return;
+      const rect = input.getBoundingClientRect();
+      dropdown.style.position = 'fixed';
+      dropdown.style.top = rect.bottom + 'px';
+      dropdown.style.left = rect.left + 'px';
+      dropdown.style.width = rect.width + 'px';
+      dropdown.style.minWidth = rect.width + 'px';
     }
 
     function hide() {
@@ -709,7 +732,7 @@
     }
 
     input.addEventListener('focus', () => {
-      input.select();
+      if (!('ontouchstart' in window)) input.select();
       show(getMatches(''));
     });
 
@@ -725,7 +748,7 @@
     });
 
     input.addEventListener('blur', () => {
-      setTimeout(hide, 150);
+      setTimeout(hide, 300);
     });
 
     input.addEventListener('keydown', e => {

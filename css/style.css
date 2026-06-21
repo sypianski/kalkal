@@ -5047,6 +5047,14 @@ body {
   .main-content {
     padding: 0.5em 0.5em 3.5em !important;
     overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .main-content > * {
+    width: 100%;
+    max-width: 480px;
   }
 
   .converter-grid {
@@ -5491,7 +5499,7 @@ body {
     display: flex !important;
     flex-direction: column !important;
     gap: 14px !important;
-    padding-inline-end: 6px !important; /* breathing room for right-side drop shadows */
+    padding-inline: 3px 6px !important; /* symmetric — 3px left balances 6px right shadow */
   }
   .converter-left,
   .converter-right,

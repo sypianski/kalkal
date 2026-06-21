@@ -1383,8 +1383,8 @@ html[dir="rtl"] .ai-input {
 /* ---- Calendar autocomplete ---- */
 
 .cal-suggestions {
-  position: absolute;
-  z-index: 9999;
+  position: fixed;
+  z-index: 100000;
   background: var(--parchment-100);
   border: var(--border-strong);
   border-block-start: none;
@@ -5277,7 +5277,7 @@ body {
     margin: 0 !important;
     padding: 0;
     padding-bottom: env(safe-area-inset-bottom, 0px);
-    border-top: 2px solid #333;
+    border-top: 3px solid #333;
   }
 
   .page-nav a {
@@ -5286,17 +5286,17 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 0.5em 0.1em 0.45em !important;
-    min-height: 56px !important;
+    padding: 0.6em 0.1em 0.5em !important;
+    min-height: 64px !important;
     font-family: var(--brut-mono) !important;
-    font-size: 0.42rem !important;
+    font-size: 0.5rem !important;
     font-weight: 700 !important;
     text-transform: uppercase;
-    letter-spacing: 0.12em !important;
+    letter-spacing: 0.1em !important;
     color: #555 !important;
     background: transparent !important;
     border: none !important;
-    border-top: 2px solid transparent !important;
+    border-top: 3px solid transparent !important;
     border-radius: 0 !important;
     text-decoration: none;
     transition: color 0.15s ease, border-color 0.15s ease;
@@ -5304,23 +5304,26 @@ body {
 
   .page-nav a::before {
     display: block;
-    font-size: 1.1rem;
+    font-size: 1.3rem;
     line-height: 1;
-    margin-bottom: 0.2em;
+    margin-bottom: 0.25em;
   }
 
   .page-nav a[href="index.html"]::before,
-  .page-nav a[href="/"]::before           { content: "\21C4"; }
+  .page-nav a[href="/"]::before              { content: "\21C4"; }
   .page-nav a[href="calendars.html"]::before { content: "\25A6"; }
   .page-nav a[href="methodology.html"]::before { content: "\25C6"; }
-  .page-nav a[href="eclipses.html"]::before { content: "\25D0"; }
+  .page-nav a[href="eclipses.html"]::before  { content: "\25D0"; }
 
-  /* Hide eclipses link on mobile */
+  /* Hide eclipses on mobile */
   .page-nav a[href="eclipses.html"] {
     display: none !important;
   }
 
-  .page-nav a:hover        { color: #888 !important; background: transparent !important; }
+  /* Author link */
+  .page-nav a.nav-author-link::before { content: "\270E"; }
+
+  .page-nav a:hover        { color: #aaa !important; background: transparent !important; }
   .page-nav a.active        { color: #fff !important; background: transparent !important; border-top-color: #fff !important; }
   .page-nav a.active::before { color: #fff; }
 
@@ -5337,18 +5340,18 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0.2em;
-    padding: 0.5em 0.1em 0.45em !important;
-    min-height: 56px !important;
+    gap: 0.25em;
+    padding: 0.6em 0.1em 0.5em !important;
+    min-height: 64px !important;
     font-family: var(--brut-mono) !important;
-    font-size: 0.42rem !important;
+    font-size: 0.5rem !important;
     font-weight: 700 !important;
     text-transform: uppercase;
-    letter-spacing: 0.12em !important;
+    letter-spacing: 0.1em !important;
     color: #555 !important;
     background: transparent !important;
     border: none !important;
-    border-top: 2px solid transparent !important;
+    border-top: 3px solid transparent !important;
     border-radius: 0 !important;
     cursor: pointer;
     line-height: 1;
@@ -5448,7 +5451,7 @@ body {
   }
 
   /* ---- Body clearance for bottom bar ---- */
-  body { padding-bottom: 56px; }
+  body { padding-bottom: 64px; }
 
   /* Hide install banner on mobile */
   .install-banner {
@@ -5458,7 +5461,7 @@ body {
 
 /* Standalone + mobile: safe-area */
 @media (display-mode: standalone) and (max-width: 600px) {
-  body { padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px)); }
+  body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)); }
   .page-nav { padding-bottom: env(safe-area-inset-bottom, 0px); }
 }
 

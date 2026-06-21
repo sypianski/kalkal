@@ -1895,6 +1895,11 @@
   setupAutocomplete(fromCalInput);
   setupAutocomplete(toCalInput);
 
+  [fromCalInput, toCalInput].forEach(input => {
+    input.addEventListener('contextmenu', e => e.preventDefault());
+    input.addEventListener('selectstart', e => e.preventDefault());
+  });
+
   setLang(currentLang);
   renderHistory();
 

@@ -1273,6 +1273,8 @@ html[dir="rtl"] .ai-input {
   border-radius: 0;
   padding: 0.4em 0;
   transition: border-color 0.2s ease;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .input-cal:focus {
@@ -2210,6 +2212,8 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
   border-block-end: 1px solid var(--ink-300, #bbb);
   padding: 0.3em 0;
   outline: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .to-calendar-input:focus {

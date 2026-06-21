@@ -6030,30 +6030,40 @@ body {
   text-decoration: none;
   border: 2px solid var(--ink-900);
   border-radius: var(--radius-sm);
-  transition: background 0.15s ease, color 0.15s ease;
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.12s ease, transform 0.12s ease;
 }
 
 .about-link--kofi {
-  background: var(--ink-900);
-  color: var(--parchment-100);
+  background: #6f4e37;
+  color: #fff;
+  border-color: #4a3324;
+  box-shadow: 4px 4px 0 #4a3324;
 }
 
 .about-link--kofi:hover {
-  background: var(--ink-700);
+  background: #5a3f2c;
+  box-shadow: 2px 2px 0 #4a3324;
+  transform: translate(2px, 2px);
 }
 
 .about-link--secondary {
   background: transparent;
-  color: var(--ink-700);
+  color: var(--ink-900);
   font-weight: 600;
-  border-color: var(--ink-300);
+  border-color: var(--ink-900);
 }
 
 .about-link--secondary:hover {
-  background: var(--parchment-200);
-  color: var(--ink-900);
+  background: var(--ink-900);
+  color: var(--parchment-100);
 }
 
 .about-bio + .about-bio {
   margin-top: calc(-1 * var(--space-sm));
+}
+
+.about-bio a {
+  color: var(--ink-900);
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }

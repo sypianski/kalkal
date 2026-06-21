@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Charis+SIL:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Sans:wght@400;500;600&family=Noto+Sans+Mono:wght@400;500&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=22">
+  <link rel="stylesheet" href="css/style.css?v=23">
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#f0f0ec">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,7 +15,7 @@
   <link rel="apple-touch-icon" href="/icons/icon-192.png">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 </head>
-<body>
+<body data-page="about">
 
   <div class="page-grain"></div>
 
@@ -24,7 +24,7 @@
       <div class="brand">
         <div class="brand-text">
           <h1 class="site-title">kalkal</h1>
-          <p class="site-subtitle">Autor</p>
+          <p class="site-subtitle">Autor / Author</p>
         </div>
       </div>
       <nav class="lang-switcher" aria-label="Language" style="visibility:hidden"></nav>
@@ -42,20 +42,59 @@
   </header>
 
   <main class="about-page">
-    <div class="about-card">
-      <h2 class="about-name">dr Jakub Sypiański</h2>
-      <p class="about-bio">Historyk i arabista.</p>
-      <p class="about-bio">Kalkal jest bezpłatny — jeśli ci się przydaje, możesz postawić mi kawę.</p>
-      <div class="about-links">
-        <a href="https://sypian.ski" class="about-link about-link--primary" target="_blank" rel="noopener">
-          sypian.ski
-        </a>
-        <a href="https://ko-fi.com/sypianski" class="about-link about-link--kofi" target="_blank" rel="noopener">
-          Postaw mi kawę
-        </a>
+    <article class="colophon">
+      <div class="colophon-band">
+        <span class="colophon-band-code">// KARTO</span>
+        <span class="colophon-band-id" id="colophon-stamp">AH — · HE —</span>
       </div>
-    </div>
+
+      <div class="colophon-body">
+        <h1 class="colophon-name">dr Jakub <span>Sypiański</span></h1>
+
+        <dl class="colophon-meta">
+          <div class="colophon-row">
+            <dt>dziedzina</dt>
+            <dd>historia · arabistyka</dd>
+          </div>
+          <div class="colophon-row">
+            <dt>projekt</dt>
+            <dd>kalkal — konwerter dat</dd>
+          </div>
+          <div class="colophon-row">
+            <dt>licencja</dt>
+            <dd>wolna, otwarta</dd>
+          </div>
+        </dl>
+
+        <p class="colophon-note">Narzędzie jest bezpłatne. Jeśli ci się przydaje, możesz postawić mi kawę.</p>
+
+        <div class="about-links">
+          <a href="https://sypian.ski" class="about-link about-link--primary" target="_blank" rel="noopener">
+            <span class="about-link-arrow" aria-hidden="true">&#8594;</span>
+            sypian.ski
+          </a>
+          <a href="https://ko-fi.com/sypianski" class="about-link about-link--kofi" target="_blank" rel="noopener">
+            Postaw mi kawę
+          </a>
+        </div>
+      </div>
+    </article>
   </main>
+
+  <script src="js/hijri.js"></script>
+  <script>
+    (function () {
+      var el = document.getElementById('colophon-stamp');
+      if (!el || typeof Cal === 'undefined') return;
+      try {
+        var now = new Date();
+        var jd = Cal.gregorianToJD(now.getFullYear(), now.getMonth() + 1, now.getDate());
+        var ah = Cal.jdToHijri(jd).year;
+        var he = Cal.jdToHuman(jd).year;
+        el.textContent = 'AH ' + ah + ' · HE ' + he;
+      } catch (e) { /* leave placeholder */ }
+    })();
+  </script>
 
 </body>
 </html>

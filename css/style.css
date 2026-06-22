@@ -489,10 +489,10 @@ html[dir="rtl"] .site-title {
   font-size: 0.88rem;
   color: var(--ink-700);
   text-decoration: none;
-  display: block;
+  display: flex;
+  align-items: baseline;
+  gap: 0.3em;
   padding: 0.25em 0;
-  padding-inline-start: 1.8em;
-  text-indent: -1.8em;
   transition: color 0.15s;
 }
 
@@ -501,7 +501,8 @@ html[dir="rtl"] .site-title {
   font-family: var(--font-mono);
   font-size: 0.75rem;
   color: var(--ink-400);
-  margin-inline-end: 0.3em;
+  flex-shrink: 0;
+  min-width: 2.4em;
 }
 
 .cal-toc-link:hover {
@@ -530,7 +531,7 @@ html[dir="rtl"] .site-title {
 
 .cal-group-heading {
   font-family: var(--font-display);
-  font-size: 0.78rem;
+  font-size: 1.5rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -4374,7 +4375,10 @@ html[dir="rtl"] body .ecl-table tr.notable td:first-child {
   letter-spacing: 0.06em;
   color: #333;
   font-weight: 700;
-  display: block;
+  display: flex;
+  align-items: baseline;
+  gap: 0.3em;
+  text-indent: 0;
   padding: 0.2em 0.4em;
   margin: 0 -0.4em;
 }
@@ -4382,6 +4386,8 @@ html[dir="rtl"] body .ecl-table tr.notable td:first-child {
 .cal-toc-link::before {
   color: #999;
   font-weight: 700;
+  flex-shrink: 0;
+  min-width: 2.4em;
 }
 
 .cal-toc-link:hover {
@@ -6296,8 +6302,16 @@ body {
   }
   .action-row .astro-card-toggle,
   .action-row .history-title {
-    font-size: 0.85rem !important;
-    letter-spacing: 0.12em !important;
+    font-family: var(--brut-mono) !important;
+    font-size: 0.95rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.14em !important;
+    text-transform: uppercase !important;
+    color: #000 !important;
+    line-height: 1 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: 0 !important;
   }
 }
 

@@ -1,30 +1,37 @@
-const CACHE_VERSION = 'kalkal-v14';
+const CACHE_VERSION = 'kalkal-v15';
+// Relative to the SW scope so it works under a subdirectory mount
+// (e.g. /kalkal/). Absolute '/...' paths pointed at the origin root and
+// 404'd here, which aborted addAll and left the old SW serving stale builds.
 const CORE_ASSETS = [
-  '/',
-  '/index.html',
-  '/calendars.html',
-  '/methodology.html',
-  '/eclipses.html',
-  '/dynasties.html',
-  '/css/style.css',
-  '/js/hijri.js',
-  '/js/app.js',
-  '/js/i18n.js',
-  '/js/pages.js',
-  '/js/astronomy.js',
-  '/js/eclipses.js',
-  '/js/ai.js',
-  '/icons/icon-192.png',
-  '/icons/icon-512.png',
-  '/favicon.svg',
-  '/manifest.json'
+  './',
+  './index.html',
+  './calendars.html',
+  './methodology.html',
+  './eclipses.html',
+  './dynasties.html',
+  './about.html',
+  './css/style.css',
+  './js/hijri.js',
+  './js/app.js',
+  './js/i18n.js',
+  './js/pages.js',
+  './js/astronomy.js',
+  './js/eclipses.js',
+  './js/ai.js',
+  './icons/icon-192.png',
+  './icons/icon-512.png',
+  './favicon.svg',
+  './manifest.json'
 ];
 
-// Install: cache core assets
+// Install: cache core assets. Tolerant — a single missing asset must not
+// abort the whole install (which would keep the previous SW alive).
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_VERSION)
-      .then(cache => cache.addAll(CORE_ASSETS))
+      .then(cache => Promise.all(
+        CORE_ASSETS.map(a => cache.add(a).catch(() => null))
+      ))
       .then(() => self.skipWaiting())
   );
 });
@@ -85,22 +92,21 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Core assets: cache-first, fallback to network
+  // Core app code (HTML / JS / CSS): network-first so deploys show up
+  // immediately; cache is only an offline fallback. Cache-first here is what
+  // froze users on stale builds — never reintroduce it for these assets.
   event.respondWith(
-    caches.match(event.request).then(cached => {
-      if (cached) return cached;
-      return fetch(event.request).then(response => {
-        if (response.ok && url.origin === self.location.origin) {
-          const clone = response.clone();
-          caches.open(CACHE_VERSION).then(cache => cache.put(event.request, clone));
-        }
-        return response;
-      });
-    }).catch(() => {
-      // Offline fallback: return cached index for navigation requests
-      if (event.request.mode === 'navigate') {
-        return caches.match('/index.html');
+    fetch(event.request).then(response => {
+      if (response.ok && url.origin === self.location.origin) {
+        const clone = response.clone();
+        caches.open(CACHE_VERSION).then(cache => cache.put(event.request, clone));
       }
-    })
+      return response;
+    }).catch(() =>
+      caches.match(event.request).then(cached => {
+        if (cached) return cached;
+        if (event.request.mode === 'navigate') return caches.match('/index.html');
+      })
+    )
   );
 });

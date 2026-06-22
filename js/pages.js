@@ -155,7 +155,20 @@ const PageI18N = {
         ['Birashk, Ahmad. ', 'A Comparative Calendar of the Iranian, Muslim Lunar, and Christian Eras for Three Thousand Years', '. Mazda Publishers, 1993.']
       ]
     },
-    methLinks: { title: 'Coverage and Similar Tools' }
+    methLinks: { title: 'Coverage and Similar Tools' },
+    about: {
+      title: 'kalkal — Author',
+      bandCode: '// CARD',
+      namePrefix: 'Dr',
+      fieldLabel: 'field',
+      fieldValue: 'history · Arabic studies',
+      projectLabel: 'project',
+      projectValue: 'kalkal — date converter',
+      licenseLabel: 'source',
+      licenseValue: 'source code public',
+      note: 'The tool is free. If you find it useful, you can buy me a coffee.',
+      kofi: 'Buy me a coffee'
+    }
   },
 
   pl: {
@@ -293,7 +306,20 @@ const PageI18N = {
         ['Birashk, Ahmad. ', 'A Comparative Calendar of the Iranian, Muslim Lunar, and Christian Eras for Three Thousand Years', '. Mazda Publishers, 1993.']
       ]
     },
-    methLinks: { title: 'Pokrycie i podobne narz\u0119dzia' }
+    methLinks: { title: 'Pokrycie i podobne narz\u0119dzia' },
+    about: {
+      title: 'kalkal \u2014 Autor',
+      bandCode: '// KARTO',
+      namePrefix: 'dr',
+      fieldLabel: 'dziedzina',
+      fieldValue: 'historia \u00b7 arabistyka',
+      projectLabel: 'projekt',
+      projectValue: 'kalkal \u2014 konwerter dat',
+      licenseLabel: 'kod \u017ar\u00f3d\u0142owy',
+      licenseValue: 'publicznie dost\u0119pny',
+      note: 'Narz\u0119dzie jest bezp\u0142atne. Je\u015bli ci si\u0119 przydaje, mo\u017cesz postawi\u0107 mi kaw\u0119.',
+      kofi: 'Postaw mi kaw\u0119'
+    }
   },
 
   ar: {
@@ -345,7 +371,20 @@ const PageI18N = {
       ['de Blois, F. "Ta\u02bfr\u012bkh" in ', 'Encyclopaedia of Islam', '.'],
       ['Birashk, Ahmad. ', 'A Comparative Calendar...', ' Mazda, 1993.']
     ] },
-    methLinks: { title: '\u0627\u0644\u062a\u063a\u0637\u064a\u0629 \u0648\u0623\u062f\u0648\u0627\u062a \u0645\u0634\u0627\u0628\u0647\u0629' }
+    methLinks: { title: '\u0627\u0644\u062a\u063a\u0637\u064a\u0629 \u0648\u0623\u062f\u0648\u0627\u062a \u0645\u0634\u0627\u0628\u0647\u0629' },
+    about: {
+      title: 'kalkal \u2014 \u0627\u0644\u0645\u0624\u0644\u0641',
+      bandCode: '// \u0628\u0637\u0627\u0642\u0629',
+      namePrefix: '\u062f.',
+      fieldLabel: '\u0627\u0644\u062a\u062e\u0635\u0635',
+      fieldValue: '\u0627\u0644\u062a\u0627\u0631\u064a\u062e \u00b7 \u0627\u0644\u062f\u0631\u0627\u0633\u0627\u062a \u0627\u0644\u0639\u0631\u0628\u064a\u0629',
+      projectLabel: '\u0627\u0644\u0645\u0634\u0631\u0648\u0639',
+      projectValue: 'kalkal \u2014 \u0645\u062d\u0648\u0651\u0644 \u062a\u0648\u0627\u0631\u064a\u062e',
+      licenseLabel: '\u0627\u0644\u0634\u0641\u0631\u0629 \u0627\u0644\u0645\u0635\u062f\u0631\u064a\u0629',
+      licenseValue: '\u0645\u062a\u0627\u062d\u0629 \u0644\u0644\u0639\u0627\u0645\u0629',
+      note: '\u0627\u0644\u0623\u062f\u0627\u0629 \u0645\u062c\u0627\u0646\u064a\u0629. \u0625\u0630\u0627 \u0623\u0641\u0627\u062f\u062a\u0643\u060c \u064a\u0645\u0643\u0646\u0643 \u062f\u0639\u0648\u062a\u064a \u0644\u0641\u0646\u062c\u0627\u0646 \u0642\u0647\u0648\u0629.',
+      kofi: '\u0627\u062f\u0639\u0645\u0646\u064a \u0628\u0641\u0646\u062c\u0627\u0646 \u0642\u0647\u0648\u0629'
+    }
   },
 
   eo: {
@@ -397,7 +436,20 @@ const PageI18N = {
       ['de Blois. "Ta\u02bfr\u012bkh" en ', 'Encyclopaedia of Islam', '.'],
       ['Birashk, Ahmad. ', 'A Comparative Calendar...', ' Mazda, 1993.']
     ] },
-    methLinks: { title: 'Kovrado kaj similaj iloj' }
+    methLinks: { title: 'Kovrado kaj similaj iloj' },
+    about: {
+      title: 'kalkal — Aŭtoro',
+      bandCode: '// KARTO',
+      namePrefix: 'd-ro',
+      fieldLabel: 'fako',
+      fieldValue: 'historio · arabistiko',
+      projectLabel: 'projekto',
+      projectValue: 'kalkal — datokonvertilo',
+      licenseLabel: 'fontkodo',
+      licenseValue: 'publike disponebla',
+      note: 'La ilo estas senpaga. Se ĝi utilas al vi, vi povas regali min per kafo.',
+      kofi: 'Regalu min per kafo'
+    }
   }
 };
 
@@ -486,6 +538,15 @@ const SEASON_LABELS = {
         subtitleEl.textContent = t.dynPageSubtitle;
         document.title = 'kalkal \u2014 ' + t.dynPageTitle;
       }
+    }
+
+    if (document.body.dataset.page === 'about' && t.about) {
+      var a = t.about;
+      document.title = a.title;
+      document.querySelectorAll('[data-about]').forEach(function(el) {
+        var key = el.dataset.about;
+        if (a[key]) el.textContent = a[key];
+      });
     }
 
     const CAL_GROUPS = [

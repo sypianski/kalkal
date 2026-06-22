@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Charis+SIL:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Sans:wght@400;500;600&family=Noto+Sans+Mono:wght@400;500&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=23">
+  <link rel="stylesheet" href="css/style.css?v=25">
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#f0f0ec">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -27,13 +27,18 @@
           <p class="site-subtitle">Autor / Author</p>
         </div>
       </div>
-      <nav class="lang-switcher" aria-label="Language" style="visibility:hidden"></nav>
+      <nav class="lang-switcher" id="lang-switcher" aria-label="Language">
+        <button class="lang-btn" data-lang="en">EN</button>
+        <button class="lang-btn" data-lang="pl">PL</button>
+        <button class="lang-btn" data-lang="ar">AR</button>
+        <button class="lang-btn" data-lang="eo">EO</button>
+      </nav>
     </div>
     <nav class="page-nav" aria-label="Pages">
-      <a href="index.html">Converter</a>
-      <a href="calendars.html">Calendars</a>
-      <a href="methodology.html">Methodology</a>
-      <a href="eclipses.html">Eclipses</a>
+      <a href="index.html" data-nav="converter">Converter</a>
+      <a href="calendars.html" data-nav="calendars">Calendars</a>
+      <a href="methodology.html" data-nav="methodology">Methodology</a>
+      <a href="eclipses.html" data-nav="eclipses">Eclipses</a>
       <a href="about.html" class="nav-author-link active">JS</a>
       <button class="nav-settings-btn" id="nav-settings-btn" aria-label="Settings">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -44,36 +49,36 @@
   <main class="about-page">
     <article class="colophon">
       <div class="colophon-band">
-        <span class="colophon-band-code">// KARTO</span>
+        <span class="colophon-band-code" data-about="bandCode">// KARTO</span>
         <span class="colophon-band-id" id="colophon-stamp">AH — · HE —</span>
       </div>
 
       <div class="colophon-body">
-        <h1 class="colophon-name">dr Jakub <span>Sypiański</span></h1>
+        <h1 class="colophon-name"><span data-about="namePrefix">dr</span> Jakub <span>Sypiański</span></h1>
 
         <dl class="colophon-meta">
           <div class="colophon-row">
-            <dt>dziedzina</dt>
-            <dd>historia · arabistyka</dd>
+            <dt data-about="fieldLabel">dziedzina</dt>
+            <dd data-about="fieldValue">historia · arabistyka</dd>
           </div>
           <div class="colophon-row">
-            <dt>projekt</dt>
-            <dd>kalkal — konwerter dat</dd>
+            <dt data-about="projectLabel">projekt</dt>
+            <dd data-about="projectValue">kalkal — konwerter dat</dd>
           </div>
           <div class="colophon-row">
-            <dt>licencja</dt>
-            <dd>wolna, otwarta</dd>
+            <dt data-about="licenseLabel">licencja</dt>
+            <dd data-about="licenseValue">kod źródłowy publiczny</dd>
           </div>
         </dl>
 
-        <p class="colophon-note">Narzędzie jest bezpłatne. Jeśli ci się przydaje, możesz postawić mi kawę.</p>
+        <p class="colophon-note" data-about="note">Narzędzie jest bezpłatne. Jeśli ci się przydaje, możesz postawić mi kawę.</p>
 
         <div class="about-links">
           <a href="https://sypian.ski" class="about-link about-link--primary" target="_blank" rel="noopener">
             <span class="about-link-arrow" aria-hidden="true">&#8594;</span>
             sypian.ski
           </a>
-          <a href="https://ko-fi.com/sypianski" class="about-link about-link--kofi" target="_blank" rel="noopener">
+          <a href="https://ko-fi.com/sypianski" class="about-link about-link--kofi" target="_blank" rel="noopener" data-about="kofi">
             Postaw mi kawę
           </a>
         </div>
@@ -82,6 +87,8 @@
   </main>
 
   <script src="js/hijri.js"></script>
+  <script src="js/i18n.js?v=13"></script>
+  <script src="js/pages.js?v=14"></script>
   <script>
     (function () {
       var el = document.getElementById('colophon-stamp');

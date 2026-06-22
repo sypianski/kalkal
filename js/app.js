@@ -489,29 +489,16 @@
     }
   }
 
-  // Binds tap/click selection to a dropdown item while leaving native
-  // touch-scrolling intact: on touch we only fire onSelect for a stationary
-  // tap (touchend without movement), so dragging scrolls the list instead
-  // of selecting. Desktop keeps mousedown (preventDefault holds input focus).
+  // Binds selection to a dropdown item. Uses the native `click` event, which
+  // the browser fires only for a real tap — a scroll-drag never synthesizes a
+  // click — so vertical scrolling of the list works untouched. (Desktop also
+  // gets click.) The dropdown stays open during scroll because hiding is
+  // driven by an outside-pointerdown handler, not input blur.
   function bindItemActivate(item, onSelect) {
-    item.addEventListener('mousedown', e => {
+    item.addEventListener('click', e => {
       e.preventDefault();
       onSelect();
     });
-    let sx = 0, sy = 0, moved = false;
-    item.addEventListener('touchstart', e => {
-      const t = e.touches[0];
-      sx = t.clientX; sy = t.clientY; moved = false;
-    }, { passive: true });
-    item.addEventListener('touchmove', e => {
-      const t = e.touches[0];
-      if (Math.abs(t.clientX - sx) > 8 || Math.abs(t.clientY - sy) > 8) moved = true;
-    }, { passive: true });
-    item.addEventListener('touchend', e => {
-      if (moved) return;
-      e.preventDefault();
-      onSelect();
-    }, { passive: false });
   }
 
   // ---- Month dropdown ----
@@ -639,7 +626,7 @@
         setActive(Math.max(activeIndex - 1, 0));
       } else if (e.key === 'Enter' && activeIndex >= 0) {
         e.preventDefault();
-        items[activeIndex].dispatchEvent(new Event('mousedown'));
+        items[activeIndex].click();
       } else if (e.key === 'Escape') {
         hide();
       }
@@ -825,7 +812,7 @@
         setActive(Math.max(activeIndex - 1, 0));
       } else if (e.key === 'Enter' && activeIndex >= 0) {
         e.preventDefault();
-        items[activeIndex].dispatchEvent(new Event('mousedown'));
+        items[activeIndex].click();
       } else if (e.key === 'Escape') {
         hide();
       }

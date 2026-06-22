@@ -489,6 +489,31 @@
     }
   }
 
+  // Binds tap/click selection to a dropdown item while leaving native
+  // touch-scrolling intact: on touch we only fire onSelect for a stationary
+  // tap (touchend without movement), so dragging scrolls the list instead
+  // of selecting. Desktop keeps mousedown (preventDefault holds input focus).
+  function bindItemActivate(item, onSelect) {
+    item.addEventListener('mousedown', e => {
+      e.preventDefault();
+      onSelect();
+    });
+    let sx = 0, sy = 0, moved = false;
+    item.addEventListener('touchstart', e => {
+      const t = e.touches[0];
+      sx = t.clientX; sy = t.clientY; moved = false;
+    }, { passive: true });
+    item.addEventListener('touchmove', e => {
+      const t = e.touches[0];
+      if (Math.abs(t.clientX - sx) > 8 || Math.abs(t.clientY - sy) > 8) moved = true;
+    }, { passive: true });
+    item.addEventListener('touchend', e => {
+      if (moved) return;
+      e.preventDefault();
+      onSelect();
+    }, { passive: false });
+  }
+
   // ---- Month dropdown ----
 
   var monthData = [];
@@ -534,6 +559,9 @@
   function setupMonthDropdown(input) {
     var dropdown = null;
     var activeIndex = -1;
+    var outsideHandler = null;
+
+    function reposition() { if (dropdown) placeFixedDropdown(dropdown, input); }
 
     function show() {
       hide();
@@ -542,39 +570,44 @@
 
       // Clear option
       var clearItem = el('div', { class: 'cal-item', text: '\u2014' });
-      function clearMonth(e) {
-        e.preventDefault();
+      bindItemActivate(clearItem, function() {
         input.value = '';
         input.dataset.monthValue = '';
         hide();
         input.classList.remove('has-error');
         if (resultPanel.classList.contains('has-result')) convert();
-      }
-      clearItem.addEventListener('mousedown', clearMonth);
-      clearItem.addEventListener('touchstart', clearMonth, { passive: false });
+      });
       dropdown.appendChild(clearItem);
 
       monthData.forEach(function(m) {
         var item = el('div', { class: 'cal-item', text: m.name });
-        function selectMonth(e) {
-          e.preventDefault();
+        bindItemActivate(item, function() {
           input.value = m.name;
           input.dataset.monthValue = String(m.num);
           hide();
           input.classList.remove('has-error');
           if (resultPanel.classList.contains('has-result')) convert();
-        }
-        item.addEventListener('mousedown', selectMonth);
-        item.addEventListener('touchstart', selectMonth, { passive: false });
+        });
         dropdown.appendChild(item);
       });
       document.body.appendChild(dropdown);
       placeFixedDropdown(dropdown, input);
       activeIndex = -1;
+
+      outsideHandler = function(ev) {
+        if (dropdown && !dropdown.contains(ev.target) && ev.target !== input) hide();
+      };
+      document.addEventListener('pointerdown', outsideHandler, true);
+      window.addEventListener('resize', reposition);
     }
 
     function hide() {
       if (dropdown) { dropdown.remove(); dropdown = null; activeIndex = -1; }
+      if (outsideHandler) {
+        document.removeEventListener('pointerdown', outsideHandler, true);
+        window.removeEventListener('resize', reposition);
+        outsideHandler = null;
+      }
     }
 
     function getItems() {
@@ -594,7 +627,6 @@
 
     input.addEventListener('focus', show);
     input.addEventListener('click', show);
-    input.addEventListener('blur', function() { setTimeout(hide, 300); });
 
     input.addEventListener('keydown', function(e) {
       if (!dropdown) return;
@@ -665,6 +697,7 @@
   function setupAutocomplete(input) {
     let dropdown = null;
     let activeIndex = -1;
+    let outsideHandler = null;
 
     if ('ontouchstart' in window) {
       input.setAttribute('readonly', 'readonly');
@@ -675,7 +708,7 @@
       { group: 'universal', ids: ['human'] },
       { group: 'christian', ids: ['gregorian', 'julian', 'byzantine', 'spanish'] },
       { group: 'islamic', ids: ['hijri', 'solarHijri', 'rumi'] },
-      { group: 'iranian', ids: ['yazdgerdi', 'ilkhani'] },
+      { group: 'iranian', ids: ['yazdgerdi', 'ilkhani', 'armenian'] },
       { group: 'semitic', ids: ['hebrew', 'syriac', 'antiochene', 'seleucid', 'babylonian'] },
       { group: 'african', ids: ['coptic', 'ethiopian', 'egyptian'] },
       { group: 'grecoRoman', ids: ['roman', 'olympiad', 'macedonian'] },
@@ -706,15 +739,12 @@
         const itemsWrap = el('div', { class: 'cal-group-items' });
         g.items.forEach(m => {
           const item = el('div', { class: 'cal-item', text: m.name });
-          function selectItem(e) {
-            e.preventDefault();
+          bindItemActivate(item, () => {
             input.value = m.name;
             hide();
             input.classList.remove('has-error');
             onCalendarChange(input);
-          }
-          item.addEventListener('mousedown', selectItem);
-          item.addEventListener('touchstart', selectItem, { passive: false });
+          });
           itemsWrap.appendChild(item);
         });
         const group = el('div', { class: 'cal-group' },
@@ -726,6 +756,12 @@
       document.body.appendChild(dropdown);
       positionDropdown();
       activeIndex = -1;
+
+      outsideHandler = ev => {
+        if (dropdown && !dropdown.contains(ev.target) && ev.target !== input) hide();
+      };
+      document.addEventListener('pointerdown', outsideHandler, true);
+      window.addEventListener('resize', positionDropdown);
     }
 
     function positionDropdown() {
@@ -738,6 +774,11 @@
         dropdown.remove();
         dropdown = null;
         activeIndex = -1;
+      }
+      if (outsideHandler) {
+        document.removeEventListener('pointerdown', outsideHandler, true);
+        window.removeEventListener('resize', positionDropdown);
+        outsideHandler = null;
       }
     }
 
@@ -771,10 +812,6 @@
       input.classList.remove('has-error');
       clearError();
       onCalendarChange(input);
-    });
-
-    input.addEventListener('blur', () => {
-      setTimeout(hide, 300);
     });
 
     input.addEventListener('keydown', e => {
@@ -834,9 +871,9 @@
     const srcCal = fromCalVal ? resolveCalendar(fromCalVal) : CALENDARS.gregorian;
     if (!srcCal) { showError(t.errUnknownCal + fromCalVal, fromCalInput); return; }
 
-    // Validate target calendar (default: human era)
+    // Validate target calendar (default: gregorian / Christian Era)
     const toCalVal = toCalInput.value.trim();
-    const tgtCal = toCalVal ? resolveCalendar(toCalVal) : CALENDARS.human;
+    const tgtCal = toCalVal ? resolveCalendar(toCalVal) : CALENDARS.gregorian;
     if (!tgtCal) { showError(t.errUnknownCal + toCalVal, toCalInput); return; }
 
     if (srcCal.id === tgtCal.id) { showError(t.errSameCal); return; }
@@ -1564,7 +1601,7 @@
     if (toCalField) {
       toCalField.hidden = false;
       // Pre-fill with current target calendar name
-      var tgtCal = resolveCalendar(toCalInput.value) || CALENDARS.human;
+      var tgtCal = resolveCalendar(toCalInput.value) || CALENDARS.gregorian;
       if (!toCalInput.value.trim()) {
         toCalInput.value = t.calendars[tgtCal.id] || '';
       }
@@ -1942,7 +1979,7 @@
     if (params.get('d')) $('#from-day').value = params.get('d');
     convert();
   } else {
-    // Default: Hijri source, Human Era target (implicit)
+    // Default: Hijri source, Christian Era / Gregorian target (implicit)
     var t = I18N[currentLang] || I18N.en;
     fromCalInput.value = t.calendars.hijri || 'Hijri';
     toCalInput.value = '';

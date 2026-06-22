@@ -2477,7 +2477,7 @@ html[dir="rtl"] .copy-btn {
   line-height: 1;
   color: var(--ink-900);
   letter-spacing: -0.04em;
-  text-align: right;
+  text-align: left;
   border-bottom: 3px solid var(--ink-900);
   padding-bottom: 0.15rem;
   word-break: break-all;
@@ -6236,5 +6236,180 @@ body {
 
   .colophon-row {
     grid-template-columns: 7em 1fr;
+  }
+}
+
+/* ---- Action row: astro + history side-by-side ---- */
+.action-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  gap: var(--space-md);
+  align-items: stretch;
+  width: 100%;
+}
+
+.action-row > .astro-card,
+.action-row > .history-panel {
+  margin: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.action-row > .astro-card > .astro-card-toggle,
+.action-row > .history-panel > .history-header {
+  flex: 1 1 auto;
+}
+
+.action-row > .astro-card[hidden] {
+  display: none;
+}
+
+/* Mobile: still 2-col so both together span full width */
+@media (max-width: 600px) {
+  .action-row {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px;
+    width: 100%;
+    max-width: 100%;
+    order: 99 !important;
+  }
+  .action-row > .history-panel { order: 1 !important; }
+  .action-row > .astro-card    { order: 2 !important; }
+  .action-row > .astro-card,
+  .action-row > .history-panel {
+    min-height: 64px !important;
+    box-sizing: border-box !important;
+  }
+  .action-row .astro-card-toggle,
+  .action-row .history-header {
+    padding: 0 0.9em !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    flex: 1 1 auto !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+  }
+  .action-row .history-title {
+    margin: 0 !important;
+  }
+  .action-row .astro-card-toggle,
+  .action-row .history-title {
+    font-size: 0.85rem !important;
+    letter-spacing: 0.12em !important;
+  }
+}
+
+/* ---- Result panel: full-width on mobile, tighter label spacing ---- */
+@media (max-width: 600px) {
+  .result-panel,
+  .result-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-inline: 0 !important;
+  }
+  .result-panel .result-body {
+    padding-top: 14px !important;
+  }
+  .result-panel .result-bridge {
+    padding-top: 4px !important;
+    padding-bottom: 6px !important;
+    margin-bottom: 8px !important;
+  }
+  .result-panel::before {
+    padding: 3px 7px 2px !important;
+  }
+}
+
+/* ---- Bigger mobile typography for legibility ---- */
+@media (max-width: 600px) {
+  .settings-panel {
+    padding: 1.1rem 1.1rem calc(1.1rem + env(safe-area-inset-bottom, 0px)) !important;
+  }
+  .settings-panel .settings-label {
+    font-size: 0.78rem !important;
+    letter-spacing: 0.1em !important;
+    margin-bottom: 0.7rem !important;
+    color: #aaa !important;
+  }
+  .settings-panel .settings-lang-btn,
+  .settings-panel .settings-variant-btn {
+    font-size: 0.92rem !important;
+    padding: 0.7em 1.1em !important;
+    min-height: 44px !important;
+  }
+  .settings-panel .settings-row--variants .settings-variant-btn {
+    font-size: 0.82rem !important;
+  }
+  .settings-panel .settings-close {
+    font-size: 1.2rem !important;
+    padding: 0.4em 0.7em !important;
+  }
+  .footer-note {
+    font-size: 0.72rem !important;
+    line-height: 1.6 !important;
+  }
+}
+
+/* ---- Methodology intro: better mobile formatting ---- */
+@media (max-width: 600px) {
+  .meth-intro {
+    font-family: var(--brut-mono) !important;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    font-style: normal !important;
+    line-height: 1.6 !important;
+    color: var(--brut-ink) !important;
+    background: var(--parchment-100) !important;
+    border-inline-start: 4px solid var(--brut-ink) !important;
+    padding: 14px 14px 14px 16px !important;
+    margin: 10px 0 18px 0 !important;
+    box-shadow: 4px 4px 0 var(--brut-ink) !important;
+    border-radius: 0 !important;
+    letter-spacing: 0 !important;
+  }
+}
+
+/* ---- Mobile: bigger copy, left-aligned bridge, no cal labels ---- */
+@media (max-width: 600px) {
+  .result-panel .result-bridge {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto auto auto !important;
+    gap: 6px 0 !important;
+  }
+  .result-panel .bridge-src-cal,
+  .result-panel .bridge-tgt-cal,
+  .result-panel .bridge-mid-top,
+  .result-panel .bridge-mid-bot,
+  .result-panel .bridge-arrow {
+    display: none !important;
+  }
+  .result-panel .bridge-src-year,
+  .result-panel .bridge-tgt-year {
+    text-align: start !important;
+    width: 100% !important;
+    grid-column: 1 !important;
+    word-break: normal !important;
+    overflow-wrap: anywhere !important;
+  }
+  .result-panel .bridge-src-detail,
+  .result-panel .bridge-tgt-detail {
+    text-align: start !important;
+    grid-column: 1 !important;
+  }
+  .result-panel .bridge-src-year {
+    font-size: clamp(1.7rem, 8.5vw, 2.6rem) !important;
+  }
+  .result-panel .bridge-tgt-year {
+    font-size: clamp(2.3rem, 12vw, 3.6rem) !important;
+    font-weight: 900 !important;
+  }
+  .result-panel .bridge-tgt-detail {
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+  }
+  .result-panel .bridge-src-detail {
+    font-size: 0.82rem !important;
   }
 }

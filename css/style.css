@@ -1275,6 +1275,8 @@ html[dir="rtl"] .ai-input {
   transition: border-color 0.2s ease;
   user-select: none;
   -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .input-cal:focus {
@@ -2214,6 +2216,8 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
   outline: none;
   user-select: none;
   -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .to-calendar-input:focus {

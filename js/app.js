@@ -458,6 +458,37 @@
     }
   }
 
+  // ---- Shared fixed-dropdown placement ----
+  // Anchors a body-appended dropdown to its input. Flips above the input
+  // when there's more room there, and caps height to the available space
+  // (minus the fixed bottom nav) so long lists scroll instead of clipping.
+  function placeFixedDropdown(dropdown, input) {
+    const rect = input.getBoundingClientRect();
+    const vh = window.innerHeight;
+    const navH = window.matchMedia('(max-width: 600px)').matches ? 72 : 0;
+    const gap = 8;
+    const spaceBelow = vh - rect.bottom - navH - gap;
+    const spaceAbove = rect.top - gap;
+    const openUp = spaceBelow < 220 && spaceAbove > spaceBelow;
+    const maxH = Math.max(140, Math.floor(openUp ? spaceAbove : spaceBelow));
+
+    dropdown.style.position = 'fixed';
+    dropdown.style.left = rect.left + 'px';
+    dropdown.style.width = rect.width + 'px';
+    dropdown.style.minWidth = rect.width + 'px';
+    dropdown.style.maxHeight = maxH + 'px';
+    dropdown.style.overflowY = 'auto';
+    dropdown.style.zIndex = '2147483647';
+    dropdown.style.isolation = 'isolate';
+    if (openUp) {
+      dropdown.style.top = 'auto';
+      dropdown.style.bottom = (vh - rect.top + gap) + 'px';
+    } else {
+      dropdown.style.bottom = 'auto';
+      dropdown.style.top = (rect.bottom + gap) + 'px';
+    }
+  }
+
   // ---- Month dropdown ----
 
   var monthData = [];
@@ -538,12 +569,7 @@
         dropdown.appendChild(item);
       });
       document.body.appendChild(dropdown);
-      const rect = input.getBoundingClientRect();
-      dropdown.style.position = 'fixed';
-      dropdown.style.top = rect.bottom + 'px';
-      dropdown.style.left = rect.left + 'px';
-      dropdown.style.width = rect.width + 'px';
-      dropdown.style.minWidth = rect.width + 'px';
+      placeFixedDropdown(dropdown, input);
       activeIndex = -1;
     }
 
@@ -640,6 +666,11 @@
     let dropdown = null;
     let activeIndex = -1;
 
+    if ('ontouchstart' in window) {
+      input.setAttribute('readonly', 'readonly');
+    }
+    input.addEventListener('contextmenu', e => e.preventDefault());
+
     const CALENDAR_GROUPS = [
       { group: 'universal', ids: ['human'] },
       { group: 'christian', ids: ['gregorian', 'julian', 'byzantine', 'spanish'] },
@@ -699,12 +730,7 @@
 
     function positionDropdown() {
       if (!dropdown) return;
-      const rect = input.getBoundingClientRect();
-      dropdown.style.position = 'fixed';
-      dropdown.style.top = rect.bottom + 'px';
-      dropdown.style.left = rect.left + 'px';
-      dropdown.style.width = rect.width + 'px';
-      dropdown.style.minWidth = rect.width + 'px';
+      placeFixedDropdown(dropdown, input);
     }
 
     function hide() {

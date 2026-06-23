@@ -1,2 +1,9 @@
 .playwright-mcp/
 *.png
+
+# Flutter app
+beta/
+flutter_app/build/
+flutter_app/.dart_tool/
+flutter_app/.flutter-plugins
+flutter_app/.flutter-plugins-dependencies

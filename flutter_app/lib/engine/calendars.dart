@@ -10,6 +10,7 @@ typedef MonthLen = int Function(int year, int month);
 class CalendarDef {
   final String id;
   final String name;
+  final String group; // family: christian / islamic / iranian / semitic / african / grecoRoman / scientific / universal
   final ToJD toJD;
   final FromJD fromJD;
   final MonthLen monthLength;
@@ -17,9 +18,13 @@ class CalendarDef {
   final int defaultYear;
   final int defaultMonth;
   final int defaultDay;
+  // JD of calendar's year-1 month-1 day-1. Used to split "contemporaneous"
+  // (target JD ≥ epoch) from "proleptic" (target JD < epoch).
+  double get epochJD => toJD(1, 1, 1);
   const CalendarDef({
     required this.id,
     required this.name,
+    required this.group,
     required this.toJD,
     required this.fromJD,
     required this.monthLength,
@@ -29,6 +34,20 @@ class CalendarDef {
     this.defaultDay = 1,
   });
 }
+
+const Map<String, String> kGroupLabels = {
+  'universal': 'Universal',
+  'christian': 'Christian',
+  'islamic': 'Islamic',
+  'iranian': 'Iranian',
+  'semitic': 'Semitic',
+  'african': 'African',
+  'grecoRoman': 'Greco-Roman',
+  'scientific': 'Scientific',
+};
+const List<String> kGroupOrder = [
+  'universal','christian','islamic','iranian','semitic','african','grecoRoman','scientific'
+];
 
 // ---------- Month name tables ----------
 const List<String> _GREGORIAN_MONTHS = [
@@ -107,21 +126,21 @@ const List<String> _HEBREW_MONTHS = [
 
 final List<CalendarDef> kCalendars = [
   CalendarDef(
-    id: 'gregorian', name: 'Gregorian',
+    id: 'gregorian', group: 'christian', name: 'Gregorian',
     toJD: Cal.gregorianToJD, fromJD: Cal.jdToGregorian,
     monthLength: Cal.gregorianMonthLength,
     monthNames: _GREGORIAN_MONTHS,
     defaultYear: 2026, defaultMonth: 6, defaultDay: 23,
   ),
   CalendarDef(
-    id: 'julian', name: 'Julian',
+    id: 'julian', group: 'christian', name: 'Julian',
     toJD: Cal.julianToJD, fromJD: Cal.jdToJulian,
     monthLength: Cal.julianMonthLength,
     monthNames: _JULIAN_MONTHS,
     defaultYear: 2026, defaultMonth: 6, defaultDay: 10,
   ),
   CalendarDef(
-    id: 'hijri', name: 'Hijri (Tabular)',
+    id: 'hijri', group: 'islamic', name: 'Hijri (Tabular)',
     toJD: (y, m, d) => Cal.hijriToJD(y, m, d),
     fromJD: (j) => Cal.jdToHijri(j),
     monthLength: (y, m) => Cal.hijriMonthLength(y, m),
@@ -129,28 +148,28 @@ final List<CalendarDef> kCalendars = [
     defaultYear: 1447, defaultMonth: 12, defaultDay: 7,
   ),
   CalendarDef(
-    id: 'solar_hijri', name: 'Solar Hijri (Persian)',
+    id: 'solar_hijri', group: 'islamic', name: 'Solar Hijri (Persian)',
     toJD: Cal.solarHijriToJD, fromJD: Cal.jdToSolarHijri,
     monthLength: Cal.solarHijriMonthLength,
     monthNames: _SOLAR_HIJRI_MONTHS,
     defaultYear: 1405, defaultMonth: 4, defaultDay: 2,
   ),
   CalendarDef(
-    id: 'coptic', name: 'Coptic',
+    id: 'coptic', group: 'african', name: 'Coptic',
     toJD: Cal.copticToJD, fromJD: Cal.jdToCoptic,
     monthLength: Cal.copticMonthLength,
     monthNames: _COPTIC_MONTHS,
     defaultYear: 1742, defaultMonth: 10, defaultDay: 16,
   ),
   CalendarDef(
-    id: 'ethiopian', name: 'Ethiopian',
+    id: 'ethiopian', group: 'african', name: 'Ethiopian',
     toJD: Cal.ethiopianToJD, fromJD: Cal.jdToEthiopian,
     monthLength: Cal.ethiopianMonthLength,
     monthNames: _ETHIOPIAN_MONTHS,
     defaultYear: 2018, defaultMonth: 10, defaultDay: 16,
   ),
   CalendarDef(
-    id: 'yazdgerdi', name: 'Yazdgerdi (Shahenshahi)',
+    id: 'yazdgerdi', group: 'iranian', name: 'Yazdgerdi (Shahenshahi)',
     toJD: (y, m, d) => Cal.yazdgerdiToJD(y, m, d),
     fromJD: Cal.jdToYazdgerdi,
     monthLength: (y, m) => Cal.yazdgerdiMonthLength(y, m),
@@ -158,7 +177,7 @@ final List<CalendarDef> kCalendars = [
     defaultYear: 1395,
   ),
   CalendarDef(
-    id: 'qadimi', name: 'Qadimi (Parsi)',
+    id: 'qadimi', group: 'iranian', name: 'Qadimi (Parsi)',
     toJD: (y, m, d) => Cal.qadimiToJD(y, m, d),
     fromJD: Cal.jdToQadimi,
     monthLength: (y, m) => Cal.qadimiMonthLength(y, m),
@@ -166,14 +185,14 @@ final List<CalendarDef> kCalendars = [
     defaultYear: 1395,
   ),
   CalendarDef(
-    id: 'fasli', name: 'Fasli',
+    id: 'fasli', group: 'iranian', name: 'Fasli',
     toJD: Cal.fasliToJD, fromJD: Cal.jdToFasli,
     monthLength: Cal.fasliMonthLength,
     monthNames: _PERSIAN_ANCIENT_MONTHS,
     defaultYear: 1395,
   ),
   CalendarDef(
-    id: 'armenian', name: 'Armenian',
+    id: 'armenian', group: 'iranian', name: 'Armenian',
     toJD: (y, m, d) => Cal.armenianToJD(y, m, d),
     fromJD: Cal.jdToArmenian,
     monthLength: (y, m) => Cal.armenianMonthLength(y, m),
@@ -181,7 +200,7 @@ final List<CalendarDef> kCalendars = [
     defaultYear: 1475,
   ),
   CalendarDef(
-    id: 'egyptian', name: 'Egyptian (Nabonassar)',
+    id: 'egyptian', group: 'african', name: 'Egyptian (Nabonassar)',
     toJD: (y, m, d) => Cal.egyptianToJD(y, m, d),
     fromJD: Cal.jdToEgyptian,
     monthLength: (y, m) => Cal.egyptianMonthLength(y, m),
@@ -189,112 +208,112 @@ final List<CalendarDef> kCalendars = [
     defaultYear: 2773,
   ),
   CalendarDef(
-    id: 'byzantine', name: 'Byzantine (Anno Mundi)',
+    id: 'byzantine', group: 'christian', name: 'Byzantine (Anno Mundi)',
     toJD: Cal.byzantineToJD, fromJD: Cal.jdToByzantine,
     monthLength: Cal.byzantineMonthLength,
     monthNames: _BYZANTINE_MONTHS,
     defaultYear: 7534,
   ),
   CalendarDef(
-    id: 'alexandrian', name: 'Alexandrian',
+    id: 'alexandrian', group: 'christian', name: 'Alexandrian',
     toJD: Cal.alexandrianToJD, fromJD: Cal.jdToAlexandrian,
     monthLength: Cal.alexandrianMonthLength,
     monthNames: _ALEXANDRIAN_MONTHS,
     defaultYear: 7518,
   ),
   CalendarDef(
-    id: 'chron_pasch', name: 'Chronicon Paschale',
+    id: 'chron_pasch', group: 'christian', name: 'Chronicon Paschale',
     toJD: Cal.chronPaschToJD, fromJD: Cal.jdToChronPasch,
     monthLength: Cal.chronPaschMonthLength,
     monthNames: _ALEXANDRIAN_MONTHS,
     defaultYear: 7534,
   ),
   CalendarDef(
-    id: 'seleucid', name: 'Seleucid (Syrian)',
+    id: 'seleucid', group: 'semitic', name: 'Seleucid (Syrian)',
     toJD: Cal.seleucidToJD, fromJD: Cal.jdToSeleucid,
     monthLength: Cal.seleucidMonthLength,
     monthNames: _MACEDONIAN_MONTHS,
     defaultYear: 2337,
   ),
   CalendarDef(
-    id: 'seleucid_bab', name: 'Seleucid (Babylonian)',
+    id: 'seleucid_bab', group: 'semitic', name: 'Seleucid (Babylonian)',
     toJD: Cal.seleucidBabToJD, fromJD: Cal.jdToSeleucidBab,
     monthLength: Cal.seleucidBabMonthLength,
     monthNames: _SELEUCID_BAB_MONTHS,
     defaultYear: 2337,
   ),
   CalendarDef(
-    id: 'syriac', name: 'Syriac',
+    id: 'syriac', group: 'semitic', name: 'Syriac',
     toJD: Cal.syriacToJD, fromJD: Cal.jdToSyriac,
     monthLength: Cal.syriacMonthLength,
     monthNames: _SYRIAC_MONTHS,
     defaultYear: 2337,
   ),
   CalendarDef(
-    id: 'rumi', name: 'Rūmī (Ottoman)',
+    id: 'rumi', group: 'islamic', name: 'Rūmī (Ottoman)',
     toJD: Cal.rumiToJD, fromJD: Cal.jdToRumi,
     monthLength: Cal.rumiMonthLength,
     monthNames: _JULIAN_MONTHS,
     defaultYear: 1442,
   ),
   CalendarDef(
-    id: 'ilkhani', name: 'Ilkhanid (Khani)',
+    id: 'ilkhani', group: 'iranian', name: 'Ilkhanid (Khani)',
     toJD: Cal.ilkhaniToJD, fromJD: Cal.jdToIlkhani,
     monthLength: Cal.ilkhaniMonthLength,
     monthNames: _SOLAR_HIJRI_MONTHS,
     defaultYear: 725,
   ),
   CalendarDef(
-    id: 'auc', name: 'Ab Urbe Condita',
+    id: 'auc', group: 'grecoRoman', name: 'Ab Urbe Condita',
     toJD: Cal.aucToJD, fromJD: Cal.jdToAuc,
     monthLength: Cal.aucMonthLength,
     monthNames: _JULIAN_MONTHS,
     defaultYear: 2779,
   ),
   CalendarDef(
-    id: 'spanish', name: 'Spanish Era',
+    id: 'spanish', group: 'christian', name: 'Spanish Era',
     toJD: Cal.spanishToJD, fromJD: Cal.jdToSpanish,
     monthLength: Cal.spanishMonthLength,
     monthNames: _JULIAN_MONTHS,
     defaultYear: 2064,
   ),
   CalendarDef(
-    id: 'antiochene', name: 'Antiochene Era',
+    id: 'antiochene', group: 'semitic', name: 'Antiochene Era',
     toJD: Cal.antiocheneToJD, fromJD: Cal.jdToAntiochene,
     monthLength: Cal.antiocheneMonthLength,
     monthNames: _BYZANTINE_MONTHS,
     defaultYear: 2074,
   ),
   CalendarDef(
-    id: 'olympiad', name: 'Olympiad',
+    id: 'olympiad', group: 'grecoRoman', name: 'Olympiad',
     toJD: Cal.olympiadToJD, fromJD: Cal.jdToOlympiad,
     monthLength: Cal.olympiadMonthLength,
     monthNames: _JULIAN_MONTHS,
     defaultYear: 2802,
   ),
   CalendarDef(
-    id: 'macedonian', name: 'Macedonian',
+    id: 'macedonian', group: 'grecoRoman', name: 'Macedonian',
     toJD: Cal.macedonianToJD, fromJD: Cal.jdToMacedonian,
     monthLength: Cal.macedonianMonthLength,
     monthNames: _MACEDONIAN_MONTHS,
     defaultYear: 2337,
   ),
   CalendarDef(
-    id: 'hebrew', name: 'Hebrew (Jewish)',
+    id: 'hebrew', group: 'semitic', name: 'Hebrew (Jewish)',
     toJD: Cal.hebrewToJD, fromJD: Cal.jdToHebrew,
     monthLength: Cal.hebrewMonthLength,
     monthNames: _HEBREW_MONTHS,
     defaultYear: 5786,
   ),
   CalendarDef(
-    id: 'bp', name: 'Before Present (BP)',
+    id: 'bp', group: 'scientific', name: 'Before Present (BP)',
     toJD: Cal.bpToJD, fromJD: Cal.jdToBP,
     monthLength: Cal.bpMonthLength,
     monthNames: _GREGORIAN_MONTHS,
     defaultYear: -76,
   ),
   CalendarDef(
-    id: 'human', name: 'Human Era (HE)',
+    id: 'human', group: 'universal', name: 'Human Era (HE)',
     toJD: (y, m, d) => Cal.humanToJD(y, m, d),
     fromJD: (j) => Cal.jdToHuman(j),
     monthLength: (y, m) => Cal.humanMonthLength(y, m),

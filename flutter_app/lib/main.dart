@@ -356,6 +356,8 @@ class _ConverterScreenState extends State<ConverterScreen> {
   }
 
   // ---------- Right column ----------
+  bool _prolepticOpen = false;
+
   Widget _rightColumn() {
     final jd = _jd;
     return Column(
@@ -363,9 +365,13 @@ class _ConverterScreenState extends State<ConverterScreen> {
       children: [
         _historyBar(),
         const SizedBox(height: 18),
-        if (_converted && jd != null)
-          _resultPanel(jd)
-        else if (_converted && jd == null)
+        if (_converted && jd != null) ...[
+          _resultPanel(jd),
+          const SizedBox(height: 18),
+          _contextualCard(jd),
+          const SizedBox(height: 12),
+          _outOfEraCard(jd),
+        ] else if (_converted && jd == null)
           _errorCard()
         else
           _placeholderCard(),
@@ -453,9 +459,141 @@ class _ConverterScreenState extends State<ConverterScreen> {
             ],
           ),
           Container(height: 2, color: kInk, margin: const EdgeInsets.symmetric(vertical: 16)),
-          ...kCalendars.where((c) => c.id != _srcId).map((c) => _resultRow(c, jd)),
+          // Source date echoed big
+          Text('${_src.name.toUpperCase()}',
+            style: TextStyle(
+              color: kDim, fontSize: 10, letterSpacing: 1.5,
+              fontFamily: GoogleFonts.notoSansMono().fontFamily,
+            )),
+          const SizedBox(height: 4),
+          Text(_formatDate(_src, _year, _month, _day),
+            style: TextStyle(
+              color: kInk, fontSize: 28, fontWeight: FontWeight.w700, letterSpacing: -0.5,
+              fontFamily: GoogleFonts.notoSansMono().fontFamily,
+            )),
         ],
       ),
+    );
+  }
+
+  String _formatDate(CalendarDef c, int y, int m, int d) {
+    final mn = (m >= 1 && m <= c.monthNames.length) ? c.monthNames[m - 1] : 'M$m';
+    return '$d $mn $y';
+  }
+
+  // ---------- Contemporaneous calendars (in-era, grouped by family) ----------
+  Widget _contextualCard(double jd) {
+    final inEra = kCalendars.where((c) => c.id != _srcId && jd >= c.epochJD).toList();
+    if (inEra.isEmpty) return const SizedBox.shrink();
+    return Container(
+      decoration: const BoxDecoration(
+        color: kSurface,
+        border: Border.fromBorderSide(BorderSide(color: kInk, width: kBorderStrong)),
+      ),
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('CONTEMPORANEOUS CALENDARS',
+            style: TextStyle(
+              color: kInk, fontSize: 11, letterSpacing: 2, fontWeight: FontWeight.w700,
+              fontFamily: GoogleFonts.notoSansMono().fontFamily,
+            )),
+          const SizedBox(height: 16),
+          _groupedGrid(inEra, jd),
+        ],
+      ),
+    );
+  }
+
+  // ---------- Proleptic conversions (collapsed) ----------
+  Widget _outOfEraCard(double jd) {
+    final proleptic = kCalendars.where((c) => c.id != _srcId && jd < c.epochJD).toList();
+    if (proleptic.isEmpty) return const SizedBox.shrink();
+    return Container(
+      decoration: BoxDecoration(
+        color: kSurface,
+        border: Border.all(color: kInk, width: kBorderStrong),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          InkWell(
+            onTap: () => setState(() => _prolepticOpen = !_prolepticOpen),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+              child: Row(children: [
+                Text('PROLEPTIC CONVERSIONS',
+                  style: TextStyle(
+                    color: kInk, fontSize: 11, letterSpacing: 2, fontWeight: FontWeight.w700,
+                    fontFamily: GoogleFonts.notoSansMono().fontFamily,
+                  )),
+                const Spacer(),
+                Icon(_prolepticOpen ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down, size: 18),
+              ]),
+            ),
+          ),
+          if (_prolepticOpen)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+              child: _groupedGrid(proleptic, jd),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _groupedGrid(List<CalendarDef> cals, double jd) {
+    final byGroup = <String, List<CalendarDef>>{};
+    for (final c in cals) {
+      byGroup.putIfAbsent(c.group, () => []).add(c);
+    }
+    final ordered = kGroupOrder.where(byGroup.containsKey).toList();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (int i = 0; i < ordered.length; i++) ...[
+          if (i > 0) const SizedBox(height: 16),
+          Text((kGroupLabels[ordered[i]] ?? ordered[i]).toUpperCase(),
+            style: TextStyle(
+              color: kDim, fontSize: 9, letterSpacing: 2, fontWeight: FontWeight.w700,
+              fontFamily: GoogleFonts.notoSansMono().fontFamily,
+            )),
+          const SizedBox(height: 8),
+          LayoutBuilder(builder: (ctx, bc) {
+            final cols = bc.maxWidth < 500 ? 1 : bc.maxWidth < 800 ? 2 : 3;
+            final tileW = (bc.maxWidth - (cols - 1) * 16) / cols;
+            return Wrap(
+              spacing: 16, runSpacing: 12,
+              children: byGroup[ordered[i]]!.map((c) => SizedBox(
+                width: tileW,
+                child: _calTile(c, jd),
+              )).toList(),
+            );
+          }),
+        ],
+      ],
+    );
+  }
+
+  Widget _calTile(CalendarDef c, double jd) {
+    final ymd = c.fromJD(jd);
+    final mn = (ymd.month >= 1 && ymd.month <= c.monthNames.length) ? c.monthNames[ymd.month - 1] : 'M${ymd.month}';
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(c.name.toUpperCase(),
+          style: TextStyle(
+            color: kDim, fontSize: 9, letterSpacing: 1.5,
+            fontFamily: GoogleFonts.notoSansMono().fontFamily,
+          )),
+        const SizedBox(height: 2),
+        Text('${ymd.day} $mn ${ymd.year}',
+          style: TextStyle(
+            color: kInk, fontSize: 14, fontWeight: FontWeight.w500,
+            fontFamily: GoogleFonts.notoSansMono().fontFamily,
+          )),
+      ],
     );
   }
 

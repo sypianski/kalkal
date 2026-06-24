@@ -2285,6 +2285,13 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
   display: none;
 }
 
+/* Astro card — tile-toggle styled like history-header */
+#astro-card > .tile-toggle {
+  display: flex;
+  align-items: center;
+  font-size: 0.82rem;
+}
+
 /* Astro card (separate tile) */
 .astro-card {
   background: var(--parchment-100);
@@ -2506,7 +2513,7 @@ html[dir="rtl"] .copy-btn {
 }
 
 .bridge-tgt-detail {
-  text-align: right;
+  text-align: left;
   font-size: 0.78rem;
   font-weight: 700;
   color: var(--ink-700);
@@ -2883,7 +2890,7 @@ html[dir="rtl"] .range-arrow {
   display: none;
 }
 
-.history-panel.has-items .history-clear {
+.history-panel.has-items .history-header.active .history-clear {
   display: inline-block;
 }
 
@@ -6154,33 +6161,32 @@ body {
 
 .meth-toc {
   background: var(--parchment-100);
-  border: 3px solid var(--ink-900);
-  box-shadow: 6px 6px 0 var(--ink-900);
+  border: var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
   margin-block-end: var(--space-2xl);
+  padding: var(--space-lg) var(--space-xl);
+  overflow: hidden;
 }
 
 .meth-toc-title {
-  margin: 0;
-  background: var(--ink-900);
-  color: var(--parchment-100);
-  font-family: var(--brut-mono);
-  font-size: 0.66rem;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
   font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  padding: 0.7em 1.1em;
+  color: var(--ink-900);
+  margin: 0 0 var(--space-sm) 0;
 }
 
 .meth-toc-list {
   list-style: none;
   counter-reset: methtoc;
   margin: 0;
-  padding: 0.4em 0;
+  padding: 0;
 }
 
 .meth-toc-list li {
   counter-increment: methtoc;
-  border-block-end: 1px solid var(--ink-300);
+  border-block-end: var(--border-subtle);
 }
 
 .meth-toc-list li:last-child {
@@ -6191,33 +6197,32 @@ body {
   display: flex;
   align-items: baseline;
   gap: 0.8em;
-  padding: 0.7em 1.1em;
+  padding: 0.55em 0;
   font-family: var(--font-display);
   font-size: 0.92rem;
   font-weight: 600;
-  color: var(--ink-900);
+  color: var(--ink-700);
   text-decoration: none;
-  transition: background 0.12s ease, color 0.12s ease, padding-inline-start 0.12s ease;
+  transition: color 0.12s ease, padding-inline-start 0.12s ease;
 }
 
 .meth-toc-list a::before {
   content: counter(methtoc, decimal-leading-zero);
-  font-family: var(--brut-mono);
+  font-family: var(--font-mono);
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.1em;
-  color: var(--ink-500);
+  color: var(--ink-400);
   flex-shrink: 0;
 }
 
 .meth-toc-list a:hover {
-  background: var(--ink-900);
-  color: var(--parchment-100);
-  padding-inline-start: 1.5em;
+  color: var(--ink-900);
+  padding-inline-start: 0.4em;
 }
 
 .meth-toc-list a:hover::before {
-  color: var(--parchment-100);
+  color: var(--ink-700);
 }
 
 /* ============================================================================

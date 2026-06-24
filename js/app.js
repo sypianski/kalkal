@@ -1019,9 +1019,6 @@
     }
 
     var bridge = el('div', { class: 'result-bridge' });
-    bridge.appendChild(el('span', { class: 'bridge-label bridge-src-cal', text: srcCalName }));
-    bridge.appendChild(el('span', { class: 'bridge-mid-top' }));
-    bridge.appendChild(el('span', { class: 'bridge-label bridge-tgt-cal', text: tgtCalName }));
     bridge.appendChild(el('span', { class: 'bridge-src-year', text: String(y) }));
     bridge.appendChild(el('span', { class: 'bridge-arrow' }, '\u2192'));
     bridge.appendChild(el('span', { class: 'bridge-tgt-year', text: tgtYearStr }));
@@ -1067,10 +1064,6 @@
       var note = isPD ? (t.babylonianPDNote || 'Observational date from Parker & Dubberstein tables (626 BCE \u2013 45 CE).') : (t.babylonianArithNote || 'Arithmetic approximation (outside Parker & Dubberstein range). May differ \u00b11\u20132 days from historical observation.');
       elements.push(el('p', { class: 'result-note', text: note }));
     }
-    if (tgt.id === 'gregorian' && primaryJd < 2299160.5) {
-      elements.push(el('p', { class: 'result-note', text: t.julianDateNote }));
-    }
-
     // Build astro content for separate card
     var astroElements = [];
     var zi = Cal.getZodiacSign(primaryJd);
@@ -1217,12 +1210,16 @@
     const srcStartStr = srcRange.startStr;
     const srcEndStr = srcRange.endStr;
 
-    const isProlepticGregorian = tgt.id === 'gregorian' && jdEnd < 2299160.5;
     const astroResult = buildRangeAstroPanel(jdStart, jdEnd, tgt, tgtNames, t);
     const breakdown = monthRows.length > 1 ? [table] : null;
 
     // Build range bridge — two-column layout with year big, day+month small
     var rangeBridge = buildRangeBridge(startResult, endResult, tgtNames, tgt, t);
+    var rangeCopyStartYear = tgt.id === 'roman' ? (startResult.year + ' AUC') : String(startResult.year);
+    var rangeCopyEndYear = tgt.id === 'roman' ? (endResult.year + ' AUC') : String(endResult.year);
+    var rangeCopyEl = el('span', { class: 'result-main' });
+    rangeCopyEl.textContent = rangeCopyStartYear + ' \u2013 ' + rangeCopyEndYear;
+    rangeCopyEl.style.display = 'none';
 
     const rangeElements = [
       rangeBridge,
@@ -1231,7 +1228,7 @@
         ' \u2013 ',
         el('span', { class: 'date-val', text: tgtEndStr })
       ),
-      isProlepticGregorian ? el('p', { class: 'result-note', text: t.julianDateNote }) : null,
+      rangeCopyEl,
     ];
     var rangeAstroElements = null;
     if (astroResult) {
@@ -1287,19 +1284,23 @@
     });
     table.appendChild(tbody);
 
-    const isProlepticGregorian = tgt.id === 'gregorian' && jdEnd < 2299160.5;
-    const astroResult = buildRangeAstroPanel(jdStart, jdEnd, tgt, tgtNames, t);
+        const astroResult = buildRangeAstroPanel(jdStart, jdEnd, tgt, tgtNames, t);
 
     // Build range bridge — two-column layout with year big, day+month small
     var rangeBridge = buildRangeBridge(startResult, endResult, tgtNames, tgt, t);
+    var yearCopyStartYear = tgt.id === 'roman' ? (startResult.year + ' AUC') : String(startResult.year);
+    var yearCopyEndYear = tgt.id === 'roman' ? (endResult.year + ' AUC') : String(endResult.year);
+    var yearCopyEl = el('span', { class: 'result-main' });
+    yearCopyEl.textContent = yearCopyStartYear + ' – ' + yearCopyEndYear;
+    yearCopyEl.style.display = 'none';
 
     const yearElements = [
       rangeBridge,
       el('p', { class: 'result-span' },
-        el('span', { class: 'date-val', text: tgtStartStr }), ' \u2013 ',
+        el('span', { class: 'date-val', text: tgtStartStr }), ' – ',
         el('span', { class: 'date-val', text: tgtEndStr })
       ),
-      isProlepticGregorian ? el('p', { class: 'result-note', text: t.julianDateNote }) : null,
+      yearCopyEl,
     ];
     var yearAstroElements = null;
     if (astroResult) {
@@ -1426,7 +1427,6 @@
 
     // Start column
     var startCol = el('div', { class: 'range-col range-col-start' });
-    startCol.appendChild(el('span', { class: 'range-cal-label', text: tgtCalName }));
     startCol.appendChild(el('span', { class: 'range-year', text: startYear }));
     startCol.appendChild(el('span', { class: 'range-detail', text: startDetail }));
     bridge.appendChild(startCol);
@@ -1436,7 +1436,6 @@
 
     // End column
     var endCol = el('div', { class: 'range-col range-col-end' });
-    endCol.appendChild(el('span', { class: 'range-cal-label', text: '\u00a0' }));
     endCol.appendChild(el('span', { class: 'range-year', text: endYear }));
     endCol.appendChild(el('span', { class: 'range-detail', text: endDetail }));
     bridge.appendChild(endCol);

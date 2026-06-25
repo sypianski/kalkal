@@ -1801,7 +1801,9 @@
       if (!toCalInput.value.trim()) {
         toCalInput.value = t.calendars[tgtCal.id] || '';
       }
+      updateCalDescLink(toCalInput, 'to-cal-desc');
     }
+    updateCalDescLink(fromCalInput, 'from-cal-desc');
     if (refineCard) refineCard.hidden = false;
 
     // Contextual calendars tile (expanded, with tile toggle header)

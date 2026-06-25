@@ -2638,7 +2638,7 @@ html[dir="rtl"] .bridge-arrow {
     min-height: 58px !important;
     padding: 0 1.3em !important;
     color: #000 !important;
-    font-size: 1rem !important;
+    font-size: 1.25rem !important;
   }
   .copy-box-body {
     padding: 1em 1.3em !important;
@@ -6437,12 +6437,17 @@ body {
   }
   .action-row .astro-header,
   .action-row .history-header {
-    padding: 0 0.9em !important;
+    padding: 0 1.3em !important;
     min-height: 0 !important;
     height: 100% !important;
     flex: 1 1 auto !important;
     box-sizing: border-box !important;
     margin: 0 !important;
+  }
+  .action-row .astro-header::after,
+  .action-row .history-header::after {
+    font-size: 1.25rem !important;
+    color: #000 !important;
   }
   .action-row .astro-title,
   .action-row .history-title {

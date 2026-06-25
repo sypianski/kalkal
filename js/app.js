@@ -454,8 +454,10 @@
     var cal = resolveCalendar(input.value);
     var t = I18N[currentLang] || I18N.en;
     if (cal) {
+      var calName = (t.calendars && t.calendars[cal.id]) || cal.id;
+      var tpl = t.aboutCalendarTpl || 'about {name} calendar →';
       a.href = 'calendars.html#' + cal.id;
-      a.textContent = t.seeDescription || 'description →';
+      a.textContent = tpl.replace('{name}', calName);
       a.hidden = false;
     } else {
       a.hidden = true;

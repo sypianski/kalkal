@@ -1645,10 +1645,8 @@
 
     var header = el('div', { class: 'copy-box-header' });
     var titleBtn = el('button', { type: 'button', class: 'copy-box-title' });
-    titleBtn.appendChild(el('span', { class: 'copy-box-icon', text: '⧉' }));
     titleBtn.appendChild(el('span', { class: 'copy-box-label', text: t.copyResult || 'Copy' }));
     var toggleBtn = el('button', { type: 'button', class: 'copy-box-toggle', 'aria-label': 'Toggle options' });
-    toggleBtn.textContent = '▸';
     header.appendChild(titleBtn);
     header.appendChild(toggleBtn);
 
@@ -1682,8 +1680,8 @@
 
     titleBtn.addEventListener('click', function() { doCopy(getActiveText()); });
     toggleBtn.addEventListener('click', function() {
-      var isHidden = body.classList.toggle('hidden');
-      toggleBtn.textContent = isHidden ? '▸' : '▾';
+      body.classList.toggle('hidden');
+      box.classList.toggle('expanded');
     });
 
     var optsList = el('ul', { class: 'copy-box-opts' });

@@ -2015,19 +2015,8 @@
         el('span', { class: 'history-src', text: typeof summary === 'string' ? summary : summary.src }),
         typeof summary === 'object' ? el('span', { class: 'history-res', text: summary.res }) : null
       );
-      const removeBtn = el('button', { class: 'history-remove', 'aria-label': 'Remove', text: '\u00d7' });
-
       btn.addEventListener('click', () => loadHistoryEntry(entry));
-      removeBtn.addEventListener('click', e => {
-        e.stopPropagation();
-        const h = getHistory();
-        h.splice(i, 1);
-        localStorage.setItem(HISTORY_KEY, JSON.stringify(h));
-        renderHistory();
-      });
-
       li.appendChild(btn);
-      li.appendChild(removeBtn);
       historyList.appendChild(li);
     });
   }

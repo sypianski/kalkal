@@ -1633,12 +1633,9 @@
   function buildCopyBox(data, t) {
     var box = el('section', { class: 'copy-box' });
     var modes = [
-      { key: 'default',   text: data.defaultText   },
-      { key: 'year',      text: data.yearOnlyText  },
+      { key: 'default', text: data.defaultText  },
+      { key: 'year',    text: data.yearOnlyText },
     ];
-    if (data.fullBlockText && data.fullBlockText !== data.defaultText) {
-      modes.splice(1, 0, { key: 'block', text: data.fullBlockText });
-    }
     if (data.yearPairText) {
       modes.push({ key: 'pair', text: data.yearPairText });
     }
@@ -1663,11 +1660,23 @@
       return m ? m.text : modes[0].text;
     }
 
+    function flashCopied() {
+      var labelEl = titleBtn.querySelector('.copy-box-label');
+      if (!labelEl) return;
+      var orig = labelEl.textContent;
+      labelEl.textContent = t.copied || 'Copied!';
+      setTimeout(function() { labelEl.textContent = orig; }, 1200);
+    }
+
     function doCopy(text) {
-      navigator.clipboard.writeText(text).then(function() {
-        var orig = titleBtn.querySelector('.copy-box-label').textContent;
-        titleBtn.querySelector('.copy-box-label').textContent = t.copied || 'Copied!';
-        setTimeout(function() { titleBtn.querySelector('.copy-box-label').textContent = orig; }, 1200);
+      navigator.clipboard.writeText(text).then(flashCopied);
+    }
+
+    function setActive(key) {
+      active = key;
+      try { localStorage.setItem('kalkal-copy-mode', active); } catch (e) {}
+      Array.prototype.forEach.call(optsList.children, function(node, i) {
+        node.classList.toggle('active', modes[i].key === active);
       });
     }
 
@@ -1680,23 +1689,15 @@
     var optsList = el('ul', { class: 'copy-box-opts' });
     modes.forEach(function(m) {
       var li = el('li', { class: 'copy-box-opt' + (m.key === active ? ' active' : '') });
-      var radio = el('button', { type: 'button', class: 'copy-box-radio', 'aria-label': 'Set as default' });
-      radio.textContent = (m.key === active ? '◉' : '○');
+      var square = el('button', { type: 'button', class: 'copy-box-square', 'aria-label': 'Set as default' });
       var textBtn = el('button', { type: 'button', class: 'copy-box-text', text: m.text });
-      radio.addEventListener('click', function(ev) {
-        ev.stopPropagation();
-        active = m.key;
-        try { localStorage.setItem('kalkal-copy-mode', active); } catch (e) {}
-        // Update visuals
-        Array.prototype.forEach.call(optsList.children, function(node, i) {
-          node.classList.toggle('active', modes[i].key === active);
-          var r = node.querySelector('.copy-box-radio');
-          if (r) r.textContent = (modes[i].key === active ? '◉' : '○');
-        });
-      });
-      textBtn.addEventListener('click', function() { doCopy(m.text); });
-      li.appendChild(radio);
+      var miniCopy = el('button', { type: 'button', class: 'copy-box-mini', 'aria-label': t.copyResult || 'Copy', text: '⧉' });
+      square.addEventListener('click', function(ev) { ev.stopPropagation(); setActive(m.key); });
+      textBtn.addEventListener('click', function(ev) { ev.stopPropagation(); setActive(m.key); });
+      miniCopy.addEventListener('click', function(ev) { ev.stopPropagation(); doCopy(m.text); });
+      li.appendChild(square);
       li.appendChild(textBtn);
+      li.appendChild(miniCopy);
       optsList.appendChild(li);
     });
 
@@ -1711,9 +1712,19 @@
     while (resultBody.firstChild) resultBody.removeChild(resultBody.firstChild);
     elements.forEach(node => { if (node) resultBody.appendChild(node); });
     const t = I18N[currentLang] || I18N.en;
+    const copyCard = $('#copy-card');
+    if (copyCard) {
+      while (copyCard.firstChild) copyCard.removeChild(copyCard.firstChild);
+    }
     if (contextInfo && contextInfo.copyData) {
-      resultBody.appendChild(buildCopyBox(contextInfo.copyData, t));
+      if (copyCard) {
+        copyCard.appendChild(buildCopyBox(contextInfo.copyData, t));
+        copyCard.hidden = false;
+      } else {
+        resultBody.appendChild(buildCopyBox(contextInfo.copyData, t));
+      }
     } else {
+      if (copyCard) copyCard.hidden = true;
       const copyBtn = el('button', { class: 'copy-btn', text: t.copyResult });
       copyBtn.type = 'button';
       copyBtn.addEventListener('click', function () {

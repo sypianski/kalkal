@@ -1018,21 +1018,45 @@
       tgtDetail = tgtMonth0 ? (g0.result.day + '\u00a0' + tgtMonth0) : '';
     }
 
-    var bridge = el('div', { class: 'result-bridge' });
-    bridge.appendChild(el('span', { class: 'bridge-src-year', text: String(y) }));
-    bridge.appendChild(el('span', { class: 'bridge-arrow' }, '\u2192'));
-    bridge.appendChild(el('span', { class: 'bridge-tgt-year', text: tgtYearStr }));
-    bridge.appendChild(el('span', { class: 'bridge-label bridge-src-detail', text: srcDetail }));
-    bridge.appendChild(el('span', { class: 'bridge-mid-bot' }));
-    bridge.appendChild(el('span', { class: 'bridge-label bridge-tgt-detail', text: tgtDetail }));
+    // Single-day bridge \u2014 one line per side (full date inline)
+    var srcDetailSp = srcDetail.replace(/\u00a0/g, ' ');
+    var tgtDetailSp = tgtDetail.replace(/\u00a0/g, ' ');
+    var srcFullText = srcDetailSp ? (srcDetailSp + ' ' + y) : String(y);
+    var tgtFullText = tgtDetailSp ? (tgtDetailSp + ' ' + tgtYearStr.replace(/\u00a0/g, ' ')) : tgtYearStr.replace(/\u00a0/g, ' ');
+
+    var bridge = el('div', { class: 'result-bridge bridge-single-line' });
+    bridge.appendChild(el('span', { class: 'bridge-src-full', text: srcFullText }));
+    bridge.appendChild(el('span', { class: 'bridge-arrow', text: '\u2192' }));
+    bridge.appendChild(el('span', { class: 'bridge-tgt-full', text: tgtFullText }));
     elements.push(bridge);
 
-    // Hidden element for copy-button (full target date string)
-    var copyText = tgtDetail ? (tgtDetail + ' ' + tgtYearStr) : tgtYearStr;
+    // Hidden element for legacy copy-button (full target date string)
     var copyEl = el('span', { class: 'result-main' });
-    copyEl.textContent = copyText;
+    copyEl.textContent = tgtFullText;
     copyEl.style.display = 'none';
     elements.push(copyEl);
+
+    // Copy data for accordion copy box
+    var tgtYearOnlyText = String(g0.result.year) + (tgt.id === 'roman' ? ' AUC' : '');
+    var srcYearOnlyText = String(y) + (src.id === 'roman' ? ' AUC' : '');
+    var tgtShort = shortCalName(tgt.id);
+    var srcShort = shortCalName(src.id);
+    var singleCopyData = {
+      kind: 'single',
+      defaultText: tgtFullText,
+      yearOnlyText: tgtYearOnlyText,
+      fullBlockText: tgtFullText + ' ' + tgtShort,
+      yearPairText: null,
+      tgtCalLabel: tgtCalName,
+      srcCalLabel: srcCalName,
+    };
+    if (tgt.id === 'gregorian' && src.id !== 'gregorian') {
+      // tgt is AD — other (src) on left, AD on right: "<src>/<tgt>"
+      singleCopyData.yearPairText = srcYearOnlyText + '/' + tgtYearOnlyText;
+    } else if (src.id === 'gregorian' && tgt.id !== 'gregorian') {
+      // src is AD — other (tgt) on left, AD on right
+      singleCopyData.yearPairText = tgtYearOnlyText + '/' + srcYearOnlyText;
+    }
 
     // Alternate variant results below bridge (when multiple variant groups differ)
     if (showVarLabels) {
@@ -1151,7 +1175,7 @@
     }
     astroElements.push(buildMeta([[t.jdn, String(primaryJd)]]));
 
-    showResult(elements, null, null, astroElements, { jd: primaryJd, srcId: src.id, tgtId: tgt.id });
+    showResult(elements, null, null, astroElements, { jd: primaryJd, srcId: src.id, tgtId: tgt.id, copyData: singleCopyData });
   }
 
   function convertRange(src, tgt, y1, m1, d1, y2, m2, d2, t) {
@@ -1215,11 +1239,30 @@
 
     // Build range bridge — two-column layout with year big, day+month small
     var rangeBridge = buildRangeBridge(startResult, endResult, tgtNames, tgt, t);
-    var rangeCopyStartYear = tgt.id === 'roman' ? (startResult.year + ' AUC') : String(startResult.year);
-    var rangeCopyEndYear = tgt.id === 'roman' ? (endResult.year + ' AUC') : String(endResult.year);
+    var rangeYearSuf = tgt.id === 'roman' ? ' AUC' : '';
+    var srcYearSuf = src.id === 'roman' ? ' AUC' : '';
+    var smartTgtRange = smartDateRange(startResult, endResult, tgtNames, rangeYearSuf);
+    var smartTgtYears = smartYearRange(startResult.year, endResult.year, rangeYearSuf);
     var rangeCopyEl = el('span', { class: 'result-main' });
-    rangeCopyEl.textContent = rangeCopyStartYear + ' \u2013 ' + rangeCopyEndYear;
+    rangeCopyEl.textContent = smartTgtRange;
     rangeCopyEl.style.display = 'none';
+
+    var tgtShort2 = shortCalName(tgt.id);
+    var smartSrcYears = smartYearRange(y1, y2, srcYearSuf);
+    var rangeCopyData = {
+      kind: 'range',
+      defaultText: smartTgtRange,
+      yearOnlyText: smartTgtYears,
+      fullBlockText: smartTgtRange + ' ' + tgtShort2,
+      yearPairText: null,
+      tgtCalLabel: t.calendars[tgt.id],
+      srcCalLabel: t.calendars[src.id],
+    };
+    if (tgt.id === 'gregorian' && src.id !== 'gregorian') {
+      rangeCopyData.yearPairText = smartSrcYears + '/' + smartTgtYears;
+    } else if (src.id === 'gregorian' && tgt.id !== 'gregorian') {
+      rangeCopyData.yearPairText = smartTgtYears + '/' + smartSrcYears;
+    }
 
     const rangeElements = [
       rangeBridge,
@@ -1236,7 +1279,7 @@
       astroResult.panel.classList.remove('hidden');
       rangeAstroElements.push(astroResult.panel);
     }
-    showResult(rangeElements, breakdown, astroResult ? astroResult.highlights : null, rangeAstroElements, { jd: jdStart, jdEnd: jdEnd, srcId: src.id, tgtId: tgt.id });
+    showResult(rangeElements, breakdown, astroResult ? astroResult.highlights : null, rangeAstroElements, { jd: jdStart, jdEnd: jdEnd, srcId: src.id, tgtId: tgt.id, copyData: rangeCopyData });
   }
 
   function convertYearRange(src, tgt, year, t) {
@@ -1288,11 +1331,30 @@
 
     // Build range bridge — two-column layout with year big, day+month small
     var rangeBridge = buildRangeBridge(startResult, endResult, tgtNames, tgt, t);
-    var yearCopyStartYear = tgt.id === 'roman' ? (startResult.year + ' AUC') : String(startResult.year);
-    var yearCopyEndYear = tgt.id === 'roman' ? (endResult.year + ' AUC') : String(endResult.year);
+    var yearYearSuf = tgt.id === 'roman' ? ' AUC' : '';
+    var ySrcSuf = src.id === 'roman' ? ' AUC' : '';
+    var smartYrTgtRange = smartDateRange(startResult, endResult, tgtNames, yearYearSuf);
+    var smartYrTgtYears = smartYearRange(startResult.year, endResult.year, yearYearSuf);
     var yearCopyEl = el('span', { class: 'result-main' });
-    yearCopyEl.textContent = yearCopyStartYear + ' – ' + yearCopyEndYear;
+    yearCopyEl.textContent = smartYrTgtYears;
     yearCopyEl.style.display = 'none';
+
+    var tgtShort3 = shortCalName(tgt.id);
+    var smartYrSrcYears = String(year) + ySrcSuf;
+    var yearCopyData = {
+      kind: 'year-range',
+      defaultText: smartYrTgtRange,
+      yearOnlyText: smartYrTgtYears,
+      fullBlockText: smartYrTgtRange + ' ' + tgtShort3,
+      yearPairText: null,
+      tgtCalLabel: t.calendars[tgt.id],
+      srcCalLabel: t.calendars[src.id],
+    };
+    if (tgt.id === 'gregorian' && src.id !== 'gregorian') {
+      yearCopyData.yearPairText = smartYrSrcYears + '/' + smartYrTgtYears;
+    } else if (src.id === 'gregorian' && tgt.id !== 'gregorian') {
+      yearCopyData.yearPairText = smartYrTgtYears + '/' + smartYrSrcYears;
+    }
 
     const yearElements = [
       rangeBridge,
@@ -1308,7 +1370,7 @@
       astroResult.panel.classList.remove('hidden');
       yearAstroElements.push(astroResult.panel);
     }
-    showResult(yearElements, [table], astroResult ? astroResult.highlights : null, yearAstroElements, { jd: jdStart, jdEnd: jdEnd, srcId: src.id, tgtId: tgt.id });
+    showResult(yearElements, [table], astroResult ? astroResult.highlights : null, yearAstroElements, { jd: jdStart, jdEnd: jdEnd, srcId: src.id, tgtId: tgt.id, copyData: yearCopyData });
   }
 
   // Build astro panel for a JDN range (year/month conversions).
@@ -1535,21 +1597,135 @@
     return dl;
   }
 
+  // Smart date-range formatter: collapses common parts, manages hyphen spacing.
+  // s, e: { day, month, year }; names: month-name array (1-indexed via i-1); yearSuf: '' or ' AUC'
+  function smartDateRange(s, e, names, yearSuf) {
+    yearSuf = yearSuf || '';
+    var sMonthName = names && names[s.month - 1] ? names[s.month - 1] : '';
+    var eMonthName = names && names[e.month - 1] ? names[e.month - 1] : '';
+    var sYr = s.year + yearSuf;
+    var eYr = e.year + yearSuf;
+    // Single day
+    if (s.year === e.year && s.month === e.month && s.day === e.day) {
+      return s.day + ' ' + sMonthName + ' ' + sYr;
+    }
+    // Same month + year — numeric day range, no spaces around hyphen
+    if (s.year === e.year && s.month === e.month) {
+      return s.day + '–' + e.day + ' ' + sMonthName + ' ' + sYr;
+    }
+    // Same year, different month — spaces around en-dash
+    if (s.year === e.year) {
+      return s.day + ' ' + sMonthName + ' – ' + e.day + ' ' + eMonthName + ' ' + sYr;
+    }
+    // Different year — full both sides, spaces around en-dash
+    return s.day + ' ' + sMonthName + ' ' + sYr + ' – ' + e.day + ' ' + eMonthName + ' ' + eYr;
+  }
+
+  // Year-only range, no spaces (e.g. "888-890" or "888")
+  function smartYearRange(yStart, yEnd, yearSuf) {
+    yearSuf = yearSuf || '';
+    if (yStart === yEnd) return yStart + yearSuf;
+    return yStart + '–' + yEnd + yearSuf;
+  }
+
+  // Build a copy-mode accordion box. data shape:
+  //   { kind, defaultText, yearOnlyText, fullBlockText, yearPairText (or null), tgtCalLabel, srcCalLabel }
+  function buildCopyBox(data, t) {
+    var box = el('section', { class: 'copy-box' });
+    var modes = [
+      { key: 'default',   text: data.defaultText   },
+      { key: 'year',      text: data.yearOnlyText  },
+    ];
+    if (data.fullBlockText && data.fullBlockText !== data.defaultText) {
+      modes.splice(1, 0, { key: 'block', text: data.fullBlockText });
+    }
+    if (data.yearPairText) {
+      modes.push({ key: 'pair', text: data.yearPairText });
+    }
+    var saved = null;
+    try { saved = localStorage.getItem('kalkal-copy-mode'); } catch (e) {}
+    var active = (saved && modes.some(function(m){ return m.key === saved; })) ? saved : 'default';
+
+    var header = el('div', { class: 'copy-box-header' });
+    var titleBtn = el('button', { type: 'button', class: 'copy-box-title' });
+    titleBtn.appendChild(el('span', { class: 'copy-box-icon', text: '⧉' }));
+    titleBtn.appendChild(el('span', { class: 'copy-box-label', text: t.copyResult || 'Copy' }));
+    var toggleBtn = el('button', { type: 'button', class: 'copy-box-toggle', 'aria-label': 'Toggle options' });
+    toggleBtn.textContent = '▸';
+    header.appendChild(titleBtn);
+    header.appendChild(toggleBtn);
+
+    var body = el('div', { class: 'copy-box-body hidden' });
+    var helpText = el('p', { class: 'copy-box-help', text: t.copyHelp || 'kliknij żeby skopiować, lub wybierz domyślny' });
+
+    function getActiveText() {
+      var m = modes.filter(function(x){ return x.key === active; })[0];
+      return m ? m.text : modes[0].text;
+    }
+
+    function doCopy(text) {
+      navigator.clipboard.writeText(text).then(function() {
+        var orig = titleBtn.querySelector('.copy-box-label').textContent;
+        titleBtn.querySelector('.copy-box-label').textContent = t.copied || 'Copied!';
+        setTimeout(function() { titleBtn.querySelector('.copy-box-label').textContent = orig; }, 1200);
+      });
+    }
+
+    titleBtn.addEventListener('click', function() { doCopy(getActiveText()); });
+    toggleBtn.addEventListener('click', function() {
+      var isHidden = body.classList.toggle('hidden');
+      toggleBtn.textContent = isHidden ? '▸' : '▾';
+    });
+
+    var optsList = el('ul', { class: 'copy-box-opts' });
+    modes.forEach(function(m) {
+      var li = el('li', { class: 'copy-box-opt' + (m.key === active ? ' active' : '') });
+      var radio = el('button', { type: 'button', class: 'copy-box-radio', 'aria-label': 'Set as default' });
+      radio.textContent = (m.key === active ? '◉' : '○');
+      var textBtn = el('button', { type: 'button', class: 'copy-box-text', text: m.text });
+      radio.addEventListener('click', function(ev) {
+        ev.stopPropagation();
+        active = m.key;
+        try { localStorage.setItem('kalkal-copy-mode', active); } catch (e) {}
+        // Update visuals
+        Array.prototype.forEach.call(optsList.children, function(node, i) {
+          node.classList.toggle('active', modes[i].key === active);
+          var r = node.querySelector('.copy-box-radio');
+          if (r) r.textContent = (modes[i].key === active ? '◉' : '○');
+        });
+      });
+      textBtn.addEventListener('click', function() { doCopy(m.text); });
+      li.appendChild(radio);
+      li.appendChild(textBtn);
+      optsList.appendChild(li);
+    });
+
+    body.appendChild(optsList);
+    body.appendChild(helpText);
+    box.appendChild(header);
+    box.appendChild(body);
+    return box;
+  }
+
   function showResult(elements, breakdownElements, rangeHighlights, astroElements, contextInfo) {
     while (resultBody.firstChild) resultBody.removeChild(resultBody.firstChild);
     elements.forEach(node => { if (node) resultBody.appendChild(node); });
     const t = I18N[currentLang] || I18N.en;
-    const copyBtn = el('button', { class: 'copy-btn', text: t.copyResult });
-    copyBtn.type = 'button';
-    copyBtn.addEventListener('click', function () {
-      const mainEl = resultBody.querySelector('.result-main');
-      const text = mainEl ? mainEl.textContent.trim() : resultBody.innerText.trim();
-      navigator.clipboard.writeText(text).then(function () {
-        copyBtn.textContent = t.copied;
-        setTimeout(function () { copyBtn.textContent = t.copyResult; }, 1500);
+    if (contextInfo && contextInfo.copyData) {
+      resultBody.appendChild(buildCopyBox(contextInfo.copyData, t));
+    } else {
+      const copyBtn = el('button', { class: 'copy-btn', text: t.copyResult });
+      copyBtn.type = 'button';
+      copyBtn.addEventListener('click', function () {
+        const mainEl = resultBody.querySelector('.result-main');
+        const text = mainEl ? mainEl.textContent.trim() : resultBody.innerText.trim();
+        navigator.clipboard.writeText(text).then(function () {
+          copyBtn.textContent = t.copied;
+          setTimeout(function () { copyBtn.textContent = t.copyResult; }, 1500);
+        });
       });
-    });
-    resultBody.appendChild(copyBtn);
+      resultBody.appendChild(copyBtn);
+    }
 
     // Legacy: handle inline astro-panel for range conversions
     const astroPanelEl = resultBody.querySelector('.astro-panel');
@@ -1657,18 +1833,20 @@
         if (node.classList.contains('result-conjunction')) astroHints.push('\u2728');
       });
       var astroTitle = t.astroLabel || 'Astro';
-      if (astroHints.length > 0) {
-        astroTitle += ' \u00b7 ' + astroHints.join(' ');
-      }
       var startExpanded = hasMeaningful;
-      var astroToggle = el('button', { type: 'button', class: 'tile-toggle' + (startExpanded ? ' active' : ''), text: astroTitle });
-      var astroContent = el('div', { class: 'tile-content' + (startExpanded ? '' : ' hidden') });
+      var astroHeader = el('div', { class: 'astro-header' + (startExpanded ? ' active' : '') });
+      var astroTitleEl = el('h2', { class: 'astro-title', text: astroTitle });
+      astroHeader.appendChild(astroTitleEl);
+      if (astroHints.length > 0) {
+        astroHeader.appendChild(el('span', { class: 'astro-hints', text: astroHints.join(' ') }));
+      }
+      var astroContent = el('div', { class: 'astro-content' + (startExpanded ? '' : ' hidden') });
       astroElements.forEach(node => { if (node) astroContent.appendChild(node); });
-      astroToggle.addEventListener('click', function() {
+      astroHeader.addEventListener('click', function() {
         astroContent.classList.toggle('hidden');
-        astroToggle.classList.toggle('active');
+        astroHeader.classList.toggle('active');
       });
-      astroCard.appendChild(astroToggle);
+      astroCard.appendChild(astroHeader);
       astroCard.appendChild(astroContent);
       astroCard.hidden = false;
     } else {

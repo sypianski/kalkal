@@ -9,6 +9,7 @@
 - [x] Result box redesign: bridge layout (big year → big year, calendar name + month/day detail)
 - [ ] Expand test coverage for edge cases (leap years, era boundaries)
 - [ ] Add historical event annotations to date results
+- [ ] Copy box: make 3 modes (date / year-only / AD-pair) configurable in settings panel (currently only persisted in localStorage via per-result radio)
 - [ ] Optimize service worker caching strategy
 - [ ] Complete eclipse data integration for broader date ranges
 

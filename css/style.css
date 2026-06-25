@@ -2164,6 +2164,8 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
   justify-content: space-between;
   padding: var(--space-md) var(--space-xl);
   cursor: pointer;
+  min-height: 3.2em;
+  box-sizing: border-box;
 }
 
 .astro-title {
@@ -2180,6 +2182,7 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
 .astro-header::after {
   content: '\25BE';
   margin-left: auto;
+  margin-right: -0.4em;
   font-size: 1.25rem;
   line-height: 1;
   color: #999;
@@ -2219,68 +2222,53 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
 /* === Astro content (inside .astro-content after expansion) === */
 .astro-content > .result-zodiac,
 .astro-content > .result-astro,
-.astro-content > .result-eclipse,
 .astro-content > .result-meta {
   margin: 0;
-  padding: var(--space-md) var(--space-sm);
+  padding: 0.4em 0;
   background: transparent;
   border: 0;
-  border-block-end: 2px solid var(--brut-ink);
   border-inline-start: 0;
-  display: grid;
-  grid-template-columns: 2.2em 1fr;
-  gap: 0 var(--space-md);
-  align-items: start;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5em;
 }
 
-.astro-content > :last-child {
-  border-block-end: 0;
-}
-
-/* Zodiac — big symbol + sign name */
 .astro-content > .result-zodiac {
   font-family: var(--brut-mono);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
   color: var(--brut-ink);
-  align-items: center;
 }
 
-/* Generic astro row: icon column + text column */
 .astro-content .astro-icon {
-  font-size: 1.4rem;
-  line-height: 1;
-  text-align: center;
+  font-size: 1rem;
   color: var(--brut-ink);
+  flex: 0 0 auto;
 }
 
 .astro-content .astro-text {
   font-family: var(--brut-mono);
-  font-size: 0.82rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  font-size: 0.8rem;
+  font-weight: 600;
   color: var(--brut-ink);
-  line-height: 1.3;
+  flex: 1 1 auto;
 }
 
 .astro-content .astro-detail {
-  grid-column: 2;
   font-family: var(--brut-mono);
   font-size: 0.7rem;
-  color: #666;
-  letter-spacing: 0.04em;
-  margin-top: 0.2em;
+  color: #777;
+  flex: 0 0 auto;
 }
 
 .astro-content .astro-note {
-  grid-column: 2;
-  margin: 0.35em 0 0;
+  flex: 1 1 100%;
+  margin: 0.1em 0 0;
+  padding-inline-start: 1.5em;
   font-family: var(--brut-mono);
   font-size: 0.68rem;
-  color: #666;
+  color: #888;
   font-style: normal;
   line-height: 1.5;
 }
@@ -3136,6 +3124,8 @@ html[dir="rtl"] .range-arrow {
   justify-content: space-between;
   padding: var(--space-md) var(--space-xl);
   cursor: pointer;
+  min-height: 3.2em;
+  box-sizing: border-box;
 }
 
 .history-content {
@@ -3179,6 +3169,7 @@ html[dir="rtl"] .range-arrow {
 .history-header::after {
   content: '\25BE';
   margin-left: auto;
+  margin-right: -0.4em;
   font-size: 1.25rem;
   line-height: 1;
   color: #999;

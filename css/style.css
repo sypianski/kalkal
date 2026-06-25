@@ -2570,6 +2570,26 @@ html[dir="rtl"] .bridge-arrow {
   border-bottom-width: 3px;
 }
 
+/* Small grey link to calendar description (calendars.html#<id>) */
+.cal-desc-link {
+  display: inline-block;
+  margin-top: 0.25rem;
+  font-family: var(--brut-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #999;
+  text-decoration: none;
+  border-bottom: 1px dotted #999;
+}
+
+.cal-desc-link[hidden] { display: none; }
+
+.cal-desc-link:hover {
+  color: #000;
+  border-bottom-color: #000;
+}
+
 /* Copy-card — separate brutalist slab outside result panel */
 .copy-card {
   margin-block: var(--space-md);

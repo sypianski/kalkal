@@ -5,7 +5,7 @@
   'use strict';
 
   function detectLang() {
-    const supported = ['en', 'pl', 'ar', 'eo'];
+    const supported = ['en', 'pl', 'eo'];
     for (const tag of navigator.languages || [navigator.language]) {
       const code = tag.toLowerCase().split('-')[0];
       if (supported.includes(code)) return code;
@@ -448,12 +448,28 @@
 
   // ---- Calendar change handler ----
 
+  function updateCalDescLink(input, anchorId) {
+    var a = document.getElementById(anchorId);
+    if (!a) return;
+    var cal = resolveCalendar(input.value);
+    var t = I18N[currentLang] || I18N.en;
+    if (cal) {
+      a.href = 'calendars.html#' + cal.id;
+      a.textContent = t.seeDescription || 'description →';
+      a.hidden = false;
+    } else {
+      a.hidden = true;
+    }
+  }
+
   function onCalendarChange(calInput) {
     if (calInput === fromCalInput) {
       updateVariantBar(fromVariantsBar, fromCalInput);
       updateMonthSelects();
+      updateCalDescLink(fromCalInput, 'from-cal-desc');
     } else {
       updateVariantBar(toVariantsBar, toCalInput);
+      updateCalDescLink(toCalInput, 'to-cal-desc');
       if (resultPanel.classList.contains('has-result')) convert();
     }
   }
@@ -650,7 +666,7 @@
 
     const t = I18N[lang];
     document.documentElement.lang = lang;
-    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.dir = 'ltr';
 
     appTitle.textContent = t.appTitle;
     appSubtitle.innerHTML = t.appSubtitle + ' <span style="color: red; font-weight: bold;">BETA</span>';
@@ -676,6 +692,8 @@
     updateMonthSelects();
     updateVariantBar(fromVariantsBar, fromCalInput);
     updateVariantBar(toVariantsBar, toCalInput);
+    updateCalDescLink(fromCalInput, 'from-cal-desc');
+    updateCalDescLink(toCalInput, 'to-cal-desc');
     document.title = 'kalkal \u2014 ' + t.appTitle;
   }
 

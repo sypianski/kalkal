@@ -32,7 +32,6 @@
       <nav class="lang-switcher" id="lang-switcher" aria-label="Language">
         <button class="lang-btn active" data-lang="en">EN</button>
         <button class="lang-btn" data-lang="pl">PL</button>
-        <button class="lang-btn" data-lang="ar">AR</button>
         <button class="lang-btn" data-lang="eo">EO</button>
       </nav>
     </div>
@@ -56,7 +55,6 @@
       <div class="settings-row">
         <button class="settings-lang-btn active" data-lang="en">EN</button>
         <button class="settings-lang-btn" data-lang="pl">PL</button>
-        <button class="settings-lang-btn" data-lang="ar">AR</button>
         <button class="settings-lang-btn" data-lang="eo">EO</button>
       </div>
     </div>
@@ -120,6 +118,7 @@
             <div class="form-field form-field--cal">
               <label for="from-calendar" class="form-label" data-i18n="fromCalendar">From</label>
               <input type="text" id="from-calendar" class="input-cal" autocomplete="off" inputmode="none">
+              <a id="from-cal-desc" class="cal-desc-link" hidden></a>
               <div class="variant-bar" id="from-variants"></div>
             </div>
 
@@ -157,6 +156,7 @@
 
         <div class="to-calendar-field" id="to-calendar-field" hidden>
           <input type="text" id="to-calendar" class="to-calendar-input" autocomplete="off" inputmode="none">
+          <a id="to-cal-desc" class="cal-desc-link" hidden></a>
           <div class="variant-bar" id="to-variants"></div>
         </div>
 

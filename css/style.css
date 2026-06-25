@@ -2219,10 +2219,24 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
   display: none;
 }
 
+/* Range mode: .astro-content wraps a single .astro-panel — strip its frame */
+.astro-content .astro-panel {
+  display: block !important;
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+}
+.astro-content .astro-panel.hidden { display: block !important; }
+
 /* === Astro content (inside .astro-content after expansion) === */
-.astro-content > .result-zodiac,
-.astro-content > .result-astro,
-.astro-content > .result-meta {
+.astro-content .result-zodiac,
+.astro-content .result-astro,
+.astro-content .result-meta,
+.astro-content .result-zodiac,
+.astro-content .result-astro,
+.astro-content .result-meta {
   margin: 0;
   padding: 0.4em 0;
   background: transparent;
@@ -2234,7 +2248,8 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
   gap: 0.5em;
 }
 
-.astro-content > .result-zodiac {
+.astro-content .result-zodiac,
+.astro-content .result-zodiac {
   font-family: var(--brut-mono);
   font-size: 0.9rem;
   font-weight: 700;
@@ -2274,7 +2289,7 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
 }
 
 /* Eclipse — invert as dark slab */
-.astro-content > .result-eclipse {
+.astro-content .result-eclipse {
   background: var(--brut-ink);
   color: #fff;
   padding: var(--space-md);
@@ -2340,7 +2355,7 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
 }
 
 /* JDN meta row */
-.astro-content > .result-meta {
+.astro-content .result-meta {
   grid-template-columns: 1fr;
   font-family: var(--brut-mono);
   font-size: 0.7rem;
@@ -2351,24 +2366,24 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
   padding-top: var(--space-sm);
 }
 
-.astro-content > .result-meta dl,
-.astro-content > .result-meta dt,
-.astro-content > .result-meta dd {
+.astro-content .result-meta dl,
+.astro-content .result-meta dt,
+.astro-content .result-meta dd {
   margin: 0;
   padding: 0;
 }
 
-.astro-content > .result-meta dl {
+.astro-content .result-meta dl {
   display: flex;
   gap: 0.5em;
   align-items: baseline;
 }
 
-.astro-content > .result-meta dt {
+.astro-content .result-meta dt {
   color: #999;
 }
 
-.astro-content > .result-meta dd {
+.astro-content .result-meta dd {
   font-weight: 700;
   color: var(--brut-ink);
 }

@@ -5855,11 +5855,12 @@ body {
   .form-error                 { order: 5 !important; }
   .form-field--action         { order: 6 !important; }
   .result-panel               { order: 7 !important; }
-  .contextual-card            { order: 8 !important; }
-  .outofera-card              { order: 9 !important; }
-  .astro-card                 { order: 10 !important; }
-  .breakdown-card             { order: 11 !important; }
-  .history-panel              { order: 12 !important; }
+  .copy-card                  { order: 8 !important; }
+  .contextual-card            { order: 9 !important; }
+  .outofera-card              { order: 10 !important; }
+  .astro-card                 { order: 11 !important; }
+  .breakdown-card             { order: 12 !important; }
+  .history-panel              { order: 13 !important; }
 
   /* Hide the original inline labels (numbered markers replace them) */
   .form-field--cal > .form-label,

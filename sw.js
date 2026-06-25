@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'kalkal-v21';
+const CACHE_VERSION = 'kalkal-v22';
 // Relative to the SW scope so it works under a subdirectory mount
 // (e.g. /kalkal/). Absolute '/...' paths pointed at the origin root and
 // 404'd here, which aborted addAll and left the old SW serving stale builds.
@@ -17,7 +17,6 @@ const CORE_ASSETS = [
   './js/pages.js',
   './js/astronomy.js',
   './js/eclipses.js',
-  './js/ai.js',
   './icons/icon-192.png',
   './icons/icon-512.png',
   './favicon.svg',
@@ -51,9 +50,8 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
 
-  // Skip non-GET and cross-origin API requests (Gemini AI)
+  // Skip non-GET
   if (event.request.method !== 'GET') return;
-  if (url.hostname.includes('generativelanguage.googleapis.com')) return;
 
   // Bypass /kalkal/beta/ — Flutter app has its own service worker.
   if (url.pathname.startsWith('/kalkal/beta/') || url.pathname === '/kalkal/beta') return;

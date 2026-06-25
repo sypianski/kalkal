@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'kalkal-v22';
+const CACHE_VERSION = 'kalkal-v23';
 // Relative to the SW scope so it works under a subdirectory mount
 // (e.g. /kalkal/). Absolute '/...' paths pointed at the origin root and
 // 404'd here, which aborted addAll and left the old SW serving stale builds.

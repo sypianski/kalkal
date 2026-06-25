@@ -695,6 +695,8 @@
     updateCalDescLink(fromCalInput, 'from-cal-desc');
     updateCalDescLink(toCalInput, 'to-cal-desc');
     document.title = 'kalkal \u2014 ' + t.appTitle;
+    // Re-run conversion so result panel + copy box rebuild in new language
+    if (resultPanel.classList.contains('has-result')) convert();
   }
 
   // ---- Calendar autocomplete ----
@@ -1664,12 +1666,12 @@
     var header = el('div', { class: 'copy-box-header' });
     var titleBtn = el('button', { type: 'button', class: 'copy-box-title' });
     titleBtn.appendChild(el('span', { class: 'copy-box-label', text: t.copyResult || 'Copy' }));
-    var toggleBtn = el('button', { type: 'button', class: 'copy-box-toggle', 'aria-label': 'Toggle options' });
+    var toggleBtn = el('button', { type: 'button', class: 'copy-box-toggle', 'aria-label': t.copyToggleOptions || 'Toggle options' });
     header.appendChild(titleBtn);
     header.appendChild(toggleBtn);
 
     var body = el('div', { class: 'copy-box-body hidden' });
-    var helpText = el('p', { class: 'copy-box-help', text: t.copyHelp || 'kliknij żeby skopiować, lub wybierz domyślny' });
+    var helpText = el('p', { class: 'copy-box-help', text: t.copyHelp || 'Click to copy, or pick a default' });
 
     function getActiveText() {
       var m = modes.filter(function(x){ return x.key === active; })[0];
@@ -1705,7 +1707,7 @@
     var optsList = el('ul', { class: 'copy-box-opts' });
     modes.forEach(function(m) {
       var li = el('li', { class: 'copy-box-opt' + (m.key === active ? ' active' : '') });
-      var square = el('button', { type: 'button', class: 'copy-box-square', 'aria-label': 'Set as default' });
+      var square = el('button', { type: 'button', class: 'copy-box-square', 'aria-label': t.copySetDefault || 'Set as default' });
       var textBtn = el('button', { type: 'button', class: 'copy-box-text', text: m.text });
       var miniCopy = el('button', { type: 'button', class: 'copy-box-mini', 'aria-label': t.copyResult || 'Copy', text: '⧉' });
       square.addEventListener('click', function(ev) { ev.stopPropagation(); setActive(m.key); });

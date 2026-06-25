@@ -1671,7 +1671,12 @@
     header.appendChild(toggleBtn);
 
     var body = el('div', { class: 'copy-box-body hidden' });
-    var helpText = el('p', { class: 'copy-box-help', text: t.copyHelp || 'Click to copy, or pick a default' });
+    var helpTpl = t.copyHelp || 'Click {icon} to copy, or pick a default';
+    var helpText = el('p', { class: 'copy-box-help' });
+    var helpParts = helpTpl.split('{icon}');
+    helpText.appendChild(document.createTextNode(helpParts[0] || ''));
+    helpText.appendChild(el('span', { class: 'copy-box-help-icon', text: '⧉' }));
+    helpText.appendChild(document.createTextNode(helpParts[1] || ''));
 
     function getActiveText() {
       var m = modes.filter(function(x){ return x.key === active; })[0];

@@ -2230,6 +2230,18 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
 }
 .astro-content .astro-panel.hidden { display: block !important; }
 
+/* Reset legacy .astro-panel descendant styles when inside .astro-content */
+.astro-content .astro-panel .result-zodiac,
+.astro-content .astro-panel .result-astro,
+.astro-content .astro-panel .result-meta {
+  border: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  font-family: var(--brut-mono) !important;
+}
+
 /* === Astro content (inside .astro-content after expansion) === */
 .astro-content .result-zodiac,
 .astro-content .result-astro,

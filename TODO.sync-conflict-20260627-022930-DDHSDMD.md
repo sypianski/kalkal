@@ -1,0 +1,60 @@
+## Web
+- [x] Language change updates all calendar names/months/UI strings reactively (input fields now retranslate on lang switch)
+- [x] Settings button in mobile bottom nav (language + Hijri variant selection, persisted in localStorage)
+- [x] Add table of contents with anchor links to methodology.html
+- [x] Remove Install KalKal prompt/button from mobile view
+- [x] Remove Eclipses link from mobile nav bar
+- [x] Improve mobile UX based on recent layout changes (cursor+chevron on month, dropdown fix, month+day side-by-side)
+- [x] Hide result placeholder until Convert is pressed (mobile UX)
+- [x] Result box redesign: bridge layout (big year → big year, calendar name + month/day detail)
+- [ ] Expand test coverage for edge cases (leap years, era boundaries)
+- [ ] Add historical event annotations to date results
+- [ ] Optimize service worker caching strategy
+- [ ] Complete eclipse data integration for broader date ranges
+
+## Mobile web view
+- [x] Multi-language support (PL, AR with RTL via I18nManager, EO) — currently EN only
+- [x] Astro section as collapsible tile (matching web `33aa97f`)
+- [x] Unified tile system for contextual / out-of-era calendars in results (`a3e221d`, `612f929`)
+- [x] Variant switching from results screen (`5013f4c`)
+- [x] Pre-filled target calendar + Astro button in results
+- [x] Group calendars by cultural sphere in picker (`0e94654`)
+- [x] Verify Parker & Dubberstein Babylonian tables present in `mobile/src/engine/cal.js`
+- [x] Verify Human Era variants present
+- [ ] Settings in the bottom bar
+  - [ ] Redesign the button with frontend design (add icon)
+  - [ ] Include variants in all calendars that have variants, not only hijri
+- [ ] Remove the disclaimer below History
+- [ ] Make bottom bar bigger
+- [ ] Remove language buttons from the tom bar
+- [ ] Merge top bar and bottom bar into one bar (frontend-design)
+- [ ] Result should be organized into two sections within one box
+  - [ ] first line big letters: year
+  - [ ] second line small letters: day and month
+  - [ ] for ranges have start and end date with its own two lines as in two columns separated by an arrow sign (use frontend-design)
+- [ ] Make result graphically more prominent
+- [ ] Remove boxes with additional calendars (contemp. and not prolept.) and with monthly overview
+- [ ] make History and collapsed Astro box full width and as tall as the convert button
+- [ ] make Month box wider and Day box narrower 
+
+## Changes to the Android app (rebuild per new TODO logic)
+- [x] Start screen: calendar picker (default Hijri), custom NumPad, OK → Converter, Info button
+- [x] Rebuild ConverterScreen: FROM/TO dropdowns with live results on top, month grid, custom in-app numeric keypad (no system keyboard), muted Information button at the bottom
+- [x] ConverterScreen: NumPad hidden by default, appears only when user taps year or day field (Done button to dismiss)
+- [x] ConverterScreen: Month picker changed from 3-column grid to vertical list (one row per month)
+- [x] ConverterScreen: Selector order changed to year → month → day
+- [x] Info screen with tabbed layout (Calendars & Methodology + back button to Converter)
+- [x] use /frontend-desing to improve the general design
+- [x] don't use yellow
+- [x] Restore / relocate language + theme toggles — added as Settings tab in InfoScreen
+- [x] Restore / relocate history, Astro tile, and contextual/out-of-era calendar panels — collapsible Tiles in scrollable result area of ConverterScreen
+- [x] Verify custom keypad layout on small screens (keypad is bottom-pinned; top section scrolls)
+- [x] Localize keypad labels if needed (C / ⌫ currently symbolic, works across languages)
+- [x] Start screen: persist last-used calendar in AsyncStorage
+- [x] Manual test on device: live conversion, variant switching, month grid for 13-month calendars (Coptic, Ethiopian, Armenian, etc.)
+- [x] Month box wider than the day box
+- [x] All other boxes span whole screen width
+- [x] Settings tab opens with visible label
+- [x] Language options moved to the settings tab
+- [x] Result box display added
+- [x] Month breakdowns and contextual calendars hidden from mobile/android versions

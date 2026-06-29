@@ -1,4 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="80" fill="#000"/>
-  <text x="56" y="380" font-family="Georgia, 'Charis SIL', serif" font-size="320" font-weight="bold" fill="#fff" letter-spacing="-20">kk</text>
+  <rect width="512" height="512" fill="#f0f0ec"/>
+  <rect x="16" y="16" width="480" height="480" fill="none" stroke="#000" stroke-width="24"/>
+  <text x="48" y="388" font-family="'Courier New', Courier, monospace" font-size="340" font-weight="bold" fill="#000" letter-spacing="-20">kk</text>
 </svg>

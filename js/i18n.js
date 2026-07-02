@@ -134,7 +134,7 @@ const I18N = {
       'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'
     ],
     zodiacLabel: 'Zodiac sign',
-    contextualLabel: 'Contemporaneous calendars',
+    contextualLabel: 'Other contemporaneous calendars',
     otherCalendarsLabel: 'Proleptic conversions',
     astroLabel: 'Astro',
     eclipseLabel: 'Solar eclipse',
@@ -526,7 +526,7 @@ const I18N = {
       'Waga', 'Skorpion', 'Strzelec', 'Kozioro\u017cec', 'Wodnik', 'Ryby'
     ],
     zodiacLabel: 'Znak zodiaku',
-    contextualLabel: 'Kalendarze wsp\u00f3\u0142czesne',
+    contextualLabel: 'Inne wsp\u00f3\u0142czesne kalendarze',
     otherCalendarsLabel: 'Konwersje proleptyczne',
     astroLabel: 'Astro',
     eclipseLabel: 'Za\u0107mienie S\u0142o\u0144ca',
@@ -918,7 +918,7 @@ const I18N = {
       'Pesilo', 'Skorpio', 'Sagitario', 'Kaprikorno', 'Akvario', 'Fi\u015doj'
     ],
     zodiacLabel: 'Zodiaka signo',
-    contextualLabel: 'Samtempaj kalendaroj',
+    contextualLabel: 'Aliaj samtempaj kalendaroj',
     otherCalendarsLabel: 'Prolepsaj konvertoj',
     astroLabel: 'Astro',
     eclipseLabel: 'Suna eklipso',

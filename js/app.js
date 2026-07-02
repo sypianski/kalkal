@@ -1822,7 +1822,7 @@
     if (contextInfo) {
       var ctxPanel = buildContextualPanel(contextInfo.jd, contextInfo.srcId, contextInfo.tgtId, t, contextInfo.jdEnd);
       if (ctxPanel) {
-        var ctxToggle = el('button', { type: 'button', class: 'tile-toggle active', text: t.contextualLabel || 'Contemporaneous calendars' });
+        var ctxToggle = el('button', { type: 'button', class: 'tile-toggle active', text: t.contextualLabel || 'Other contemporaneous calendars' });
         var ctxContent = el('div', { class: 'tile-content' });
         ctxContent.appendChild(ctxPanel);
         ctxToggle.addEventListener('click', function() {

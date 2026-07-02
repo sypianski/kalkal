@@ -10,6 +10,7 @@ const I18N = {
     navMethodology: 'Methodology',
     navDynasties: 'Regnal Tables',
     navEclipses: 'Eclipses',
+    navAuthor: 'Author',
     fromCalendar: 'From',
     toDate: 'To (optional)',
     targetCalendar: 'Convert to',
@@ -399,6 +400,7 @@ const I18N = {
     navMethodology: 'Metodologia',
     navDynasties: 'Tablice panowa\u0144',
     navEclipses: 'Za\u0107mienia',
+    navAuthor: 'Autor',
     fromCalendar: 'Z',
     toDate: 'Do (opcjonalnie)',
     targetCalendar: 'Przelicz na',
@@ -788,6 +790,7 @@ const I18N = {
     navMethodology: 'Metodologio',
     navDynasties: 'Regnotabeloj',
     navEclipses: 'Eklipsoj',
+    navAuthor: 'Aŭtoro',
     fromCalendar: 'De',
     toDate: '\u011cis (nedevige)',
     targetCalendar: 'Konverti al',
@@ -1167,5 +1170,189 @@ const I18N = {
     settings: 'Agordoj',
     language: 'Lingvo',
     theme: 'Temo'
+  },
+
+  ar: {
+    appTitle: 'حاسبة التقويم',
+    appSubtitle: 'محول التواريخ متعدد التقويمات',
+    navConverter: 'المحول',
+    navCalendars: 'التقويمات',
+    navMethodology: 'المنهجية',
+    navDynasties: 'جداول الحكم',
+    navEclipses: 'الكسوفات',
+    navAuthor: 'المؤلف',
+    fromCalendar: 'من',
+    toDate: 'إلى (اختياري)',
+    targetCalendar: 'تحويل إلى',
+    calendarPlaceholder: 'التقويم...',
+    calendars: {
+      hijri: 'الهجري', julian: 'اليوليوسي', gregorian: 'الميلادي (يوليوسي→ميلادي)',
+      coptic: 'القبطي', ethiopian: 'الإثيوبي', yazdgerdi: 'الزرادشتي',
+      armenian: 'الأرميني', solarHijri: 'الفارسي', ilkhani: 'الإلخاني',
+      byzantine: 'البيزنطي',
+      seleucid: 'السلوقي', syriac: 'السرياني', rumi: 'الرومي',
+      egyptian: 'المصري',
+      roman: 'الروماني', spanish: 'العصر الإسباني', antiochene: 'العصر الأنطاكي',
+      olympiad: 'الأولمبياد', macedonian: 'المقدوني',
+      hebrew: 'العبري', babylonian: 'البابلي',
+      bp: 'قبل الآن', human: 'العصر الإنساني'
+    },
+    calendarGroups: {
+      universal: 'عام / علمي',
+      islamic: 'إسلامي',
+      christian: 'مسيحي / غربي',
+      iranian: 'إيراني',
+      semitic: 'سامي / شرق أوسطي',
+      african: 'أفريقي',
+      grecoRoman: 'يوناني-روماني'
+    },
+    year: 'السنة',
+    month: 'الشهر',
+    day: 'اليوم',
+    convert: 'تحويل',
+    result: 'النتيجة',
+    jdn: 'رقم اليوم الجولياني',
+    dayOfWeek: 'يوم من الأسبوع',
+    rangeSpans: 'يتراوح من',
+    to: 'إلى',
+    overlappingMonths: 'أشهر هجرية متداخلة',
+    overlappingGregorian: 'فترة ميلادية',
+    leapYear: 'سنة كبيسة',
+    totalDays: 'أيام',
+    monthBreakdown: 'تفصيل الشهر',
+    rangeStart: 'البداية',
+    rangeEnd: 'النهاية',
+    calendarNote: 'يستخدم التقويم اليوليوسي قبل 15 أكتوبر 1582 والميلادي بعده.',
+    julianDateNote: 'هذا التاريخ يسبق الإصلاح الميلادي (15 أكتوبر 1582). يستخدم التقويم اليوليوسي.',
+    indictionLabel: 'الإندكشن',
+    animalYearLabel: 'سنة الحيوان',
+    ilkhaniAnimals: { Sichqan: 'الفأر', Ud: 'الثور', Bars: 'الفهد', Tavishqan: 'الأرنب', Luy: 'التمساح', Yilan: 'الثعبان', Yund: 'الحصان', Qoy: 'الغنم', Bichin: 'القرد', Takigu: 'الدجاجة', It: 'الكلب', Tonguz: 'الخنزير' },
+    babylonianPDNote: 'التاريخ المرصود من جداول باركر وديبرشتاين (626 ق.م – 45 م).',
+    babylonianArithNote: 'التقريب الحسابي (خارج نطاق باركر وديبرشتاين). قد يختلف بـ ±1–2 يوم عن الملاحظة التاريخية.',
+    tabularNote: 'التقويم الإسلامي الجدولي (حسابي). قد يختلف بـ ±1–2 يوم عن التقويمات المرصودة.',
+    gregorianLabel: 'م',
+    julianLabel: 'يوليوسي',
+    hijriLabel: 'هـ',
+    gregorianMonths: [
+      'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+      'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
+    ],
+    romanMonths: [
+      'Ianuarius', 'Februarius', 'Martius', 'Aprilis', 'Maius', 'Iunius',
+      'Iulius', 'Augustus', 'September', 'October', 'November', 'December'
+    ],
+    hijriMonths: [
+      'محرم', 'صفر', 'ربيع الأول', 'ربيع الثاني',
+      'جمادى الأولى', 'جمادى الآخرة', 'رجب', 'شعبان',
+      'رمضان', 'شوال', 'ذو القعدة', 'ذو الحجة'
+    ],
+    copticMonths: [
+      'Thout', 'Paopi', 'Hathor', 'Koiak', 'Tobi', 'Meshir',
+      'Paremhat', 'Parmouti', 'Pashons', 'Paoni', 'Epip', 'Mesori', 'Epagomenai'
+    ],
+    ethiopianMonths: [
+      'Mäskäräm', 'Ţəqəmt', 'Hädar', 'Tahsas', 'Ţər', 'Yäkatit',
+      'Mägarit', 'Miyazya', 'Gənbot', 'Säne', 'Hamle', 'Nähase', 'Pagumän'
+    ],
+    persianMonths: [
+      'فروردين', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور',
+      'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'
+    ],
+    armenianMonths: [
+      'Navasard', 'Hoṙ', 'Sahmi', 'Trē', 'K'aloc'', 'Arac'',
+      'Mehekan', 'Areg', 'Ahekan', 'Mareri', 'Margac'', 'Hrotic'', 'Aweleac''
+    ],
+    byzantineMonths: [
+      'September', 'October', 'November', 'December', 'January', 'February',
+      'March', 'April', 'May', 'June', 'July', 'August'
+    ],
+    alexandrianMonths: [
+      'March', 'April', 'May', 'June', 'July', 'August',
+      'September', 'October', 'November', 'December', 'January', 'February'
+    ],
+    seleucidMonths: [
+      'October', 'November', 'December', 'January', 'February', 'March',
+      'April', 'May', 'June', 'July', 'August', 'September'
+    ],
+    seleucidBabMonths: [
+      'April', 'May', 'June', 'July', 'August', 'September',
+      'October', 'November', 'December', 'January', 'February', 'March'
+    ],
+    syriacMonths: [
+      'كانون الثاني', 'شباط', 'آذار', 'نيسان', 'أيار', 'حزيران',
+      'تموز', 'آب', 'أيلول', 'تشرين الأول', 'تشرين الثاني', 'كانون الأول'
+    ],
+    egyptianMonths: [
+      'Thoth', 'Phaophi', 'Athyr', 'Choiak', 'Tybi', 'Mechir',
+      'Phamenoth', 'Pharmuthi', 'Pachons', 'Payni', 'Epiphi', 'Mesore', 'Epagomenai'
+    ],
+    macedonianMonths: [
+      'Dios', 'Apellaios', 'Audynaios', 'Peritios', 'Dystros', 'Xanthikos',
+      'Artemisios', 'Daisios', 'Panemos', 'Loos', 'Gorpiaios', 'Hyperberetaios'
+    ],
+    hebrewMonths: [
+      'تشرי', 'حشوان', 'كسلو', 'تيفت', 'شيفاط',
+      'آدار', 'آدار الثاني', 'نيسان', 'إيار', 'سيوان', 'تموز', 'آب', 'إيلول'
+    ],
+    babylonianMonths: [
+      'Nisannu', 'Ayaru', 'Simanu', 'Du''uzu', 'Abu', 'Ululu',
+      'Tashritu', 'Araḫsamna', 'Kislimu', 'Ţebetu', 'Shabadu', 'Addaru', 'Addaru II'
+    ],
+    zodiacSigns: [
+      'الحمل', 'الثور', 'الجوزاء', 'السرطان', 'الأسد', 'العذراء',
+      'الميزان', 'العقرب', 'القوس', 'الجدي', 'الدلو', 'الحوت'
+    ],
+    zodiacLabel: 'علامة البروج',
+    contextualLabel: 'التقويمات المعاصرة',
+    otherCalendarsLabel: 'التحويلات الاستقرائية',
+    astroLabel: 'فلكي',
+    eclipseLabel: 'الكسوف الشمسي',
+    eclipseViewMap: 'عرض خريطة الكسوف',
+    eclipseViewCatalogue: 'كتالوج الكسوفات',
+    eclipseTypes: { T: 'كلي', A: 'حلقي', H: 'هجين' },
+    eclipseNotes: {},
+    moonPhaseLabel: 'طور القمر',
+    moonPhases: {
+      new: 'قمر جديد', waxingCrescent: 'هلال متنام', firstQuarter: 'التربيع الأول',
+      waxingGibbous: 'محدب متنام', full: 'بدر كامل', waningGibbous: 'محدب متناقص',
+      lastQuarter: 'التربيع الأخير', waningCrescent: 'هلال متناقص'
+    },
+    moonAge: 'يوم',
+    moonIllumination: 'مضاء',
+    cometLabel: 'مذنب',
+    cometNames: { halley: 'مذنب هالي', caesars: 'مذنب قيصر', great: 'المذنب العظيم' },
+    cometNotes: {},
+    supernovaLabel: 'مستعر أعظم',
+    supernovaNotes: {},
+    conjunctionLabel: 'التقاء',
+    conjunctionNotes: {},
+    planetNames: {
+      jupiter: 'المشتري', saturn: 'زحل', venus: 'الزهرة', mars: 'المريخ', mercury: 'عطارد'
+    },
+    weekdays: [
+      'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء',
+      'الخميس', 'الجمعة', 'السبت'
+    ],
+    errNoFromCal: 'أدخل تقويم المصدر (مثل هجري، يوليوسي، ميلادي)',
+    errNoToCal: 'أدخل التقويم الهدف',
+    errSameCal: 'يجب أن يكون تقويم المصدر والهدف مختلفين',
+    errNoYear: 'أدخل السنة',
+    errUnknownCal: 'تقويم غير معروف: ',
+    errInvalidMonth: 'الشهر يجب أن يكون 1–12',
+    errInvalidDay: 'يوم غير صحيح لهذا الشهر',
+    history: 'السجل',
+    copyResult: 'نسخ',
+    copied: 'تم النسخ!',
+    copyHelp: 'انقر {icon} للنسخ، أو اختر افتراضي',
+    copySetDefault: 'اجعله افتراضياً',
+    copyToggleOptions: 'تبديل الخيارات',
+    aboutCalendarTpl: 'عن تقويم {name} →',
+    clearHistory: 'امسح',
+    noHistory: 'لا توجد تحويلات بعد',
+    resultHint: 'أدخل سنة واضغط تحويل لرؤية النتيجة',
+    langName: 'العربية',
+    settings: 'الإعدادات',
+    language: 'اللغة',
+    theme: 'المظهر'
   }
 };

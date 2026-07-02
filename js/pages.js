@@ -451,6 +451,12 @@ const SEASON_LABELS = {
       if (t.nav[key]) a.textContent = t.nav[key];
     });
 
+    const i18n = I18N[lang];
+    document.querySelectorAll('[data-i18n]').forEach(node => {
+      const key = node.dataset.i18n;
+      if (i18n[key]) node.textContent = i18n[key];
+    });
+
     document.querySelectorAll('.lang-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.lang === lang);
     });

@@ -1529,8 +1529,8 @@ html[dir="rtl"] .btn-convert:hover svg {
 
 .contextual-list > div {
   display: grid;
-  grid-template-columns: 12em max-content 1fr;
-  gap: 0 var(--space-md, 1rem);
+  grid-template-columns: 12em 6em 1fr;
+  gap: 0 var(--space-lg, 1.5rem);
   align-items: baseline;
 }
 
@@ -2258,33 +2258,45 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
 /* === Astro content (inside .astro-content after expansion) === */
 .astro-content .result-zodiac,
 .astro-content .result-astro,
-.astro-content .result-meta,
-.astro-content .result-zodiac,
-.astro-content .result-astro,
 .astro-content .result-meta {
   margin: 0;
-  padding: 0.4em 0;
+  padding: 0.55em 0;
   background: transparent;
   border: 0;
   border-inline-start: 0;
+  border-block-end: 1px dashed var(--ink-200);
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.5em;
+  align-items: center;
+  gap: 0.6em;
 }
 
-.astro-content .result-zodiac,
+.astro-content > .result-zodiac:last-child,
+.astro-content > .result-astro:last-child,
+.astro-content > .result-meta:last-child {
+  border-block-end: 0;
+}
+
 .astro-content .result-zodiac {
   font-family: var(--brut-mono);
   font-size: 0.9rem;
   font-weight: 700;
   color: var(--brut-ink);
+  letter-spacing: 0.02em;
 }
 
 .astro-content .astro-icon {
-  font-size: 1rem;
-  color: var(--brut-ink);
   flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75em;
+  height: 1.75em;
+  font-size: 0.95rem;
+  color: var(--brut-ink);
+  background: var(--parchment-200);
+  border: 1px solid var(--ink-200);
+  border-radius: 50%;
 }
 
 .astro-content .astro-text {
@@ -2293,24 +2305,37 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
   font-weight: 600;
   color: var(--brut-ink);
   flex: 1 1 auto;
+  line-height: 1.35;
+}
+
+.astro-content .astro-text::first-letter {
+  text-transform: uppercase;
 }
 
 .astro-content .astro-detail {
   font-family: var(--brut-mono);
-  font-size: 0.7rem;
-  color: #777;
+  font-size: 0.68rem;
+  color: var(--ink-500);
   flex: 0 0 auto;
+  padding: 0.15em 0.5em;
+  border: 1px solid var(--ink-200);
+  border-radius: 2em;
+  background: var(--parchment-100);
+  white-space: nowrap;
 }
 
 .astro-content .astro-note {
   flex: 1 1 100%;
-  margin: 0.1em 0 0;
-  padding-inline-start: 1.5em;
+  margin: 0.35em 0 0;
+  padding: 0.4em 0.7em;
+  padding-inline-start: 0.7em;
+  border-inline-start: 2px solid var(--ink-200);
   font-family: var(--brut-mono);
   font-size: 0.68rem;
-  color: #888;
-  font-style: normal;
-  line-height: 1.5;
+  color: var(--ink-500);
+  font-style: italic;
+  line-height: 1.55;
+  background: var(--parchment-50, transparent);
 }
 
 /* Eclipse — invert as dark slab */

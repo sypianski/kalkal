@@ -3640,7 +3640,7 @@ html[dir="rtl"] .range-arrow {
 
 .main-content {
   padding: var(--space-2xl) var(--space-xl) var(--space-2xl);
-  max-width: 1100px;
+  max-width: 860px;
 }
 
 .main-content--prose {

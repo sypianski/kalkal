@@ -431,7 +431,6 @@
   const breakdownPanel = $('#breakdown-panel');
   const astroCard = $('#astro-card');
   const contextualCard = $('#contextual-card');
-  const outOfEraCard = $('#outofera-card');
   const errorPanel = $('#form-error');
   const appTitle = $('#app-title');
   const appSubtitle = $('#app-subtitle');
@@ -1836,26 +1835,8 @@
         contextualCard.hidden = true;
       }
 
-      // Out-of-era calendars tile (collapsed)
-      while (outOfEraCard.firstChild) outOfEraCard.removeChild(outOfEraCard.firstChild);
-      var ooePanel = buildOutOfEraPanel(contextInfo.jd, contextInfo.srcId, contextInfo.tgtId, t, contextInfo.jdEnd);
-      if (ooePanel) {
-        var ooeToggle = el('button', { type: 'button', class: 'tile-toggle', text: t.otherCalendarsLabel || 'Proleptic conversions' });
-        var ooeContent = el('div', { class: 'tile-content hidden' });
-        ooeContent.appendChild(ooePanel);
-        ooeToggle.addEventListener('click', function() {
-          ooeContent.classList.toggle('hidden');
-          ooeToggle.classList.toggle('active');
-        });
-        outOfEraCard.appendChild(ooeToggle);
-        outOfEraCard.appendChild(ooeContent);
-        outOfEraCard.hidden = false;
-      } else {
-        outOfEraCard.hidden = true;
-      }
     } else {
       contextualCard.hidden = true;
-      outOfEraCard.hidden = true;
     }
 
     // Astro card (collapsible tile — auto-expand if meaningful content beyond JDN)
@@ -1925,7 +1906,15 @@
   const historyList = $('#history-list');
   const historyPanel = $('#history-panel');
   const historyEmptyInstruction = $('#history-empty-instruction');
-  const historyClearBtn = $('#history-clear');
+  const historyToggle = $('#history-toggle');
+  const historyContent = $('#history-content');
+
+  if (historyToggle) {
+    historyToggle.addEventListener('click', function() {
+      historyContent.classList.toggle('hidden');
+      historyToggle.classList.toggle('active');
+    });
+  }
 
   function getHistory() {
     try { return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; }
@@ -2061,11 +2050,6 @@
     };
     if (entry.year) saveHistory(entry);
   }
-
-  historyClearBtn.addEventListener('click', () => {
-    localStorage.removeItem(HISTORY_KEY);
-    renderHistory();
-  });
 
   // ---- Events ----
 

@@ -163,19 +163,16 @@
         <section class="contextual-card" id="contextual-card" hidden>
         </section>
 
-        <section class="outofera-card" id="outofera-card" hidden>
-        </section>
-
         <div class="action-row" id="action-row">
           <section class="astro-card" id="astro-card" hidden>
           </section>
 
           <p class="history-empty-instruction" id="history-empty-instruction" data-i18n="historyEmptyInstruction">Use the menu on the left to pick calendars and enter a date.</p>
 
-          <section class="history-panel" id="history-panel">
-            <div class="history-content" id="history-content">
+          <section class="history-panel" id="history-panel" hidden>
+            <button type="button" class="tile-toggle active" id="history-toggle" data-i18n="history">History</button>
+            <div class="tile-content" id="history-content">
               <ul class="history-list" id="history-list"></ul>
-              <button class="history-clear" id="history-clear" data-i18n="selectHistory">Select part of history</button>
             </div>
           </section>
         </div>

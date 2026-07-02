@@ -118,6 +118,7 @@ html[dir="rtl"] .site-title {
 .header-inner {
   max-width: 860px;
   margin: 0 auto;
+  padding-inline: var(--space-xl);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -2111,7 +2112,8 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
 
 /* Shared toggle for all tiles */
 .tile-toggle {
-  display: block;
+  display: flex;
+  align-items: center;
   width: 100%;
   padding: var(--space-md) var(--space-xl);
   background: transparent;
@@ -2127,11 +2129,20 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
 }
 
 .tile-toggle::after {
-  content: ' \25BE';
+  content: '\25BE';
+  margin-left: auto;
+  margin-right: -0.4em;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: #999;
 }
 
 .tile-toggle.active::after {
-  content: ' \25B4';
+  content: '\25B4';
+}
+
+.tile-toggle:hover::after {
+  color: #000;
 }
 
 .tile-toggle:hover {
@@ -2428,12 +2439,26 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
   text-align: start;
 }
 
+.breakdown-toggle {
+  display: flex;
+  align-items: center;
+}
+
 .breakdown-toggle::after {
-  content: ' \25BE';
+  content: '\25BE';
+  margin-left: auto;
+  margin-right: -0.4em;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: #999;
 }
 
 .breakdown-toggle.active::after {
-  content: ' \25B4';
+  content: '\25B4';
+}
+
+.breakdown-toggle:hover::after {
+  color: #000;
 }
 
 .breakdown-toggle:hover {
@@ -6664,7 +6689,8 @@ body {
   flex: 1 1 auto;
 }
 
-.action-row > .astro-card[hidden] {
+.action-row > .astro-card[hidden],
+.action-row > .history-panel[hidden] {
   display: none;
 }
 

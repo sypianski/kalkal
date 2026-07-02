@@ -1533,7 +1533,7 @@ html[dir="rtl"] .btn-convert:hover svg {
 
 .contextual-list > div {
   display: grid;
-  grid-template-columns: 12em 6em 1fr;
+  grid-template-columns: 12rem 6rem 1fr;
   gap: 0 var(--space-lg, 1.5rem);
   align-items: baseline;
 }
@@ -3255,7 +3255,7 @@ html[dir="rtl"] .range-arrow {
 
 .history-entry {
   display: grid;
-  grid-template-columns: 12em 1fr;
+  grid-template-columns: 12rem 1fr;
   align-items: baseline;
   gap: 0 var(--space-lg, 1.5rem);
   width: 100%;
@@ -3361,8 +3361,9 @@ html[dir="rtl"] .range-arrow {
 .history-entry {
   flex: 1;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-sm);
+  grid-template-columns: 12rem 1fr;
+  gap: 0 var(--space-lg);
+  align-items: baseline;
   font-family: var(--font-display);
   font-size: 0.82rem;
   color: var(--ink-600);
@@ -3372,9 +3373,6 @@ html[dir="rtl"] .range-arrow {
   padding: 0.5em 0;
   cursor: pointer;
   transition: color 0.15s ease;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .history-src {

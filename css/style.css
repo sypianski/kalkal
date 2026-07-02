@@ -1529,9 +1529,14 @@ html[dir="rtl"] .btn-convert:hover svg {
 
 .contextual-list > div {
   display: grid;
-  grid-template-columns: minmax(7em, auto) auto 1fr;
+  grid-template-columns: 12em max-content 1fr;
   gap: 0 var(--space-md, 1rem);
   align-items: baseline;
+}
+
+.contextual-list dt {
+  overflow-wrap: anywhere;
+  min-width: 0;
 }
 
 .contextual-list .contextual-year {
@@ -3221,9 +3226,9 @@ html[dir="rtl"] .range-arrow {
 
 .history-entry {
   display: grid;
-  grid-template-columns: minmax(7em, auto) auto 1fr;
+  grid-template-columns: max-content 1fr;
   align-items: baseline;
-  gap: 0 var(--space-md, 1rem);
+  gap: 0 var(--space-sm, 0.5rem);
   width: 100%;
   text-align: start;
 }

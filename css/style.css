@@ -2787,8 +2787,16 @@ html[dir="rtl"] .bridge-end-label {
   text-align: end;
 }
 
+.copy-box .copy-box-toggle::after {
+  content: '▾';
+  font-size: 1.25rem;
+  line-height: 1;
+  color: #999;
+  margin-right: -0.4em;
+  display: inline-block;
+}
+
 .copy-box.expanded .copy-box-toggle::after { content: '▴'; }
-.copy-box .copy-box-toggle::after { content: '▾'; }
 
 .copy-box-toggle:hover {
   color: #000;

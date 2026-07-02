@@ -1148,6 +1148,11 @@ ${eclipseSvg}
     <a href="../index.html?cal=julian&y=${ecl.year}&m=${ecl.month}&d=${ecl.day}">Convert this date</a>
   </p>
 
+  <p class="ecl-map-note" style="font-size:0.78em;opacity:0.7;">
+    \u00a9 2025 <a href="../about.html">Jakub Sypia\u0144ski</a> \u2022
+    <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license">CC BY 4.0</a>
+  </p>
+
   </main>
 
   <script src="../js/pages.js"></script>

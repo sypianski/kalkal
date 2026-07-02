@@ -1915,6 +1915,7 @@
   const HISTORY_MAX = 20;
   const historyList = $('#history-list');
   const historyPanel = $('#history-panel');
+  const historyEmptyInstruction = $('#history-empty-instruction');
   const historyClearBtn = $('#history-clear');
   const historyToggle = $('#history-toggle');
   const historyContent = $('#history-content');
@@ -2005,10 +2006,16 @@
 
     if (hist.length === 0) {
       historyPanel.classList.remove('has-items');
-      historyList.appendChild(el('li', { class: 'history-empty', text: t.noHistory }));
+      historyPanel.hidden = true;
+      if (historyEmptyInstruction) {
+        historyEmptyInstruction.hidden = false;
+        historyEmptyInstruction.textContent = t.historyEmptyInstruction || t.noHistory;
+      }
       return;
     }
 
+    historyPanel.hidden = false;
+    if (historyEmptyInstruction) historyEmptyInstruction.hidden = true;
     historyPanel.classList.add('has-items');
     hist.forEach((entry, i) => {
       const summary = buildHistorySummary(entry);

@@ -189,6 +189,7 @@ html[dir="rtl"] .site-title {
   gap: 2px;
   max-width: 860px;
   margin: var(--space-sm) auto 0;
+  padding-inline: var(--space-xl);
 }
 
 /* Hide settings button and panel on desktop */
@@ -3245,6 +3246,14 @@ html[dir="rtl"] .range-arrow {
   font-family: var(--font-display);
   font-size: 0.82rem;
   color: var(--ink-300);
+  font-style: italic;
+  padding: var(--space-sm) 0;
+}
+
+.history-empty-instruction {
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  color: var(--ink-400);
   font-style: italic;
   padding: var(--space-sm) 0;
 }

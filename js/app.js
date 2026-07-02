@@ -670,7 +670,7 @@
     document.documentElement.dir = 'ltr';
 
     appTitle.textContent = t.appTitle;
-    appSubtitle.innerHTML = t.appSubtitle + ' <span style="color: red; font-weight: bold;">BETA</span>';
+    appSubtitle.textContent = t.appSubtitle;
 
     $$('[data-i18n]').forEach(node => {
       const key = node.dataset.i18n;

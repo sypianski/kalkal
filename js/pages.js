@@ -464,11 +464,13 @@ const SEASON_LABELS = {
     const titleEl = document.getElementById('page-title');
     const subtitleEl = document.getElementById('page-subtitle');
     if (titleEl) {
-      titleEl.textContent = t.appTitle;
-      if (subtitleEl && t.appSubtitle) subtitleEl.textContent = t.appSubtitle;
+      const appTitle = (i18n && i18n.appTitle) || 'Kalendar Kalkulator';
+      const appSubtitle = (i18n && i18n.appSubtitle) || 'Multi-calendar date converter';
+      titleEl.textContent = appTitle;
+      if (subtitleEl) subtitleEl.textContent = appSubtitle;
       const page = document.body.dataset.page;
       const perPage = { calendars: t.calPageTitle, methodology: t.methPageTitle, dynasties: t.dynPageTitle };
-      document.title = 'kalkal \u2014 ' + (perPage[page] || t.appTitle);
+      document.title = 'kalkal \u2014 ' + (perPage[page] || appTitle);
     }
 
     if (document.body.dataset.page === 'about' && t.about) {

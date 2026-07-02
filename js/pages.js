@@ -684,6 +684,11 @@ const SEASON_LABELS = {
 
   setPageLang(currentLang);
 
+  // On desktop, expand all calendar formulas by default
+  if (window.matchMedia('(min-width: 601px)').matches) {
+    document.querySelectorAll('details.cal-formula').forEach(d => { d.open = true; });
+  }
+
   // ---- Settings panel (mobile) ----
   (function() {
     var btn = document.getElementById('nav-settings-btn');

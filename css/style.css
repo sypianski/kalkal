@@ -306,9 +306,9 @@ html[dir="rtl"] .site-title {
 
 .cal-card .cal-warning {
   font-size: 0.82rem;
-  color: var(--ink-600, #555);
-  background: var(--bg-warn, #fef9e7);
-  border-inline-start: 3px solid var(--border-warn, #d4a017);
+  color: var(--ink-700);
+  background: var(--parchment-200);
+  border-inline-start: 3px solid var(--brut-ink, var(--ink-900));
   padding: var(--space-xs) var(--space-sm);
   margin-block: var(--space-xs);
 }
@@ -624,8 +624,9 @@ html[dir="rtl"] .site-title {
 .cal-formula-code {
   margin: 0;
   padding: var(--space-sm) var(--space-md);
-  background: var(--ink-900);
-  color: #d4c5a3;
+  background: var(--parchment-200);
+  color: var(--ink-800);
+  border: 1px solid var(--ink-300);
   border-radius: var(--radius-sm);
   font-family: var(--font-mono);
   font-size: 0.76rem;

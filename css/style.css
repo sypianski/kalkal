@@ -1707,12 +1707,16 @@ html[dir="rtl"] .btn-convert:hover svg {
 /* ---- Eclipses subpage ---- */
 
 .ecl-intro {
-  font-family: var(--font-display);
+  font-family: var(--brut-mono, var(--font-display));
   font-size: 1rem;
-  font-style: italic;
-  color: var(--ink-600);
+  font-weight: 900;
+  color: var(--brut-ink, var(--ink-900));
+  background: var(--brut-surface, var(--parchment-100));
+  border: 4px solid var(--brut-ink, var(--ink-900));
+  box-shadow: 6px 6px 0 var(--brut-ink, var(--ink-900));
+  padding: var(--space-lg) var(--space-xl);
   line-height: 1.7;
-  margin-block-end: var(--space-xl);
+  margin-block-end: var(--space-md);
 }
 
 /* --- Stats: individual tiles --- */
@@ -4995,7 +4999,7 @@ html[dir="rtl"] body .ecl-table tr.notable td:first-child {
   border: 4px solid var(--brut-ink);
   box-shadow: 6px 6px 0 var(--brut-ink);
   padding: var(--space-lg) var(--space-xl);
-  margin-block-end: var(--space-2xl);
+  margin-block-end: var(--space-md);
   line-height: 1.8;
   font-size: 1.05rem;
 }
@@ -5006,7 +5010,7 @@ html[dir="rtl"] body .ecl-table tr.notable td:first-child {
   border-radius: 0;
   box-shadow: 6px 6px 0 var(--brut-ink);
   padding: var(--space-lg) var(--space-lg);
-  margin-block-end: var(--space-lg);
+  margin-block-end: var(--space-md);
 }
 
 .meth-title {

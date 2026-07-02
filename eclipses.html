@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Charis+SIL:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Sans:wght@400;500;600&family=Noto+Sans+Mono:wght@400;500&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=35">
+  <link rel="stylesheet" href="css/style.css?v=36">
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#f0f0ec">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -260,7 +260,7 @@
 
     function pad2(n) { return n < 10 ? '0' + n : '' + n; }
     function pad4(n) { var s = '' + n; while (s.length < 4) s = '0' + s; return s; }
-    function nasaUrl(y, m, d) { var sign = y < 0 ? '-' : '+'; var yr = Math.abs(y); return 'https://eclipse.gsfc.nasa.gov/SEsearch/SEsearchmap.php?Ecl=' + sign + pad4(yr) + pad2(m) + pad2(d); }
+    function nasaUrl(y, m, d) { var start = Math.floor((y - 1) / 100) * 100 + 1; var end = start + 99; return 'https://eclipse.gsfc.nasa.gov/SEcat5/SE' + pad4(start) + '-' + pad4(end) + '.html'; }
     function converterUrl(y, m, d) { return 'index.html?cal=julian&y=' + y + '&m=' + m + '&d=' + d; }
 
     function formatDate(y, m, d, lang) {

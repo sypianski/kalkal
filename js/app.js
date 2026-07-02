@@ -1244,19 +1244,20 @@
 
     const table = el('table', { class: 'year-table' });
     table.appendChild(el('thead', null, el('tr', null,
-      el('th', { text: srcLabel }),
-      el('th', { text: tgtLabel + ' (' + (t.rangeStart || 'Start') + ')' }),
-      el('th', { text: tgtLabel + ' (' + (t.rangeEnd || 'End') + ')' }),
+      el('th', { text: shortCalName(src.id) }),
+      el('th', { text: shortCalName(tgt.id) + ' (' + (t.rangeStart || 'Start') + ')' }),
+      el('th', { text: shortCalName(tgt.id) + ' (' + (t.rangeEnd || 'End') + ')' }),
       el('th', { text: t.totalDays })
     )));
     const tbody = el('tbody');
     monthRows.forEach(row => {
-      tbody.appendChild(el('tr', null,
-        el('td', { class: 'month-name', text: row.srcName }),
-        el('td', { class: 'date-cell', text: row.startStr }),
-        el('td', { class: 'date-cell', text: row.endStr }),
-        el('td', { text: String(row.days) })
-      ));
+      var srcTd = el('td', { class: 'month-name' });
+      appendBoldYear(srcTd, row.srcName);
+      var startTd = el('td', { class: 'date-cell' });
+      appendBoldYear(startTd, row.startStr);
+      var endTd = el('td', { class: 'date-cell' });
+      appendBoldYear(endTd, row.endStr);
+      tbody.appendChild(el('tr', null, srcTd, startTd, endTd, el('td', { text: String(row.days) })));
     });
     table.appendChild(tbody);
 
@@ -1341,19 +1342,20 @@
 
     const table = el('table', { class: 'year-table' });
     table.appendChild(el('thead', null, el('tr', null,
-      el('th', { text: srcLabel }),
-      el('th', { text: tgtLabel + ' (' + (t.rangeStart || 'Start') + ')' }),
-      el('th', { text: tgtLabel + ' (' + (t.rangeEnd || 'End') + ')' }),
+      el('th', { text: shortCalName(src.id) }),
+      el('th', { text: shortCalName(tgt.id) + ' (' + (t.rangeStart || 'Start') + ')' }),
+      el('th', { text: shortCalName(tgt.id) + ' (' + (t.rangeEnd || 'End') + ')' }),
       el('th', { text: t.totalDays })
     )));
     const tbody = el('tbody');
     monthRows.forEach(row => {
-      tbody.appendChild(el('tr', null,
-        el('td', { class: 'month-name', text: row.srcName }),
-        el('td', { class: 'date-cell', text: row.startStr }),
-        el('td', { class: 'date-cell', text: row.endStr }),
-        el('td', { text: String(row.days) })
-      ));
+      var srcTd = el('td', { class: 'month-name' });
+      appendBoldYear(srcTd, row.srcName);
+      var startTd = el('td', { class: 'date-cell' });
+      appendBoldYear(startTd, row.startStr);
+      var endTd = el('td', { class: 'date-cell' });
+      appendBoldYear(endTd, row.endStr);
+      tbody.appendChild(el('tr', null, srcTd, startTd, endTd, el('td', { text: String(row.days) })));
     });
     table.appendChild(tbody);
 
@@ -1550,15 +1552,26 @@
   }
 
   // Build a <dd> that allows line-break before ' – ' via <wbr>, invisible when copied
+  function appendBoldYear(parent, part) {
+    var m = part.match(/^(.*?)(\d+)(\s*AUC)?$/);
+    if (!m) { parent.appendChild(document.createTextNode(part)); return; }
+    if (m[1]) parent.appendChild(document.createTextNode(m[1]));
+    var strong = document.createElement('strong');
+    strong.textContent = m[2];
+    parent.appendChild(strong);
+    if (m[3]) parent.appendChild(document.createTextNode(m[3]));
+  }
+
   function dateDd(dateStr) {
     var dd = document.createElement('dd');
     var dashIdx = dateStr.indexOf(' \u2013 ');
     if (dashIdx >= 0) {
-      dd.appendChild(document.createTextNode(dateStr.slice(0, dashIdx)));
+      appendBoldYear(dd, dateStr.slice(0, dashIdx));
       dd.appendChild(document.createElement('wbr'));
-      dd.appendChild(document.createTextNode(dateStr.slice(dashIdx)));
+      dd.appendChild(document.createTextNode(' \u2013 '));
+      appendBoldYear(dd, dateStr.slice(dashIdx + 3));
     } else {
-      dd.textContent = dateStr;
+      appendBoldYear(dd, dateStr);
     }
     return dd;
   }
@@ -1862,13 +1875,12 @@
       });
       var astroTitle = t.astroLabel || 'Astro';
       var startExpanded = hasMeaningful;
-      var astroHeader = el('div', { class: 'astro-header' + (startExpanded ? ' active' : '') });
-      var astroTitleEl = el('h2', { class: 'astro-title', text: astroTitle });
-      astroHeader.appendChild(astroTitleEl);
+      var astroHeader = el('button', { type: 'button', class: 'tile-toggle astro-toggle' + (startExpanded ? ' active' : '') });
+      astroHeader.appendChild(el('span', { class: 'astro-title-text', text: astroTitle }));
       if (astroHints.length > 0) {
         astroHeader.appendChild(el('span', { class: 'astro-hints', text: astroHints.join(' ') }));
       }
-      var astroContent = el('div', { class: 'astro-content' + (startExpanded ? '' : ' hidden') });
+      var astroContent = el('div', { class: 'tile-content astro-content' + (startExpanded ? '' : ' hidden') });
       astroElements.forEach(node => { if (node) astroContent.appendChild(node); });
       astroHeader.addEventListener('click', function() {
         astroContent.classList.toggle('hidden');

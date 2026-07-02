@@ -2171,46 +2171,29 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
   display: none;
 }
 
-.astro-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--space-md) var(--space-xl);
-  cursor: pointer;
-  min-height: 3.2em;
-  box-sizing: border-box;
+.astro-toggle {
+  gap: var(--space-sm);
 }
 
-.astro-title {
-  font-family: var(--font-body);
-  font-size: 0.72rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--ink-400);
-  margin: 0;
-  text-align: start;
+.astro-toggle .astro-title-text {
+  flex: 0 0 auto;
 }
 
-.astro-header::after {
-  content: '\25BE';
+.astro-toggle .astro-hints {
+  margin-left: var(--space-sm);
+  font-size: 0.95rem;
+  color: var(--ink-600);
+  letter-spacing: 0.15em;
+}
+
+.astro-toggle::after {
   margin-left: auto;
-  margin-right: -0.4em;
-  font-size: 1.25rem;
-  line-height: 1;
-  color: #999;
 }
 
-.astro-header.active::after {
-  content: '\25B4';
-}
-
-.astro-header:hover::after {
-  color: #000;
-}
-
-.astro-header:hover .astro-title {
-  color: var(--ink-700);
+.astro-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
 }
 
 .astro-hints {
@@ -4162,35 +4145,40 @@ html[dir="rtl"] body .copy-btn {
 
 /* Year table */
 .year-table {
-  border: 2px solid var(--brut-ink);
   margin-block-start: 0;
   width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
 }
 
 .year-table th {
-  background: var(--brut-ink);
-  color: #fff;
-  border-block-end: none;
-  padding: 0.6em var(--space-md);
-  font-weight: 700;
+  border-block-end: 1px solid var(--ink-300);
+  padding: 0.4em var(--space-sm);
+  font-weight: 600;
   font-size: 0.6rem;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
+  color: var(--ink-500);
+  text-align: start;
+  white-space: nowrap;
 }
 
 .year-table td {
-  border-block-end: 1px solid #ddd;
-  padding: 0.45em var(--space-md);
+  border: none;
+  padding: 0.35em var(--space-sm);
   font-weight: 500;
-  font-size: 0.8rem;
-}
-
-.year-table tr:last-child td {
-  border-block-end: none;
+  font-size: 0.78rem;
+  color: var(--ink-700);
 }
 
 .year-table .month-name {
   font-weight: 700;
+  color: var(--ink-800);
+}
+
+.year-table strong {
+  font-weight: 700;
+  color: var(--ink-900);
 }
 
 /* Eclipse result card */

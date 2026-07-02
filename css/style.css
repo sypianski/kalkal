@@ -193,6 +193,10 @@ html[dir="rtl"] .site-title {
   padding-inline: var(--space-xl);
 }
 
+.page-nav a:first-child {
+  padding-inline-start: 0;
+}
+
 /* Hide settings button and panel on desktop */
 .nav-settings-btn { display: none; }
 .settings-panel { display: none; }

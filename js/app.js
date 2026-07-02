@@ -1926,14 +1926,6 @@
   const historyPanel = $('#history-panel');
   const historyEmptyInstruction = $('#history-empty-instruction');
   const historyClearBtn = $('#history-clear');
-  const historyToggle = $('#history-toggle');
-  const historyContent = $('#history-content');
-
-  historyToggle.addEventListener('click', function(e) {
-    if (e.target === historyClearBtn) return;
-    historyContent.classList.toggle('hidden');
-    historyToggle.classList.toggle('active');
-  });
 
   function getHistory() {
     try { return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; }
@@ -2025,7 +2017,7 @@
 
     historyPanel.hidden = false;
     if (historyEmptyInstruction) historyEmptyInstruction.hidden = true;
-    historyPanel.classList.add('has-items');
+    historyPanel.classList.add('has-items', 'expanded');
     hist.forEach((entry, i) => {
       const summary = buildHistorySummary(entry);
       const li = el('li', { class: 'history-item' });

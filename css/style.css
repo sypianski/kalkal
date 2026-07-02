@@ -3193,7 +3193,6 @@ html[dir="rtl"] .range-arrow {
 
 .history-content {
   padding: var(--space-md) var(--space-xl);
-  border-block-start: 3px solid var(--brut-ink);
 }
 
 .history-content.hidden {
@@ -3251,24 +3250,21 @@ html[dir="rtl"] .range-arrow {
 }
 
 .history-clear {
+  display: block;
+  margin: var(--space-md) 0 0;
   font-family: var(--font-mono);
   font-size: 0.62rem;
   color: var(--ink-400);
   background: none;
   border: none;
-  padding: 0;
+  padding: var(--space-sm) 0 0;
   cursor: pointer;
-  transition: color 0.15s ease, border-color 0.15s ease;
-  display: none;
-}
-
-.history-panel.has-items .history-header.active .history-clear {
-  display: inline-block;
+  text-align: start;
+  transition: color 0.15s ease;
 }
 
 .history-clear:hover {
   color: var(--rust);
-  border-color: var(--rust);
 }
 
 .history-list {

@@ -116,7 +116,7 @@ html[dir="rtl"] .site-title {
 }
 
 .header-inner {
-  max-width: 860px;
+  max-width: 1100px;
   margin: 0 auto;
   padding-inline: var(--space-xl);
   display: flex;
@@ -188,7 +188,7 @@ html[dir="rtl"] .site-title {
 .page-nav {
   display: flex;
   gap: 2px;
-  max-width: 860px;
+  max-width: 1100px;
   margin: var(--space-sm) auto 0;
   padding-inline: var(--space-xl);
 }
@@ -3644,7 +3644,7 @@ html[dir="rtl"] .range-arrow {
 
 .main-content {
   padding: var(--space-2xl) var(--space-xl) var(--space-2xl);
-  max-width: 860px;
+  max-width: 1100px;
 }
 
 .main-content--prose {

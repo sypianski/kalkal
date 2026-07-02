@@ -451,7 +451,7 @@ const SEASON_LABELS = {
       if (t.nav[key]) a.textContent = t.nav[key];
     });
 
-    const i18n = I18N[lang];
+    const i18n = (typeof I18N !== 'undefined' && I18N[lang]) ? I18N[lang] : {};
     document.querySelectorAll('[data-i18n]').forEach(node => {
       const key = node.dataset.i18n;
       if (i18n[key]) node.textContent = i18n[key];
@@ -464,20 +464,11 @@ const SEASON_LABELS = {
     const titleEl = document.getElementById('page-title');
     const subtitleEl = document.getElementById('page-subtitle');
     if (titleEl) {
+      titleEl.textContent = t.appTitle;
+      if (subtitleEl && t.appSubtitle) subtitleEl.textContent = t.appSubtitle;
       const page = document.body.dataset.page;
-      if (page === 'calendars') {
-        titleEl.textContent = t.calPageTitle;
-        subtitleEl.textContent = t.calPageSubtitle;
-        document.title = 'kalkal \u2014 ' + t.calPageTitle;
-      } else if (page === 'methodology') {
-        titleEl.textContent = t.methPageTitle;
-        subtitleEl.textContent = t.methPageSubtitle;
-        document.title = 'kalkal \u2014 ' + t.methPageTitle;
-      } else if (page === 'dynasties') {
-        titleEl.textContent = t.dynPageTitle;
-        subtitleEl.textContent = t.dynPageSubtitle;
-        document.title = 'kalkal \u2014 ' + t.dynPageTitle;
-      }
+      const perPage = { calendars: t.calPageTitle, methodology: t.methPageTitle, dynasties: t.dynPageTitle };
+      document.title = 'kalkal \u2014 ' + (perPage[page] || t.appTitle);
     }
 
     if (document.body.dataset.page === 'about' && t.about) {

@@ -227,7 +227,7 @@ html[dir="rtl"] .site-title {
 /* ---- Prose / Subpage Content ---- */
 
 .main-content--prose {
-  max-width: 860px;
+  max-width: 1100px;
 }
 
 .cal-card {
@@ -469,10 +469,10 @@ html[dir="rtl"] .site-title {
 .cal-toc {
   margin-block-end: var(--space-2xl);
   padding: var(--space-lg) var(--space-xl);
-  background: var(--parchment-200);
-  border: var(--border-subtle);
-  border-radius: var(--radius-lg);
-  border-inline-start: 3px solid var(--rust);
+  background: var(--parchment-100);
+  border: 4px solid var(--brut-ink, var(--ink-900));
+  border-radius: 0;
+  box-shadow: 6px 6px 0 var(--brut-ink, var(--ink-900));
 }
 
 .cal-toc-list {
@@ -3654,12 +3654,12 @@ html[dir="rtl"] .range-arrow {
 }
 
 .main-content--prose {
-  padding: var(--space-2xl) var(--space-lg);
-  max-width: 1200px;
+  padding: var(--space-2xl) var(--space-xl);
+  max-width: 1100px;
 }
 
 body[data-page="calendars"] .main-content--prose {
-  max-width: 760px;
+  max-width: 1100px;
 }
 
 .form-date-row {
@@ -4991,6 +4991,10 @@ html[dir="rtl"] body .ecl-table tr.notable td:first-child {
   font-style: normal;
   font-weight: 900;
   color: var(--brut-ink);
+  background: var(--brut-surface, var(--parchment-100));
+  border: 4px solid var(--brut-ink);
+  box-shadow: 6px 6px 0 var(--brut-ink);
+  padding: var(--space-lg) var(--space-xl);
   margin-block-end: var(--space-2xl);
   line-height: 1.8;
   font-size: 1.05rem;
@@ -6623,9 +6627,9 @@ body {
 
 .meth-toc {
   background: var(--parchment-100);
-  border: var(--border-subtle);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
+  border: 4px solid var(--brut-ink, var(--ink-900));
+  border-radius: 0;
+  box-shadow: 6px 6px 0 var(--brut-ink, var(--ink-900));
   margin-block-end: var(--space-2xl);
   padding: var(--space-lg) var(--space-xl);
   overflow: hidden;

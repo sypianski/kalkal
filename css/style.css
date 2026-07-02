@@ -2,6 +2,10 @@
    Aesthetic: Brutalist — raw, high-contrast, monospace
    ================================================ */
 
+/* ECLIPSES TEMPORARILY HIDDEN — remove block to restore */
+a[href="eclipses.html"] { display: none !important; }
+.result-eclipse { display: none !important; }
+
 :root {
   /* Brutalist palette */
   --brut-accent: #000;

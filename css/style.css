@@ -2622,6 +2622,40 @@ html[dir="rtl"] .bridge-arrow {
   border-bottom-width: 3px;
 }
 
+/* Direction label cell carved out on the left of each bridge side */
+.bridge-end {
+  display: flex;
+  align-items: stretch;
+  gap: 0.5rem;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.bridge-end-label {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.52rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-400);
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  border-right: 2px solid var(--ink-300);
+  padding-right: 0.3rem;
+}
+
+html[dir="rtl"] .bridge-end-label {
+  transform: rotate(0deg);
+  border-right: none;
+  border-left: 2px solid var(--ink-300);
+  padding-right: 0;
+  padding-left: 0.3rem;
+}
+
 /* Small grey link to calendar description (calendars.html#<id>) */
 .cal-desc-link {
   display: inline-block;

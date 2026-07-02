@@ -13,6 +13,8 @@ const I18N = {
     fromCalendar: 'From',
     toDate: 'To (optional)',
     targetCalendar: 'Convert to',
+    labelFrom: 'From',
+    labelTo: 'To',
     calendarPlaceholder: 'Calendar...',
     calendars: {
       hijri: 'Hijri', julian: 'Julian', gregorian: 'AD (Julian\u2192Gregorian)',
@@ -402,6 +404,8 @@ const I18N = {
     fromCalendar: 'Z',
     toDate: 'Do (opcjonalnie)',
     targetCalendar: 'Przelicz na',
+    labelFrom: 'Od',
+    labelTo: 'Do',
     calendarPlaceholder: 'Kalendarz...',
     calendars: {
       hijri: 'Hid\u017cry', julian: 'Julia\u0144ski', gregorian: 'n.e. (julia\u0144ski\u2192gregoria\u0144ski)',
@@ -791,6 +795,8 @@ const I18N = {
     fromCalendar: 'De',
     toDate: '\u011cis (nedevige)',
     targetCalendar: 'Konverti al',
+    labelFrom: 'De',
+    labelTo: 'Al',
     calendarPlaceholder: 'Kalendaro...',
     calendars: {
       hijri: 'Hi\u011dra', julian: 'Julia', gregorian: 'p.K. (julia\u2192gregoria)',

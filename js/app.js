@@ -1587,22 +1587,35 @@
       if (jd < lo || jd > hi) continue;
       const result = cal.fromJD(jd);
       const names = cal.monthNames(t);
-      let dateStr;
+      let yearStr, datesStr;
       if (isRange) {
         const endResult = cal.fromJD(jdEnd);
-        const range = fmtDateRange(names, result, endResult);
-        dateStr = range.startStr + ' \u2013 ' + range.endStr;
+        yearStr = (result.year === endResult.year)
+          ? String(result.year)
+          : result.year + '\u2013' + endResult.year;
+        datesStr = '(' + result.day + ' ' + names[result.month - 1]
+          + ' \u2013 ' + endResult.day + ' ' + names[endResult.month - 1] + ')';
       } else if (id === 'roman' && result.day) {
-        dateStr = Cal.romanDayNotation(result.month, result.day, cal.isLeap(result.year)) + ' ' + result.year + ' AUC';
+        yearStr = result.year + ' AUC';
+        datesStr = '(' + Cal.romanDayNotation(result.month, result.day, cal.isLeap(result.year)) + ')';
       } else {
-        dateStr = result.day + ' ' + names[result.month - 1] + ' ' + result.year;
+        yearStr = String(result.year);
+        datesStr = '(' + result.day + ' ' + names[result.month - 1] + ')';
       }
-      matches.push([t.calendars[id], dateStr]);
+      matches.push([t.calendars[id], yearStr, datesStr]);
     }
     if (matches.length === 0) return null;
     const dl = el('dl', { class: 'contextual-list' });
-    matches.forEach(([label, value]) => {
-      dl.appendChild(el('div', null, el('dt', { text: label }), dateDd(value)));
+    matches.forEach(([label, yearStr, datesStr]) => {
+      var row = el('div');
+      row.appendChild(el('dt', { text: label }));
+      var yearDd = el('dd', { class: 'contextual-year' });
+      var strong = document.createElement('strong');
+      strong.textContent = yearStr;
+      yearDd.appendChild(strong);
+      row.appendChild(yearDd);
+      row.appendChild(el('dd', { class: 'contextual-dates', text: datesStr }));
+      dl.appendChild(row);
     });
     return dl;
   }

@@ -2089,7 +2089,6 @@
       historyPanel.hidden = true;
       if (historyEmptyInstruction) {
         historyEmptyInstruction.hidden = false;
-        historyEmptyInstruction.textContent = t.historyEmptyInstruction || t.noHistory;
       }
       if (historyClearBtn) historyClearBtn.hidden = true;
       return;

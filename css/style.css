@@ -2178,6 +2178,7 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
   margin-left: auto;
   margin-right: -0.4em;
   font-size: 1.25rem;
+  font-family: sans-serif;
   line-height: 1;
   color: #999;
 }
@@ -2521,6 +2522,7 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
   margin-left: auto;
   margin-right: -0.4em;
   font-size: 1.25rem;
+  font-family: sans-serif;
   line-height: 1;
   color: #999;
 }
@@ -3431,6 +3433,52 @@ html[dir="rtl"] .history-actions {
   color: var(--ink-400);
   font-style: italic;
   padding: var(--space-sm) 0;
+}
+
+/* ---- Intro Card (welcome state, shown before first conversion) ---- */
+
+.intro-card {
+  border: 4px solid var(--ink-900);
+  box-shadow: 6px 6px 0 var(--brut-shadow);
+  background: var(--parchment-100);
+  padding: var(--space-lg) var(--space-xl);
+  text-align: center;
+}
+
+.intro-desc {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  color: var(--ink-700);
+  line-height: 1.65;
+  margin-bottom: var(--space-md);
+}
+
+.intro-features {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-xs) var(--space-sm);
+  margin-bottom: var(--space-md);
+  padding: 0;
+}
+
+.intro-features li {
+  border: 1.5px solid var(--ink-700);
+  padding: 0.15rem 0.55rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-700);
+  white-space: nowrap;
+}
+
+.intro-step {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-400);
+  border-top: 2px solid var(--parchment-200);
+  padding-top: var(--space-sm);
+  margin-top: var(--space-xs);
 }
 
 .history-item {

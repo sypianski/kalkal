@@ -304,7 +304,7 @@ html[dir="rtl"] .site-title {
 }
 
 .cal-header {
-  margin-block-end: var(--space-md);
+  margin-block-end: 1.25rem;
 }
 
 .cal-name {
@@ -345,7 +345,7 @@ html[dir="rtl"] .site-title {
   font-size: 0.9rem;
   color: var(--ink-700);
   line-height: 1.7;
-  margin-block-end: var(--space-sm);
+  margin-block-end: 0.8rem;
 }
 
 .cal-card .cal-intro {
@@ -354,14 +354,15 @@ html[dir="rtl"] .site-title {
   font-weight: 400;
   font-style: italic;
   color: var(--ink-600);
+  margin-block-end: var(--space-md);
 }
 
 .cal-card .cal-months {
   font-size: 0.82rem;
   color: var(--ink-500);
   border-block-start: var(--border-subtle);
-  padding-block-start: var(--space-sm);
-  margin-block-start: var(--space-sm);
+  padding-block-start: var(--space-md);
+  margin-block-start: var(--space-md);
 }
 
 .cal-formula-math .katex-display {
@@ -369,11 +370,11 @@ html[dir="rtl"] .site-title {
 }
 
 .cal-variants-list {
-  margin-block: var(--space-sm);
+  margin-block: var(--space-md);
   padding-inline-start: var(--space-md);
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
+  gap: var(--space-sm);
 }
 
 .cal-variants-list li {
@@ -400,7 +401,7 @@ html[dir="rtl"] .site-title {
   color: var(--ink-600);
   border-inline-start: 3px solid var(--gold);
   padding-inline-start: var(--space-sm);
-  margin-block-start: var(--space-sm);
+  margin-block-start: var(--space-md);
   font-style: italic;
 }
 
@@ -659,7 +660,7 @@ html[dir="rtl"] .site-title {
 /* ---- Formula sections ---- */
 
 .cal-formula {
-  margin-block: var(--space-md);
+  margin-block: 1.5rem var(--space-md);
   border-radius: var(--radius-md);
   background: var(--parchment-200);
 }
@@ -676,12 +677,12 @@ html[dir="rtl"] .site-title {
 }
 
 .cal-formula-content {
-  padding: 0 var(--space-md) var(--space-md);
+  padding: 0 var(--space-md) var(--space-lg);
 }
 
 .cal-formula-math {
   margin-block-end: var(--space-md);
-  padding: var(--space-sm) var(--space-md);
+  padding: var(--space-md);
   background: var(--parchment-100);
   border-radius: var(--radius-sm);
   border-inline-start: 2px solid var(--gold);
@@ -3940,7 +3941,6 @@ body[data-page="calendars"] .main-content--prose {
   border: 3px solid #000;
   border-radius: 0;
   box-shadow: 8px 8px 0 #242220;
-  flex: 1;
 }
 
 .refine-card {
@@ -5072,7 +5072,7 @@ html[dir="rtl"] body .ecl-table tr.notable td:first-child {
 .cal-formula {
   border-radius: 0;
   background: #fff;
-  margin-block: var(--space-md);
+  margin-block: 1.5rem var(--space-md);
 }
 
 .cal-formula-heading {

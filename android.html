@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pl" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>kalkal — aplikacja Android</title>
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/style.css?v=40">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#f0f0ec">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="kalkal">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <style>
+    /* Minimal additions — nothing in style.css covers email input + form button */
+    .beta-form { margin-block-start: var(--space-lg); }
+
+    .beta-input {
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--ink-900);
+      background: transparent;
+      border: none;
+      border-block-end: 2px solid var(--ink-300);
+      border-radius: 0;
+      padding: 0.4em 0;
+      outline: none;
+      transition: border-color 0.2s ease;
+      margin-block-end: var(--space-lg);
+    }
+    .beta-input:focus { border-color: var(--ink-900); }
+    .beta-input::placeholder { color: var(--ink-400); }
+
+    /* about-link--primary is for <a>, reset for <button> */
+    button.about-link {
+      width: 100%;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .beta-thanks {
+      display: none;
+      font-family: var(--brut-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-900);
+      padding: 0.75em 1em;
+      border: 2px solid var(--ink-900);
+      background: var(--parchment-200);
+      margin-block-start: var(--space-sm);
+    }
+
+    .colophon-divider {
+      border: none;
+      border-block-start: 1px solid var(--ink-300);
+      margin: var(--space-lg) 0;
+    }
+  </style>
+</head>
+<body data-page="android">
+
+  <div class="page-grain"></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-text">
+          <h1 class="site-title" id="page-title">Kalendar Kalkulator</h1>
+          <p class="site-subtitle" id="page-subtitle">Multi-calendar date converter</p>
+        </div>
+      </div>
+    </div>
+    <nav class="page-nav" aria-label="Pages">
+      <a href="index.html" data-nav="converter">Converter</a>
+      <a href="calendars.html" data-nav="calendars">Calendars</a>
+      <a href="methodology.html" data-nav="methodology">Methodology</a>
+      <a href="settings.html">Settings</a>
+      <a href="about.html">Author</a>
+    </nav>
+  </header>
+
+  <main class="about-page">
+    <article class="colophon">
+
+      <div class="colophon-band">
+        <span class="colophon-band-code">// ANDROID</span>
+        <span class="colophon-band-id">BETA · TESTERZY</span>
+      </div>
+
+      <div class="colophon-body">
+        <h1 class="colophon-name">Aplikacja<br><span>na Androida</span></h1>
+
+        <dl class="colophon-meta">
+          <div class="colophon-row">
+            <dt>status</dt>
+            <dd>w przygotowaniu</dd>
+          </div>
+          <div class="colophon-row">
+            <dt>platforma</dt>
+            <dd>Android · Google Play</dd>
+          </div>
+          <div class="colophon-row">
+            <dt>dostęp</dt>
+            <dd>zamknięte testy beta</dd>
+          </div>
+        </dl>
+
+        <p class="colophon-note">
+          Pracuję nad natywną aplikacją kalkal na Androida — konwerter dat,
+          20 systemów kalendarzowych, cztery języki. Tak jak wersja webowa,
+          ale przygotowana pod telefon.
+        </p>
+
+        <p class="colophon-note">
+          Ponieważ to moja pierwsza aplikacja w Google Play, Google wymaga
+          ode mnie zebrania grupy testerów przed otwarciem publicznego dostępu.
+          Jeśli chcesz przetestować aplikację, podaj niżej maila
+          powiązanego z Twoim kontem Google&nbsp;Play&nbsp;Store.
+          Wyślę Ci zaproszenie do programu testowego.
+        </p>
+
+        <hr class="colophon-divider">
+
+        <form
+          id="beta-form"
+          class="beta-form"
+          action="https://formspree.io/f/YOUR_FORM_ID"
+          method="POST"
+          novalidate
+        >
+          <input type="hidden" name="_subject" value="kalkal Android — zgłoszenie testera">
+
+          <label class="colophon-row" style="display:block; border:none; padding:0; margin-block-end:0.4em;">
+            <span style="font-family:var(--brut-mono);font-size:0.62rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-500);">
+              Mail z konta Google Play Store
+            </span>
+          </label>
+          <input
+            class="beta-input"
+            type="email"
+            name="email"
+            id="beta-email"
+            placeholder="twoj@gmail.com"
+            required
+            autocomplete="email"
+          >
+
+          <div class="about-links">
+            <button type="submit" class="about-link about-link--primary">
+              <span class="about-link-arrow" aria-hidden="true">&#8594;</span>
+              Zgłoś się jako tester
+            </button>
+          </div>
+
+          <div class="beta-thanks" id="beta-thanks" role="status">
+            ✓ Zapisano — odezwę się, gdy aplikacja będzie gotowa do testów.
+          </div>
+        </form>
+      </div>
+
+    </article>
+  </main>
+
+  <script>
+    (function () {
+      var form = document.getElementById('beta-form');
+      var thanks = document.getElementById('beta-thanks');
+      if (!form || !thanks) return;
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var btn = form.querySelector('button[type=submit]');
+        if (btn) btn.disabled = true;
+
+        fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { 'Accept': 'application/json' }
+        }).then(function (res) {
+          if (res.ok) {
+            form.querySelector('.about-links').style.display = 'none';
+            form.querySelector('.beta-input').style.display = 'none';
+            form.querySelector('label').style.display = 'none';
+            thanks.style.display = 'block';
+          } else {
+            if (btn) btn.disabled = false;
+            res.json().then(function (d) {
+              alert(d.errors ? d.errors.map(function (err) { return err.message; }).join(', ') : 'Błąd. Spróbuj ponownie.');
+            }).catch(function () { alert('Błąd. Spróbuj ponownie.'); });
+          }
+        }).catch(function () {
+          if (btn) btn.disabled = false;
+          alert('Błąd sieci. Spróbuj ponownie.');
+        });
+      });
+    })();
+  </script>
+
+</body>
+</html>

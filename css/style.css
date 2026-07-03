@@ -3500,6 +3500,18 @@ html[dir="rtl"] .history-actions {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  position: relative;
+}
+
+.intro-card.is-clipped::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40%;
+  background: linear-gradient(to bottom, transparent, var(--parchment-100));
+  pointer-events: none;
 }
 
 .intro-card[hidden] {

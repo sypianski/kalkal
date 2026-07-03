@@ -35,7 +35,8 @@ const I18N = {
       iranian: 'Iranian',
       semitic: 'Semitic / Near Eastern',
       african: 'African',
-      grecoRoman: 'Greco-Roman'
+      grecoRoman: 'Greco-Roman',
+      scientific: 'Scientific'
     },
     year: 'Year',
     month: 'Month',
@@ -457,7 +458,8 @@ const I18N = {
       iranian: 'Ira\u0144skie',
       semitic: 'Semickie / bliskowschodnie',
       african: 'Afryka\u0144skie',
-      grecoRoman: 'Grecko-rzymskie'
+      grecoRoman: 'Grecko-rzymskie',
+      scientific: 'Naukowe'
     },
     year: 'Rok',
     month: 'Miesi\u0105c',
@@ -883,7 +885,8 @@ const I18N = {
       iranian: 'Irana',
       semitic: 'Semida / orientproksima',
       african: 'Afrika',
-      grecoRoman: 'Grek-romia'
+      grecoRoman: 'Grek-romia',
+      scientific: 'Scienca'
     },
     year: 'Jaro',
     month: 'Monato',

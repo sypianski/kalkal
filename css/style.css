@@ -6031,7 +6031,6 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0.25em;
     padding: 0.5em 0.1em 0.4em !important;
     min-height: 72px !important;
     font-family: var(--brut-mono) !important;
@@ -6056,6 +6055,10 @@ body {
   }
   .nav-settings-btn::before {
     content: "\2699";
+    display: block !important;
+    font-size: 1.5rem !important;
+    line-height: 1 !important;
+    margin-bottom: 0.3em !important;
   }
   .nav-settings-btn:hover { color: #fff !important; }
 

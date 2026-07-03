@@ -2946,7 +2946,7 @@ html[dir="rtl"] .bridge-end-label {
   }
   .copy-box {
     border-width: 2.5px !important;
-    box-shadow: 5px 5px 0 #000 !important;
+    box-shadow: 5px 5px 0 #242220 !important;
   }
   .copy-box-title {
     min-height: 58px !important;
@@ -3745,7 +3745,7 @@ body[data-page="calendars"] .main-content--prose {
 
 /* ---- Header: dark slab, rule underneath ---- */
 .site-header {
-  background: #242220;
+  background: #000;
   border-block-end: none;
   padding: var(--space-lg) var(--space-xl) var(--space-md);
 }
@@ -3812,17 +3812,17 @@ body[data-page="calendars"] .main-content--prose {
 
 /* ---- Left card: dense control panel ---- */
 .converter-card {
-  background: #242220;
-  border: 3px solid #242220;
+  background: #000;
+  border: 3px solid #000;
   border-radius: 0;
-  box-shadow: 8px 8px 0 #000;
+  box-shadow: 8px 8px 0 #242220;
 }
 
 .refine-card {
   background: var(--brut-surface);
   border: 3px solid #000;
   border-radius: 0;
-  box-shadow: 8px 8px 0 #000;
+  box-shadow: 8px 8px 0 #242220;
   padding: var(--space-lg) var(--space-xl);
 }
 
@@ -3893,7 +3893,7 @@ body[data-page="calendars"] .main-content--prose {
 
 .converter-card .input-cal:focus {
   border-color: #fff;
-  background: #242220;
+  background: #000;
 }
 
 .converter-card .input-num {
@@ -3909,7 +3909,7 @@ body[data-page="calendars"] .main-content--prose {
 
 .converter-card .input-num:focus {
   border-color: #fff;
-  background: #242220;
+  background: #000;
 }
 
 /* Other (non-card) inputs keep default brutalist style */
@@ -4026,7 +4026,7 @@ body[data-page="calendars"] .main-content--prose {
   background: var(--brut-surface);
   border: 3px solid #000;
   border-radius: 0;
-  box-shadow: 8px 8px 0 #000;
+  box-shadow: 8px 8px 0 #242220;
   margin-block-start: 0;
 }
 
@@ -4035,7 +4035,7 @@ body[data-page="calendars"] .main-content--prose {
   background: var(--brut-surface);
   border: 3px solid var(--brut-ink);
   border-radius: 0;
-  box-shadow: 8px 8px 0 #000;
+  box-shadow: 8px 8px 0 #242220;
 }
 
 .breakdown-toggle {
@@ -4081,7 +4081,7 @@ body[data-page="calendars"] .main-content--prose {
   background: var(--brut-surface);
   border: 3px solid var(--brut-ink);
   border-radius: 0;
-  box-shadow: 8px 8px 0 #000;
+  box-shadow: 8px 8px 0 #242220;
   padding: var(--space-md) var(--space-xl);
 }
 
@@ -4103,7 +4103,7 @@ body[data-page="calendars"] .main-content--prose {
   background: var(--brut-surface);
   border: 3px solid var(--brut-ink);
   border-radius: 0;
-  box-shadow: 8px 8px 0 #000;
+  box-shadow: 8px 8px 0 #242220;
 }
 
 /* Unified tile toggle (brutalist) */
@@ -4123,7 +4123,7 @@ body[data-page="calendars"] .main-content--prose {
   background: var(--brut-surface);
   border: 3px solid var(--brut-ink);
   border-radius: 0;
-  box-shadow: 8px 8px 0 #000;
+  box-shadow: 8px 8px 0 #242220;
   padding: 0;
 }
 
@@ -4718,7 +4718,7 @@ html[dir="rtl"] body .ecl-table tr.notable td:first-child {
   background: var(--brut-surface);
   border: 3px solid var(--brut-ink);
   border-radius: 0;
-  box-shadow: 8px 8px 0 #000;
+  box-shadow: 8px 8px 0 #242220;
   padding: 0;
 }
 
@@ -4977,7 +4977,7 @@ html[dir="rtl"] body .ecl-table tr.notable td:first-child {
 }
 
 .cal-formula-code {
-  background: #242220;
+  background: #000;
   color: #eee;
   border-radius: 0;
   border: none;
@@ -5616,7 +5616,7 @@ body {
   /* Converter card (black form) */
   .converter-card {
     border-width: 2px !important;
-    box-shadow: 4px 4px 0 #000 !important;
+    box-shadow: 4px 4px 0 #242220 !important;
     max-width: 100%;
   }
 
@@ -5650,7 +5650,7 @@ body {
   .refine-card {
     padding: 0.5em 0.7em !important;
     border-width: 2px !important;
-    box-shadow: 4px 4px 0 #000 !important;
+    box-shadow: 4px 4px 0 #242220 !important;
     max-width: 100%;
   }
 
@@ -5672,7 +5672,7 @@ body {
   .result-panel {
     max-width: 100%;
     border-width: 2px !important;
-    box-shadow: 4px 4px 0 #000 !important;
+    box-shadow: 4px 4px 0 #242220 !important;
   }
 
   .result-body {
@@ -5779,7 +5779,7 @@ body {
   .astro-card,
   .breakdown-card {
     border-width: 2px !important;
-    box-shadow: 4px 4px 0 #000 !important;
+    box-shadow: 4px 4px 0 #242220 !important;
     max-width: 100%;
     overflow: hidden;
   }
@@ -5959,7 +5959,7 @@ body {
     left: 0;
     right: 0;
     z-index: 9999;
-    background: #242220;
+    background: #000;
     border-top: 2px solid #333;
     padding: 1rem 1rem calc(1rem + env(safe-area-inset-bottom, 0px));
     transform: translateY(100%);
@@ -6109,7 +6109,7 @@ body {
   .to-calendar-field {
     background: var(--parchment-100) !important;
     border: 2.5px solid #000 !important;
-    box-shadow: 5px 5px 0 #000 !important;
+    box-shadow: 5px 5px 0 #242220 !important;
     padding: 18px 14px 12px !important;
     margin: 0 !important;
     position: relative !important;
@@ -6230,7 +6230,7 @@ body {
   /* Autocomplete dropdown — appended to body, positioned via JS */
   .cal-suggestions {
     border: 2.5px solid #000 !important;
-    box-shadow: 5px 5px 0 #000 !important;
+    box-shadow: 5px 5px 0 #242220 !important;
   }
 
   /* Month field: pointer cursor + dropdown chevron indicator */
@@ -6284,7 +6284,7 @@ body {
     color: #fff !important;
     background: #000 !important;
     border: 2.5px solid #000 !important;
-    box-shadow: 5px 5px 0 #000, inset 0 0 0 2px #000 !important;
+    box-shadow: 5px 5px 0 #242220, inset 0 0 0 2px #000 !important;
     padding: 0 1.3em !important;
     gap: 0 !important;
     justify-content: space-between !important;
@@ -6293,7 +6293,7 @@ body {
   }
   .btn-convert:active {
     transform: translate(3px, 3px) !important;
-    box-shadow: 2px 2px 0 #000, inset 0 0 0 2px #000 !important;
+    box-shadow: 2px 2px 0 #242220, inset 0 0 0 2px #000 !important;
   }
   .btn-convert svg {
     width: 22px !important;
@@ -6305,7 +6305,7 @@ body {
   .result-panel {
     background: var(--parchment-100) !important;
     border: 3px solid #000 !important;
-    box-shadow: 6px 6px 0 #000 !important;
+    box-shadow: 6px 6px 0 #242220 !important;
     margin: 6px 0 0 0 !important;
     padding: 0 !important;
     max-width: 100% !important;
@@ -6439,7 +6439,7 @@ body {
   /* ---- Astro card: collapsed toggle styled like Convert button ---- */
   .astro-card {
     border: 2.5px solid #000 !important;
-    box-shadow: 5px 5px 0 #000 !important;
+    box-shadow: 5px 5px 0 #242220 !important;
     margin: 0 !important;
     max-width: 100% !important;
     background: var(--parchment-100) !important;
@@ -6464,7 +6464,7 @@ body {
   .history-panel {
     margin: 0 !important;
     border: 2.5px solid #000 !important;
-    box-shadow: 5px 5px 0 #000 !important;
+    box-shadow: 5px 5px 0 #242220 !important;
     background: var(--parchment-100) !important;
     padding: 0 !important;
   }

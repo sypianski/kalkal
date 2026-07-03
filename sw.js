@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'kalkal-v41';
+const CACHE_VERSION = 'kalkal-v42';
 // Relative to the SW scope so it works under a subdirectory mount
 // (e.g. /kalkal/). Absolute '/...' paths pointed at the origin root and
 // 404'd here, which aborted addAll and left the old SW serving stale builds.
@@ -10,6 +10,7 @@ const CORE_ASSETS = [
   './eclipses.html',
   './dynasties.html',
   './about.html',
+  './css/fonts.css',
   './css/style.css',
   './js/hijri.js',
   './js/app.js',
@@ -55,24 +56,6 @@ self.addEventListener('fetch', event => {
 
   // Bypass /kalkal/beta/ — Flutter app has its own service worker.
   if (url.pathname.startsWith('/kalkal/beta/') || url.pathname === '/kalkal/beta') return;
-
-  // Google Fonts: cache after first fetch
-  if (url.hostname.includes('fonts.googleapis.com') ||
-      url.hostname.includes('fonts.gstatic.com')) {
-    event.respondWith(
-      caches.match(event.request).then(cached => {
-        const fetched = fetch(event.request).then(response => {
-          if (response.ok) {
-            const clone = response.clone();
-            caches.open(CACHE_VERSION).then(cache => cache.put(event.request, clone));
-          }
-          return response;
-        });
-        return cached || fetched;
-      })
-    );
-    return;
-  }
 
   // Large files (eclipse data, maps, KaTeX): lazy cache on demand
   if (url.pathname.includes('/maps/') ||

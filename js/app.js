@@ -2020,6 +2020,7 @@
   const historyList = $('#history-list');
   const historyPanel = $('#history-panel');
   const historyEmptyInstruction = $('#history-empty-instruction');
+  const mobileTitleBox = $('#mobile-title-box');
   const historyToggle = $('#history-toggle');
   const historyContent = $('#history-content');
   const historyClearBtn = $('#history-clear-btn');
@@ -2122,15 +2123,15 @@
     if (hist.length === 0) {
       historyPanel.classList.remove('has-items');
       historyPanel.hidden = true;
-      if (historyEmptyInstruction) {
-        historyEmptyInstruction.hidden = false;
-      }
+      if (historyEmptyInstruction) historyEmptyInstruction.hidden = false;
+      if (mobileTitleBox) mobileTitleBox.hidden = false;
       if (historyClearBtn) historyClearBtn.hidden = true;
       return;
     }
 
     historyPanel.hidden = false;
     if (historyEmptyInstruction) historyEmptyInstruction.hidden = true;
+    if (mobileTitleBox) mobileTitleBox.hidden = true;
     historyPanel.classList.add('has-items', 'expanded');
     const conversionVisible = resultPanel && resultPanel.classList.contains('has-result');
     if (conversionVisible) {
@@ -2192,12 +2193,14 @@
 
   // ---- Events ----
 
-  langSwitcher.addEventListener('click', e => {
-    const btn = e.target.closest('.lang-btn');
-    if (!btn) return;
-    setLang(btn.dataset.lang);
-    renderHistory();
-  });
+  if (langSwitcher) {
+    langSwitcher.addEventListener('click', e => {
+      const btn = e.target.closest('.lang-btn');
+      if (!btn) return;
+      setLang(btn.dataset.lang);
+      renderHistory();
+    });
+  }
 
   form.addEventListener('submit', e => {
     e.preventDefault();

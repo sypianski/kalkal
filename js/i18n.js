@@ -832,7 +832,7 @@ const I18N = {
     theme: 'Motyw',
     variantEastCivil: 'cywilny wschodni (IIa)',
     variantWestCivil: 'cywilny zachodni (IIIa)',
-    variantConstantinople: 'Konstantynopol',
+    variantConstantinople: 'konstantynopolitański',
     variantAlexandrian: 'aleksandryjski',
     variantMacedonian: 'macedo\u0144ski',
     variantBabylonian: 'babilo\u0144ski',

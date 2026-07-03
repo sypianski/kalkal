@@ -233,8 +233,6 @@ html[dir="rtl"] .site-title {
 /* ---- Settings page ---- */
 
 .settings-page {
-  max-width: 640px;
-  margin: 0 auto;
   padding: var(--space-xl) 0;
 }
 

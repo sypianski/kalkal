@@ -3,7 +3,7 @@
 
 const PageI18N = {
   en: {
-    nav: { converter: 'Converter', calendars: 'Calendars', methodology: 'Methodology', dynasties: 'Regnal Tables', eclipses: 'Eclipses' },
+    nav: { converter: 'Converter', calendars: 'Calendars', methodology: 'Methodology', dynasties: 'Regnal Tables' },
     calPageTitle: 'Calendar Systems',
     dynPageTitle: 'Regnal Tables',
     dynPageSubtitle: 'Chronological tables of rulers and dynasties',
@@ -172,7 +172,7 @@ const PageI18N = {
   },
 
   pl: {
-    nav: { converter: 'Konwerter', calendars: 'Kalendarze', methodology: 'Metodologia', dynasties: 'Tablice panowa\u0144', eclipses: 'Za\u0107mienia' },
+    nav: { converter: 'Konwerter', calendars: 'Kalendarze', methodology: 'Metodologia', dynasties: 'Tablice panowa\u0144' },
     calPageTitle: 'Systemy kalendarzowe',
     dynPageTitle: 'Tablice panowa\u0144',
     dynPageSubtitle: 'Tablice chronologiczne w\u0142adc\u00f3w i dynastii',
@@ -323,7 +323,7 @@ const PageI18N = {
   },
 
   eo: {
-    nav: { converter: 'Konvertilo', calendars: 'Kalendaroj', methodology: 'Metodologio', dynasties: 'Regnotabeloj', eclipses: 'Eklipsoj' },
+    nav: { converter: 'Konvertilo', calendars: 'Kalendaroj', methodology: 'Metodologio', dynasties: 'Regnotabeloj' },
     calPageTitle: 'Kalendarsistemoj',
     dynPageTitle: 'Regnotabeloj',
     dynPageSubtitle: 'Kronologiaj tabeloj de regantoj kaj dinastioj',

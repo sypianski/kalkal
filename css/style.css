@@ -9,6 +9,7 @@
   --brut-bg: #f0f0ec;
   --brut-surface: #fff;
   --brut-ink: #000;
+  --brut-shadow: #242220;
   --brut-muted: #555;
   --brut-dim: #888;
   --brut-border: #000;
@@ -473,7 +474,7 @@ html[dir="rtl"] .site-title {
   background: var(--parchment-100);
   border: 4px solid var(--brut-ink, var(--ink-900));
   border-radius: 0;
-  box-shadow: 6px 6px 0 var(--brut-ink, var(--ink-900));
+  box-shadow: 6px 6px 0 var(--brut-shadow));
 }
 
 .cal-toc-list {
@@ -1728,7 +1729,7 @@ html[dir="rtl"] .btn-convert:hover svg {
   color: var(--brut-ink, var(--ink-900));
   background: var(--brut-surface, var(--parchment-100));
   border: 4px solid var(--brut-ink, var(--ink-900));
-  box-shadow: 6px 6px 0 var(--brut-ink, var(--ink-900));
+  box-shadow: 6px 6px 0 var(--brut-shadow));
   padding: var(--space-lg) var(--space-xl);
   line-height: 1.7;
   margin-block-end: var(--space-md);
@@ -2054,7 +2055,7 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
   background: var(--parchment-100);
   border: 4px solid var(--ink-900);
   border-radius: var(--radius-lg);
-  box-shadow: 6px 6px 0 var(--ink-900);
+  box-shadow: 6px 6px 0 var(--brut-shadow);
   margin-block-start: var(--space-md);
 }
 
@@ -2781,7 +2782,7 @@ html[dir="rtl"] .bridge-end-label {
   background: var(--brut-surface);
   border: 3px solid var(--brut-ink);
   border-radius: 0;
-  box-shadow: 8px 8px 0 var(--brut-ink);
+  box-shadow: 8px 8px 0 var(--brut-shadow);
   overflow: hidden;
 }
 
@@ -4443,7 +4444,7 @@ html[dir="rtl"] body .copy-btn {
   background: var(--brut-surface);
   border: 3px solid var(--brut-ink);
   border-radius: 0;
-  box-shadow: 4px 4px 0 var(--brut-ink);
+  box-shadow: 4px 4px 0 var(--brut-shadow);
   padding: 0.8rem 1rem 0.6rem;
 }
 
@@ -4461,7 +4462,7 @@ html[dir="rtl"] body .copy-btn {
   background: var(--brut-surface);
   border: 3px solid var(--brut-ink);
   border-radius: 0;
-  box-shadow: 6px 6px 0 var(--brut-ink);
+  box-shadow: 6px 6px 0 var(--brut-shadow);
   margin-block-end: var(--space-lg);
 }
 
@@ -4860,7 +4861,7 @@ html[dir="rtl"] body .ecl-table tr.notable td:first-child {
   background: var(--brut-surface);
   border: 3px solid var(--brut-ink);
   border-radius: 0;
-  box-shadow: 6px 6px 0 var(--brut-ink);
+  box-shadow: 6px 6px 0 var(--brut-shadow);
   padding: var(--space-lg) var(--space-lg);
   margin-block-end: var(--space-lg);
 }
@@ -4908,7 +4909,7 @@ html[dir="rtl"] body .ecl-table tr.notable td:first-child {
   border-inline-start: 6px solid var(--brut-ink);
   padding: var(--space-lg) var(--space-xl);
   margin-block-end: var(--space-xl);
-  box-shadow: 6px 6px 0 var(--brut-ink);
+  box-shadow: 6px 6px 0 var(--brut-shadow);
 }
 
 .cal-toc-list {
@@ -5066,7 +5067,7 @@ html[dir="rtl"] body .ecl-table tr.notable td:first-child {
   color: var(--brut-ink);
   background: var(--brut-surface, var(--parchment-100));
   border: 4px solid var(--brut-ink);
-  box-shadow: 6px 6px 0 var(--brut-ink);
+  box-shadow: 6px 6px 0 var(--brut-shadow);
   padding: var(--space-lg) var(--space-xl);
   margin-block-end: var(--space-md);
   line-height: 1.8;
@@ -5077,7 +5078,7 @@ html[dir="rtl"] body .ecl-table tr.notable td:first-child {
   background: var(--brut-surface);
   border: 3px solid var(--brut-ink);
   border-radius: 0;
-  box-shadow: 6px 6px 0 var(--brut-ink);
+  box-shadow: 6px 6px 0 var(--brut-shadow);
   padding: var(--space-lg) var(--space-lg);
   margin-block-end: var(--space-md);
 }
@@ -6561,7 +6562,7 @@ body {
   width: 100%;
   background: var(--parchment-100);
   border: 3px solid var(--ink-900);
-  box-shadow: 10px 10px 0 var(--ink-900);
+  box-shadow: 10px 10px 0 var(--brut-shadow);
   position: relative;
 }
 
@@ -6709,7 +6710,7 @@ body {
   background: var(--parchment-100);
   border: 4px solid var(--brut-ink, var(--ink-900));
   border-radius: 0;
-  box-shadow: 6px 6px 0 var(--brut-ink, var(--ink-900));
+  box-shadow: 6px 6px 0 var(--brut-shadow));
   margin-block-end: var(--space-2xl);
   padding: var(--space-lg) var(--space-xl);
   overflow: hidden;
@@ -6784,7 +6785,7 @@ body {
   }
 
   .colophon {
-    box-shadow: 7px 7px 0 var(--ink-900);
+    box-shadow: 7px 7px 0 var(--brut-shadow);
   }
 
   .colophon-body {
@@ -6936,7 +6937,7 @@ body {
     border-inline-start: 4px solid var(--brut-ink) !important;
     padding: 14px 14px 14px 16px !important;
     margin: 10px 0 18px 0 !important;
-    box-shadow: 4px 4px 0 var(--brut-ink) !important;
+    box-shadow: 4px 4px 0 var(--brut-shadow) !important;
     border-radius: 0 !important;
     letter-spacing: 0 !important;
   }

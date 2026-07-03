@@ -3414,8 +3414,8 @@ html[dir="rtl"] .history-actions {
 /* ---- Intro Card (welcome state, shown before first conversion) ---- */
 
 .intro-card {
-  border: 4px solid var(--ink-900);
-  box-shadow: 6px 6px 0 var(--brut-shadow);
+  border: 3px solid #000;
+  box-shadow: 8px 8px 0 #242220;
   background: var(--parchment-100);
   padding: var(--space-lg) var(--space-xl);
   text-align: center;
@@ -3423,6 +3423,10 @@ html[dir="rtl"] .history-actions {
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+.intro-card[hidden] {
+  display: none;
 }
 
 .intro-desc {
@@ -7017,23 +7021,16 @@ body {
   .result-panel .bridge-src-detail {
     font-size: 0.82rem !important;
   }
-  /* Single-line bridge stays as flex even on mobile, wraps if needed */
+  /* Single-line bridge: stacked column, no override needed beyond font scaling */
   .result-panel .result-bridge.bridge-single-line {
     display: flex !important;
-    flex-wrap: wrap !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
     grid-template-columns: none !important;
     grid-template-rows: none !important;
-    gap: var(--space-sm) !important;
+    gap: 0.3rem !important;
   }
-  .result-panel .bridge-src-full,
   .result-panel .bridge-tgt-full {
-    flex: 1 1 100% !important;
-    white-space: normal !important;
     font-size: clamp(1.2rem, 6vw, 1.8rem) !important;
-  }
-  .result-panel .bridge-single-line .bridge-arrow {
-    display: block !important;
-    align-self: center !important;
-    flex: 0 0 auto !important;
   }
 }

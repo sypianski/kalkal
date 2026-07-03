@@ -249,13 +249,26 @@
             deferredPrompt = e;
             installWrap.hidden = false;
           });
+          window.addEventListener('appinstalled', function () {
+            installWrap.hidden = true;
+            deferredPrompt = null;
+          });
           installBtn.addEventListener('click', function () {
-            if (!deferredPrompt) return;
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then(function () {
-              deferredPrompt = null;
-              installWrap.hidden = true;
-            });
+            if (!deferredPrompt) {
+              alert('Instalacja niedostępna w tej przeglądarce. Spróbuj: menu ⋮ → Dodaj do ekranu głównego.');
+              return;
+            }
+            var p = deferredPrompt;
+            deferredPrompt = null;
+            try {
+              p.prompt();
+              p.userChoice.then(function (result) {
+                if (result.outcome !== 'accepted') deferredPrompt = p;
+                else installWrap.hidden = true;
+              }).catch(function () {});
+            } catch (err) {
+              alert('Nie można uruchomić instalacji. Spróbuj: menu ⋮ → Dodaj do ekranu głównego.');
+            }
           });
         }
       }

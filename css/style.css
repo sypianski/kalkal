@@ -3940,6 +3940,7 @@ body[data-page="calendars"] .main-content--prose {
   border: 3px solid #000;
   border-radius: 0;
   box-shadow: 8px 8px 0 #242220;
+  flex: 1;
 }
 
 .refine-card {
@@ -6276,25 +6277,33 @@ body {
   #mobile-title-box {
     order: 0 !important;
     display: flex !important;
-    align-items: center;
-    background: #000;
-    color: #fff;
-    padding: 14px 16px;
-    border: 2.5px solid #000;
-    box-shadow: 5px 5px 0 #242220;
-    max-width: 100%;
+    align-items: center !important;
+    justify-content: space-between !important;
+    background: #000 !important;
+    color: #fff !important;
+    min-height: 58px !important;
+    padding: 0 1.3em !important;
+    border: 2.5px solid #000 !important;
+    box-shadow: 5px 5px 0 #242220, inset 0 0 0 2px #000 !important;
+    max-width: 100% !important;
   }
   #mobile-title-box[hidden] { display: none !important; }
   .mobile-title-text {
-    font-family: var(--brut-mono);
-    font-size: 1.05rem;
-    font-weight: 800;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: #fff;
-    line-height: 1;
+    font-family: var(--brut-mono) !important;
+    font-size: 0.95rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.18em !important;
+    text-transform: uppercase !important;
+    color: #fff !important;
+    line-height: 1 !important;
   }
   #history-empty-instruction  { order: 0 !important; }
+
+  /* Intro card on mobile: compact — hide features list so height matches
+     the converter form slabs (≈3 fields × ~75px). Only desc + step shown. */
+  #history-empty-instruction .intro-features {
+    display: none !important;
+  }
 
   /* Hide the original inline labels (numbered markers replace them) */
   .form-field--cal > .form-label,

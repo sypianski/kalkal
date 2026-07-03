@@ -3622,7 +3622,6 @@ html[dir="rtl"] .history-actions {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-md);
-  margin-block-start: var(--space-lg);
   padding: var(--space-md) var(--space-lg);
   background: var(--parchment-200);
   border: var(--border-subtle);
@@ -6963,6 +6962,11 @@ body {
   gap: var(--space-md);
   width: 100%;
   flex: 1;
+}
+
+/* Intro card visible → action-row has no visible children → remove from layout (no gap) */
+#history-empty-instruction:not([hidden]) ~ #action-row {
+  display: none;
 }
 
 .action-row > .astro-card,

@@ -2113,6 +2113,14 @@
     historyPanel.hidden = false;
     if (historyEmptyInstruction) historyEmptyInstruction.hidden = true;
     historyPanel.classList.add('has-items', 'expanded');
+    const conversionVisible = resultPanel && resultPanel.classList.contains('has-result');
+    if (conversionVisible) {
+      historyContent.classList.add('hidden');
+      historyToggle.classList.remove('active');
+    } else {
+      historyContent.classList.remove('hidden');
+      historyToggle.classList.add('active');
+    }
     if (historyClearBtn) {
       historyClearBtn.hidden = false;
       historyClearBtn.textContent = t.clearHistory || 'Clear';

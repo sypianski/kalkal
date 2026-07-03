@@ -200,91 +200,7 @@ html[dir="rtl"] .site-title {
   padding-inline-start: 0;
 }
 
-.nav-settings-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.35em 0.5em;
-  background: transparent;
-  border: none;
-  border-radius: var(--radius-sm);
-  color: var(--ink-500);
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-.nav-settings-btn:hover { color: var(--ink-800); background: var(--parchment-200); }
-.nav-settings-btn svg { display: block; }
-.settings-panel {
-  display: none;
-  position: absolute;
-  top: calc(100% + 0.4rem);
-  right: 0;
-  z-index: 9999;
-  min-width: 260px;
-  background: var(--parchment-100);
-  border: var(--border-subtle);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
-  padding: 1rem;
-}
-.settings-panel.open { display: block; }
-.settings-backdrop { display: none; }
-.settings-backdrop.open {
-  display: block;
-  position: fixed;
-  inset: 0;
-  z-index: 9998;
-  background: transparent;
-}
-.settings-section { margin-bottom: 0.9rem; }
-.settings-section:last-child { margin-bottom: 0; }
-.settings-label {
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--ink-400);
-  margin-bottom: 0.4rem;
-}
-.settings-row { display: flex; gap: 0.35rem; flex-wrap: wrap; }
-.settings-lang-btn,
-.settings-variant-btn {
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  font-weight: 600;
-  padding: 0.3em 0.65em;
-  background: var(--parchment-200);
-  color: var(--ink-500);
-  border: 1px solid var(--parchment-400);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: all 0.12s ease;
-}
-.settings-lang-btn.active,
-.settings-variant-btn.active {
-  background: var(--rust);
-  color: #fff;
-  border-color: var(--rust);
-}
-.settings-lang-btn:hover:not(.active),
-.settings-variant-btn:hover:not(.active) {
-  background: var(--parchment-300);
-  color: var(--ink-800);
-}
-.settings-close {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.6rem;
-  background: none;
-  border: none;
-  color: var(--ink-400);
-  font-size: 0.8rem;
-  cursor: pointer;
-  padding: 0.2em 0.4em;
-  border-radius: var(--radius-sm);
-}
-.settings-close:hover { color: var(--ink-800); background: var(--parchment-200); }
+/* .nav-settings-btn is an <a> tag — inherits all .page-nav a styles */
 
 .page-nav a {
   font-family: var(--font-mono);
@@ -312,6 +228,72 @@ html[dir="rtl"] .site-title {
 
 .main-content--prose {
   max-width: 1100px;
+}
+
+/* ---- Settings page ---- */
+
+.settings-page {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: var(--space-xl) 0;
+}
+
+.settings-page-group {
+  margin-bottom: var(--space-xl);
+  padding-bottom: var(--space-xl);
+  border-bottom: var(--border-subtle);
+}
+
+.settings-page-group:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.settings-page-heading {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-400);
+  margin: 0 0 0.6rem;
+}
+
+.settings-page-desc {
+  font-size: 0.8rem;
+  color: var(--ink-500);
+  margin: 0 0 0.75rem;
+  line-height: 1.5;
+}
+
+.settings-page-row {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.settings-page-btn {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.4em 0.85em;
+  background: var(--parchment-200);
+  color: var(--ink-500);
+  border: 1px solid var(--parchment-400);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.settings-page-btn.active {
+  background: var(--rust);
+  color: #fff;
+  border-color: var(--rust);
+}
+
+.settings-page-btn:hover:not(.active) {
+  background: var(--parchment-300);
+  color: var(--ink-800);
 }
 
 .cal-card {
@@ -386,6 +368,46 @@ html[dir="rtl"] .site-title {
 
 .cal-formula-math .katex-display {
   margin: 0.3em 0;
+}
+
+.cal-variants-list {
+  margin-block: var(--space-sm);
+  padding-inline-start: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.cal-variants-list li {
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--ink-800);
+}
+
+.cal-variant-leaps {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-500);
+}
+
+.cal-variants-list mark {
+  background: color-mix(in srgb, var(--gold) 25%, transparent);
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 0.15em;
+}
+
+.cal-variants-divergence {
+  font-size: 0.82rem;
+  color: var(--ink-600);
+  border-inline-start: 3px solid var(--gold);
+  padding-inline-start: var(--space-sm);
+  margin-block-start: var(--space-sm);
+  font-style: italic;
+}
+
+.cal-variants-divergence:empty {
+  display: none;
 }
 
 .cal-card .cal-warning {
@@ -636,18 +658,16 @@ html[dir="rtl"] .site-title {
   margin-block-start: 0;
 }
 
-/* ---- Formula callouts ---- */
+/* ---- Formula sections ---- */
 
 .cal-formula {
   margin-block: var(--space-md);
   border: var(--border-subtle);
   border-radius: var(--radius-md);
   background: var(--parchment-200);
-  overflow: hidden;
 }
 
-.cal-formula summary {
-  cursor: pointer;
+.cal-formula-heading {
   font-family: var(--font-mono);
   font-size: 0.72rem;
   font-weight: 600;
@@ -655,30 +675,8 @@ html[dir="rtl"] .site-title {
   text-transform: uppercase;
   color: var(--ink-500);
   padding: var(--space-sm) var(--space-md);
-  user-select: none;
-  transition: color 0.15s, background 0.15s;
-  list-style: none;
-}
-
-.cal-formula summary::-webkit-details-marker {
-  display: none;
-}
-
-.cal-formula summary::before {
-  content: "\25B8";
-  display: inline-block;
-  margin-inline-end: 0.5em;
-  transition: transform 0.2s;
-  font-size: 0.65rem;
-}
-
-.cal-formula[open] summary::before {
-  transform: rotate(90deg);
-}
-
-.cal-formula summary:hover {
-  color: var(--rust);
-  background: var(--parchment-300);
+  margin: 0;
+  border-block-end: var(--border-subtle);
 }
 
 .cal-formula-content {
@@ -3500,11 +3498,11 @@ html[dir="rtl"] .history-actions {
   box-shadow: 8px 8px 0 #242220;
   background: var(--parchment-100);
   padding: var(--space-lg) var(--space-xl);
-  text-align: center;
+  text-align: left;
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .intro-card[hidden] {
@@ -3523,7 +3521,7 @@ html[dir="rtl"] .history-actions {
   list-style: none;
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
   gap: var(--space-xs) var(--space-sm);
   margin-bottom: var(--space-md);
   padding: 0;
@@ -3536,6 +3534,13 @@ html[dir="rtl"] .history-actions {
   font-size: 0.72rem;
   color: var(--ink-700);
   white-space: nowrap;
+}
+
+.intro-feat-soon {
+  border-style: dashed !important;
+  border-color: var(--brut-dim) !important;
+  color: var(--brut-dim) !important;
+  font-style: italic;
 }
 
 .intro-step {
@@ -5070,17 +5075,14 @@ html[dir="rtl"] body .ecl-table tr.notable td:first-child {
   margin-block: var(--space-md);
 }
 
-.cal-formula summary {
+.cal-formula-heading {
   font-family: var(--brut-mono);
   font-weight: 700;
   color: var(--brut-muted);
   padding: var(--space-sm) var(--space-md);
   letter-spacing: 0.1em;
-}
-
-.cal-formula summary:hover {
-  background: #000;
-  color: #fff;
+  margin: 0;
+  border-block-end: 2px solid #ccc;
 }
 
 .cal-formula-math {

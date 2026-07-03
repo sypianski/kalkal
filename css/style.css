@@ -5065,7 +5065,6 @@ html[dir="rtl"] body .ecl-table tr.notable td:first-child {
 }
 
 .cal-formula {
-  border: 2px solid #ccc;
   border-radius: 0;
   background: #fff;
   margin-block: var(--space-md);
@@ -5078,7 +5077,6 @@ html[dir="rtl"] body .ecl-table tr.notable td:first-child {
   padding: var(--space-sm) var(--space-md);
   letter-spacing: 0.1em;
   margin: 0;
-  border-block-end: 2px solid #ccc;
 }
 
 .cal-formula-math {

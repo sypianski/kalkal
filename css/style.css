@@ -1015,8 +1015,8 @@ html[dir="rtl"] .site-title {
   }
 
   .cal-seasons {
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-sm) var(--space-md);
+    grid-template-columns: 1fr;
+    gap: var(--space-sm) 0;
   }
   .cal-season-row--flat {
     grid-template-columns: repeat(2, 1fr);
@@ -6229,7 +6229,7 @@ body {
     background: var(--parchment-100) !important;
     border: 2.5px solid #000 !important;
     box-shadow: 5px 5px 0 #242220 !important;
-    padding: 18px 14px 12px !important;
+    padding: 22px 18px 16px !important;
     margin: 0 !important;
     position: relative !important;
     overflow: visible !important;
@@ -6305,8 +6305,7 @@ body {
     order: 0 !important;
     display: block !important;
     margin: 0 !important;
-    padding: 18px 14px !important;
-    padding-left: 14px !important;
+    padding: 22px 18px 16px !important;
     border: 2.5px solid #000 !important;
     box-shadow: 5px 5px 0 #242220 !important;
     width: 100% !important;

@@ -6315,12 +6315,19 @@ body {
   }
   #history-empty-instruction {
     order: 0 !important;
+    display: block !important;
     margin: 0 !important;
     padding: 18px 14px !important;
+    padding-left: 14px !important;
     border: 2.5px solid #000 !important;
     box-shadow: 5px 5px 0 #242220 !important;
     width: 100% !important;
     box-sizing: border-box !important;
+  }
+  #history-empty-instruction .intro-desc,
+  #history-empty-instruction .intro-step {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
   }
 
   /* Intro card on mobile: compact — hide features list so height matches

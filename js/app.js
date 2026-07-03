@@ -595,11 +595,16 @@
     var dropdown = null;
     var activeIndex = -1;
     var outsideHandler = null;
+    var isMobileDevice = 'ontouchstart' in window;
+
+    if (isMobileDevice) {
+      input.setAttribute('readonly', 'readonly');
+    }
 
     function reposition() { if (dropdown) placeFixedDropdown(dropdown, input); }
 
     function getFiltered(query) {
-      if (!query) return monthData;
+      if (!query || isMobileDevice) return monthData;
       var lower = query.toLowerCase();
       return monthData.filter(function(m) {
         return m.name.toLowerCase().indexOf(lower) !== -1;
@@ -609,7 +614,7 @@
     function show(query) {
       hide();
       if (monthData.length === 0) return;
-      var filtered = getFiltered(query);
+      var filtered = getFiltered(isMobileDevice ? '' : query);
       dropdown = el('div', { class: 'cal-suggestions' });
 
       if (!query) {
@@ -682,13 +687,15 @@
       }
     }
 
-    input.addEventListener('focus', function() { show(input.value); });
-    input.addEventListener('click', function() { show(input.value); });
+    input.addEventListener('focus', function() { show(isMobileDevice ? '' : input.value); });
+    input.addEventListener('click', function() { show(isMobileDevice ? '' : input.value); });
 
-    input.addEventListener('input', function() {
-      input.dataset.monthValue = '';
-      show(input.value);
-    });
+    if (!isMobileDevice) {
+      input.addEventListener('input', function() {
+        input.dataset.monthValue = '';
+        show(input.value);
+      });
+    }
 
     input.addEventListener('blur', function() {
       if (!input.dataset.monthValue) {

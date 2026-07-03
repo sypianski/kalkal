@@ -1987,11 +1987,22 @@
   const historyEmptyInstruction = $('#history-empty-instruction');
   const historyToggle = $('#history-toggle');
   const historyContent = $('#history-content');
+  const historyClearBtn = $('#history-clear-btn');
 
   if (historyToggle) {
     historyToggle.addEventListener('click', function() {
       historyContent.classList.toggle('hidden');
       historyToggle.classList.toggle('active');
+    });
+  }
+
+  if (historyClearBtn) {
+    historyClearBtn.addEventListener('click', function() {
+      const t = I18N[currentLang];
+      const msg = t.clearHistoryConfirm || 'Clear conversion history?';
+      if (!confirm(msg)) return;
+      localStorage.removeItem(HISTORY_KEY);
+      renderHistory();
     });
   }
 
@@ -2080,12 +2091,17 @@
         historyEmptyInstruction.hidden = false;
         historyEmptyInstruction.textContent = t.historyEmptyInstruction || t.noHistory;
       }
+      if (historyClearBtn) historyClearBtn.hidden = true;
       return;
     }
 
     historyPanel.hidden = false;
     if (historyEmptyInstruction) historyEmptyInstruction.hidden = true;
     historyPanel.classList.add('has-items', 'expanded');
+    if (historyClearBtn) {
+      historyClearBtn.hidden = false;
+      historyClearBtn.textContent = t.clearHistory || 'Clear';
+    }
     hist.forEach((entry, i) => {
       const summary = buildHistorySummary(entry);
       const li = el('li', { class: 'history-item' });

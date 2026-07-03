@@ -385,7 +385,8 @@ const I18N = {
     copySetDefault: 'Set as default',
     copyToggleOptions: 'Toggle options',
     aboutCalendarTpl: 'about {name} calendar →',
-    clearHistory: 'Clear',
+    clearHistory: 'Clear history',
+    clearHistoryConfirm: 'Clear conversion history?',
     noHistory: 'No conversions yet',
     historyEmptyInstruction: 'Use the menu on the left to pick calendars and enter a date.',
     resultHint: 'Enter a year and press Convert to see the result',
@@ -459,8 +460,8 @@ const I18N = {
     julianLabel: 'julia\u0144ski',
     hijriLabel: 'hid\u017cry (AH)',
     gregorianMonths: [
-      'Stycze\u0144', 'Luty', 'Marzec', 'Kwiecie\u0144', 'Maj', 'Czerwiec',
-      'Lipiec', 'Sierpie\u0144', 'Wrzesie\u0144', 'Pa\u017adziernik', 'Listopad', 'Grudzie\u0144'
+      'stycze\u0144', 'luty', 'marzec', 'kwiecie\u0144', 'maj', 'czerwiec',
+      'lipiec', 'sierpie\u0144', 'wrzesie\u0144', 'pa\u017adziernik', 'listopad', 'grudzie\u0144'
     ],
     gregorianMonthsGen: [
       'stycznia', 'lutego', 'marca', 'kwietnia', 'maja', 'czerwca',
@@ -492,20 +493,20 @@ const I18N = {
       'Mehekan', 'Areg', 'Ahekan', 'Mareri', 'Margac\u2019', 'Hrotic\u2019', 'Aweleac\u2019'
     ],
     byzantineMonths: [
-      'Wrzesie\u0144', 'Pa\u017adziernik', 'Listopad', 'Grudzie\u0144', 'Stycze\u0144', 'Luty',
-      'Marzec', 'Kwiecie\u0144', 'Maj', 'Czerwiec', 'Lipiec', 'Sierpie\u0144'
+      'wrzesie\u0144', 'pa\u017adziernik', 'listopad', 'grudzie\u0144', 'stycze\u0144', 'luty',
+      'marzec', 'kwiecie\u0144', 'maj', 'czerwiec', 'lipiec', 'sierpie\u0144'
     ],
     alexandrianMonths: [
-      'Marzec', 'Kwiecie\u0144', 'Maj', 'Czerwiec', 'Lipiec', 'Sierpie\u0144',
-      'Wrzesie\u0144', 'Pa\u017adziernik', 'Listopad', 'Grudzie\u0144', 'Stycze\u0144', 'Luty'
+      'marzec', 'kwiecie\u0144', 'maj', 'czerwiec', 'lipiec', 'sierpie\u0144',
+      'wrzesie\u0144', 'pa\u017adziernik', 'listopad', 'grudzie\u0144', 'stycze\u0144', 'luty'
     ],
     seleucidMonths: [
-      'Pa\u017adziernik', 'Listopad', 'Grudzie\u0144', 'Stycze\u0144', 'Luty', 'Marzec',
-      'Kwiecie\u0144', 'Maj', 'Czerwiec', 'Lipiec', 'Sierpie\u0144', 'Wrzesie\u0144'
+      'pa\u017adziernik', 'listopad', 'grudzie\u0144', 'stycze\u0144', 'luty', 'marzec',
+      'kwiecie\u0144', 'maj', 'czerwiec', 'lipiec', 'sierpie\u0144', 'wrzesie\u0144'
     ],
     seleucidBabMonths: [
-      'Kwiecie\u0144', 'Maj', 'Czerwiec', 'Lipiec', 'Sierpie\u0144', 'Wrzesie\u0144',
-      'Pa\u017adziernik', 'Listopad', 'Grudzie\u0144', 'Stycze\u0144', 'Luty', 'Marzec'
+      'kwiecie\u0144', 'maj', 'czerwiec', 'lipiec', 'sierpie\u0144', 'wrzesie\u0144',
+      'pa\u017adziernik', 'listopad', 'grudzie\u0144', 'stycze\u0144', 'luty', 'marzec'
     ],
     syriacMonths: [
       'Kanun as-Sani', 'Szubat', 'Azar', 'Nisan', 'Ajjar', 'Haziran',
@@ -782,7 +783,8 @@ const I18N = {
     copySetDefault: 'Ustaw jako domyślne',
     copyToggleOptions: 'Pokaż opcje',
     aboutCalendarTpl: 'o kalendarzu {name} →',
-    clearHistory: 'Wyczyść',
+    clearHistory: 'Wyczyść historię',
+    clearHistoryConfirm: 'Wyczyścić historię przeliczeń?',
     noHistory: 'Brak przeliczeń',
     historyEmptyInstruction: 'Skorzystaj z menu po lewej stronie, aby wybrać kalendarze i wpisać datę.',
     resultHint: 'Wpisz rok i naciśnij Przelicz, aby zobaczyć wynik',
@@ -1175,7 +1177,8 @@ const I18N = {
     copySetDefault: 'Agordi kiel defaŭlta',
     copyToggleOptions: 'Montri opciojn',
     aboutCalendarTpl: 'pri kalendaro {name} →',
-    clearHistory: 'Forviŝi',
+    clearHistory: 'Forviŝi historion',
+    clearHistoryConfirm: 'Ĉu forviŝi konvert-historion?',
     noHistory: 'Ankoraŭ neniuj konvertoj',
     historyEmptyInstruction: 'Uzu la menuon maldekstre por elekti kalendarojn kaj enigi daton.',
     resultHint: 'Enigu jaron kaj premu Konverti por vidi la rezulton',

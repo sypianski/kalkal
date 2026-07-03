@@ -2233,10 +2233,16 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
   margin-left: auto;
 }
 
+/* ========================
+   ASTRO CARD — content area
+   ======================== */
+
 .astro-content {
+  padding: 0 var(--space-xl) var(--space-md);
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  gap: 0;
+  border-block-start: 3px solid var(--brut-ink);
 }
 
 .astro-hints {
@@ -2244,14 +2250,6 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
   font-size: 0.7rem;
   color: var(--ink-400);
   letter-spacing: 0.06em;
-}
-
-.astro-content {
-  padding: var(--space-md) var(--space-xl) var(--space-md);
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  border-block-start: 3px solid var(--brut-ink);
 }
 
 .astro-content.hidden {
@@ -2281,7 +2279,7 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
   font-family: var(--brut-mono) !important;
 }
 
-/* === Astro content (inside .astro-content after expansion) === */
+/* === Shared row: dashed separator between items === */
 .astro-content .result-zodiac,
 .astro-content .result-astro,
 .astro-content .result-meta {
@@ -2293,34 +2291,32 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
   border-block-end: 1px dashed var(--ink-200);
 }
 
-.astro-content .result-astro {
-  display: grid;
-  grid-template-columns: 1.75em 1fr auto;
-  column-gap: 0.7em;
-  row-gap: 0.35em;
-  align-items: baseline;
-}
-
-.astro-content .result-zodiac,
-.astro-content .result-meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.6em;
-}
-
 .astro-content > .result-zodiac:last-child,
 .astro-content > .result-astro:last-child,
 .astro-content > .result-meta:last-child {
   border-block-end: 0;
 }
 
+/* === Zodiac row === */
 .astro-content .result-zodiac {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6em;
   font-family: var(--brut-mono);
   font-size: 0.9rem;
   font-weight: 700;
   color: var(--brut-ink);
   letter-spacing: 0.02em;
+}
+
+/* === Astro rows: moon / comet / supernova / conjunction === */
+.astro-content .result-astro {
+  display: grid;
+  grid-template-columns: 1.75em 1fr auto;
+  column-gap: 0.7em;
+  row-gap: 0.35em;
+  align-items: center;
 }
 
 .astro-content .astro-icon {
@@ -2383,16 +2379,16 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
   background: var(--parchment-50, transparent);
 }
 
-/* Eclipse — invert as dark slab */
+/* === Eclipse — full-width dark slab, bleeds past content padding === */
 .astro-content .result-eclipse {
   background: var(--brut-ink);
   color: #fff;
-  padding: var(--space-md);
+  padding: var(--space-md) var(--space-xl);
+  margin-inline: calc(-1 * var(--space-xl));
   display: flex;
   flex-direction: column;
   gap: 0.5em;
   border: 0;
-  border-block-end: 2px solid var(--brut-ink);
 }
 
 .astro-content .result-eclipse .eclipse-icon {
@@ -2449,9 +2445,12 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
   color: var(--brut-ink);
 }
 
-/* JDN meta row */
+/* === JDN meta row === */
 .astro-content .result-meta {
-  grid-template-columns: 1fr;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6em;
   font-family: var(--brut-mono);
   font-size: 0.7rem;
   color: #666;
@@ -3296,6 +3295,41 @@ html[dir="rtl"] .range-arrow {
 
 .history-content {
   padding: var(--space-md) var(--space-xl);
+}
+
+.history-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-block-start: var(--space-md);
+  padding-block-start: var(--space-sm);
+  border-block-start: 1px dashed var(--ink-200, #d0c4a8);
+}
+
+.history-clear-btn {
+  font-family: var(--brut-mono, var(--font-mono));
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-500, #6a5d47);
+  background: transparent;
+  border: 2px solid var(--ink-400, #8a7d63);
+  border-radius: 0;
+  padding: 0.5em 1.1em;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.history-clear-btn:hover,
+.history-clear-btn:focus {
+  background: var(--ink-800, #2a231a);
+  color: #fff;
+  border-color: var(--ink-800, #2a231a);
+  outline: none;
+}
+
+html[dir="rtl"] .history-actions {
+  justify-content: flex-start;
 }
 
 .history-content.hidden {

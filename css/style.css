@@ -3500,18 +3500,6 @@ html[dir="rtl"] .history-actions {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  position: relative;
-}
-
-.intro-card.is-clipped::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 40%;
-  background: linear-gradient(to bottom, transparent, var(--parchment-100));
-  pointer-events: none;
 }
 
 .intro-card[hidden] {
@@ -3531,8 +3519,8 @@ html[dir="rtl"] .history-actions {
 }
 
 .intro-features {
+  display: none;
   list-style: none;
-  display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
   gap: var(--space-xs) var(--space-sm);
@@ -3639,6 +3627,7 @@ html[dir="rtl"] .history-actions {
   background: var(--parchment-200);
   border: var(--border-subtle);
   border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
   animation: resultReveal 0.35s ease both;
 }
 
@@ -3707,10 +3696,10 @@ html[dir="rtl"] .history-actions {
 
 /* Brutalist install banner */
 .install-banner {
-  background: #fff;
-  border: 2px solid #000;
+  background: var(--brut-surface);
+  border: 3px solid #000;
   border-radius: 0;
-  box-shadow: none;
+  box-shadow: 8px 8px 0 #242220;
 }
 
 .install-text {
@@ -6330,12 +6319,6 @@ body {
     padding-left: 0 !important;
   }
 
-  /* Intro card on mobile: compact — hide features list so height matches
-     the converter form slabs (≈3 fields × ~75px). Only desc + step shown. */
-  #history-empty-instruction .intro-features {
-    display: none !important;
-  }
-
   /* Hide the original inline labels (numbered markers replace them) */
   .form-field--cal > .form-label,
   .form-field--year > .form-label,
@@ -7172,5 +7155,42 @@ body {
   }
   .result-panel .bridge-tgt-full {
     font-size: clamp(1.2rem, 6vw, 1.8rem) !important;
+  }
+}
+
+/* ---- Settings page: mobile formatting ---- */
+@media (max-width: 600px) {
+  .settings-page {
+    padding: 0.75rem 0 0;
+  }
+
+  .settings-page-group {
+    margin-bottom: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+  }
+
+  .settings-page-heading {
+    font-size: 0.72rem !important;
+    letter-spacing: 0.14em !important;
+    margin-bottom: 0.6rem !important;
+  }
+
+  .settings-page-desc {
+    font-size: 0.88rem !important;
+    margin-bottom: 1rem !important;
+    line-height: 1.55 !important;
+  }
+
+  .settings-page-row {
+    gap: 0.5rem !important;
+  }
+
+  .settings-page-btn {
+    font-size: 0.9rem !important;
+    padding: 0.65em 1.1em !important;
+    min-height: 44px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 }

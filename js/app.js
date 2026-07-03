@@ -1565,7 +1565,6 @@
         }
       }
     }
-    if (highlights.length === 0) return null;
     panel.appendChild(buildMeta([[t.jdn, jdStart + ' \u2013 ' + jdEnd]]));
     return { panel: panel, highlights: highlights };
   }
@@ -2283,28 +2282,6 @@
         if (resultPanel.classList.contains('has-result')) convert();
       });
     });
-  })();
-
-  // ---- Sync intro-card height to converter-card (desktop side-by-side layout) ----
-  (function syncIntroHeight() {
-    const converterCard = document.querySelector('.converter-card');
-    const introCard = document.getElementById('history-empty-instruction');
-    if (!converterCard || !introCard) return;
-
-    function apply() {
-      if (introCard.hidden) return;
-      if (window.innerWidth > 800) {
-        introCard.style.height = converterCard.offsetHeight + 'px';
-        introCard.style.overflow = 'hidden';
-      } else {
-        introCard.style.height = '';
-        introCard.style.overflow = '';
-      }
-    }
-
-    apply();
-    window.addEventListener('resize', apply);
-    new ResizeObserver(apply).observe(converterCard);
   })();
 
   // ---- Init ----

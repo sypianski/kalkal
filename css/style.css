@@ -193,16 +193,98 @@ html[dir="rtl"] .site-title {
   max-width: 1100px;
   margin: var(--space-sm) auto 0;
   padding-inline: var(--space-xl);
+  position: relative;
 }
 
 .page-nav a:first-child {
   padding-inline-start: 0;
 }
 
-/* Hide settings button and panel on desktop */
-.nav-settings-btn { display: none; }
-.settings-panel { display: none; }
+.nav-settings-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35em 0.5em;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--ink-500);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.nav-settings-btn:hover { color: var(--ink-800); background: var(--parchment-200); }
+.nav-settings-btn svg { display: block; }
+.settings-panel {
+  display: none;
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  right: 0;
+  z-index: 9999;
+  min-width: 260px;
+  background: var(--parchment-100);
+  border: var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 1rem;
+}
+.settings-panel.open { display: block; }
 .settings-backdrop { display: none; }
+.settings-backdrop.open {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  background: transparent;
+}
+.settings-section { margin-bottom: 0.9rem; }
+.settings-section:last-child { margin-bottom: 0; }
+.settings-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-400);
+  margin-bottom: 0.4rem;
+}
+.settings-row { display: flex; gap: 0.35rem; flex-wrap: wrap; }
+.settings-lang-btn,
+.settings-variant-btn {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 0.3em 0.65em;
+  background: var(--parchment-200);
+  color: var(--ink-500);
+  border: 1px solid var(--parchment-400);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+.settings-lang-btn.active,
+.settings-variant-btn.active {
+  background: var(--rust);
+  color: #fff;
+  border-color: var(--rust);
+}
+.settings-lang-btn:hover:not(.active),
+.settings-variant-btn:hover:not(.active) {
+  background: var(--parchment-300);
+  color: var(--ink-800);
+}
+.settings-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.6rem;
+  background: none;
+  border: none;
+  color: var(--ink-400);
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 0.2em 0.4em;
+  border-radius: var(--radius-sm);
+}
+.settings-close:hover { color: var(--ink-800); background: var(--parchment-200); }
 
 .page-nav a {
   font-family: var(--font-mono);
@@ -3849,7 +3931,7 @@ body[data-page="calendars"] .main-content--prose {
 
 /* ---- Left card: dense control panel ---- */
 .converter-card {
-  background: #000;
+  background: var(--brut-surface);
   border: 3px solid #000;
   border-radius: 0;
   box-shadow: 8px 8px 0 #242220;
@@ -3914,39 +3996,39 @@ body[data-page="calendars"] .main-content--prose {
   color: #999;
 }
 
-/* Inputs on black card: inverted */
+/* Inputs on white card */
 .converter-card .input-cal {
   font-family: var(--brut-mono);
   font-size: 0.95rem;
   font-weight: 700;
   border: none;
-  border-block-end: 2px solid #444;
+  border-block-end: 2px solid #000;
   text-transform: uppercase;
   padding: 0.5em 0;
   letter-spacing: 0.08em;
-  color: #fff;
+  color: #000;
   background: transparent;
 }
 
 .converter-card .input-cal:focus {
-  border-color: #fff;
-  background: #000;
+  border-color: #000;
+  background: transparent;
 }
 
 .converter-card .input-num {
   font-weight: 700;
   border: none;
-  border-block-end: 2px solid #444;
+  border-block-end: 2px solid #000;
   padding: 0.5em 0;
   font-size: 1.4rem;
-  color: #fff;
+  color: #000;
   background: transparent;
   font-family: var(--brut-mono);
 }
 
 .converter-card .input-num:focus {
-  border-color: #fff;
-  background: #000;
+  border-color: #000;
+  background: transparent;
 }
 
 /* Other (non-card) inputs keep default brutalist style */
@@ -4015,9 +4097,9 @@ body[data-page="calendars"] .main-content--prose {
 }
 
 .variant-btn.active {
-  background: #fff;
-  color: #000;
-  border-color: #fff;
+  background: #000;
+  color: #fff;
+  border-color: #000;
 }
 
 /* Convert button */
@@ -4026,8 +4108,8 @@ body[data-page="calendars"] .main-content--prose {
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.25em;
-  background: #fff;
-  color: #000;
+  background: #000;
+  color: #fff;
   border: none;
   border-radius: 0;
   padding: 0.85em 2em;
@@ -4036,8 +4118,8 @@ body[data-page="calendars"] .main-content--prose {
 }
 
 .btn-convert:hover {
-  background: #ccc;
-  color: #000;
+  background: #333;
+  color: #fff;
   box-shadow: none;
 }
 
@@ -5823,7 +5905,7 @@ body {
 
   /* History: 2-col grid aligned with contextual col 1 */
   .history-entry {
-    grid-template-columns: 7.5em 1fr !important;
+    grid-template-columns: 10.5em 1fr !important;
     column-gap: 0.6em !important;
     row-gap: 0.3em !important;
     font-size: 0.72rem !important;

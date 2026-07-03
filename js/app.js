@@ -1917,8 +1917,8 @@
     if (contextInfo) {
       var ctxPanel = buildContextualPanel(contextInfo.jd, contextInfo.srcId, contextInfo.tgtId, t, contextInfo.jdEnd);
       if (ctxPanel) {
-        var ctxToggle = el('button', { type: 'button', class: 'tile-toggle active', text: t.contextualLabel || 'Other contemporaneous calendars' });
-        var ctxContent = el('div', { class: 'tile-content' });
+        var ctxToggle = el('button', { type: 'button', class: 'tile-toggle', text: t.contextualLabel || 'Other contemporaneous calendars' });
+        var ctxContent = el('div', { class: 'tile-content hidden' });
         ctxContent.appendChild(ctxPanel);
         ctxToggle.addEventListener('click', function() {
           ctxContent.classList.toggle('hidden');
@@ -1957,7 +1957,7 @@
         if (node.classList.contains('result-conjunction')) astroHints.push('\u2728');
       });
       var astroTitle = t.astroLabel || 'Astro';
-      var startExpanded = hasMeaningful;
+      var startExpanded = false;
       var astroHeader = el('button', { type: 'button', class: 'tile-toggle astro-toggle' + (startExpanded ? ' active' : '') });
       astroHeader.appendChild(el('span', { class: 'astro-title-text', text: astroTitle }));
       if (astroHints.length > 0) {

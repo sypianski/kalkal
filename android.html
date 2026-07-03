@@ -133,11 +133,8 @@
         <form
           id="beta-form"
           class="beta-form"
-          action="https://formspree.io/f/YOUR_FORM_ID"
-          method="POST"
           novalidate
         >
-          <input type="hidden" name="_subject" value="kalkal Android — zgłoszenie testera">
 
           <label class="colophon-row" style="display:block; border:none; padding:0; margin-block-end:0.4em;">
             <span style="font-family:var(--brut-mono);font-size:0.62rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-500);">
@@ -175,6 +172,9 @@
   <script src="js/pages.js?v=40"></script>
   <script>
     (function () {
+      var SUPABASE_URL = 'https://itnvmbkgpjiwapfpudyo.supabase.co';
+      var SUPABASE_KEY = 'sb_publishable_HIx1MN6OHAS7FSfLL-Aa3g_kYihmpXy';
+
       var form = document.getElementById('beta-form');
       var thanks = document.getElementById('beta-thanks');
       if (!form || !thanks) return;
@@ -182,23 +182,32 @@
       form.addEventListener('submit', function (e) {
         e.preventDefault();
         var btn = form.querySelector('button[type=submit]');
+        var input = document.getElementById('beta-email');
+        var email = input ? input.value.trim() : '';
+        if (!email) return;
         if (btn) btn.disabled = true;
 
-        fetch(form.action, {
+        fetch(SUPABASE_URL + '/rest/v1/beta_testers', {
           method: 'POST',
-          body: new FormData(form),
-          headers: { 'Accept': 'application/json' }
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_KEY,
+            'Authorization': 'Bearer ' + SUPABASE_KEY,
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify({ email: email })
         }).then(function (res) {
-          if (res.ok) {
+          if (res.ok || res.status === 201) {
             form.querySelector('.about-links').style.display = 'none';
             form.querySelector('.beta-input').style.display = 'none';
             form.querySelector('label').style.display = 'none';
             thanks.style.display = 'block';
+          } else if (res.status === 409) {
+            if (btn) btn.disabled = false;
+            alert('Ten adres jest już zapisany.');
           } else {
             if (btn) btn.disabled = false;
-            res.json().then(function (d) {
-              alert(d.errors ? d.errors.map(function (err) { return err.message; }).join(', ') : 'Błąd. Spróbuj ponownie.');
-            }).catch(function () { alert('Błąd. Spróbuj ponownie.'); });
+            alert('Błąd. Spróbuj ponownie.');
           }
         }).catch(function () {
           if (btn) btn.disabled = false;

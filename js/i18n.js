@@ -478,25 +478,25 @@ const I18N = {
       'Iulius', 'Augustus', 'September', 'October', 'November', 'December'
     ],
     hijriMonths: [
-      'Muharram', 'Safar', 'Rabi al-awwal', 'Rabi as-sani',
-      'D\u017cumada al-ula', 'D\u017cumada al-ahira', 'Rad\u017cab', 'Szaban',
-      'Ramadan', 'Szawwal', 'Zu al-kada', 'Zu al-hid\u017cd\u017ca'
+      'muharram', 'safar', 'rabi al-awwal', 'rabi as-sani',
+      'd\u017cumada al-ula', 'd\u017cumada al-ahira', 'rad\u017cab', 'szaban',
+      'ramadan', 'szawwal', 'zu al-kada', 'zu al-hid\u017cd\u017ca'
     ],
     copticMonths: [
-      'Tout', 'Babah', 'Hator', 'Kiahk', 'Toba', 'Amszir',
-      'Baramhat', 'Baramouda', 'Baszans', 'Baona', 'Abib', 'Misra', 'Epagomenai'
+      'tout', 'babah', 'hator', 'kiahk', 'toba', 'amszir',
+      'baramhat', 'baramouda', 'baszans', 'baona', 'abib', 'misra', 'epagomenai'
     ],
     ethiopianMonths: [
-      'M\u00e4sk\u00e4r\u00e4m', 'T\u0259k\u0259mt', 'H\u0259dar', 'Tahsas', 'T\u0259r', 'J\u00e4katit',
-      'M\u00e4gabit', 'Mijazja', 'G\u0259nbot', 'S\u00e4ne', 'Hamle', 'N\u00e4hase', 'Pagumen'
+      'm\u00e4sk\u00e4r\u00e4m', 't\u0259k\u0259mt', 'h\u0259dar', 'tahsas', 't\u0259r', 'j\u00e4katit',
+      'm\u00e4gabit', 'mijazja', 'g\u0259nbot', 's\u00e4ne', 'hamle', 'n\u00e4hase', 'pagumen'
     ],
     persianMonths: [
-      'Farwardin', 'Ordibeheszt', 'Chord\u0101d', 'Tir', 'Mord\u0101d', 'Szahriwar',
-      'Mehr', '\u0100b\u0101n', '\u0100sar', 'D\u00e9i', 'Bahman', 'Esfand'
+      'farwardin', 'ordibeheszt', 'chord\u0101d', 'tir', 'mord\u0101d', 'szahriwar',
+      'mehr', '\u0100b\u0101n', '\u0100sar', 'd\u00e9i', 'bahman', 'esfand'
     ],
     armenianMonths: [
-      'Nawasard', 'Hori', 'Sahmi', 'Tre', 'Kaloc\u2019', 'Arac\u2019',
-      'Mehekan', 'Areg', 'Ahekan', 'Mareri', 'Margac\u2019', 'Hrotic\u2019', 'Aweleac\u2019'
+      'nawasard', 'hori', 'sahmi', 'tre', 'kaloc\u2019', 'arac\u2019',
+      'mehekan', 'areg', 'ahekan', 'mareri', 'margac\u2019', 'hrotic\u2019', 'aweleac\u2019'
     ],
     byzantineMonths: [
       'wrzesie\u0144', 'pa\u017adziernik', 'listopad', 'grudzie\u0144', 'stycze\u0144', 'luty',
@@ -515,24 +515,24 @@ const I18N = {
       'pa\u017adziernik', 'listopad', 'grudzie\u0144', 'stycze\u0144', 'luty', 'marzec'
     ],
     syriacMonths: [
-      'Kanun as-Sani', 'Szubat', 'Azar', 'Nisan', 'Ajjar', 'Haziran',
-      'Tammuz', 'Ab', 'Ajlul', 'Tiszrin al-Awwal', 'Tiszrin as-Sani', 'Kanun al-Awwal'
+      'kanun as-Sani', 'szubat', 'azar', 'nisan', 'ajjar', 'haziran',
+      'tammuz', 'ab', 'ajlul', 'tiszrin al-Awwal', 'tiszrin as-Sani', 'kanun al-Awwal'
     ],
     egyptianMonths: [
-      'Thot', 'Faofi', 'Atyr', 'Choiak', 'Tybi', 'Mechir',
-      'Famenot', 'Farmuti', 'Pachons', 'Pajni', 'Epifi', 'Mesore', 'Epagomenai'
+      'thot', 'faofi', 'atyr', 'choiak', 'tybi', 'mechir',
+      'famenot', 'farmuti', 'pachons', 'pajni', 'epifi', 'mesore', 'epagomenai'
     ],
     macedonianMonths: [
-      'Dios', 'Apellajos', 'Audynajos', 'Peritios', 'Dystros', 'Ksantikos',
-      'Artemisios', 'Dajsios', 'Panemos', 'Loos', 'Gorpiajos', 'Hyperberetajos'
+      'dios', 'apellajos', 'audynajos', 'peritios', 'dystros', 'ksantikos',
+      'artemisios', 'dajsios', 'panemos', 'loos', 'gorpiajos', 'hyperberetajos'
     ],
     hebrewMonths: [
-      'Tiszri', 'Cheszwan', 'Kislew', 'Tewet', 'Szwat',
-      'Adar', 'Adar II', 'Nisan', 'Ijar', 'Siwan', 'Tamuz', 'Aw', 'Elul'
+      'tiszri', 'cheszwan', 'kislew', 'tewet', 'szwat',
+      'adar', 'adar II', 'nisan', 'ijar', 'siwan', 'tamuz', 'aw', 'elul'
     ],
     babylonianMonths: [
-      'Nisannu', 'Ajaru', 'Simanu', 'Du\u02bbuzu', 'Abu', 'Ul\u016blu',
-      'Tashritu', 'Arachsamna', 'Kislimu', 'Tebetu', 'Szabatu', 'Addaru', 'Addaru II'
+      'nisannu', 'ajaru', 'simanu', 'du\u02bbuzu', 'abu', 'ul\u016blu',
+      'tashritu', 'arachsamna', 'kislimu', 'tebetu', 'szabatu', 'addaru', 'addaru II'
     ],
     zodiacSigns: [
       'Baran', 'Byk', 'Bli\u017ani\u0119ta', 'Rak', 'Lew', 'Panna',

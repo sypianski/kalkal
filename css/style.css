@@ -2,6 +2,8 @@
    Aesthetic: Brutalist — raw, high-contrast, monospace
    ================================================ */
 
+/* ECLIPSES TEMPORARILY HIDDEN — remove to restore */
+.result-eclipse { display: none !important; }
 
 :root {
   /* Brutalist palette */
@@ -1018,8 +1020,10 @@ html[dir="rtl"] .site-title {
   outline: none;
 }
 
-.refine-input:focus {
-  border-block-end-color: var(--rust);
+.refine-input:focus,
+.refine-input:focus-visible {
+  outline: none;
+  border-block-end-color: var(--ink-300, #bbb);
 }
 
 .refine-label {

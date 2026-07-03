@@ -3410,8 +3410,8 @@ html[dir="rtl"] .range-arrow {
 .history-entry {
   flex: 1;
   display: grid;
-  grid-template-columns: 12rem 1fr;
-  gap: 0 var(--space-lg);
+  grid-template-columns: 11rem 1fr;
+  column-gap: var(--space-md, 1rem);
   align-items: baseline;
   font-family: var(--font-display);
   font-size: 0.82rem;
@@ -5388,7 +5388,6 @@ html {
 
   .history-entry {
     min-height: 44px;
-    display: flex;
     align-items: center;
     padding: 0.6em 0;
   }
@@ -5753,10 +5752,11 @@ body {
     overflow: hidden;
   }
 
-  /* History: single column */
+  /* History: 2-col grid aligned with contextual col 1 */
   .history-entry {
-    grid-template-columns: 1fr !important;
-    gap: 0.5em !important;
+    grid-template-columns: 7.5em 1fr !important;
+    column-gap: 0.6em !important;
+    row-gap: 0.3em !important;
     font-size: 0.72rem !important;
   }
 

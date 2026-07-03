@@ -2,9 +2,6 @@
    Aesthetic: Brutalist — raw, high-contrast, monospace
    ================================================ */
 
-/* ECLIPSES TEMPORARILY HIDDEN — remove block to restore */
-a[href="eclipses.html"] { display: none !important; }
-.result-eclipse { display: none !important; }
 
 :root {
   /* Brutalist palette */
@@ -2387,6 +2384,7 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
   margin-inline: calc(-1 * var(--space-xl));
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 0.5em;
   border: 0;
 }
@@ -3745,9 +3743,9 @@ body[data-page="calendars"] .main-content--prose {
   display: none;
 }
 
-/* ---- Header: black slab, rule underneath ---- */
+/* ---- Header: dark slab, rule underneath ---- */
 .site-header {
-  background: #000;
+  background: #242220;
   border-block-end: none;
   padding: var(--space-lg) var(--space-xl) var(--space-md);
 }
@@ -3814,8 +3812,8 @@ body[data-page="calendars"] .main-content--prose {
 
 /* ---- Left card: dense control panel ---- */
 .converter-card {
-  background: #1e1c1a;
-  border: 3px solid #1e1c1a;
+  background: #242220;
+  border: 3px solid #242220;
   border-radius: 0;
   box-shadow: 8px 8px 0 #000;
 }
@@ -3895,7 +3893,7 @@ body[data-page="calendars"] .main-content--prose {
 
 .converter-card .input-cal:focus {
   border-color: #fff;
-  background: #111;
+  background: #242220;
 }
 
 .converter-card .input-num {
@@ -3911,7 +3909,7 @@ body[data-page="calendars"] .main-content--prose {
 
 .converter-card .input-num:focus {
   border-color: #fff;
-  background: #111;
+  background: #242220;
 }
 
 /* Other (non-card) inputs keep default brutalist style */
@@ -4979,7 +4977,7 @@ html[dir="rtl"] body .ecl-table tr.notable td:first-child {
 }
 
 .cal-formula-code {
-  background: #111;
+  background: #242220;
   color: #eee;
   border-radius: 0;
   border: none;
@@ -5961,7 +5959,7 @@ body {
     left: 0;
     right: 0;
     z-index: 9999;
-    background: #111;
+    background: #242220;
     border-top: 2px solid #333;
     padding: 1rem 1rem calc(1rem + env(safe-area-inset-bottom, 0px));
     transform: translateY(100%);

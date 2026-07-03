@@ -6176,6 +6176,10 @@ body {
     max-width: 100% !important;
   }
 
+  .cal-toc-list {
+    columns: 1;
+  }
+
   /* ---- Flatten: dissolve wrappers so every form step is a direct
           flex child of .converter-grid and can be freely re-ordered ---- */
   .converter-grid {

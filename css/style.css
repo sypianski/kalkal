@@ -1531,16 +1531,15 @@ html[dir="rtl"] .btn-convert:hover svg {
 }
 
 .contextual-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3em;
+  display: grid;
+  grid-template-columns: 11rem 5rem 1fr;
+  column-gap: var(--space-md, 1rem);
+  row-gap: 0.3em;
+  align-items: baseline;
 }
 
 .contextual-list > div {
-  display: grid;
-  grid-template-columns: minmax(6rem, max-content) minmax(4rem, max-content) 1fr;
-  gap: 0 var(--space-md, 1rem);
-  align-items: baseline;
+  display: contents;
 }
 
 .contextual-list .contextual-cal-link {
@@ -5698,14 +5697,11 @@ body {
     position: relative;
   }
 
-  /* Contextual results: single column on mobile */
+  /* Contextual results: shared 3-col grid on mobile */
   .contextual-list {
-    gap: 0.4em !important;
-  }
-
-  .contextual-list > div {
-    grid-template-columns: minmax(5em, max-content) minmax(3.5em, max-content) 1fr !important;
-    gap: 0 0.6em !important;
+    grid-template-columns: 7.5em 4em 1fr !important;
+    column-gap: 0.6em !important;
+    row-gap: 0.4em !important;
   }
 
   .contextual-list dt {

@@ -3814,8 +3814,8 @@ body[data-page="calendars"] .main-content--prose {
 
 /* ---- Left card: dense control panel ---- */
 .converter-card {
-  background: #000;
-  border: 3px solid #000;
+  background: #1e1c1a;
+  border: 3px solid #1e1c1a;
   border-radius: 0;
   box-shadow: 8px 8px 0 #000;
 }

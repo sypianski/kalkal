@@ -44,6 +44,26 @@
       -webkit-appearance: none;
     }
 
+    .android-page {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: var(--space-2xl) var(--space-md);
+    }
+
+    .android-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-lg);
+      align-items: start;
+    }
+
+    @media (min-width: 700px) {
+      .android-grid {
+        grid-template-columns: 1fr 1fr;
+        align-items: stretch;
+      }
+    }
+
     .beta-thanks {
       display: none;
       font-family: var(--brut-mono);
@@ -88,110 +108,115 @@
     </nav>
   </header>
 
-  <main class="about-page">
-    <article class="colophon">
+  <main class="android-page">
+    <div class="android-grid">
 
-      <div class="colophon-band">
-        <span class="colophon-band-code">// ANDROID</span>
-        <span class="colophon-band-id">BETA · TESTERZY</span>
-      </div>
+      <!-- Lewa karta: Google Play beta -->
+      <article class="colophon">
+        <div class="colophon-band">
+          <span class="colophon-band-code">// ANDROID</span>
+          <span class="colophon-band-id">GOOGLE PLAY</span>
+        </div>
+        <div class="colophon-body">
+          <h1 class="colophon-name">Aplikacja<br><span>na Androida</span></h1>
 
-      <div class="colophon-body">
-        <h1 class="colophon-name">Aplikacja<br><span>na Androida</span></h1>
+          <p class="colophon-note">
+            Pracuję nad natywną aplikacją kalkal na Androida — konwerter dat,
+            20 systemów kalendarzowych, cztery języki. Tak jak wersja webowa,
+            ale przygotowana pod telefon.
+          </p>
 
-<p class="colophon-note">
-          Pracuję nad natywną aplikacją kalkal na Androida — konwerter dat,
-          20 systemów kalendarzowych, cztery języki. Tak jak wersja webowa,
-          ale przygotowana pod telefon.
-        </p>
+          <p class="colophon-note">
+            Ponieważ to moja pierwsza aplikacja w Google Play, Google wymaga
+            ode mnie zebrania grupy testerów przed otwarciem publicznego dostępu.
+            Jeśli chcesz przetestować aplikację, podaj niżej maila
+            powiązanego z Twoim kontem Google&nbsp;Play&nbsp;Store.
+            Wyślę Ci zaproszenie do programu testowego.
+          </p>
 
-        <p class="colophon-note">
-          Ponieważ to moja pierwsza aplikacja w Google Play, Google wymaga
-          ode mnie zebrania grupy testerów przed otwarciem publicznego dostępu.
-          Jeśli chcesz przetestować aplikację, podaj niżej maila
-          powiązanego z Twoim kontem Google&nbsp;Play&nbsp;Store.
-          Wyślę Ci zaproszenie do programu testowego.
-        </p>
+          <hr class="colophon-divider">
 
-        <hr class="colophon-divider">
+          <form id="beta-form" class="beta-form" novalidate>
+            <label class="colophon-row" style="display:block; border:none; padding:0; margin-block-end:0.4em;">
+              <span style="font-family:var(--brut-mono);font-size:0.62rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-500);">
+                Mail z konta Google Play Store
+              </span>
+            </label>
+            <input
+              class="beta-input"
+              type="email"
+              name="email"
+              id="beta-email"
+              placeholder="twoj@gmail.com"
+              required
+              autocomplete="email"
+            >
+            <div class="about-links">
+              <button type="submit" class="about-link about-link--primary">
+                <span class="about-link-arrow" aria-hidden="true">&#8594;</span>
+                Zgłoś się jako tester
+              </button>
+            </div>
+            <div class="beta-thanks" id="beta-thanks" role="status">
+              ✓ Zapisano — odezwę się, gdy aplikacja będzie gotowa do testów.
+            </div>
+          </form>
 
-        <form
-          id="beta-form"
-          class="beta-form"
-          novalidate
-        >
+          <p class="colophon-note" style="font-size:0.75rem; color:var(--ink-500); margin-top:var(--space-lg); line-height:1.6;">
+            Administratorem danych jest Jakub Sypiański (<a href="mailto:sypianski@outlook.com" style="color:inherit;">sypianski@outlook.com</a>).
+            Adres e-mail przetwarzany jest wyłącznie w celu wysłania zaproszenia do testów beta aplikacji kalkal,
+            na podstawie Twojej zgody (art.&nbsp;6 ust.&nbsp;1 lit.&nbsp;a RODO).
+            Dane przechowywane są do zakończenia programu beta lub do cofnięcia zgody.
+            Przysługuje Ci prawo dostępu do danych, ich sprostowania, usunięcia oraz cofnięcia zgody —
+            w tym celu napisz na powyższy adres.
+          </p>
+        </div>
+      </article>
 
-          <label class="colophon-row" style="display:block; border:none; padding:0; margin-block-end:0.4em;">
-            <span style="font-family:var(--brut-mono);font-size:0.62rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-500);">
-              Mail z konta Google Play Store
-            </span>
-          </label>
-          <input
-            class="beta-input"
-            type="email"
-            name="email"
-            id="beta-email"
-            placeholder="twoj@gmail.com"
-            required
-            autocomplete="email"
-          >
+      <!-- Prawa karta: PWA install -->
+      <article class="colophon">
+        <div class="colophon-band">
+          <span class="colophon-band-code">// PWA</span>
+          <span class="colophon-band-id">EKRAN GŁÓWNY</span>
+        </div>
+        <div class="colophon-body">
+          <h1 class="colophon-name">Dodaj<br><span>do ekranu</span></h1>
 
-          <div class="about-links">
-            <button type="submit" class="about-link about-link--primary">
+          <p class="colophon-note">
+            Już teraz możesz dodać kalkal do ekranu głównego telefonu —
+            działa offline i wygląda jak natywna aplikacja.
+          </p>
+
+          <!-- Android: przycisk install (beforeinstallprompt) -->
+          <div class="about-links" id="pwa-install-wrap" hidden style="margin-bottom:var(--space-md);">
+            <button type="button" class="about-link about-link--primary" id="pwa-install-btn">
               <span class="about-link-arrow" aria-hidden="true">&#8594;</span>
-              Zgłoś się jako tester
+              Dodaj do ekranu głównego
             </button>
           </div>
 
-          <div class="beta-thanks" id="beta-thanks" role="status">
-            ✓ Zapisano — odezwę się, gdy aplikacja będzie gotowa do testów.
+          <!-- iOS: instrukcja manualna -->
+          <div id="pwa-ios-wrap" hidden style="margin-bottom:var(--space-md);">
+            <p class="colophon-note" style="margin:0;">
+              W Safari: dotknij
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; display:inline-block; margin: 0 2px -1px;">
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                <polyline points="16 6 12 2 8 6"/>
+                <line x1="12" y1="2" x2="12" y2="15"/>
+              </svg>
+              → <em>Dodaj do ekranu głównego</em>.
+            </p>
           </div>
-        </form>
 
-        <p class="colophon-note" style="font-size:0.75rem; color:var(--ink-500); margin-top:var(--space-lg); line-height:1.6;">
-          Administratorem danych jest Jakub Sypiański (<a href="mailto:sypianski@outlook.com" style="color:inherit;">sypianski@outlook.com</a>).
-          Adres e-mail przetwarzany jest wyłącznie w celu wysłania zaproszenia do testów beta aplikacji kalkal,
-          na podstawie Twojej zgody (art.&nbsp;6 ust.&nbsp;1 lit.&nbsp;a RODO).
-          Dane przechowywane są do zakończenia programu beta lub do cofnięcia zgody.
-          Przysługuje Ci prawo dostępu do danych, ich sprostowania, usunięcia oraz cofnięcia zgody —
-          w tym celu napisz na powyższy adres.
-        </p>
-
-        <hr class="colophon-divider">
-
-        <p class="colophon-note" style="margin-bottom:var(--space-md);">
-          Już teraz możesz dodać kalkal do ekranu głównego telefonu —
-          działa offline i wygląda jak natywna aplikacja.
-        </p>
-
-        <!-- Android: przycisk install (beforeinstallprompt) -->
-        <div class="about-links" id="pwa-install-wrap" hidden style="margin-bottom:var(--space-md);">
-          <button type="button" class="about-link about-link--primary" id="pwa-install-btn">
-            <span class="about-link-arrow" aria-hidden="true">&#8594;</span>
-            Dodaj do ekranu głównego
-          </button>
-        </div>
-
-        <!-- iOS: instrukcja manualna -->
-        <div id="pwa-ios-wrap" hidden style="margin-bottom:var(--space-md);">
-          <p class="colophon-note" style="margin:0;">
-            W Safari: dotknij
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; display:inline-block; margin: 0 2px -1px;">
-              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
-              <polyline points="16 6 12 2 8 6"/>
-              <line x1="12" y1="2" x2="12" y2="15"/>
-            </svg>
-            → <em>Dodaj do ekranu głównego</em>.
+          <p class="colophon-note" style="font-size:0.82rem; color:var(--ink-500);">
+            Natywna aplikacja na iOS nie jest planowana. Wersja webowa działa
+            jednak poprawnie w Safari i można ją zainstalować jak aplikację
+            sposobem opisanym powyżej.
           </p>
         </div>
+      </article>
 
-        <p class="colophon-note" style="font-size:0.82rem; color:var(--ink-500);">
-          Natywna aplikacja na iOS nie jest planowana. Wersja webowa działa
-          jednak poprawnie w Safari i można ją zainstalować jak aplikację sposobem opisanym powyżej.
-        </p>
-      </div>
-
-    </article>
+    </div>
   </main>
 
   <script src="js/hijri.js"></script>

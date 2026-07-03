@@ -130,6 +130,28 @@
 
         <hr class="colophon-divider">
 
+        <p class="colophon-note" style="margin-bottom:var(--space-sm);">
+          Już teraz możesz dodać kalkal do ekranu głównego telefonu —
+          działa offline i wygląda jak natywna aplikacja.
+        </p>
+
+        <dl class="colophon-meta" style="margin-bottom:var(--space-lg);">
+          <div class="colophon-row">
+            <dt>Android</dt>
+            <dd>Menu przeglądarki (⋮) → <em>Dodaj do ekranu głównego</em></dd>
+          </div>
+          <div class="colophon-row">
+            <dt>iOS / Safari</dt>
+            <dd>Udostępnij (□↑) → <em>Dodaj do ekranu głównego</em></dd>
+          </div>
+          <div class="colophon-row">
+            <dt>iOS — aplikacja</dt>
+            <dd>Natywna aplikacja iOS nie jest planowana</dd>
+          </div>
+        </dl>
+
+        <hr class="colophon-divider">
+
         <form
           id="beta-form"
           class="beta-form"
@@ -197,14 +219,11 @@
           },
           body: JSON.stringify({ email: email })
         }).then(function (res) {
-          if (res.ok || res.status === 201) {
+          if (res.ok || res.status === 201 || res.status === 409) {
             form.querySelector('.about-links').style.display = 'none';
             form.querySelector('.beta-input').style.display = 'none';
             form.querySelector('label').style.display = 'none';
             thanks.style.display = 'block';
-          } else if (res.status === 409) {
-            if (btn) btn.disabled = false;
-            alert('Ten adres jest już zapisany.');
           } else {
             if (btn) btn.disabled = false;
             alert('Błąd. Spróbuj ponownie.');

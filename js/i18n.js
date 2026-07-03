@@ -462,6 +462,10 @@ const I18N = {
       'Stycze\u0144', 'Luty', 'Marzec', 'Kwiecie\u0144', 'Maj', 'Czerwiec',
       'Lipiec', 'Sierpie\u0144', 'Wrzesie\u0144', 'Pa\u017adziernik', 'Listopad', 'Grudzie\u0144'
     ],
+    gregorianMonthsGen: [
+      'stycznia', 'lutego', 'marca', 'kwietnia', 'maja', 'czerwca',
+      'lipca', 'sierpnia', 'wrze\u015bnia', 'pa\u017adziernika', 'listopada', 'grudnia'
+    ],
     romanMonths: [
       'Ianuarius', 'Februarius', 'Martius', 'Aprilis', 'Maius', 'Iunius',
       'Iulius', 'Augustus', 'September', 'October', 'November', 'December'

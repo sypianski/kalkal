@@ -43,6 +43,7 @@
       isLeap: (y) => Cal.isJulianLeapYear(y),
       monthCount: 12,
       monthNames: (t) => t.gregorianMonths,
+      monthNamesGen: (t) => t.gregorianMonthsGen || t.gregorianMonths,
       historicalRange: [1704987, 2305448]
     },
     gregorian: {
@@ -63,6 +64,7 @@
       isLeap: (y) => y < 1582 ? Cal.isJulianLeapYear(y) : Cal.isGregorianLeapYear(y),
       monthCount: 12,
       monthNames: (t) => t.gregorianMonths,
+      monthNamesGen: (t) => t.gregorianMonthsGen || t.gregorianMonths,
       historicalRange: [0, Infinity]
     },
     coptic: {
@@ -188,6 +190,10 @@
         if (this._variant === 'ChronPasch') return t.alexandrianMonths;
         return t.byzantineMonths;
       },
+      monthNamesGen(t) {
+        if (this._variant === 'Alexandrian' || this._variant === 'ChronPasch') return genitiveMonths(t, t.alexandrianMonths);
+        return genitiveMonths(t, t.byzantineMonths);
+      },
       historicalRange: [1903683, 2251545]
     },
     seleucid: {
@@ -214,6 +220,9 @@
       monthNames(t) {
         return this._variant === 'Babylonian' ? t.seleucidBabMonths : t.seleucidMonths;
       },
+      monthNamesGen(t) {
+        return genitiveMonths(t, this._variant === 'Babylonian' ? t.seleucidBabMonths : t.seleucidMonths);
+      },
       historicalRange: [1574638, 2086673]
     },
     syriac: {
@@ -236,6 +245,7 @@
       isLeap: (y) => Cal.isRumiLeapYear(y),
       monthCount: 12,
       monthNames: (t) => t.gregorianMonths,
+      monthNamesGen: (t) => t.gregorianMonthsGen || t.gregorianMonths,
       historicalRange: [2393109, 2424516]
     },
     egyptian: {
@@ -269,6 +279,7 @@
       isLeap: (y) => Cal.isSpanishLeapYear(y),
       monthCount: 12,
       monthNames: (t) => t.gregorianMonths,
+      monthNamesGen: (t) => t.gregorianMonthsGen || t.gregorianMonths,
       historicalRange: [1704610, 2232400]
     },
     antiochene: {
@@ -280,6 +291,7 @@
       isLeap: (y) => Cal.isAntiocheneLeapYear(y),
       monthCount: 12,
       monthNames: (t) => t.seleucidMonths,
+      monthNamesGen: (t) => genitiveMonths(t, t.seleucidMonths),
       historicalRange: [1574638, 2086673]
     },
     olympiad: {
@@ -291,6 +303,7 @@
       isLeap: (y) => Cal.isOlympiadLeapYear(y),
       monthCount: 12,
       monthNames: (t) => t.gregorianMonths,
+      monthNamesGen: (t) => t.gregorianMonthsGen || t.gregorianMonths,
       historicalRange: [1405084, 1867157]
     },
     macedonian: {
@@ -335,6 +348,7 @@
       isLeap: (y) => Cal.isBPLeapYear(y),
       monthCount: 12,
       monthNames: (t) => t.gregorianMonths,
+      monthNamesGen: (t) => t.gregorianMonthsGen || t.gregorianMonths,
       historicalRange: null
     },
     human: {
@@ -349,6 +363,7 @@
       isLeap(y) { return Cal.isHumanLeapYear(y, this._variant); },
       monthCount: 12,
       monthNames: (t) => t.gregorianMonths,
+      monthNamesGen: (t) => t.gregorianMonthsGen || t.gregorianMonths,
       historicalRange: null
     }
   };
@@ -402,6 +417,20 @@
     seleucid: 4,
     human: 5
   };
+
+  // ---- Genitive month helpers ----
+  // Returns genitive forms of `months` using the nom→gen mapping from t.gregorianMonthsGen.
+  // Falls back to nominative when the language has no genitive array (EN, EO).
+  function genitiveMonths(t, months) {
+    if (!t.gregorianMonthsGen) return months;
+    const lookup = {};
+    t.gregorianMonths.forEach(function(n, i) { lookup[n] = t.gregorianMonthsGen[i]; });
+    return months.map(function(n) { return lookup[n] || n; });
+  }
+  // Returns genitive month names for a calendar, falling back to nominative.
+  function genNames(cal, t) {
+    return cal.monthNamesGen ? cal.monthNamesGen(t) : cal.monthNames(t);
+  }
 
   // ---- DOM helpers ----
   const $ = (sel, ctx = document) => ctx.querySelector(sel);
@@ -963,7 +992,7 @@
         var key = result.year + '-' + result.month + '-' + result.day;
         if (!groups.has(key)) {
           var dow = Cal.getDayOfWeek(jd);
-          var tgtNames = tgt.monthNames(t);
+          var tgtNames = genNames(tgt, t);
           groups.set(key, { result: result, jd: jd, dow: dow, tgtNames: tgtNames, labels: [] });
         }
         var vlabel = '';
@@ -984,7 +1013,7 @@
     var primaryJd = groupList[0].jd;
 
     if (hasSrcVars) src._variant = src.defaultVariant;
-    var srcNames = src.monthNames(t);
+    var srcNames = genNames(src, t);
 
     var elements = [];
 
@@ -1214,7 +1243,7 @@
     const startResult = tgt.fromJD(jdStart);
     const endResult = tgt.fromJD(jdEnd);
     const srcNames = src.monthNames(t);
-    const tgtNames = tgt.monthNames(t);
+    const tgtNames = genNames(tgt, t);
     const srcLabel = t.calendars[src.id];
     const tgtLabel = t.calendars[tgt.id];
 
@@ -1261,7 +1290,7 @@
     });
     table.appendChild(tbody);
 
-    const srcRange = fmtDateRange(srcNames, { day: d1, month: m1, year: y1 }, { day: d2, month: m2, year: y2 });
+    const srcRange = fmtDateRange(genNames(src, t), { day: d1, month: m1, year: y1 }, { day: d2, month: m2, year: y2 });
     const srcStartStr = srcRange.startStr;
     const srcEndStr = srcRange.endStr;
 
@@ -1593,22 +1622,28 @@
         yearStr = (result.year === endResult.year)
           ? String(result.year)
           : result.year + '\u2013' + endResult.year;
-        datesStr = '(' + result.day + ' ' + names[result.month - 1]
-          + ' \u2013 ' + endResult.day + ' ' + names[endResult.month - 1] + ')';
+        datesStr = result.day + ' ' + names[result.month - 1]
+          + ' \u2013 ' + endResult.day + ' ' + names[endResult.month - 1];
       } else if (id === 'roman' && result.day) {
         yearStr = result.year + ' AUC';
-        datesStr = '(' + Cal.romanDayNotation(result.month, result.day, cal.isLeap(result.year)) + ')';
+        datesStr = Cal.romanDayNotation(result.month, result.day, cal.isLeap(result.year));
       } else {
         yearStr = String(result.year);
-        datesStr = '(' + result.day + ' ' + names[result.month - 1] + ')';
+        datesStr = result.day + ' ' + names[result.month - 1];
       }
-      matches.push([t.calendars[id], yearStr, datesStr]);
+      matches.push([id, t.calendars[id], yearStr, datesStr]);
     }
     if (matches.length === 0) return null;
     const dl = el('dl', { class: 'contextual-list' });
-    matches.forEach(([label, yearStr, datesStr]) => {
+    matches.forEach(([calId, label, yearStr, datesStr]) => {
       var row = el('div');
-      row.appendChild(el('dt', { text: label }));
+      var dt = el('dt');
+      var link = document.createElement('a');
+      link.className = 'contextual-cal-link';
+      link.href = 'calendars.html#' + calId;
+      link.textContent = label;
+      dt.appendChild(link);
+      row.appendChild(dt);
       var yearDd = el('dd', { class: 'contextual-year' });
       var strong = document.createElement('strong');
       strong.textContent = yearStr;
@@ -1633,22 +1668,41 @@
       if (jd >= lo && jd <= hi) continue;
       const result = cal.fromJD(jd);
       const names = cal.monthNames(t);
-      let dateStr;
+      let yearStr, datesStr;
       if (isRange) {
         const endResult = cal.fromJD(jdEnd);
-        const range = fmtDateRange(names, result, endResult);
-        dateStr = range.startStr + ' \u2013 ' + range.endStr;
+        yearStr = (result.year === endResult.year)
+          ? String(result.year)
+          : result.year + '\u2013' + endResult.year;
+        datesStr = result.day + ' ' + names[result.month - 1]
+          + ' \u2013 ' + endResult.day + ' ' + names[endResult.month - 1];
       } else if (id === 'roman' && result.day) {
-        dateStr = Cal.romanDayNotation(result.month, result.day, cal.isLeap(result.year)) + ' ' + result.year + ' AUC';
+        yearStr = result.year + ' AUC';
+        datesStr = Cal.romanDayNotation(result.month, result.day, cal.isLeap(result.year));
       } else {
-        dateStr = result.day + ' ' + names[result.month - 1] + ' ' + result.year;
+        yearStr = String(result.year);
+        datesStr = result.day + ' ' + names[result.month - 1];
       }
-      matches.push([t.calendars[id], dateStr]);
+      matches.push([id, t.calendars[id], yearStr, datesStr]);
     }
     if (matches.length === 0) return null;
     const dl = el('dl', { class: 'contextual-list' });
-    matches.forEach(([label, value]) => {
-      dl.appendChild(el('div', null, el('dt', { text: label }), dateDd(value)));
+    matches.forEach(([calId, label, yearStr, datesStr]) => {
+      var row = el('div');
+      var dt = el('dt');
+      var link = document.createElement('a');
+      link.className = 'contextual-cal-link';
+      link.href = 'calendars.html#' + calId;
+      link.textContent = label;
+      dt.appendChild(link);
+      row.appendChild(dt);
+      var yearDd = el('dd', { class: 'contextual-year' });
+      var strong = document.createElement('strong');
+      strong.textContent = yearStr;
+      yearDd.appendChild(strong);
+      row.appendChild(yearDd);
+      row.appendChild(el('dd', { class: 'contextual-dates', text: datesStr }));
+      dl.appendChild(row);
     });
     return dl;
   }
@@ -1927,6 +1981,7 @@
   // ---- History ----
 
   const HISTORY_KEY = 'kalkal-history';
+  const STATE_KEY = 'kalkal-state';
   const HISTORY_MAX = 20;
   const historyList = $('#history-list');
   const historyPanel = $('#history-panel');
@@ -2060,6 +2115,24 @@
     convert();
   }
 
+  function saveState(entry) {
+    if (!entry.month || !entry.day) return;
+    try {
+      localStorage.setItem(STATE_KEY, JSON.stringify({
+        year: entry.year,
+        month: entry.month,
+        day: entry.day,
+        fromCal: entry.fromCal,
+        toCal: entry.toCal
+      }));
+    } catch(e) {}
+  }
+
+  function loadState() {
+    try { return JSON.parse(localStorage.getItem(STATE_KEY)) || null; }
+    catch { return null; }
+  }
+
   function recordConversion() {
     const srcCal = resolveCalendar(fromCalInput.value);
     const tgtCal = resolveCalendar(toCalInput.value);
@@ -2073,7 +2146,10 @@
       day: parseInt($('#from-day').value, 10) || null,
       ts: Date.now()
     };
-    if (entry.year) saveHistory(entry);
+    if (entry.year) {
+      saveHistory(entry);
+      saveState(entry);
+    }
   }
 
   // ---- Events ----
@@ -2193,6 +2269,20 @@
     toCalInput.value = '';
     onCalendarChange(fromCalInput);
     updateMonthSelects();
+    // Restore last full-date state (year + month + day) if available
+    var savedState = loadState();
+    if (savedState) {
+      if (savedState.fromCal) fromCalInput.value = t.calendars[savedState.fromCal] || fromCalInput.value;
+      if (savedState.toCal) toCalInput.value = t.calendars[savedState.toCal] || '';
+      onCalendarChange(fromCalInput);
+      updateMonthSelects();
+      if (savedState.year) $('#from-year').value = savedState.year;
+      if (savedState.month) setMonthByNumber(savedState.month);
+      if (savedState.day) {
+        $('#from-day').value = savedState.day;
+        if (refineCard) refineCard.hidden = false;
+      }
+    }
   }
 
   // Auto-focus year input

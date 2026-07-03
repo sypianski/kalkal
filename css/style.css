@@ -1538,9 +1538,23 @@ html[dir="rtl"] .btn-convert:hover svg {
 
 .contextual-list > div {
   display: grid;
-  grid-template-columns: 12rem 6rem 1fr;
-  gap: 0 var(--space-lg, 1.5rem);
+  grid-template-columns: minmax(6rem, max-content) minmax(4rem, max-content) 1fr;
+  gap: 0 var(--space-md, 1rem);
   align-items: baseline;
+}
+
+.contextual-list .contextual-cal-link {
+  color: inherit;
+  text-decoration: none;
+  border-block-end: 1px dotted var(--ink-300, #b8ac95);
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.contextual-list .contextual-cal-link:hover,
+.contextual-list .contextual-cal-link:focus {
+  color: var(--ink-800, #2a231a);
+  border-block-end-color: var(--ink-600, #6a5d47);
+  outline: none;
 }
 
 .contextual-list dt {
@@ -2273,11 +2287,23 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
 .astro-content .result-astro,
 .astro-content .result-meta {
   margin: 0;
-  padding: 0.55em 0;
+  padding: 0.6em 0;
   background: transparent;
   border: 0;
   border-inline-start: 0;
   border-block-end: 1px dashed var(--ink-200);
+}
+
+.astro-content .result-astro {
+  display: grid;
+  grid-template-columns: 1.75em 1fr auto;
+  column-gap: 0.7em;
+  row-gap: 0.35em;
+  align-items: baseline;
+}
+
+.astro-content .result-zodiac,
+.astro-content .result-meta {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -2299,13 +2325,16 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
 }
 
 .astro-content .astro-icon {
-  flex: 0 0 auto;
+  grid-column: 1;
+  grid-row: 1;
+  align-self: center;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 1.75em;
   height: 1.75em;
   font-size: 0.95rem;
+  line-height: 1;
   color: var(--brut-ink);
   background: var(--parchment-200);
   border: 1px solid var(--ink-200);
@@ -2313,12 +2342,14 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
 }
 
 .astro-content .astro-text {
+  grid-column: 2;
+  grid-row: 1;
   font-family: var(--brut-mono);
   font-size: 0.8rem;
   font-weight: 600;
   color: var(--brut-ink);
-  flex: 1 1 auto;
-  line-height: 1.35;
+  line-height: 1.4;
+  align-self: center;
 }
 
 .astro-content .astro-text::first-letter {
@@ -2326,11 +2357,13 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
 }
 
 .astro-content .astro-detail {
+  grid-column: 3;
+  grid-row: 1;
+  align-self: center;
   font-family: var(--brut-mono);
   font-size: 0.68rem;
   color: var(--ink-500);
-  flex: 0 0 auto;
-  padding: 0.15em 0.5em;
+  padding: 0.15em 0.55em;
   border: 1px solid var(--ink-200);
   border-radius: 2em;
   background: var(--parchment-100);
@@ -2338,10 +2371,10 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
 }
 
 .astro-content .astro-note {
-  flex: 1 1 100%;
-  margin: 0.35em 0 0;
+  grid-column: 2 / -1;
+  grid-row: 2;
+  margin: 0;
   padding: 0.4em 0.7em;
-  padding-inline-start: 0.7em;
   border-inline-start: 2px solid var(--ink-200);
   font-family: var(--brut-mono);
   font-size: 0.68rem;
@@ -5671,7 +5704,8 @@ body {
   }
 
   .contextual-list > div {
-    grid-template-columns: minmax(5em, auto) 1fr !important;
+    grid-template-columns: minmax(5em, max-content) minmax(3.5em, max-content) 1fr !important;
+    gap: 0 0.6em !important;
   }
 
   .contextual-list dt {

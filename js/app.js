@@ -1101,18 +1101,8 @@
     var tgtFullText = tgtDetailSp ? (tgtDetailSp + ' ' + tgtYearStr.replace(/\u00a0/g, ' ')) : tgtYearStr.replace(/\u00a0/g, ' ');
 
     var bridge = el('div', { class: 'result-bridge bridge-single-line' });
-
-    var srcEnd = el('div', { class: 'bridge-end bridge-end-src' });
-    srcEnd.appendChild(el('span', { class: 'bridge-end-label', text: t.labelFrom || 'From' }));
-    srcEnd.appendChild(el('span', { class: 'bridge-src-full', text: srcFullText }));
-    bridge.appendChild(srcEnd);
-
-    bridge.appendChild(el('span', { class: 'bridge-arrow', text: '\u2192' }));
-
-    var tgtEnd = el('div', { class: 'bridge-end bridge-end-tgt' });
-    tgtEnd.appendChild(el('span', { class: 'bridge-end-label', text: t.labelTo || 'To' }));
-    tgtEnd.appendChild(el('span', { class: 'bridge-tgt-full', text: tgtFullText }));
-    bridge.appendChild(tgtEnd);
+    bridge.appendChild(el('span', { class: 'bridge-tgt-full', text: tgtFullText }));
+    bridge.appendChild(el('span', { class: 'bridge-src-caption', text: srcFullText }));
     elements.push(bridge);
 
     // Hidden element for legacy copy-button (full target date string)

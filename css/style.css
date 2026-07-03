@@ -961,7 +961,7 @@ html[dir="rtl"] .site-title {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--space-lg);
-  align-items: start;
+  align-items: stretch;
 }
 
 .converter-left,
@@ -2179,10 +2179,11 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
   font-family: sans-serif;
   line-height: 1;
   color: #999;
+  display: inline-block;
 }
 
 .tile-toggle.active::after {
-  content: '\25B4';
+  transform: rotate(180deg);
 }
 
 .tile-toggle:hover::after {
@@ -2528,10 +2529,11 @@ html[dir="rtl"] .ecl-table tr.notable td:first-child {
   font-family: sans-serif;
   line-height: 1;
   color: #999;
+  display: inline-block;
 }
 
 .breakdown-toggle.active::after {
-  content: '\25B4';
+  transform: rotate(180deg);
 }
 
 .breakdown-toggle:hover::after {
@@ -2694,70 +2696,39 @@ html[dir="rtl"] .bridge-arrow {
   display: inline-block;
 }
 
-/* Single-day bridge — one-line per side */
+/* Single-day bridge — stacked: target prominent, source as caption below */
 .result-bridge.bridge-single-line {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-md);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
   grid-template-columns: none;
   grid-template-rows: none;
 }
 
-.bridge-src-full,
 .bridge-tgt-full {
   font-family: var(--font-display);
   font-size: clamp(1.1rem, 4.4vw, 1.7rem);
-  font-weight: 800;
+  font-weight: 900;
   line-height: 1.15;
   color: var(--ink-900);
   letter-spacing: -0.02em;
-  border-bottom: 2px solid var(--ink-900);
+  border-bottom: 3px solid var(--ink-900);
   padding-bottom: 0.1rem;
   white-space: normal;
   word-break: normal;
   overflow-wrap: anywhere;
-  flex: 1 1 0;
-  min-width: 0;
 }
 
-.bridge-tgt-full {
-  font-weight: 900;
-  border-bottom-width: 3px;
-}
-
-/* Direction label cell carved out on the left of each bridge side */
-.bridge-end {
-  display: flex;
-  align-items: stretch;
-  gap: 0.5rem;
-  flex: 1 1 0;
-  min-width: 0;
-}
-
-.bridge-end-label {
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.bridge-src-caption {
   font-family: var(--font-mono);
-  font-size: 0.52rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
+  font-size: 0.65rem;
+  font-weight: 400;
   color: var(--ink-400);
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  border-right: 2px solid var(--ink-300);
-  padding-right: 0.3rem;
-}
-
-html[dir="rtl"] .bridge-end-label {
-  transform: rotate(0deg);
-  border-right: none;
-  border-left: 2px solid var(--ink-300);
-  padding-right: 0;
-  padding-left: 0.3rem;
+  letter-spacing: 0.03em;
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: anywhere;
 }
 
 /* Small grey link to calendar description (calendars.html#<id>) */
@@ -2844,7 +2815,7 @@ html[dir="rtl"] .bridge-end-label {
   display: inline-block;
 }
 
-.copy-box.expanded .copy-box-toggle::after { content: '▴'; }
+.copy-box.expanded .copy-box-toggle::after { transform: rotate(180deg); }
 
 .copy-box-toggle:hover {
   color: #000;
@@ -3385,10 +3356,11 @@ html[dir="rtl"] .history-actions {
   font-family: sans-serif;
   line-height: 1;
   color: #999;
+  display: inline-block;
 }
 
 .history-header.active::after {
-  content: '\25B4';
+  transform: rotate(180deg);
 }
 
 .history-header:hover::after {
@@ -3447,6 +3419,10 @@ html[dir="rtl"] .history-actions {
   background: var(--parchment-100);
   padding: var(--space-lg) var(--space-xl);
   text-align: center;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .intro-desc {
@@ -3864,7 +3840,7 @@ body[data-page="calendars"] .main-content--prose {
 .converter-grid {
   grid-template-columns: 300px 1fr;
   gap: var(--space-lg);
-  align-items: start;
+  align-items: stretch;
 }
 
 /* ---- Left card: dense control panel ---- */
@@ -6859,6 +6835,7 @@ body {
   flex-direction: column;
   gap: var(--space-md);
   width: 100%;
+  flex: 1;
 }
 
 .action-row > .astro-card,

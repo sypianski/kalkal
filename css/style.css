@@ -6005,6 +6005,7 @@ body {
   .page-nav a[href="calendars.html"]::before { content: "\25A6"; }
   .page-nav a[href="methodology.html"]::before { content: "\25C6"; }
   .page-nav a[href="eclipses.html"]::before  { content: "\25D0"; }
+  .page-nav a[href="android.html"]::before   { content: "\2B07"; }
 
   /* Hide eclipses on mobile */
   .page-nav a[href="eclipses.html"] {
@@ -6054,7 +6055,7 @@ body {
     margin-bottom: 0.3em;
   }
   .nav-settings-btn::before {
-    content: "\2699";
+    content: "\2630";
     display: block !important;
     font-size: 1.5rem !important;
     line-height: 1 !important;
@@ -6859,6 +6860,17 @@ body {
 }
 
 .about-link--kofi:hover {
+  background: var(--ink-900);
+  color: var(--parchment-100);
+}
+
+.about-link--email {
+  background: transparent;
+  color: var(--ink-900);
+  border-color: var(--ink-900);
+}
+
+.about-link--email:hover {
   background: var(--ink-900);
   color: var(--parchment-100);
 }

@@ -647,8 +647,14 @@
       outsideHandler = function(ev) {
         if (dropdown && !dropdown.contains(ev.target) && ev.target !== input) hide();
       };
-      document.addEventListener('pointerdown', outsideHandler, true);
+      var handlerToInstall = outsideHandler;
+      requestAnimationFrame(function() {
+        if (outsideHandler === handlerToInstall && dropdown) {
+          document.addEventListener('pointerdown', outsideHandler, true);
+        }
+      });
       window.addEventListener('resize', reposition);
+      window.addEventListener('scroll', reposition, true);
     }
 
     function hide() {
@@ -656,6 +662,7 @@
       if (outsideHandler) {
         document.removeEventListener('pointerdown', outsideHandler, true);
         window.removeEventListener('resize', reposition);
+        window.removeEventListener('scroll', reposition, true);
         outsideHandler = null;
       }
     }
@@ -825,8 +832,17 @@
       outsideHandler = ev => {
         if (dropdown && !dropdown.contains(ev.target) && ev.target !== input) hide();
       };
-      document.addEventListener('pointerdown', outsideHandler, true);
+      // Defer registration to the next frame so the SAME pointerdown that
+      // opened the dropdown (via focus/click) can't reach outsideHandler and
+      // instantly close it — a race we've observed on both desktop + mobile.
+      const handlerToInstall = outsideHandler;
+      requestAnimationFrame(() => {
+        if (outsideHandler === handlerToInstall && dropdown) {
+          document.addEventListener('pointerdown', outsideHandler, true);
+        }
+      });
       window.addEventListener('resize', positionDropdown);
+      window.addEventListener('scroll', positionDropdown, true);
     }
 
     function positionDropdown() {
@@ -843,6 +859,7 @@
       if (outsideHandler) {
         document.removeEventListener('pointerdown', outsideHandler, true);
         window.removeEventListener('resize', positionDropdown);
+        window.removeEventListener('scroll', positionDropdown, true);
         outsideHandler = null;
       }
     }

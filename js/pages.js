@@ -631,7 +631,7 @@ const SEASON_LABELS = {
     var calContainer = document.querySelector('.main-content--prose');
     var tocList = document.querySelector('.cal-toc-list');
     if (calContainer && tocList) {
-      var groupLabels = (t.calendarGroups) || {};
+      var groupLabels = (i18n && i18n.calendarGroups) || {};
       // Remove old group headers
       calContainer.querySelectorAll('.cal-group-heading').forEach(function(el) { el.remove(); });
       // Reorder cards and insert group headers

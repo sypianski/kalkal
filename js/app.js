@@ -497,6 +497,8 @@
       updateVariantBar(fromVariantsBar, fromCalInput);
       updateMonthSelects();
       updateCalDescLink(fromCalInput, 'from-cal-desc');
+      const srcCal = resolveCalendar(fromCalInput.value);
+      if (srcCal) localStorage.setItem('kalkal-from-cal', srcCal.id);
     } else {
       updateVariantBar(toVariantsBar, toCalInput);
       updateCalDescLink(toCalInput, 'to-cal-desc');
@@ -2289,9 +2291,11 @@
     if (params.get('d')) $('#from-day').value = params.get('d');
     convert();
   } else {
-    // Default: Hijri source, Christian Era / Gregorian target (implicit)
+    // Default: last-selected source (or Hijri), Christian Era / Gregorian target (implicit)
     var t = I18N[currentLang] || I18N.en;
-    fromCalInput.value = t.calendars.hijri || 'Hijri';
+    var storedFrom = localStorage.getItem('kalkal-from-cal');
+    var defaultFromId = (storedFrom && CALENDARS[storedFrom]) ? storedFrom : 'hijri';
+    fromCalInput.value = t.calendars[defaultFromId] || t.calendars.hijri || 'Hijri';
     toCalInput.value = '';
     onCalendarChange(fromCalInput);
     updateMonthSelects();

@@ -411,16 +411,16 @@ const I18N = {
     labelTo: 'Do',
     calendarPlaceholder: 'Kalendarz...',
     calendars: {
-      hijri: 'Hid\u017cry', julian: 'Julia\u0144ski', gregorian: 'n.e. (julia\u0144ski\u2192gregoria\u0144ski)',
-      coptic: 'Koptyjski', ethiopian: 'Etiopski', yazdgerdi: 'Zoroastryjski',
-      armenian: 'Ormia\u0144ski', solarHijri: 'Ira\u0144ski', ilkhani: 'Ilchanid\u00f3w (Kh\u0101n\u012b)',
-      byzantine: 'Bizanty\u0144ski',
-      seleucid: 'Seleucydzki', syriac: 'Syryjski', rumi: 'R\u016bm\u012b (osma\u0144ski)',
-      egyptian: 'Egipski',
-      roman: 'Rzymski', spanish: 'Era hiszpa\u0144ska', antiochene: 'Era antioche\u0144ska',
-      olympiad: 'Olimpiady', macedonian: 'Macedo\u0144ski',
-      hebrew: 'Hebrajski', babylonian: 'Babilo\u0144ski',
-      bp: 'Przed tera\u017aniejszo\u015bci\u0105', human: 'Era ludzka'
+      hijri: 'hid\u017cry', julian: 'julia\u0144ski', gregorian: 'n.e. (julia\u0144ski\u2192gregoria\u0144ski)',
+      coptic: 'koptyjski', ethiopian: 'etiopski', yazdgerdi: 'zoroastryjski',
+      armenian: 'ormia\u0144ski', solarHijri: 'ira\u0144ski', ilkhani: 'ilchanid\u00f3w (Kh\u0101n\u012b)',
+      byzantine: 'bizanty\u0144ski',
+      seleucid: 'seleucydzki', syriac: 'syryjski', rumi: 'r\u016bm\u012b (osma\u0144ski)',
+      egyptian: 'egipski',
+      roman: 'rzymski', spanish: 'era hiszpa\u0144ska', antiochene: 'era antioche\u0144ska',
+      olympiad: 'olimpiady', macedonian: 'macedo\u0144ski',
+      hebrew: 'hebrajski', babylonian: 'babilo\u0144ski',
+      bp: 'przed tera\u017aniejszo\u015bci\u0105', human: 'era ludzka'
     },
     calendarGroups: {
       universal: 'Uniwersalne / naukowe',

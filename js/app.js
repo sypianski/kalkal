@@ -1347,7 +1347,7 @@
     const jdEnd = src.toJD(year, src.monthCount, src.monthLength(year, src.monthCount));
     const startResult = tgt.fromJD(jdStart);
     const endResult = tgt.fromJD(jdEnd);
-    const tgtNames = tgt.monthNames(t);
+    const tgtNames = genNames(tgt, t);
     const srcNames = src.monthNames(t);
     const srcLabel = t.calendars[src.id];
     const tgtLabel = t.calendars[tgt.id];
@@ -1615,7 +1615,7 @@
       const [lo, hi] = cal.historicalRange;
       if (jd < lo || jd > hi) continue;
       const result = cal.fromJD(jd);
-      const names = cal.monthNames(t);
+      const names = genNames(cal, t);
       let yearStr, datesStr;
       if (isRange) {
         const endResult = cal.fromJD(jdEnd);
@@ -1667,7 +1667,7 @@
       // Only include if OUT of range
       if (jd >= lo && jd <= hi) continue;
       const result = cal.fromJD(jd);
-      const names = cal.monthNames(t);
+      const names = genNames(cal, t);
       let yearStr, datesStr;
       if (isRange) {
         const endResult = cal.fromJD(jdEnd);
@@ -1981,7 +1981,6 @@
   // ---- History ----
 
   const HISTORY_KEY = 'kalkal-history';
-  const STATE_KEY = 'kalkal-state';
   const HISTORY_MAX = 20;
   const historyList = $('#history-list');
   const historyPanel = $('#history-panel');
@@ -2029,7 +2028,7 @@
 
   function fmtDate(cal, t, y, m, d, omitYear) {
     if (!m) return String(y);
-    const names = cal.monthNames(t);
+    const names = genNames(cal, t);
     const mName = names[m - 1] || String(m);
     // Abbreviate month to 3 chars if > 5 chars
     const shortM = mName.length > 5 ? mName.slice(0, 3) + '.' : mName;
@@ -2115,24 +2114,6 @@
     convert();
   }
 
-  function saveState(entry) {
-    if (!entry.month || !entry.day) return;
-    try {
-      localStorage.setItem(STATE_KEY, JSON.stringify({
-        year: entry.year,
-        month: entry.month,
-        day: entry.day,
-        fromCal: entry.fromCal,
-        toCal: entry.toCal
-      }));
-    } catch(e) {}
-  }
-
-  function loadState() {
-    try { return JSON.parse(localStorage.getItem(STATE_KEY)) || null; }
-    catch { return null; }
-  }
-
   function recordConversion() {
     const srcCal = resolveCalendar(fromCalInput.value);
     const tgtCal = resolveCalendar(toCalInput.value);
@@ -2148,7 +2129,6 @@
     };
     if (entry.year) {
       saveHistory(entry);
-      saveState(entry);
     }
   }
 
@@ -2169,6 +2149,13 @@
   // Select all on focus for numeric inputs
   $('#from-year').addEventListener('focus', function() { this.select(); });
   $('#from-day').addEventListener('focus', function() { this.select(); });
+
+  // Clear month and day when year changes
+  $('#from-year').addEventListener('input', function() {
+    setMonthByNumber(null);
+    $('#from-day').value = '';
+    clearError();
+  });
 
   // Setup custom month dropdown
   setupMonthDropdown(fromMonthSelect);
@@ -2269,20 +2256,6 @@
     toCalInput.value = '';
     onCalendarChange(fromCalInput);
     updateMonthSelects();
-    // Restore last full-date state (year + month + day) if available
-    var savedState = loadState();
-    if (savedState) {
-      if (savedState.fromCal) fromCalInput.value = t.calendars[savedState.fromCal] || fromCalInput.value;
-      if (savedState.toCal) toCalInput.value = t.calendars[savedState.toCal] || '';
-      onCalendarChange(fromCalInput);
-      updateMonthSelects();
-      if (savedState.year) $('#from-year').value = savedState.year;
-      if (savedState.month) setMonthByNumber(savedState.month);
-      if (savedState.day) {
-        $('#from-day').value = savedState.day;
-        if (refineCard) refineCard.hidden = false;
-      }
-    }
   }
 
   // Auto-focus year input

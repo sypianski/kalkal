@@ -6281,14 +6281,15 @@ body {
     order: 0 !important;
     display: flex !important;
     align-items: center !important;
-    justify-content: space-between !important;
     background: #000 !important;
     color: #fff !important;
     min-height: 58px !important;
     padding: 0 1.3em !important;
+    margin: 0 !important;
     border: 2.5px solid #000 !important;
-    box-shadow: 5px 5px 0 #242220, inset 0 0 0 2px #000 !important;
-    max-width: 100% !important;
+    box-shadow: 5px 5px 0 #242220 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
   #mobile-title-box[hidden] { display: none !important; }
   .mobile-title-text {
@@ -6300,7 +6301,14 @@ body {
     color: #fff !important;
     line-height: 1 !important;
   }
-  #history-empty-instruction  { order: 0 !important; }
+  #history-empty-instruction {
+    order: 0 !important;
+    margin: 0 !important;
+    border: 2.5px solid #000 !important;
+    box-shadow: 5px 5px 0 #242220 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
 
   /* Intro card on mobile: compact — hide features list so height matches
      the converter form slabs (≈3 fields × ~75px). Only desc + step shown. */

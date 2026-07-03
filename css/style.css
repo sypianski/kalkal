@@ -6049,12 +6049,8 @@ body {
     flex-shrink: 0;
     margin-bottom: 0.3em;
   }
-  .nav-settings-btn::after {
-    content: "SETTINGS";
-    font-size: 0.55rem;
-    font-family: var(--brut-mono);
-    font-weight: 700;
-    letter-spacing: 0.08em;
+  .nav-settings-btn::before {
+    content: "\2699";
   }
   .nav-settings-btn:hover { color: #fff !important; }
 
@@ -6273,6 +6269,7 @@ body {
   .astro-card                 { order: 11 !important; }
   .breakdown-card             { order: 12 !important; }
   .history-panel              { order: 13 !important; }
+  #history-empty-instruction  { order: 0 !important; }
 
   /* Hide the original inline labels (numbered markers replace them) */
   .form-field--cal > .form-label,

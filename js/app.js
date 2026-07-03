@@ -596,33 +596,48 @@
 
     function reposition() { if (dropdown) placeFixedDropdown(dropdown, input); }
 
-    function show() {
+    function getFiltered(query) {
+      if (!query) return monthData;
+      var lower = query.toLowerCase();
+      return monthData.filter(function(m) {
+        return m.name.toLowerCase().indexOf(lower) !== -1;
+      });
+    }
+
+    function show(query) {
       hide();
       if (monthData.length === 0) return;
+      var filtered = getFiltered(query);
       dropdown = el('div', { class: 'cal-suggestions' });
 
-      // Clear option
-      var clearItem = el('div', { class: 'cal-item', text: '\u2014' });
-      bindItemActivate(clearItem, function() {
-        input.value = '';
-        input.dataset.monthValue = '';
-        hide();
-        input.classList.remove('has-error');
-        if (resultPanel.classList.contains('has-result')) convert();
-      });
-      dropdown.appendChild(clearItem);
-
-      monthData.forEach(function(m) {
-        var item = el('div', { class: 'cal-item', text: m.name });
-        bindItemActivate(item, function() {
-          input.value = m.name;
-          input.dataset.monthValue = String(m.num);
+      if (!query) {
+        var clearItem = el('div', { class: 'cal-item', text: '\u2014' });
+        bindItemActivate(clearItem, function() {
+          input.value = '';
+          input.dataset.monthValue = '';
           hide();
           input.classList.remove('has-error');
           if (resultPanel.classList.contains('has-result')) convert();
         });
-        dropdown.appendChild(item);
-      });
+        dropdown.appendChild(clearItem);
+      }
+
+      if (filtered.length === 0) {
+        dropdown.appendChild(el('div', { class: 'cal-item cal-item--empty', text: '\u2014' }));
+      } else {
+        filtered.forEach(function(m) {
+          var item = el('div', { class: 'cal-item', text: m.name });
+          bindItemActivate(item, function() {
+            input.value = m.name;
+            input.dataset.monthValue = String(m.num);
+            hide();
+            input.classList.remove('has-error');
+            if (resultPanel.classList.contains('has-result')) convert();
+          });
+          dropdown.appendChild(item);
+        });
+      }
+
       document.body.appendChild(dropdown);
       placeFixedDropdown(dropdown, input);
       activeIndex = -1;
@@ -644,7 +659,7 @@
     }
 
     function getItems() {
-      return dropdown ? Array.from(dropdown.querySelectorAll('.cal-item')) : [];
+      return dropdown ? Array.from(dropdown.querySelectorAll('.cal-item:not(.cal-item--empty)')) : [];
     }
 
     function setActive(index) {
@@ -658,8 +673,19 @@
       }
     }
 
-    input.addEventListener('focus', show);
-    input.addEventListener('click', show);
+    input.addEventListener('focus', function() { show(input.value); });
+    input.addEventListener('click', function() { show(input.value); });
+
+    input.addEventListener('input', function() {
+      input.dataset.monthValue = '';
+      show(input.value);
+    });
+
+    input.addEventListener('blur', function() {
+      if (!input.dataset.monthValue) {
+        input.value = '';
+      }
+    });
 
     input.addEventListener('keydown', function(e) {
       if (!dropdown) return;

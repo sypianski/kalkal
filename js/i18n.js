@@ -456,8 +456,8 @@ const I18N = {
     babylonianArithNote: 'Aproksymacja arytmetyczna (poza zakresem tablic Parkera i Dubbersteina). Mo\u017ce r\u00f3\u017cni\u0107 si\u0119 o \u00b11\u20132 dni od historycznej obserwacji.',
     tabularNote: 'Tabularyczny kalendarz islamski (arytmetyczny). Mo\u017ce si\u0119 r\u00f3\u017cni\u0107 o \u00b11\u20132 dni od kalendarzy obserwacyjnych.',
     gregorianLabel: 'e.ch.',
-    julianLabel: 'Julia\u0144ski',
-    hijriLabel: 'Hid\u017cry (AH)',
+    julianLabel: 'julia\u0144ski',
+    hijriLabel: 'hid\u017cry (AH)',
     gregorianMonths: [
       'Stycze\u0144', 'Luty', 'Marzec', 'Kwiecie\u0144', 'Maj', 'Czerwiec',
       'Lipiec', 'Sierpie\u0144', 'Wrzesie\u0144', 'Pa\u017adziernik', 'Listopad', 'Grudzie\u0144'

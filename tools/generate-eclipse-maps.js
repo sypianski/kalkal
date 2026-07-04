@@ -1015,7 +1015,7 @@ function generateMap(key, ecl) {
     return `    <!-- Observation: ${o.label} -->
     <g>
       <polygon points="${ox.toFixed(1)},${(oy - 7).toFixed(1)} ${(ox - 4.5).toFixed(1)},${(oy + 4).toFixed(1)} ${(ox + 4.5).toFixed(1)},${(oy + 4).toFixed(1)}" fill="#d4a017" stroke="#8b6914" stroke-width="0.8"/>
-      <text x="${tx}" y="${(oy - 9).toFixed(1)}" text-anchor="${anchor}" style="font: italic 7px 'Alegreya Sans', sans-serif; fill: #8b6914;">${o.label}</text>
+      <text x="${tx}" y="${(oy - 9).toFixed(1)}" text-anchor="${anchor}" style="font: italic 7px 'Noto Sans', sans-serif; fill: #8b6914;">${o.label}</text>
     </g>`;
   }).filter(Boolean);
   const observationsSvg = obsElems.length ? '\n    <!-- Historical observations -->\n' + obsElems.join('\n') : '';
@@ -1071,10 +1071,10 @@ ${observationsSvg}`;
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>kalkal \u2014 ${typeName} Eclipse, ${dateStr}</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@400;500;700&family=Charis+SIL:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Sans:wght@400;500;600&family=Noto+Sans+Mono:wght@400;500&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/fonts.css">
   <link rel="stylesheet" href="../css/style.css">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
 </head>
 <body data-page="eclipse-map">
 
@@ -1108,8 +1108,8 @@ ${observationsSvg}`;
   <svg class="map" viewBox="${vb.x.toFixed(1)} ${vb.y.toFixed(1)} ${vb.w.toFixed(1)} ${vb.h.toFixed(1)}" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <style>
-        .gl { font: 8px 'Charis SIL', Georgia, serif; fill: #8a7a62; opacity: 0.6; }
-        .cn { font: 500 8.5px 'Alegreya Sans', 'Noto Sans', sans-serif; fill: #1a1612; }
+        .gl { font: 8px 'Charis SIL', 'Noto Sans', sans-serif; fill: #8a7a62; opacity: 0.6; }
+        .cn { font: 500 8.5px 'Noto Sans', sans-serif; fill: #1a1612; }
         .city { fill: #4a3f30; }
       </style>
     </defs>

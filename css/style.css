@@ -860,7 +860,7 @@ html[dir="rtl"] .site-title {
 }
 
 .meth-coverage td {
-  padding: 0.3em var(--space-sm);
+  padding: 0.3em var(--space-xs);
   border-block-end: var(--border-subtle);
   color: var(--ink-700);
   text-align: center;
@@ -869,6 +869,7 @@ html[dir="rtl"] .site-title {
 }
 
 .meth-coverage td:first-child {
+  padding-inline: var(--space-sm);
   text-align: start;
   font-family: var(--font-display);
   font-size: 0.8rem;
@@ -6000,15 +6001,15 @@ body {
     margin-bottom: 0.3em;
   }
 
-  .page-nav a[href="index.html"]::before,
-  .page-nav a[href="/"]::before              { content: "\21C4"; }
-  .page-nav a[href="calendars.html"]::before { content: "\25A6"; }
-  .page-nav a[href="methodology.html"]::before { content: "\25C6"; }
-  .page-nav a[href="eclipses.html"]::before  { content: "\25D0"; }
-  .page-nav a[href="android.html"]::before   { content: "\2B07"; }
+  .page-nav a[data-nav="converter"]::before   { content: "\21C4"; }
+  .page-nav a[data-nav="calendars"]::before   { content: "\25A6"; }
+  .page-nav a[data-nav="methodology"]::before { content: "\25C6"; }
+  .page-nav a[data-nav="eclipses"]::before    { content: "\25D0"; }
+  .page-nav a[data-nav="android"]::before     { content: "\2B07"; }
+  .page-nav a[data-nav="dynasties"]::before   { content: "\25A4"; }
 
   /* Hide eclipses on mobile */
-  .page-nav a[href="eclipses.html"] {
+  .page-nav a[data-nav="eclipses"] {
     display: none !important;
   }
 
@@ -6308,13 +6309,15 @@ body {
   }
   #history-empty-instruction {
     order: 0 !important;
-    display: block !important;
     margin: 0 !important;
     padding: 22px 18px 16px !important;
     border: 2.5px solid #000 !important;
     box-shadow: 5px 5px 0 #242220 !important;
     width: 100% !important;
     box-sizing: border-box !important;
+  }
+  #history-empty-instruction:not([hidden]) {
+    display: block !important;
   }
   #history-empty-instruction .intro-desc,
   #history-empty-instruction .intro-step {

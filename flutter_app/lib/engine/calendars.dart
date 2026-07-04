@@ -114,6 +114,11 @@ const List<String> _SELEUCID_BAB_MONTHS = [
   'Tashritu','Arahsamna','Kislimu','Tebetu','Shabatu','Addaru'
 ];
 
+const List<String> _BABYLONIAN_MONTHS = [
+  'Nisannu','Ayaru','Simanu','Duʻuzu','Abu','Ulūlu',
+  'Tashrītu','Araḫsamna','Kislimu','Ṭebetu','Shabaṭu','Addaru','Addaru II'
+];
+
 const List<String> _SYRIAC_MONTHS = [
   'Kānūn II','Šbāṭ','Āḏār','Nīsān','Ayyār','Ḥzīrān',
   'Tammūz','Āb','Aylūl','Tišrīn I','Tišrīn II','Kānūn I'
@@ -304,6 +309,13 @@ final List<CalendarDef> kCalendars = [
     monthLength: Cal.hebrewMonthLength,
     monthNames: _HEBREW_MONTHS,
     defaultYear: 5786,
+  ),
+  CalendarDef(
+    id: 'babylonian', group: 'semitic', name: 'Babylonian',
+    toJD: Cal.babylonianToJD, fromJD: Cal.jdToBabylonian,
+    monthLength: Cal.babylonianMonthLength,
+    monthNames: _BABYLONIAN_MONTHS,
+    defaultYear: 2772,
   ),
   CalendarDef(
     id: 'bp', group: 'scientific', name: 'Before Present (BP)',

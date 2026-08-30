@@ -4,14 +4,26 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What is kalkal
 
-A multi-calendar date converter web app. Converts between 20 calendar systems (Hijri, Gregorian, Julian, Coptic, Ethiopian, Solar Hijri, Byzantine, Syriac, Egyptian, Armenian, and more) using Julian Day Number (JDN) as the universal intermediary. Supports 4 languages (EN, PL, AR with RTL, EO) and ISO 233 transliteration for Arabic month names.
+A multi-calendar date converter. Converts between 20 calendar systems (Hijri, Gregorian, Julian, Coptic, Ethiopian, Solar Hijri, Byzantine, Syriac, Egyptian, Armenian, and more) using Julian Day Number (JDN) as the universal intermediary. Supports 3 languages on the web (EN, PL, EO — Arabic was removed from `js/i18n.js` in commit 641cd62 but lives on in the Flutter port, which recovers it from git history) and ISO 233 transliteration for Arabic month names.
+
+The repo contains **four apps sharing one conversion engine**:
+
+- **Web app** (root: `index.html`, `js/`, `css/`) — the primary product, a PWA
+- **`flutter_app/`** — 1:1 Flutter port (engine in `lib/engine/cal.dart`, mirrors `js/hijri.js`); its web build is deployed to `beta/` and served at `/kalkal/beta/`
+- **`mobile/`** — Expo / React Native app (separate codebase, `mobile/src/`)
+- **`alfred/`** — Alfred workflow (macOS), engine copy in `alfred/cal-engine.js`
+
+**Engine changes must be mirrored**: a fix in `js/hijri.js` usually also belongs in `flutter_app/lib/engine/cal.dart` and `alfred/cal-engine.js`. Say so explicitly if you only patch one.
 
 ## Running
 
-Zero dependencies, zero build step. Open `index.html` in a browser or:
+Web app: zero dependencies, zero build step. Open `index.html` in a browser or:
 ```bash
 python3 -m http.server 8000
 ```
+
+Flutter: `cd flutter_app && flutter run` (tests: `flutter test`).
+Mobile (Expo): `cd mobile && npm start`.
 
 ## Running Tests
 
@@ -19,21 +31,33 @@ python3 -m http.server 8000
 node tests/verify.js                # Basic conversion output
 node tests/cross-verify.js          # Cross-verification against Fourmilab, Intl, Python hijri-converter
 node tests/verify-all-calendars.js  # Round-trips, known dates, cross-calendar consistency for ALL calendars
+cd flutter_app && flutter test      # Dart engine port tests
 ```
 
-Tests run in Node.js by loading the browser-targeted Cal IIFE. No test framework — just console output with pass/fail counts.
+Web tests run in Node.js by loading the browser-targeted Cal IIFE. No test framework — just console output with pass/fail counts.
 
-## Architecture
+## Deployment (important)
+
+**Push to `master` = production deploy.** `.github/workflows/deploy.yml` rsyncs the repo to Hetzner (`/var/www/kalkal.online/` on 65.21.2.179) and purges Cloudflare cache. Build artifacts, `node_modules`, and `*.sync-conflict-*` files are excluded.
+
+- **PWA cache**: `sw.js` has a `CACHE_VERSION` (e.g. `kalkal-v45`) — **bump it whenever any cached asset changes**, or users keep the stale build. SW paths must stay relative to scope (the app is mounted under a subdirectory).
+- **Syncthing artifacts**: files matching `*.sync-conflict-*` litter the repo — never edit or reference them; they're excluded from deploy and safe to clean up.
+
+## Architecture (web)
 
 All conversion flows through JDN: `SourceCalendar → JD → TargetCalendar`.
 
 - **`js/hijri.js`** — Core `Cal` object (global IIFE). Contains ALL calendar conversion algorithms: `*ToJD()` and `jdTo*()` for every supported calendar, plus leap year, month length, day-of-week, and zodiac helpers. This is the computational engine — everything else depends on it.
-- **`js/i18n.js`** — `I18N` object with translations for all 4 languages. Calendar names, month names (including ISO 233 transliterated Hijri months), UI strings, error messages.
+- **`js/i18n.js`** — `I18N` object with translations (EN, PL, EO). Calendar names, month names (including ISO 233 transliterated Hijri months), UI strings, error messages.
 - **`js/app.js`** — UI logic. The `CALENDARS` registry maps each calendar ID to its `Cal.*` functions. Handles autocomplete, variant selection (4 Hijri tabular variants: IIc/Wüstenfeld default, IIa/Kuwaiti, IIIa/West civil, IVa/Ḥabash), form validation, and result rendering. Single-page IIFE.
 - **`js/astronomy.js`** — `Astronomy` object. Moon phase calculation (Meeus algorithm) and curated historical astronomical events (comets, supernovae, conjunctions) with JDN lookup.
 - **`js/eclipses.js`** — `Eclipses` object. Solar eclipse lookup by JDN for Middle East region (1–1500 CE), shown in date conversion results.
 - **`js/ai.js`** — Optional Gemini Flash integration for natural language date queries (requires user-provided API key in localStorage).
-- **`js/pages.js`** — i18n and shared logic for subpages (`calendars.html`, `methodology.html`).
+- **`js/pages.js`** — i18n and shared logic for subpages (`calendars.html`, `methodology.html`, `dynasties.html`, `eclipses.html`, `about.html`, `settings.html`).
+- **`sw.js` + `manifest.json`** — PWA service worker and manifest (see Deployment above).
+- **`tools/`** — Node generator scripts, run manually: `gen_i18n_dart.js` / `gen_pages_i18n_dart.js` (regenerate Flutter i18n from `js/i18n.js` + git history), `fetch-eclipse-paths.js` / `generate-eclipse-maps.js` (eclipse map HTMLs in `maps/` from NASA path data).
+
+`TODO.md` in the repo root is the current UI feedback backlog (in Polish) for the desktop web version.
 
 ## Key Concepts
 
@@ -46,9 +70,10 @@ All conversion flows through JDN: `SourceCalendar → JD → TargetCalendar`.
 
 1. Add `*ToJD()`, `jdTo*()`, month length, year length, and leap year functions to `Cal` in `js/hijri.js`
 2. Add a calendar entry in the `CALENDARS` registry in `js/app.js`
-3. Add month names and calendar display name to all 4 languages in `js/i18n.js`
+3. Add month names and calendar display name to all languages in `js/i18n.js`
 4. Add calendar description to `js/pages.js` for the Calendars subpage
 5. Add test cases (known scholarly dates, round-trips) to `tests/verify-all-calendars.js`
+6. Port the same functions to `flutter_app/lib/engine/cal.dart` (+ registry in `lib/engine/registry.dart`) and add Dart tests, or note explicitly that the Flutter port is behind
 
 ## Fonts
 

@@ -110,7 +110,7 @@ platform :ios do
     # `produce` nie przyjmuje klucza API (tylko login Apple ID + 2FA), a API
     # App Store Connect nie pozwala TWORZYĆ rekordu apki. Kluczem da się za to
     # zarejestrować bundle ID (wymagany przez `sigh`); sam rekord apki zakłada
-    # się raz ręcznie w appstoreconnect.apple.com → Apps → „+" → New App.
+    # się raz ręcznie w appstoreconnect.apple.com → Apps → + → New App.
     Spaceship::ConnectAPI.token = Spaceship::ConnectAPI::Token.create(**api_key)
     bundle_id = ENV.fetch("POMELDONU_BUNDLE_ID")
 

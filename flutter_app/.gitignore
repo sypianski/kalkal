@@ -51,3 +51,6 @@ ios/build/
 # root .gitignore ignores *.png — platform icons must be tracked
 !android/**/*.png
 !ios/**/*.png
+screenshots_out/
+shots_iphone/
+shots_ipad/

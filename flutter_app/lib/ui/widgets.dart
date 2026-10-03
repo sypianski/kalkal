@@ -169,6 +169,7 @@ class BrutBottomNav extends StatelessWidget {
                       ),
                     ),
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(

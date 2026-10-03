@@ -105,15 +105,32 @@ platform :ios do
     )
   end
 
-  desc "Rekord aplikacji w App Store Connect — idempotentne, jednorazowe per apka"
+  desc "Bundle ID w Developer Portal (idempotentne) + sprawdzenie rekordu apki w App Store Connect"
   lane :ensure_app do
-    produce(
-      api_key: api_key,
-      app_identifier: ENV.fetch("POMELDONU_BUNDLE_ID"),
-      app_name: ENV.fetch("POMELDONU_APP_NAME"),
-      team_id: ENV.fetch("POMELDONU_TEAM_ID"),
-      skip_itc: false
-    )
+    # `produce` nie przyjmuje klucza API (tylko login Apple ID + 2FA), a API
+    # App Store Connect nie pozwala TWORZYĆ rekordu apki. Kluczem da się za to
+    # zarejestrować bundle ID (wymagany przez `sigh`); sam rekord apki zakłada
+    # się raz ręcznie w appstoreconnect.apple.com → Apps → „+" → New App.
+    Spaceship::ConnectAPI.token = Spaceship::ConnectAPI::Token.create(**api_key)
+    bundle_id = ENV.fetch("POMELDONU_BUNDLE_ID")
+
+    if Spaceship::ConnectAPI::BundleId.find(bundle_id)
+      UI.success("Bundle ID #{bundle_id} już zarejestrowany")
+    else
+      Spaceship::ConnectAPI::BundleId.create(
+        name: ENV.fetch("POMELDONU_APP_NAME"),
+        platform: "IOS",
+        identifier: bundle_id
+      )
+      UI.success("Zarejestrowano bundle ID #{bundle_id}")
+    end
+
+    if Spaceship::ConnectAPI::App.find(bundle_id)
+      UI.success("Rekord apki w App Store Connect istnieje")
+    else
+      UI.important("Brak rekordu apki dla #{bundle_id} — załóż go ręcznie: " \
+                   "https://appstoreconnect.apple.com/apps → „+” → New App")
+    end
   end
 
   desc "bump + build + upload do TestFlight (czeka na processing Apple)"

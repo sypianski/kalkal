@@ -129,7 +129,7 @@ platform :ios do
       UI.success("Rekord apki w App Store Connect istnieje")
     else
       UI.important("Brak rekordu apki dla #{bundle_id} — załóż go ręcznie: " \
-                   "https://appstoreconnect.apple.com/apps → „+” → New App")
+                   "https://appstoreconnect.apple.com/apps → + → New App")
     end
   end
 

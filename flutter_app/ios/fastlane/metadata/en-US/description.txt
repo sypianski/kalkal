@@ -1,0 +1,15 @@
+Kalkal converts dates between more than twenty historical and living calendar systems, built for historians, students and anyone reading sources dated in another era.
+
+Enter a date in one calendar and see it in all the others at once: Hijri, Gregorian, Julian, Coptic, Ethiopian, Solar Hijri, Byzantine, Syriac (Seleucid), Egyptian, Armenian, Yazdgerdi, Babylonian and more.
+
+FEATURES
+• Four tabular Hijri variants (IIc Wüstenfeld, IIa, IIIa, IVa), with the differences between them shown side by side
+• Variants for the Byzantine, Seleucid and Yazdgerdi eras
+• Convert a single day, a whole month or a whole year to a date range
+• Day of the week, moon phase and historical astronomical events (comets, supernovae, conjunctions, solar eclipses) for the converted date
+• Arabic month names in ISO 233 transliteration
+• Copy results in several formats; recent conversions kept in history
+• Interface in English, Polish and Esperanto
+• Works fully offline — no account, no ads, no tracking
+
+Every conversion runs through the Julian Day Number, and the methodology and sources are documented inside the app.

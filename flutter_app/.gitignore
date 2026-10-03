@@ -43,3 +43,11 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+build/
+ios/fastlane/report.xml
+ios/build/
+*.ipa
+
+# root .gitignore ignores *.png — platform icons must be tracked
+!android/**/*.png
+!ios/**/*.png

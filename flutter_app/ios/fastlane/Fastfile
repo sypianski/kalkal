@@ -1,0 +1,156 @@
+default_platform(:ios)
+
+ROOT_DIR = File.expand_path("../..", __dir__)
+BUILD_DIR = File.join(ROOT_DIR, "build", "pomeldonu")
+IPA_PATH = File.join(BUILD_DIR, "Runner.ipa")
+KEYCHAIN_SCRIPT = File.expand_path(ENV.fetch("POMELDONU_KEYCHAIN_SCRIPT"))
+
+def api_key
+  app_store_connect_api_key(
+    key_id: ENV.fetch("POMELDONU_KEY_ID"),
+    issuer_id: ENV.fetch("POMELDONU_ISSUER_ID"),
+    key_filepath: File.expand_path(ENV.fetch("POMELDONU_KEY_PATH")),
+    duration: 1200,
+    in_house: false
+  )
+end
+
+before_all do
+  # `guard` najpierw: sprząta search listę po ewentualnym wcześniejszym
+  # buildzie ubitym twardo (SIGKILL/OOM), który nie zdążył wywołać `restore`.
+  sh(KEYCHAIN_SCRIPT, "guard")
+  sh(KEYCHAIN_SCRIPT, "unlock")
+end
+
+after_all do |lane|
+  sh(KEYCHAIN_SCRIPT, "restore")
+end
+
+error do |lane, exception|
+  sh(KEYCHAIN_SCRIPT, "restore")
+end
+
+platform :ios do
+  desc "Podbij build number w pubspec.yaml (KROK 1 — zawsze przed uploadem)"
+  lane :bump do
+    pubspec_path = File.join(ROOT_DIR, "pubspec.yaml")
+    content = File.read(pubspec_path)
+    content =~ /^version:\s*(\d+\.\d+\.\d+)\+(\d+)/
+    raise "nie znaleziono `version: X.Y.Z+B` w pubspec.yaml" unless $1
+    version_name = $1
+    build_number = $2.to_i + 1
+    updated = content.sub(/^version:\s*\d+\.\d+\.\d+\+\d+/, "version: #{version_name}+#{build_number}")
+    File.write(pubspec_path, updated)
+    UI.success("pubspec.yaml -> #{version_name}+#{build_number}")
+  end
+
+  desc "Flutter build + archive + eksport podpisanego IPA (headless, klucz API)"
+  lane :build do
+    Dir.chdir(ROOT_DIR) do
+      sh("flutter", "pub", "get")
+      sh("env -u GEM_HOME -u GEM_PATH -u BUNDLE_GEMFILE -u RUBYOPT -u RUBYLIB flutter build ios --release --no-codesign")
+    end
+
+    # Manual signing przez cert+sigh (klucz API, bez `match`) zamiast czystego
+    # -allowProvisioningUpdates na `archive`: przy zupełnie nowym certyfikacie
+    # xcodebuild podczas archive (bez wskazówki eksportu) domyślnie próbuje
+    # wygenerować profil Development ("team has no devices...") zamiast
+    # Distribution. cert/sigh jawnie tworzą/pobierają Distribution cert +
+    # App Store profil przez API, więc archive od razu wie czego użyć.
+    cert(
+      api_key: api_key,
+      team_id: ENV.fetch("POMELDONU_TEAM_ID"),
+      keychain_path: File.expand_path("~/Library/Keychains/#{ENV.fetch('POMELDONU_KEYCHAIN_NAME', 'pomeldonu-build.keychain-db')}")
+    )
+    sigh(
+      api_key: api_key,
+      app_identifier: ENV.fetch("POMELDONU_BUNDLE_ID"),
+      team_id: ENV.fetch("POMELDONU_TEAM_ID"),
+      # jawnie bindujemy profil do certu utworzonego/pobranego przez `cert`
+      # wyżej — konto może mieć więcej niż jeden Distribution cert, a `sigh`
+      # bez tego potrafi wybrać inny niż ten faktycznie w naszym keychainie.
+      cert_id: lane_context[SharedValues::CERT_CERTIFICATE_ID],
+      force: true
+    )
+    # UUID, nie nazwa: sigh z force:true regeneruje profil przy każdym buildzie,
+    # ale stare pliki zostają w ~/Library/Developer/Xcode/UserData/Provisioning
+    # Profiles/ pod tą samą nazwą (Xcode 15+ — nie stare ~/Library/MobileDevice/).
+    # PROVISIONING_PROFILE_SPECIFIER po nazwie jest wtedy niejednoznaczny i Xcode
+    # potrafi wybrać stary profil powiązany z innym certem ("doesn't include
+    # signing certificate..."). UUID wskazuje dokładnie ten z bieżącego runu.
+    profile_uuid = lane_context[SharedValues::SIGH_UUID]
+
+    # Ograniczone TYLKO do targetu Runner (Release) — Pody (Pods-Runner,
+    # geolocator_apple, ...) nie obsługują profili provisioningowych; globalny
+    # xcarg CODE_SIGN_STYLE=Manual wywalał je wszystkie. update_code_signing_settings
+    # edytuje project.pbxproj punktowo, więc Pody zostają na swoim Automatic.
+    update_code_signing_settings(
+      use_automatic_signing: false,
+      path: File.join(ROOT_DIR, "ios", "Runner.xcodeproj"),
+      team_id: ENV.fetch("POMELDONU_TEAM_ID"),
+      code_sign_identity: "Apple Distribution",
+      profile_uuid: profile_uuid,
+      targets: ["Runner"],
+      build_configurations: ["Release"]
+    )
+
+    build_app(
+      workspace: File.join(ROOT_DIR, "ios", "Runner.xcworkspace"),
+      scheme: "Runner",
+      configuration: "Release",
+      export_method: "app-store",
+      output_directory: BUILD_DIR,
+      output_name: "Runner.ipa",
+      xcargs: "DEVELOPMENT_TEAM=#{ENV.fetch('POMELDONU_TEAM_ID')}"
+    )
+  end
+
+  desc "Rekord aplikacji w App Store Connect — idempotentne, jednorazowe per apka"
+  lane :ensure_app do
+    produce(
+      api_key: api_key,
+      app_identifier: ENV.fetch("POMELDONU_BUNDLE_ID"),
+      app_name: ENV.fetch("POMELDONU_APP_NAME"),
+      team_id: ENV.fetch("POMELDONU_TEAM_ID"),
+      skip_itc: false
+    )
+  end
+
+  desc "bump + build + upload do TestFlight (czeka na processing Apple)"
+  lane :beta do
+    bump
+    build
+    upload_to_testflight(
+      api_key: api_key,
+      ipa: IPA_PATH,
+      skip_waiting_for_build_processing: false,
+      distribute_external: false
+    )
+  end
+
+  desc "beta + metadane + submit do App Review — UPLOAD/SUBMIT: wymaga zgody usera przed odpaleniem"
+  lane :release do
+    beta
+    deliver(
+      api_key: api_key,
+      skip_binary_upload: true,
+      skip_screenshots: false,
+      skip_metadata: false,
+      submit_for_review: true,
+      automatic_release: false,
+      force: true
+    )
+  end
+  desc "Tylko deliver: metadane+zrzuty+submit na juz wgranym buildzie (bez rebuildu)"
+  lane :submit do
+    deliver(
+      api_key: api_key,
+      skip_binary_upload: true,
+      skip_screenshots: false,
+      skip_metadata: false,
+      submit_for_review: true,
+      automatic_release: false,
+      force: true
+    )
+  end
+end

@@ -1,0 +1,25 @@
+# pomeldonu — metadane czytane z ./metadata, zrzuty z ./screenshots
+# (konwencja fastlane `deliver`; uzupełnij te katalogi raz, per apka).
+force(true)
+overwrite_screenshots(true)
+run_precheck_before_submit(false)
+
+# Contact App Review (WYMAGANE przez Apple) + obejscie buga fastlane "No data"
+# w fetch_app_store_review_detail: podanie app_review_information sprawia, ze
+# deliver TWORZY rekord review-detail zanim go odczyta.
+app_review_information(
+  first_name: "Jakub",
+  last_name: "Sypianski",
+  phone_number: "+48 693 579 259",
+  email_address: "dev@sypian.ski"
+)
+
+primary_category("REFERENCE")
+secondary_category("EDUCATION")
+
+# Offline app, no data collected, no third-party content.
+submission_information({
+  export_compliance_uses_encryption: false,
+  add_id_info_uses_idfa: false,
+  content_rights_contains_third_party_content: false
+})

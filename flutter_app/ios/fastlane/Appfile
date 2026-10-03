@@ -1,0 +1,2 @@
+app_identifier("app.sypianski.kalkal")
+team_id(ENV["POMELDONU_TEAM_ID"])

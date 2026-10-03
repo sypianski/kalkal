@@ -1,5 +1,6 @@
 // Subpage screens — calendars.html, methodology.html, about.html ports.
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -467,27 +468,32 @@ class AboutScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 14),
                         Text(a('note'), style: mono(11, height: 1.5)),
-                        const SizedBox(height: 14),
-                        Material(
-                          color: kInk,
-                          child: InkWell(
-                            onTap: () => launchUrl(
-                                Uri.parse('https://ko-fi.com/sypianski'),
-                                mode: LaunchMode.externalApplication),
-                            child: Container(
-                              constraints:
-                                  const BoxConstraints(minHeight: 48),
-                              alignment: Alignment.center,
-                              child: Text(
-                                a('kofi').toUpperCase(),
-                                style: mono(12,
-                                    weight: FontWeight.w800,
-                                    color: kWhite,
-                                    letterSpacing: 1.6),
+                        // App Store review rejects external donation links
+                        // in native iOS builds; web and Android keep it.
+                        if (kIsWeb ||
+                            defaultTargetPlatform != TargetPlatform.iOS) ...[
+                          const SizedBox(height: 14),
+                          Material(
+                            color: kInk,
+                            child: InkWell(
+                              onTap: () => launchUrl(
+                                  Uri.parse('https://ko-fi.com/sypianski'),
+                                  mode: LaunchMode.externalApplication),
+                              child: Container(
+                                constraints:
+                                    const BoxConstraints(minHeight: 48),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  a('kofi').toUpperCase(),
+                                  style: mono(12,
+                                      weight: FontWeight.w800,
+                                      color: kWhite,
+                                      letterSpacing: 1.6),
+                                ),
                               ),
                             ),
                           ),
-                        ),
+                        ],
                       ],
                     ),
                   ),

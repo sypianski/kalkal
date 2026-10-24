@@ -17,6 +17,14 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Write GitHub star count
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Served as stars.json so visitors never contact GitHub (see about.html).
+          gh api "repos/$GITHUB_REPOSITORY" --jq '{stars: .stargazers_count}' > stars.json \
+            || echo '{"stars":0}' > stars.json
+
       - name: Set up SSH
         env:
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}

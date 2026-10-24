@@ -2,10 +2,9 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../engine/cal.dart';
-import '../engine/registry.dart';
 import '../i18n/i18n.dart';
 import '../i18n/pages_i18n.dart';
 import 'tokens.dart';
@@ -399,22 +398,26 @@ class _MethSection extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
-// About page — colophon card.
+// About page — quiet author card (TASK-9, mirrors about.html).
+// The GitHub button has no star count here: the app works offline and the
+// privacy policy promises no network requests of its own.
 // ---------------------------------------------------------------------------
 
 class AboutScreen extends StatelessWidget {
   final String lang;
   const AboutScreen({super.key, required this.lang});
 
+  static const _kodeUrl = 'https://github.com/sypianski/kalkal';
+
+  void _open(String url) =>
+      launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+
   @override
   Widget build(BuildContext context) {
     String a(String k) => PagesI18n.aboutT(lang, k);
-    // #colophon-stamp — today's date in AH and HE, filled by about.html JS.
-    final now = DateTime.now();
-    final jd = Cal.civilToJD(now.year, now.month, now.day);
-    final ah = kWebCalendars['hijri']!.fromJD(jd);
-    final he = kWebCalendars['human']!.fromJD(jd);
-    final stamp = 'AH ${ah.year} · HE ${he.year}';
+    // App Store review rejects external donation links in native iOS builds;
+    // web and Android keep it.
+    final showKofi = kIsWeb || defaultTargetPlatform != TargetPlatform.iOS;
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 24, 16, 24),
@@ -423,79 +426,50 @@ class AboutScreen extends StatelessWidget {
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 460),
             child: Container(
-              decoration: slabDecoration(border: kBorderResult, shadow: 7),
+              decoration: BoxDecoration(
+                color: kSurface,
+                border: Border.all(color: kInk300, width: 1),
+              ),
+              padding: const EdgeInsets.all(18),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Band.
-                  Container(
-                    color: kInk,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 14, vertical: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(a('bandCode'),
-                            style: mono(10,
-                                color: kNavText, letterSpacing: 1.5)),
-                        Text(stamp,
-                            style: mono(10,
-                                color: kNavText, letterSpacing: 1)),
-                      ],
-                    ),
+                  Text('${a('namePrefix')}\nJakub\nSypiański',
+                      style: mono(19, weight: FontWeight.w700, height: 1.1)),
+                  const SizedBox(height: 14),
+                  Text(a('bio'), style: mono(11.5, height: 1.55)),
+                  const SizedBox(height: 18),
+                  Text(a('note'),
+                      style: mono(11, color: kInk700, height: 1.55)),
+                  const SizedBox(height: 14),
+                  _button('→  sypian.ski', filled: true,
+                      onTap: () => _open('https://sypian.ski')),
+                  const SizedBox(height: 8),
+                  _button('★  ${a('github')}',
+                      onTap: () => _open(_kodeUrl)),
+                  const SizedBox(height: 12),
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    spacing: 18,
+                    runSpacing: 8,
+                    children: [
+                      _textLink('✉ ${a('email')}',
+                          () => _open('mailto:sypianski@outlook.com')),
+                      if (showKofi)
+                        _textLink(
+                            a('kofi'), () => _open('https://ko-fi.com/sypianski')),
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(18),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('${a('namePrefix')} Jakub Sypiański',
-                            style: mono(19, weight: FontWeight.w800)),
-                        const SizedBox(height: 14),
-                        _metaRow(a('fieldLabel'), a('fieldValue')),
-                        _metaRow(a('projectLabel'), a('projectValue')),
-                        _metaRow(a('licenseLabel'), a('licenseValue')),
-                        const SizedBox(height: 14),
-                        InkWell(
-                          onTap: () => launchUrl(
-                              Uri.parse('https://sypian.ski'),
-                              mode: LaunchMode.externalApplication),
-                          child: Text('sypian.ski',
-                              style: mono(12, weight: FontWeight.w700)
-                                  .copyWith(
-                                      decoration:
-                                          TextDecoration.underline)),
-                        ),
-                        const SizedBox(height: 14),
-                        Text(a('note'), style: mono(11, height: 1.5)),
-                        // App Store review rejects external donation links
-                        // in native iOS builds; web and Android keep it.
-                        if (kIsWeb ||
-                            defaultTargetPlatform != TargetPlatform.iOS) ...[
-                          const SizedBox(height: 14),
-                          Material(
-                            color: kInk,
-                            child: InkWell(
-                              onTap: () => launchUrl(
-                                  Uri.parse('https://ko-fi.com/sypianski'),
-                                  mode: LaunchMode.externalApplication),
-                              child: Container(
-                                constraints:
-                                    const BoxConstraints(minHeight: 48),
-                                alignment: Alignment.center,
-                                child: Text(
-                                  a('kofi').toUpperCase(),
-                                  style: mono(12,
-                                      weight: FontWeight.w800,
-                                      color: kWhite,
-                                      letterSpacing: 1.6),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
+                  const SizedBox(height: 16),
+                  _cite(context, a('citeTitle'), a('citeText'),
+                      a('citeCopy'), a('citeCopied')),
+                  const SizedBox(height: 14),
+                  const Divider(height: 1, color: kInk300),
+                  const SizedBox(height: 10),
+                  Center(
+                    child: _textLink(a('privacy'),
+                        () => _open('https://kalkal.online/privacy.html'),
+                        size: 10),
                   ),
                 ],
               ),
@@ -506,18 +480,72 @@ class AboutScreen extends StatelessWidget {
     );
   }
 
-  Widget _metaRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
-      child: Row(
+  Widget _button(String label,
+      {bool filled = false, required VoidCallback onTap}) {
+    return Material(
+      color: filled ? kInk800 : Colors.transparent,
+      shape: const Border.fromBorderSide(
+          BorderSide(color: kInk800, width: 1)),
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          constraints: const BoxConstraints(minHeight: 48),
+          alignment: Alignment.center,
+          child: Text(label,
+              style: mono(12,
+                  weight: FontWeight.w700,
+                  color: filled ? kWhite : kInk)),
+        ),
+      ),
+    );
+  }
+
+  Widget _textLink(String label, VoidCallback onTap, {double size = 11.5}) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        child: Text(label,
+            style: mono(size, weight: FontWeight.w600).copyWith(
+                decoration: TextDecoration.underline)),
+      ),
+    );
+  }
+
+  Widget _cite(BuildContext context, String title, String text, String copy,
+      String copied) {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        border: Border.all(color: kInk500, width: 1),
+      ),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: 110,
-            child: Text(label,
-                style: mono(10, color: kInk500, letterSpacing: 1)),
+          Text(title.toUpperCase(),
+              style: mono(9.5, weight: FontWeight.w700, color: kInk500,
+                  letterSpacing: 1.3)),
+          const SizedBox(height: 4),
+          Text(text, style: mono(10.5, height: 1.5)),
+          const SizedBox(height: 2),
+          InkWell(
+            onTap: () async {
+              await Clipboard.setData(ClipboardData(text: text));
+              if (context.mounted) {
+                ScaffoldMessenger.of(context)
+                  ..hideCurrentSnackBar()
+                  ..showSnackBar(SnackBar(
+                      content: Text(copied, style: mono(11, color: kWhite)),
+                      duration: const Duration(seconds: 1)));
+              }
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              child: Text(copy,
+                  style: mono(10.5, weight: FontWeight.w600).copyWith(
+                      decoration: TextDecoration.underline)),
+            ),
           ),
-          Expanded(child: Text(value, style: mono(11.5))),
         ],
       ),
     );

@@ -6712,7 +6712,7 @@ body {
 }
 
 /* ============================================================================
-   ABOUT PAGE
+   ABOUT PAGE — quiet card (also used by privacy.html and android.html)
    ============================================================================ */
 
 .about-page {
@@ -6725,21 +6725,14 @@ body {
   padding: var(--space-2xl) var(--space-md);
 }
 
-/* ---- Colophon: catalogue card ---- */
+.about-page--wide { max-width: 860px; }
+
+/* ---- Colophon: thin-ruled card ---- */
 .colophon {
   width: 100%;
   background: var(--parchment-100);
-  border: 3px solid var(--ink-900);
-  box-shadow: 10px 10px 0 var(--brut-shadow);
-  position: relative;
-}
-
-.colophon::before {
-  content: "";
-  position: absolute;
-  inset: 5px;
   border: 1px solid var(--ink-300);
-  pointer-events: none;
+  position: relative;
 }
 
 .colophon-band {
@@ -6747,8 +6740,9 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-sm);
-  background: var(--ink-900);
-  color: var(--parchment-100);
+  background: var(--parchment-200);
+  color: var(--ink-600);
+  border-block-end: 1px solid var(--parchment-300);
   padding: 0.65em 1.1em;
   font-family: var(--brut-mono);
   font-size: 0.62rem;
@@ -6758,7 +6752,7 @@ body {
 }
 
 .colophon-band-id {
-  color: #c9c9c9;
+  color: var(--ink-600);
   letter-spacing: 0.1em;
 }
 
@@ -6769,7 +6763,7 @@ body {
 .colophon-name {
   font-family: var(--font-display);
   font-size: clamp(1.7rem, 6vw, 2.4rem);
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.04;
   letter-spacing: -0.02em;
   color: var(--ink-900);
@@ -6780,35 +6774,12 @@ body {
   display: block;
 }
 
-.colophon-meta {
-  margin: 0 0 var(--space-lg);
-  border-block-start: 1px solid var(--ink-300);
-}
-
-.colophon-row {
-  display: grid;
-  grid-template-columns: 8.5em 1fr;
-  gap: var(--space-sm);
-  padding: 0.55em 0;
-  border-block-end: 1px solid var(--ink-300);
-}
-
-.colophon-row dt {
-  font-family: var(--brut-mono);
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--ink-500);
-  padding-block-start: 0.15em;
-}
-
-.colophon-row dd {
-  margin: 0;
-  font-family: var(--font-display);
+.colophon-bio {
+  font-family: var(--font-body);
   font-size: 0.95rem;
-  font-weight: 600;
+  line-height: 1.6;
   color: var(--ink-900);
+  margin: 0 0 var(--space-lg);
 }
 
 .colophon-note {
@@ -6818,6 +6789,22 @@ body {
   color: var(--ink-700);
   margin: 0 0 var(--space-lg);
 }
+
+/* Two columns on wide screens: identity left, actions right */
+.about-cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+}
+
+@media (min-width: 900px) {
+  .about-cols {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: var(--space-xl);
+  }
+}
+
+.about-cols > div { min-width: 0; }
 
 .about-links {
   display: flex;
@@ -6836,8 +6823,8 @@ body {
   font-weight: 700;
   letter-spacing: 0.02em;
   text-decoration: none;
-  border: 2px solid var(--ink-900);
-  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.12s ease, transform 0.12s ease;
+  border: 1px solid var(--ink-800);
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
 .about-link-arrow {
@@ -6845,40 +6832,113 @@ body {
 }
 
 .about-link--primary {
-  background: var(--ink-900);
+  background: var(--ink-800);
   color: var(--parchment-100);
-  box-shadow: 5px 5px 0 var(--ink-300);
 }
 
 .about-link--primary:hover {
-  box-shadow: 2px 2px 0 var(--ink-300);
-  transform: translate(3px, 3px);
+  background: var(--ink-700);
 }
 
 .about-link--primary:hover .about-link-arrow {
   transform: translateX(4px);
 }
 
-.about-link--kofi {
+.about-link--kofi,
+.about-link--email,
+.about-link--github {
   background: transparent;
   color: var(--ink-900);
-  border-color: var(--ink-900);
 }
 
-.about-link--kofi:hover {
-  background: var(--ink-900);
+.about-link--kofi:hover,
+.about-link--email:hover,
+.about-link--github:hover {
+  background: var(--ink-800);
   color: var(--parchment-100);
 }
 
-.about-link--email {
-  background: transparent;
-  color: var(--ink-900);
-  border-color: var(--ink-900);
+.about-stars {
+  font-family: var(--brut-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.05em 0.5em;
+  border: 1px solid currentColor;
 }
 
-.about-link--email:hover {
-  background: var(--ink-900);
-  color: var(--parchment-100);
+.about-textlinks {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-sm) var(--space-lg);
+  margin: var(--space-md) 0 0;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.about-textlinks a,
+.about-foot a {
+  color: var(--ink-900);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.about-textlinks a:hover,
+.about-foot a:hover { color: var(--ink-600); }
+
+.about-cite {
+  display: grid;
+  gap: 0.25rem;
+  margin-block-start: var(--space-lg);
+  padding: 0.65rem 0.8rem;
+  border: 1px dashed var(--ink-500);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--ink-900);
+}
+
+.about-cite-title {
+  font-family: var(--brut-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-500);
+}
+
+.about-cite-copy {
+  justify-self: start;
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  font-weight: 600;
+  color: var(--ink-900);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.about-cite-copy:hover { color: var(--ink-600); }
+
+.about-foot {
+  margin: var(--space-lg) 0 0;
+  padding-block-start: 0.65rem;
+  border-block-start: 1px solid var(--parchment-300);
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--ink-600);
+}
+
+.about-link:focus-visible,
+.about-textlinks a:focus-visible,
+.about-foot a:focus-visible,
+.about-cite-copy:focus-visible {
+  outline: 2px solid var(--brut-signal);
+  outline-offset: 2px;
 }
 
 /* ============================================================================
@@ -6963,16 +7023,8 @@ body {
     align-items: center;
   }
 
-  .colophon {
-    box-shadow: 7px 7px 0 var(--brut-shadow);
-  }
-
   .colophon-body {
     padding: var(--space-lg) var(--space-lg) var(--space-md);
-  }
-
-  .colophon-row {
-    grid-template-columns: 7em 1fr;
   }
 }
 

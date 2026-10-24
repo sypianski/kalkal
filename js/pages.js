@@ -183,17 +183,18 @@ const PageI18N = {
     },
     methLinks: { title: 'Coverage and Similar Tools' },
     about: {
-      title: 'kalkal — Author',
-      bandCode: '// CARD',
+      title: 'kalkal \u2014 Author',
       namePrefix: 'Dr',
-      fieldLabel: 'field',
-      fieldValue: 'history · Arabic studies',
-      projectLabel: 'project',
-      projectValue: 'kalkal — date converter',
-      licenseLabel: 'source',
-      licenseValue: 'source code public',
+      bio: 'History and Arabic studies. kalkal converts dates between more than 20 calendars.',
       note: 'The tool is free. If you find it useful, you can buy me a coffee.',
-      kofi: 'Buy me a coffee'
+      kofi: 'Buy me a coffee',
+      email: 'Write to me',
+      github: 'Code on GitHub',
+      citeTitle: 'How to cite',
+      citeText: 'Sypiański, J. kalkal: multi-calendar date converter. kalkal.online, 2026.',
+      citeCopy: 'Copy',
+      citeCopied: 'Copied',
+      privacy: 'Privacy policy'
     }
   },
 
@@ -361,16 +362,17 @@ const PageI18N = {
     methLinks: { title: 'Pokrycie i podobne narz\u0119dzia' },
     about: {
       title: 'kalkal \u2014 Autor',
-      bandCode: '// KARTO',
       namePrefix: 'dr',
-      fieldLabel: 'dziedzina',
-      fieldValue: 'historia \u00b7 arabistyka',
-      projectLabel: 'projekt',
-      projectValue: 'kalkal \u2014 konwerter dat',
-      licenseLabel: 'kod \u017ar\u00f3d\u0142owy',
-      licenseValue: 'publicznie dost\u0119pny',
+      bio: 'Historia i arabistyka. kalkal przelicza daty między ponad 20 kalendarzami.',
       note: 'Narz\u0119dzie jest bezp\u0142atne. Je\u015bli ci si\u0119 przydaje, mo\u017cesz postawi\u0107 mi kaw\u0119.',
-      kofi: 'Postaw mi kaw\u0119'
+      kofi: 'Postaw mi kaw\u0119',
+      email: 'Napisz do mnie',
+      github: 'Kod na GitHubie',
+      citeTitle: 'Jak cytować',
+      citeText: 'Sypiański, J. kalkal: konwerter dat między kalendarzami. kalkal.online, 2026.',
+      citeCopy: 'Kopiuj',
+      citeCopied: 'Skopiowano',
+      privacy: 'Polityka prywatności'
     }
   },
 
@@ -453,16 +455,17 @@ const PageI18N = {
     methLinks: { title: 'Kovrado kaj similaj iloj' },
     about: {
       title: 'kalkal — Aŭtoro',
-      bandCode: '// KARTO',
       namePrefix: 'd-ro',
-      fieldLabel: 'fako',
-      fieldValue: 'historio · arabistiko',
-      projectLabel: 'projekto',
-      projectValue: 'kalkal — datokonvertilo',
-      licenseLabel: 'fontkodo',
-      licenseValue: 'publike disponebla',
+      bio: 'Historio kaj arabistiko. kalkal konvertas datojn inter pli ol 20 kalendaroj.',
       note: 'La ilo estas senpaga. Se ĝi utilas al vi, vi povas regali min per kafo.',
-      kofi: 'Regalu min per kafo'
+      kofi: 'Regalu min per kafo',
+      email: 'Skribu al mi',
+      github: 'Kodo en GitHub',
+      citeTitle: 'Kiel citi',
+      citeText: 'Sypiański, J. kalkal: datokonvertilo inter kalendaroj. kalkal.online, 2026.',
+      citeCopy: 'Kopii',
+      citeCopied: 'Kopiite',
+      privacy: 'Privateca politiko'
     }
   }
 };

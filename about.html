@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>kalkal — dr Jakub Sypiański</title>
   <link rel="stylesheet" href="css/fonts.css">
-  <link rel="stylesheet" href="css/style.css?v=48">
+  <link rel="stylesheet" href="css/style.css?v=49">
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#f0f0ec">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -36,64 +36,92 @@
     </nav>
   </header>
 
-  <main class="about-page">
+  <main class="about-page about-page--wide">
     <article class="colophon">
-      <div class="colophon-band">
-        <span class="colophon-band-code" data-about="bandCode">// KARTO</span>
-        <span class="colophon-band-id" id="colophon-stamp">AH — · HE —</span>
-      </div>
-
       <div class="colophon-body">
-        <h1 class="colophon-name"><span data-about="namePrefix">dr</span> Jakub <span>Sypiański</span></h1>
+        <div class="about-cols">
 
-        <dl class="colophon-meta">
-          <div class="colophon-row">
-            <dt data-about="fieldLabel">dziedzina</dt>
-            <dd data-about="fieldValue">historia · arabistyka</dd>
+          <div class="about-id">
+            <h1 class="colophon-name"><span data-about="namePrefix">dr</span> Jakub <span>Sypiański</span></h1>
+            <p class="colophon-bio" data-about="bio">Historia i arabistyka. kalkal przelicza daty między ponad 20 kalendarzami.</p>
           </div>
-          <div class="colophon-row">
-            <dt data-about="projectLabel">projekt</dt>
-            <dd data-about="projectValue">kalkal — konwerter dat</dd>
-          </div>
-          <div class="colophon-row">
-            <dt data-about="licenseLabel">licencja</dt>
-            <dd data-about="licenseValue">kod źródłowy publiczny</dd>
-          </div>
-        </dl>
 
-        <p class="colophon-note" data-about="note">Narzędzie jest bezpłatne. Jeśli ci się przydaje, możesz postawić mi kawę.</p>
+          <div class="about-act">
+            <p class="colophon-note" data-about="note">Narzędzie jest bezpłatne. Jeśli ci się przydaje, możesz postawić mi kawę.</p>
 
-        <div class="about-links">
-          <a href="https://sypian.ski" class="about-link about-link--primary" target="_blank" rel="noopener">
-            <span class="about-link-arrow" aria-hidden="true">&#8594;</span>
-            sypian.ski
-          </a>
-          <a href="mailto:sypianski@outlook.com" class="about-link about-link--email" data-about="email">
-            <span class="about-link-arrow" aria-hidden="true">&#9993;</span>
-            Napisz do mnie
-          </a>
-<a href="https://ko-fi.com/sypianski" class="about-link about-link--kofi" target="_blank" rel="noopener" data-about="kofi">
-            Postaw mi kawę
-          </a>
+            <div class="about-links">
+              <a href="https://sypian.ski" class="about-link about-link--primary" target="_blank" rel="noopener">
+                <span class="about-link-arrow" aria-hidden="true">&#8594;</span>
+                sypian.ski
+              </a>
+              <a href="https://github.com/sypianski/kalkal" class="about-link about-link--github" target="_blank" rel="noopener">
+                <span class="about-link-arrow" aria-hidden="true">&#9733;</span>
+                <span data-about="github">Kod na GitHubie</span>
+                <span class="about-stars" id="gh-stars" hidden></span>
+              </a>
+            </div>
+
+            <p class="about-textlinks">
+              <a href="mailto:sypianski@outlook.com"><span aria-hidden="true">&#9993;</span> <span data-about="email">Napisz do mnie</span></a>
+              <a href="https://ko-fi.com/sypianski" target="_blank" rel="noopener" data-about="kofi">Postaw mi kawę</a>
+            </p>
+
+            <div class="about-cite">
+              <b class="about-cite-title" data-about="citeTitle">Jak cytować</b>
+              <span class="about-cite-text" id="cite-text" data-about="citeText">Sypiański, J. kalkal: konwerter dat między kalendarzami. kalkal.online, 2026.</span>
+              <button type="button" class="about-cite-copy" id="cite-copy" data-about="citeCopy">Kopiuj</button>
+            </div>
+
+            <p class="about-foot"><a href="privacy.html" data-about="privacy">Polityka prywatności</a></p>
+          </div>
+
         </div>
       </div>
     </article>
   </main>
 
   <script src="js/hijri.js"></script>
-  <script src="js/i18n.js?v=48"></script>
-  <script src="js/pages.js?v=48"></script>
+  <script src="js/i18n.js?v=49"></script>
+  <script src="js/pages.js?v=49"></script>
   <script>
     (function () {
-      var el = document.getElementById('colophon-stamp');
-      if (!el || typeof Cal === 'undefined') return;
-      try {
-        var now = new Date();
-        var jd = Cal.gregorianToJD(now.getFullYear(), now.getMonth() + 1, now.getDate());
-        var ah = Cal.jdToHijri(jd).year;
-        var he = Cal.jdToHuman(jd).year;
-        el.textContent = 'AH ' + ah + ' · HE ' + he;
-      } catch (e) { /* leave placeholder */ }
+      // GitHub star count: stars.json is written at deploy time (see
+      // .github/workflows/deploy.yml), so visitors never contact GitHub.
+      // Hidden when the file is missing or the count is zero.
+      var stars = document.getElementById('gh-stars');
+      if (stars && window.fetch) {
+        fetch('stars.json', { cache: 'no-cache' })
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (d) {
+            if (d && d.stars > 0) { stars.textContent = String(d.stars); stars.hidden = false; }
+          })
+          .catch(function () { /* keep hidden */ });
+      }
+
+      var btn = document.getElementById('cite-copy');
+      var text = document.getElementById('cite-text');
+      if (btn && text) {
+        btn.addEventListener('click', function () {
+          var original = btn.textContent;
+          function done() {
+            var t = (typeof PageI18N !== 'undefined') && PageI18N[document.documentElement.lang];
+            btn.textContent = (t && t.about && t.about.citeCopied) || '✓';
+            setTimeout(function () { btn.textContent = original; }, 1600);
+          }
+          function fallback() {
+            var r = document.createRange();
+            r.selectNodeContents(text);
+            var s = window.getSelection();
+            s.removeAllRanges();
+            s.addRange(r);
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text.textContent).then(done, fallback);
+          } else {
+            fallback();
+          }
+        });
+      }
     })();
   </script>
 

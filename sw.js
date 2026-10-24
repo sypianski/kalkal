@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'kalkal-v49';
+const CACHE_VERSION = 'kalkal-v50';
 // Relative to the SW scope so it works under a subdirectory mount
 // (e.g. /kalkal/). Absolute '/...' paths pointed at the origin root and
 // 404'd here, which aborted addAll and left the old SW serving stale builds.
@@ -55,8 +55,10 @@ self.addEventListener('fetch', event => {
   // Skip non-GET
   if (event.request.method !== 'GET') return;
 
-  // Bypass /kalkal/beta/ — Flutter app has its own service worker.
-  if (url.pathname.startsWith('/kalkal/beta/') || url.pathname === '/kalkal/beta') return;
+  // Bypass /beta/ (and the old /kalkal/beta/ mount) — the Flutter app has
+  // its own service worker.
+  if (url.pathname.startsWith('/beta/') || url.pathname === '/beta' ||
+      url.pathname.startsWith('/kalkal/beta/') || url.pathname === '/kalkal/beta') return;
 
   // Large files (eclipse data, maps, KaTeX): lazy cache on demand
   if (url.pathname.includes('/maps/') ||

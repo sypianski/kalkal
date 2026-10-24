@@ -6,11 +6,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A multi-calendar date converter. Converts between 20 calendar systems (Hijri, Gregorian, Julian, Coptic, Ethiopian, Solar Hijri, Byzantine, Syriac, Egyptian, Armenian, and more) using Julian Day Number (JDN) as the universal intermediary. Supports 3 languages on the web (EN, PL, EO — Arabic was removed from `js/i18n.js` in commit 641cd62 but lives on in the Flutter port, which recovers it from git history) and ISO 233 transliteration for Arabic month names.
 
-The repo contains **four apps sharing one conversion engine**:
+The repo contains **four apps sharing one conversion engine** (`mobile/` is deprecated, so three are active):
 
 - **Web app** (root: `index.html`, `js/`, `css/`) — the primary product, a PWA
 - **`flutter_app/`** — 1:1 Flutter port (engine in `lib/engine/cal.dart`, mirrors `js/hijri.js`); its web build is deployed to `beta/` and served at `/kalkal/beta/`
-- **`mobile/`** — Expo / React Native app (separate codebase, `mobile/src/`)
+- **`mobile/`** — Expo / React Native app — **PRZESTARZAŁE od 2026-10-24**, nie rozwijać (następca: `flutter_app/`, patrz `mobile/DEPRECATED.md`)
 - **`alfred/`** — Alfred workflow (macOS), engine copy in `alfred/cal-engine.js`
 
 **Engine changes must be mirrored**: a fix in `js/hijri.js` usually also belongs in `flutter_app/lib/engine/cal.dart` and `alfred/cal-engine.js`. Say so explicitly if you only patch one.
@@ -23,7 +23,6 @@ python3 -m http.server 8000
 ```
 
 Flutter: `cd flutter_app && flutter run` (tests: `flutter test`).
-Mobile (Expo): `cd mobile && npm start`.
 
 ## Running Tests
 

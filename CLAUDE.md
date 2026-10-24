@@ -9,7 +9,7 @@ A multi-calendar date converter. Converts between 20 calendar systems (Hijri, Gr
 The repo contains **four apps sharing one conversion engine** (`mobile/` is deprecated, so three are active):
 
 - **Web app** (root: `index.html`, `js/`, `css/`) — the primary product, a PWA
-- **`flutter_app/`** — 1:1 Flutter port (engine in `lib/engine/cal.dart`, mirrors `js/hijri.js`); its web build is deployed to `beta/` and served at `/kalkal/beta/`
+- **`flutter_app/`** — 1:1 Flutter port (engine in `lib/engine/cal.dart`, mirrors `js/hijri.js`) for **iOS and Android only** (decision 2026-10-24: web and mobile web stay HTML). A Flutter web build existed as a beta at `/beta/` (TASK-13 cancelled)
 - **`mobile/`** — Expo / React Native app — **PRZESTARZAŁE od 2026-10-24**, nie rozwijać (następca: `flutter_app/`, patrz `mobile/DEPRECATED.md`)
 - **`alfred/`** — Alfred workflow (macOS), engine copy in `alfred/cal-engine.js`
 

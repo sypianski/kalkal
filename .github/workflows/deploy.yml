@@ -39,6 +39,7 @@ jobs:
             --exclude 'mobile/android' \
             --exclude 'mobile/ios' \
             --exclude '.playwright-mcp' \
+            --exclude 'backlog' \
             --exclude '*.sync-conflict-*' \
             -e "ssh -i ~/.ssh/deploy_key -o UserKnownHostsFile=~/.ssh/known_hosts" \
             ./ root@65.21.2.179:/var/www/kalkal.online/

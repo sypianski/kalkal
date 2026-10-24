@@ -29,12 +29,14 @@ class ResultPanel extends StatelessWidget {
     final wide = isWide(context);
     final secondary = out.secondaryCal;
     return Container(
-      decoration: slabDecoration(border: kBorderResult, shadow: 6),
+      decoration: slabDecoration(border: kBorderResult, shadow: wide ? 8 : 6),
       child: Stack(
         clipBehavior: Clip.none,
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(18, 26, 18, 18),
+            padding: wide
+                ? const EdgeInsets.fromLTRB(36, 36, 36, 28)
+                : const EdgeInsets.fromLTRB(18, 26, 18, 18),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -54,12 +56,13 @@ class ResultPanel extends StatelessWidget {
                       ],
                     ),
                   ),
-                if (out.isSingle) ..._single(wide) else ..._range(),
+                if (out.isSingle) ..._single(wide) else ..._range(wide),
                 if (out.copyData.defaultText.isNotEmpty)
                   CopyTrio(lang: lang, data: out.copyData),
               ],
             ),
           ),
+          if (!wide)
           Positioned(
             top: 0,
             right: 0,
@@ -138,7 +141,17 @@ class ResultPanel extends StatelessWidget {
     ];
   }
 
-  List<Widget> _range() {
+  // Wide layout: each range year sits on a 3px black rule (`.bridge-year`).
+  Widget _yearUnderline(bool wide, Widget year) => wide
+      ? Container(
+          decoration: const BoxDecoration(
+              border: Border(bottom: BorderSide(color: kInk, width: 3))),
+          padding: const EdgeInsets.only(bottom: 2),
+          child: year,
+        )
+      : year;
+
+  List<Widget> _range(bool wide) {
     return [
       Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -147,11 +160,14 @@ class ResultPanel extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  alignment: Alignment.centerLeft,
-                  child: Text(out.startYearStr!,
-                      style: mono(38, weight: FontWeight.w900, height: 1.05)),
+                _yearUnderline(
+                  wide,
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Text(out.startYearStr!,
+                        style: mono(38, weight: FontWeight.w900, height: 1.05)),
+                  ),
                 ),
                 Text(out.startDetail!, style: mono(11, color: kInk600)),
               ],
@@ -165,11 +181,14 @@ class ResultPanel extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  alignment: Alignment.centerRight,
-                  child: Text(out.endYearStr!,
-                      style: mono(38, weight: FontWeight.w900, height: 1.05)),
+                _yearUnderline(
+                  wide,
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerRight,
+                    child: Text(out.endYearStr!,
+                        style: mono(38, weight: FontWeight.w900, height: 1.05)),
+                  ),
                 ),
                 Text(out.endDetail!, style: mono(11, color: kInk600)),
               ],
@@ -294,7 +313,10 @@ class _CopyTrioButtonState extends State<_CopyTrioButton> {
 class AstroCard extends StatefulWidget {
   final String lang;
   final List<AstroItem> items;
-  const AstroCard({super.key, required this.lang, required this.items});
+  /// Only the content, without the collapsible tile (used inside wide tabs).
+  final bool bare;
+  const AstroCard(
+      {super.key, required this.lang, required this.items, this.bare = false});
 
   @override
   State<AstroCard> createState() => _AstroCardState();
@@ -318,7 +340,7 @@ class _AstroCardState extends State<AstroCard> {
           hints.add('✨');
       }
     }
-    return TileToggle(
+    final tile = TileToggle(
       title: I18n.t(widget.lang, 'astroLabel'),
       hints: hints.join(' '),
       expanded: _expanded,
@@ -394,6 +416,7 @@ class _AstroCardState extends State<AstroCard> {
         ],
       ),
     );
+    return widget.bare ? tile.child : tile;
   }
 }
 
@@ -406,6 +429,7 @@ class HistoryPanel extends StatelessWidget {
   final VoidCallback onToggle;
   final ValueChanged<HistoryEntry> onRestore;
   final VoidCallback onClear;
+  final bool bare;
   const HistoryPanel({
     super.key,
     required this.lang,
@@ -414,11 +438,12 @@ class HistoryPanel extends StatelessWidget {
     required this.onToggle,
     required this.onRestore,
     required this.onClear,
+    this.bare = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return TileToggle(
+    final tile = TileToggle(
       title: I18n.t(lang, 'history'),
       expanded: expanded,
       onTap: onToggle,
@@ -489,6 +514,111 @@ class HistoryPanel extends StatelessWidget {
           ),
         ],
       ),
+    );
+    return bare ? tile.child : tile;
+  }
+}
+
+
+/// "Other contemporaneous calendars" — `.contextual-list`: calendar name
+/// (links to its page), bold year(s), day + month.
+class ContextualList extends StatelessWidget {
+  final List<ContextRow> rows;
+  final void Function(String calId)? onOpenCalendarPage;
+  const ContextualList({super.key, required this.rows, this.onOpenCalendarPage});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        for (final r in rows)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: [
+                SizedBox(
+                  width: 190,
+                  child: InkWell(
+                    onTap: () => onOpenCalendarPage?.call(r.calId),
+                    child: Text(
+                      r.label.toUpperCase(),
+                      style: mono(10.5,
+                              color: kInk600,
+                              weight: FontWeight.w700,
+                              letterSpacing: 0.6)
+                          .copyWith(decoration: TextDecoration.underline),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: 120,
+                  child: Text(r.yearStr,
+                      style: mono(12.5, weight: FontWeight.w800)),
+                ),
+                Expanded(
+                  child: Text(r.datesStr, style: mono(12, color: kInk600)),
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+/// Month breakdown — `.year-table`: source month, target start/end, days.
+class BreakdownTable extends StatelessWidget {
+  final String lang;
+  final String srcId;
+  final String tgtId;
+  final List<BreakdownRow> rows;
+  const BreakdownTable({
+    super.key,
+    required this.lang,
+    required this.srcId,
+    required this.tgtId,
+    required this.rows,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final head = mono(10.5,
+        weight: FontWeight.w800, color: kInk600, letterSpacing: 0.6);
+    final tgt = shortCalName(tgtId);
+    Widget cell(String text, TextStyle st, {int flex = 1, TextAlign? align}) =>
+        Expanded(
+            flex: flex,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              child: Text(text, style: st, textAlign: align),
+            ));
+    return Column(
+      children: [
+        Container(
+          decoration: const BoxDecoration(
+              border: Border(bottom: BorderSide(color: kInk, width: 2))),
+          child: Row(children: [
+            cell(shortCalName(srcId), head, flex: 3),
+            cell('$tgt (${I18n.t(lang, 'rangeStart')})', head, flex: 3),
+            cell('$tgt (${I18n.t(lang, 'rangeEnd')})', head, flex: 3),
+            cell(I18n.t(lang, 'totalDays'), head,
+                flex: 1, align: TextAlign.end),
+          ]),
+        ),
+        for (final r in rows)
+          Container(
+            decoration: const BoxDecoration(
+                border: Border(bottom: BorderSide(color: kSurface2, width: 1.5))),
+            child: Row(children: [
+              cell(r.srcName, mono(12, weight: FontWeight.w700), flex: 3),
+              cell(r.startStr, mono(12), flex: 3),
+              cell(r.endStr, mono(12), flex: 3),
+              cell('${r.days}', mono(12), flex: 1, align: TextAlign.end),
+            ]),
+          ),
+      ],
     );
   }
 }

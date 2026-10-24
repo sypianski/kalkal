@@ -34,6 +34,8 @@ class ConverterScreenState extends State<ConverterScreen> {
   int? _month;
 
   ConvertOutput? _out;
+  List<ContextRow> _ctx = const [];
+  String? _tab; // active tab of the wide tile box: ctx | astro | bd | hist
   String? _error;
   bool _historyExpanded = false;
 
@@ -57,6 +59,11 @@ class ConverterScreenState extends State<ConverterScreen> {
   WebCalendar get _src => kWebCalendars[_fromId]!;
   WebCalendar get _tgt => kWebCalendars[_toId ?? 'gregorian']!;
   bool get _hasResult => _out != null;
+
+  void _setOut(ConvertOutput out) {
+    _out = out;
+    _ctx = contextualRows(out.jd, out.jdEnd, _src.id, _tgt.id, _lang);
+  }
 
   void _clearError() {
     if (_error != null) setState(() => _error = null);
@@ -82,7 +89,7 @@ class ConverterScreenState extends State<ConverterScreen> {
         lang: _lang,
       );
       setState(() {
-        _out = out;
+        _setOut(out);
         _error = null;
         // History auto-collapses when a result is on screen (§5).
         _historyExpanded = false;
@@ -107,7 +114,7 @@ class ConverterScreenState extends State<ConverterScreen> {
     if (year == null || _month == null || _day == null) return;
     cal.variant = v;
     setState(() {
-      _out = convertDate(_src, _tgt, year, _month!, _day!, _lang);
+      _setOut(convertDate(_src, _tgt, year, _month!, _day!, _lang));
     });
   }
 
@@ -129,6 +136,7 @@ class ConverterScreenState extends State<ConverterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (isWide(context)) return _wideBuild();
     final history = Prefs.instance.history;
     final showIntro = history.isEmpty;
     const gap = SizedBox(height: 14);
@@ -331,74 +339,77 @@ class ConverterScreenState extends State<ConverterScreen> {
     );
   }
 
-  // Refine row: MONTH (2fr) + DAY (1fr), visible after first convert (§D).
-  Widget _refineRow() {
+  // Month picker field (underlined, ▾) — shared by the phone slab and the
+  // wide card.
+  Widget _monthField({double vPad = 10}) {
     final monthNames = _src.monthNames(_lang);
     final monthLabel = (_month != null && _month! - 1 < monthNames.length)
         ? monthNames[_month! - 1]
         : '';
+    return InkWell(
+      onTap: () async {
+        final m = await showMonthPicker(context, _lang, _src, _month);
+        if (m == null) return; // dismissed
+        setState(() {
+          _month = m == 0 ? null : m;
+          if (_month == null) _dayCtl.clear();
+        });
+        _clearError();
+        if (_hasResult) _convert();
+      },
+      child: Container(
+        decoration: const BoxDecoration(
+          border: Border(bottom: BorderSide(color: kInk, width: 2)),
+        ),
+        padding: EdgeInsets.symmetric(vertical: vPad),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                monthLabel,
+                style: mono(15, weight: FontWeight.w700),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            Text('▾', style: mono(13, weight: FontWeight.w700)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _dayField() {
+    return TextField(
+      controller: _dayCtl,
+      keyboardType: TextInputType.number,
+      style: mono(24, weight: FontWeight.w800),
+      decoration: slabInputDecoration(),
+      onTap: () => _dayCtl.selection =
+          TextSelection(baseOffset: 0, extentOffset: _dayCtl.text.length),
+      onChanged: (_) => _clearError(),
+      onSubmitted: (_) {
+        if (_hasResult) _convert();
+      },
+      onEditingComplete: () {
+        FocusScope.of(context).unfocus();
+        if (_hasResult) _convert();
+      },
+    );
+  }
+
+  // Refine row: MONTH (2fr) + DAY (1fr), visible after first convert (§D).
+  Widget _refineRow() {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
           flex: 2,
-          child: Slab(
-            tag: '03 • MONTH',
-            child: InkWell(
-              onTap: () async {
-                final m =
-                    await showMonthPicker(context, _lang, _src, _month);
-                if (m == null) return; // dismissed
-                setState(() {
-                  _month = m == 0 ? null : m;
-                  if (_month == null) _dayCtl.clear();
-                });
-                _clearError();
-                if (_hasResult) _convert();
-              },
-              child: Container(
-                decoration: const BoxDecoration(
-                  border: Border(bottom: BorderSide(color: kInk, width: 2)),
-                ),
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        monthLabel,
-                        style: mono(15, weight: FontWeight.w700),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    Text('▾', style: mono(13, weight: FontWeight.w700)),
-                  ],
-                ),
-              ),
-            ),
-          ),
+          child: Slab(tag: '03 • MONTH', child: _monthField()),
         ),
         const SizedBox(width: 10),
         Expanded(
           flex: 1,
-          child: Slab(
-            tag: '04 • DAY',
-            child: TextField(
-              controller: _dayCtl,
-              keyboardType: TextInputType.number,
-              style: mono(24, weight: FontWeight.w800),
-              decoration: slabInputDecoration(),
-              onTap: () => _dayCtl.selection = TextSelection(
-                  baseOffset: 0, extentOffset: _dayCtl.text.length),
-              onChanged: (_) => _clearError(),
-              onSubmitted: (_) {
-                if (_hasResult) _convert();
-              },
-              onEditingComplete: () {
-                FocusScope.of(context).unfocus();
-                if (_hasResult) _convert();
-              },
-            ),
-          ),
+          child: Slab(tag: '04 • DAY', child: _dayField()),
         ),
       ],
     );
@@ -413,6 +424,360 @@ class ConverterScreenState extends State<ConverterScreen> {
         _error!.toUpperCase(),
         style: mono(11,
             weight: FontWeight.w700, color: kWhite, letterSpacing: 1.2),
+      ),
+    );
+  }
+
+  // ====================== wide layout (>= 601 px) ======================
+  // Mirrors the desktop web: form card on the left (From / Year / Convert,
+  // Month / Day after the first convert), on the right the "To" cell, the
+  // result card and one tabbed tile box.
+
+  static const _gapW = SizedBox(height: 24);
+
+  BoxDecoration get _wideCard =>
+      slabDecoration(border: kBorderResult, shadow: 8);
+
+  Widget _wideLabel(String text) => Text(
+        text.toUpperCase(),
+        style: mono(9.5,
+            color: kInk400, weight: FontWeight.w700, letterSpacing: 2.4),
+      );
+
+  Widget _wideBuild() {
+    final history = Prefs.instance.history;
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(24, 48, 32, 56),
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: 300,
+              child: Column(
+                children: [
+                  _wideFormCard(),
+                  if (_hasResult) ...[_gapW, _wideRefineCard()],
+                ],
+              ),
+            ),
+            const SizedBox(width: 24),
+            Expanded(child: _wideRight(history)),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _wideFormCard() {
+    return Container(
+      decoration: _wideCard,
+      padding: const EdgeInsets.fromLTRB(40, 40, 40, 36),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _wideLabel(I18n.t(_lang, 'fromCalendar')),
+          const SizedBox(height: 6),
+          _wideCalField(
+            calId: _fromId,
+            onPick: () async {
+              final id =
+                  await showCalendarPicker(context, _lang, selectedId: _fromId);
+              if (id == null) return;
+              setState(() {
+                _fromId = id;
+                _month = null;
+                _dayCtl.clear();
+              });
+              Prefs.instance.fromCal = id;
+              _clearError();
+            },
+          ),
+          const SizedBox(height: 22),
+          _wideLabel(I18n.t(_lang, 'year')),
+          TextField(
+            controller: _yearCtl,
+            keyboardType: TextInputType.number,
+            style: mono(24, weight: FontWeight.w800),
+            decoration: slabInputDecoration(),
+            onTap: () => _yearCtl.selection = TextSelection(
+                baseOffset: 0, extentOffset: _yearCtl.text.length),
+            onChanged: (_) {
+              setState(() {
+                _month = null;
+                _dayCtl.clear();
+              });
+              _clearError();
+            },
+            onSubmitted: (_) => _convert(),
+          ),
+          const SizedBox(height: 28),
+          Align(
+            alignment: Alignment.centerRight,
+            child: _WideConvertButton(
+                label: I18n.t(_lang, 'convert'), onPressed: _convert),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _wideRefineCard() {
+    return Container(
+      decoration: _wideCard,
+      padding: const EdgeInsets.fromLTRB(40, 32, 40, 36),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _wideLabel(I18n.t(_lang, 'month')),
+          _monthField(vPad: 8),
+          const SizedBox(height: 22),
+          _wideLabel(I18n.t(_lang, 'day')),
+          _dayField(),
+        ],
+      ),
+    );
+  }
+
+  // Calendar field: bold name, underline, "about … →" link beneath.
+  Widget _wideCalField({required String calId, required VoidCallback onPick}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        InkWell(
+          onTap: onPick,
+          child: Container(
+            decoration: const BoxDecoration(
+              border: Border(bottom: BorderSide(color: kInk, width: 2)),
+            ),
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    I18n.calendarName(_lang, calId).toUpperCase(),
+                    style: mono(14, weight: FontWeight.w800, letterSpacing: 1),
+                  ),
+                ),
+                Text('▾', style: mono(12, weight: FontWeight.w700)),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 6),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: InkWell(
+            onTap: () => widget.onOpenCalendarPage?.call(calId),
+            child: Text(
+              I18n.t(_lang, 'aboutCalendarTpl')
+                  .replaceAll('{name}', I18n.calendarName(_lang, calId))
+                  .toUpperCase(),
+              style: mono(9.5, color: kInk400, letterSpacing: 0.8)
+                  .copyWith(decoration: TextDecoration.underline),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _wideRight(List<HistoryEntry> history) {
+    if (!_hasResult) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (_error != null) ...[_errorStrip(), _gapW],
+          if (history.isEmpty) _introCard() else _wideTabBox(history),
+        ],
+      );
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (_error != null) ...[_errorStrip(), _gapW],
+        _wideToCell(),
+        _gapW,
+        ResultPanel(lang: _lang, out: _out!, onVariantTap: _onVariantTap),
+        _gapW,
+        _wideTabBox(history),
+      ],
+    );
+  }
+
+  // "To" cell: signal-coloured label on the left, calendar field on the right.
+  Widget _wideToCell() {
+    return Container(
+      decoration: _wideCard,
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              width: 72,
+              color: kSignal,
+              alignment: Alignment.center,
+              child: Text(
+                I18n.t(_lang, 'toLabel').toUpperCase(),
+                style: mono(11.5,
+                    weight: FontWeight.w700,
+                    color: kWhite,
+                    letterSpacing: 3.2),
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 20),
+                child: _wideCalField(
+                  calId: _toId ?? 'gregorian',
+                  onPick: () async {
+                    final id = await showCalendarPicker(context, _lang,
+                        selectedId: _toId ?? 'gregorian');
+                    if (id == null) return;
+                    setState(() => _toId = id);
+                    _clearError();
+                    if (_hasResult) _convert();
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // One tabbed box for contextual / astro / month breakdown / history.
+  Widget _wideTabBox(List<HistoryEntry> history) {
+    String t(String k) => I18n.t(_lang, k);
+    final defs = <(String, String)>[
+      if (_hasResult && _ctx.isNotEmpty) ('ctx', t('contextualLabel')),
+      if (_hasResult) ('astro', t('astroLabel')),
+      if (_hasResult && _out!.breakdown.isNotEmpty)
+        ('bd', t('monthBreakdown')),
+      if (history.isNotEmpty) ('hist', t('history')),
+    ];
+    if (defs.isEmpty) return const SizedBox.shrink();
+    final active = defs.any((d) => d.$1 == _tab) ? _tab! : defs.first.$1;
+
+    Widget content;
+    switch (active) {
+      case 'ctx':
+        content = ContextualList(
+            rows: _ctx, onOpenCalendarPage: widget.onOpenCalendarPage);
+      case 'astro':
+        content = AstroCard(lang: _lang, items: _out!.astro, bare: true);
+      case 'bd':
+        content = BreakdownTable(
+            lang: _lang,
+            srcId: _src.id,
+            tgtId: _tgt.id,
+            rows: _out!.breakdown);
+      default:
+        content = HistoryPanel(
+          lang: _lang,
+          entries: history,
+          expanded: true,
+          onToggle: () {},
+          onRestore: _restoreHistory,
+          onClear: () {
+            Prefs.instance.clearHistory();
+            setState(() => _tab = null);
+          },
+          bare: true,
+        );
+    }
+
+    return Container(
+      decoration: _wideCard,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              border: Border(bottom: BorderSide(color: kInk, width: 3)),
+            ),
+            child: IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  for (var i = 0; i < defs.length; i++)
+                    Expanded(
+                      flex: defs[i].$2.length + 6,
+                      child: InkWell(
+                        onTap: () => setState(() => _tab = defs[i].$1),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 14),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: defs[i].$1 == active ? kSignal : kSurface,
+                            border: i < defs.length - 1
+                                ? const Border(
+                                    right: BorderSide(color: kInk, width: 2))
+                                : null,
+                          ),
+                          child: Text(
+                            defs[i].$2.toUpperCase(),
+                            textAlign: TextAlign.center,
+                            style: mono(11,
+                                weight: FontWeight.w700,
+                                letterSpacing: 1.4,
+                                color: defs[i].$1 == active
+                                    ? kWhite
+                                    : kInk600),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(36, 24, 36, 28),
+            child: content,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _WideConvertButton extends StatefulWidget {
+  final String label;
+  final VoidCallback onPressed;
+  const _WideConvertButton({required this.label, required this.onPressed});
+
+  @override
+  State<_WideConvertButton> createState() => _WideConvertButtonState();
+}
+
+class _WideConvertButtonState extends State<_WideConvertButton> {
+  bool _hover = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: _hover ? kSignalDark : kSignal,
+      child: InkWell(
+        onTap: widget.onPressed,
+        onHover: (v) => setState(() => _hover = v),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                widget.label.toUpperCase(),
+                style: mono(13,
+                    weight: FontWeight.w800, letterSpacing: 2.6, color: kWhite),
+              ),
+              const SizedBox(width: 10),
+              const Icon(Icons.arrow_forward, color: kWhite, size: 16),
+            ],
+          ),
+        ),
       ),
     );
   }

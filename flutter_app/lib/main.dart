@@ -60,49 +60,75 @@ class _KalkalAppState extends State<KalkalApp> {
         ),
         splashFactory: InkRipple.splashFactory,
       ),
-      home: Scaffold(
-        body: SafeArea(
-          bottom: false,
-          child: IndexedStack(
-            index: _tab,
-            children: [
-              ConverterScreen(
-                key: ValueKey('converter-$_lang'),
-                lang: _lang,
-                onOpenCalendarPage: (calId) => setState(() {
-                  _calendarsAnchor = calId;
-                  _tab = 1;
-                }),
-              ),
-              CalendarsScreen(
-                key: ValueKey('calendars-$_lang-$_calendarsAnchor'),
-                lang: _lang,
-                anchorCalId: _calendarsAnchor,
-              ),
-              MethodologyScreen(lang: _lang),
-              SettingsScreen(
-                lang: _lang,
-                onLangChanged: (code) => setState(() => _lang = code),
-              ),
-              AboutScreen(lang: _lang),
-            ],
-          ),
-        ),
-        bottomNavigationBar: BrutBottomNav(
-          items: [
-            NavItem('⇄', I18n.t(_lang, 'navConverter')),
-            NavItem('▦', I18n.t(_lang, 'navCalendars')),
-            NavItem('◆', I18n.t(_lang, 'navMethodology')),
-            NavItem('☰', I18n.t(_lang, 'settings')),
-            NavItem('❖', I18n.t(_lang, 'navAuthor')),
+      home: Builder(builder: (context) {
+        final wide = isWide(context);
+        final navItems = [
+          NavItem('⇄', I18n.t(_lang, 'navConverter')),
+          NavItem('▦', I18n.t(_lang, 'navCalendars')),
+          NavItem('◆', I18n.t(_lang, 'navMethodology')),
+          NavItem('☰', I18n.t(_lang, 'settings')),
+          NavItem('❖', I18n.t(_lang, 'navAuthor')),
+        ];
+        void onNav(int i) => setState(() {
+              if (i != 1) _calendarsAnchor = null;
+              _tab = i;
+            });
+        final pages = IndexedStack(
+          index: _tab,
+          children: [
+            ConverterScreen(
+              key: ValueKey('converter-$_lang'),
+              lang: _lang,
+              onOpenCalendarPage: (calId) => setState(() {
+                _calendarsAnchor = calId;
+                _tab = 1;
+              }),
+            ),
+            CalendarsScreen(
+              key: ValueKey('calendars-$_lang-$_calendarsAnchor'),
+              lang: _lang,
+              anchorCalId: _calendarsAnchor,
+            ),
+            MethodologyScreen(lang: _lang),
+            SettingsScreen(
+              lang: _lang,
+              onLangChanged: (code) => setState(() => _lang = code),
+            ),
+            AboutScreen(lang: _lang),
           ],
-          activeIndex: _tab,
-          onTap: (i) => setState(() {
-            if (i != 1) _calendarsAnchor = null;
-            _tab = i;
-          }),
-        ),
-      ),
+        );
+        if (wide) {
+          return Scaffold(
+            body: Column(
+              children: [
+                WideHeader(
+                  title: I18n.t(_lang, 'appTitle'),
+                  items: navItems,
+                  activeIndex: _tab,
+                  onTap: onNav,
+                ),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 1100),
+                      child: pages,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+        return Scaffold(
+          body: SafeArea(bottom: false, child: pages),
+          bottomNavigationBar: BrutBottomNav(
+            items: navItems,
+            activeIndex: _tab,
+            onTap: onNav,
+          ),
+        );
+      }),
     );
   }
 }

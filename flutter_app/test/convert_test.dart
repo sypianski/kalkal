@@ -155,4 +155,14 @@ void main() {
     expect(one.srcTag, 'AH');
     expect(one.bridgeEq, isNull);
   });
+
+  test('contextualRows: 19 Jul 2023 lists calendars in use, not src/tgt', () {
+    final jd = kWebCalendars['gregorian']!.toJD(2023, 7, 19);
+    final rows = contextualRows(jd, null, 'hijri', 'gregorian', 'en');
+    final ids = rows.map((r) => r.calId).toList();
+    expect(ids, isNot(contains('hijri')));
+    expect(ids, isNot(contains('gregorian')));
+    expect(ids, containsAll(['hebrew', 'coptic', 'solarHijri']));
+    expect(rows.firstWhere((r) => r.calId == 'hebrew').yearStr, '5783');
+  });
 }

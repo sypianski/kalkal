@@ -60,6 +60,15 @@ class AstroItem {
   });
 }
 
+/// One row of the "Other contemporaneous calendars" panel.
+class ContextRow {
+  final String calId;
+  final String label;
+  final String yearStr;
+  final String datesStr;
+  const ContextRow(this.calId, this.label, this.yearStr, this.datesStr);
+}
+
 class BreakdownRow {
   final String srcName;
   final int days;
@@ -738,4 +747,44 @@ ConvertOutput convertYearRange(
     jd: jdStart,
     jdEnd: jdEnd,
   );
+}
+
+
+// CONTEXTUAL_PRIORITY in js/app.js.
+const _kContextualPriority = [
+  'gregorian', 'hijri', 'julian', 'hebrew', 'coptic', 'byzantine',
+  'seleucid', 'syriac', 'solarHijri', 'yazdgerdi', 'armenian',
+  'ethiopian', 'roman', 'babylonian', 'macedonian', 'antiochene',
+  'egyptian', 'olympiad', 'spanish', 'ilkhani', 'rumi',
+];
+
+/// buildContextualPanel() in js/app.js — the same moment in every calendar
+/// that was in use then (historicalRange contains [jd]), minus source/target.
+List<ContextRow> contextualRows(
+    double jd, double? jdEnd, String srcId, String tgtId, String lang) {
+  final rows = <ContextRow>[];
+  for (final id in _kContextualPriority) {
+    if (id == srcId || id == tgtId) continue;
+    final cal = kWebCalendars[id];
+    final range = cal?.historicalRange;
+    if (cal == null || range == null) continue;
+    if (jd < range[0] || jd > range[1]) continue;
+    final r = cal.fromJD(jd);
+    final names = cal.monthNamesGen(lang);
+    String yearStr, datesStr;
+    if (jdEnd != null) {
+      final e = cal.fromJD(jdEnd);
+      yearStr = r.year == e.year ? '${r.year}' : '${r.year}–${e.year}';
+      datesStr =
+          '${r.day} ${names[r.month - 1]} – ${e.day} ${names[e.month - 1]}';
+    } else if (id == 'roman' && r.day > 0) {
+      yearStr = '${r.year} AUC';
+      datesStr = romanDayNotation(r.month, r.day, cal.isLeap(r.year));
+    } else {
+      yearStr = '${r.year}';
+      datesStr = '${r.day} ${names[r.month - 1]}';
+    }
+    rows.add(ContextRow(id, I18n.calendarName(lang, id), yearStr, datesStr));
+  }
+  return rows;
 }

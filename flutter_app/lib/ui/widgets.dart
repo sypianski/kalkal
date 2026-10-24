@@ -266,3 +266,73 @@ class VariantButton extends StatelessWidget {
     );
   }
 }
+
+/// Desktop header (`.site-header` + `.page-nav`): title left, menu right.
+/// Below 1000 px the menu drops under the title, as on the web.
+class WideHeader extends StatelessWidget {
+  final String title;
+  final List<NavItem> items;
+  final int activeIndex;
+  final ValueChanged<int> onTap;
+  const WideHeader({
+    super.key,
+    required this.title,
+    required this.items,
+    required this.activeIndex,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final width = MediaQuery.sizeOf(context).width;
+    final pad = ((width - 1100) / 2).clamp(0.0, double.infinity) + 24;
+    final titleW = Text(
+      title.toUpperCase(),
+      style: mono(19, weight: FontWeight.w800, color: kWhite, letterSpacing: 5),
+    );
+    final nav = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (var i = 0; i < items.length; i++)
+          InkWell(
+            onTap: () => onTap(i),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                      color: i == activeIndex ? kWhite : Colors.transparent,
+                      width: 2),
+                ),
+              ),
+              child: Text(
+                items[i].label.toUpperCase(),
+                style: mono(9.5,
+                    weight: FontWeight.w700,
+                    letterSpacing: 1.8,
+                    color: i == activeIndex ? kWhite : kInk500),
+              ),
+            ),
+          ),
+      ],
+    );
+    return Container(
+      color: kInk,
+      padding: EdgeInsets.fromLTRB(pad, 14, pad, 12),
+      child: width >= 1000
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [titleW, nav],
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                titleW,
+                const SizedBox(height: 10),
+                SingleChildScrollView(
+                    scrollDirection: Axis.horizontal, child: nav),
+              ],
+            ),
+    );
+  }
+}

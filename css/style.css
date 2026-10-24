@@ -7658,3 +7658,40 @@ body[data-page="methodology"] .meth-toc-title { cursor: pointer; }
   body[data-page="methodology"] .meth-toc-title { margin: 0; }
   body[data-page="methodology"] .meth-toc[open] .meth-toc-title { margin-block-end: var(--space-sm); }
 }
+
+/* UX 2026-10 (TASK-2 step 6): Calendars — sticky side contents */
+body[data-page="calendars"] .cal-toc-link.active { color: var(--brut-signal); }
+body[data-page="calendars"] .cal-toc-link.active::before { color: var(--brut-signal); }
+body[data-page="calendars"] .cal-toc-title { cursor: pointer; font-family: var(--brut-mono); font-weight: 900; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.06em; }
+@media (min-width: 901px) {
+  body[data-page="calendars"] .main-content--prose {
+    display: grid;
+    grid-template-columns: 230px minmax(0, 1fr);
+    column-gap: 40px;
+    align-items: start;
+  }
+  body[data-page="calendars"] .main-content--prose > * { grid-column: 2; min-width: 0; }
+  body[data-page="calendars"] .main-content--prose > .cal-toc {
+    grid-column: 1;
+    grid-row: 1 / span 80;
+    position: sticky;
+    top: var(--space-lg);
+    max-height: calc(100vh - 2 * var(--space-lg));
+    overflow-y: auto;
+    background: transparent;
+    border: 0;
+    border-inline-start: 4px solid #000;
+    box-shadow: none;
+    margin: 0;
+    padding: 0 0 0 var(--space-md);
+  }
+  body[data-page="calendars"] .cal-toc-title { display: none; }
+  body[data-page="calendars"] .cal-toc-list { columns: 1; }
+  body[data-page="calendars"] .cal-toc-link { font-size: 0.72rem; }
+  body[data-page="calendars"] .cal-card { scroll-margin-top: var(--space-lg); }
+}
+@media (max-width: 900px) {
+  body[data-page="calendars"] .cal-toc { padding: var(--space-md) var(--space-lg); }
+  body[data-page="calendars"] .cal-toc-title { margin: 0; }
+  body[data-page="calendars"] .cal-toc-details[open] .cal-toc-title { margin-block-end: var(--space-sm); }
+}

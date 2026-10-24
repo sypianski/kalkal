@@ -12,6 +12,7 @@ const PageI18N = {
     methPageSubtitle: 'How kalkal was built, how it calculates, and how it is verified',
     backToConverter: 'Back to converter',
     formulaLabel: 'Formula and code',
+    tocTitle: 'Contents',
     settingsExample: 'Example: 1 {m} 8 AH, Julian date',
     sourceLabel: 'Algorithm source',
 
@@ -206,6 +207,7 @@ const PageI18N = {
     methPageSubtitle: 'Jak zbudowano kalkal, jak oblicza i jak jest weryfikowany',
     backToConverter: 'Powr\u00f3t do konwertera',
     formulaLabel: 'Formu\u0142a i kod',
+    tocTitle: 'Spis tre\u015bci',
     settingsExample: 'Przyk\u0142ad: 1 {m} 8 AH, data julia\u0144ska',
     sourceLabel: '\u0179r\u00f3d\u0142o algorytmu',
 
@@ -382,6 +384,7 @@ const PageI18N = {
     methPageSubtitle: 'Kiel kalkal estas konstruita, kiel \u011di kalkulas, kaj kiel \u011di estas validata',
     backToConverter: 'Reen al konvertilo',
     formulaLabel: 'Formulo kaj kodo',
+    tocTitle: 'Enhavo',
     settingsExample: 'Ekzemplo: 1-a de {m} 8 AH, julia dato',
     sourceLabel: 'Algoritma fonto',
     gregorian: { name: 'p.K. kalendaro (julia\u2192gregoria)', type: 'Suna', epoch: '1-a de januaro 1 p.K.', intro: 'La p.K. (post Kristo) datsistemo, uzanta la julian kalendaron anta\u016d la 15-a de oktobro 1582 kaj la gregorian poste. Neniu uzis la gregorian kalendaron anta\u016d \u011dia kreado.', body: 'Anta\u016d 1582: julia kalendaro (superjaro \u0109iu 4 jaroj). Ekde 15-a de oktobro 1582: gregoria reformo (superjaro se dividebla per 4, krom per 100, escepte per 400). La puraj julia kaj gregoria kalendaroj haveblas aparte por proleptikaj kalkuloj.', adoption: 'Katolikaj landoj en 1582; Brita Imperio 1752; Rusio 1918; Grekio 1923; Turkio 1926.', source: 'Meeus, Jean. Astronomical Algorithms, 2nd ed. (1998), ch. 7. Julia: eq. 7.1 kun B = 0. Gregoria: eq. 7.1 kun A = \u230aY/100\u230b, B = 2 \u2212 A + \u230aA/4\u230b. Transiro je JD 2299160.5.', months: '12 monatoj de 28\u201331 tagoj.' },
@@ -721,6 +724,12 @@ const SEASON_LABELS = {
       });
     }
 
+    if (t.tocTitle) {
+      document.querySelectorAll('[data-toc-title]').forEach(function(el) {
+        el.textContent = t.tocTitle;
+      });
+    }
+
     // Update formula labels
     if (t.formulaLabel) {
       document.querySelectorAll('[data-formula-label]').forEach(function(el) {
@@ -772,6 +781,31 @@ const SEASON_LABELS = {
   }
 
   setPageLang(currentLang);
+
+  // ---- Calendars: contents open on wide screens, collapsed on phones; highlight card in view ----
+  (function() {
+    var details = document.querySelector('.cal-toc-details');
+    if (!details) return;
+    var mq = window.matchMedia('(min-width: 901px)');
+    function sync() { details.open = mq.matches; }
+    sync();
+    if (mq.addEventListener) mq.addEventListener('change', sync);
+    if (!('IntersectionObserver' in window)) return;
+    var cards = document.querySelectorAll('.cal-card[data-cal]');
+    var visible = {};
+    function mark() {
+      var cur = null;
+      cards.forEach(function(c) { if (!cur && visible[c.id]) cur = c.id; });
+      document.querySelectorAll('.cal-toc-link').forEach(function(a) {
+        a.classList.toggle('active', !!cur && a.getAttribute('data-toc') === cur);
+      });
+    }
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) { visible[e.target.id] = e.isIntersecting; });
+      mark();
+    }, { rootMargin: '0px 0px -60% 0px' });
+    cards.forEach(function(c) { io.observe(c); });
+  })();
 
   // ---- Settings panel (mobile) ----
   (function() {

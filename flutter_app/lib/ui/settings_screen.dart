@@ -42,48 +42,44 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(10, 10, 10, 20),
-      children: [
-        Container(
-          color: kInk,
-          padding: const EdgeInsets.fromLTRB(16, 18, 16, 16),
-          child: Text(
-            I18n.t(_lang, 'settings').toUpperCase(),
-            style: mono(17,
-                weight: FontWeight.w800, color: kWhite, letterSpacing: 2),
-          ),
-        ),
-        const SizedBox(height: 14),
-        _group(
-          heading: I18n.t(_lang, 'language'),
-          desc: null,
-          child: Wrap(
-            spacing: 6,
-            runSpacing: 6,
-            children: [
-              for (final (code, label) in _langOptions)
-                _pill(label, code == _lang, () {
-                  Prefs.instance.lang = code;
-                  widget.onLangChanged(code);
-                }),
-            ],
-          ),
-        ),
-        if (isWide(context))
-          for (final (calId, headingKey, descKey) in _variantGroups) ...[
-            const SizedBox(height: 14),
+    final wide = isWide(context);
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 1100),
+        child: ListView(
+          padding: wide
+              ? const EdgeInsets.fromLTRB(40, 40, 40, 40)
+              : const EdgeInsets.fromLTRB(10, 12, 10, 20),
+          children: [
             _group(
-              heading: I18n.t(_lang, headingKey),
-              desc: I18n.t(_lang, descKey),
-              child: _variantList(calId),
+              wide: wide,
+              heading: I18n.t(_lang, 'language'),
+              child: Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: [
+                  for (final (code, label) in _langOptions)
+                    _pill(label, code == _lang, wide, () {
+                      Prefs.instance.lang = code;
+                      widget.onLangChanged(code);
+                    }),
+                ],
+              ),
             ),
-          ]
-        else ...[
-          const SizedBox(height: 14),
-          _variantRowsCard(),
-        ],
-      ],
+            if (wide)
+              for (final (calId, headingKey, descKey) in _variantGroups)
+                _group(
+                  wide: wide,
+                  heading: I18n.t(_lang, headingKey),
+                  desc: I18n.t(_lang, descKey),
+                  child: _variantList(calId),
+                )
+            else
+              _variantRowsCard(),
+          ],
+        ),
+      ),
     );
   }
 
@@ -99,6 +95,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (calId == 'hijri') _hijriExample(),
+        Container(height: 2, color: kInk),
         for (var i = 0; i < cal.variants!.length; i++)
           _variantRow(
             name: _variantName(cal.variants![i]),
@@ -190,7 +187,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Padding(
                 padding: const EdgeInsets.only(top: 6, bottom: 12),
                 child: Text(I18n.t(_lang, descKey),
-                    style: mono(10.5, color: kInk600, height: 1.45)),
+                    style: mono(13, color: kInk600, height: 1.45)),
               ),
               _variantList(calId, afterPick: () => Navigator.of(ctx).pop()),
             ],
@@ -234,13 +231,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final m = I18n.monthNames(_lang, 'hijri').first;
     final tpl = PagesI18n.t(_lang, 'settingsExample');
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.only(bottom: 8),
       child: Text(tpl.replaceAll('{m}', m),
-          style: mono(10.5, color: kInk500, height: 1.4)),
+          style: mono(12, weight: FontWeight.w700, color: kSignal, height: 1.4)),
     );
   }
 
-  // Radio row: square, name + description, optional example on the right.
+  // Radio row of the web: round marker, name + description, example in signal blue.
   Widget _variantRow({
     required String name,
     required String desc,
@@ -248,93 +245,115 @@ class _SettingsScreenState extends State<SettingsScreen> {
     required VoidCallback onTap,
     String? example,
   }) {
+    final wide = isWide(context);
+    final text = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(name, style: mono(13.6, weight: FontWeight.w700, height: 1.5)),
+        if (desc.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 2),
+            child: Text(desc,
+                style: mono(wide ? 12.8 : 14, color: kInk700, height: 1.5)),
+          ),
+      ],
+    );
+    final ex = example == null
+        ? null
+        : Text(example,
+            style: mono(12, weight: FontWeight.w700, color: kSignal));
     return InkWell(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.only(bottom: 8),
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: kSurface,
-          border: Border.all(color: active ? kSignal : kInk, width: 2),
-        ),
+        padding: const EdgeInsets.symmetric(vertical: 11.2),
+        decoration: const BoxDecoration(
+            border: Border(bottom: BorderSide(color: Color(0xFFA8A8A2)))),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              width: 18,
-              height: 18,
-              margin: const EdgeInsets.only(top: 1),
+              width: 16,
+              height: 16,
+              margin: const EdgeInsets.only(top: 2),
+              padding: const EdgeInsets.all(2.5),
               decoration: BoxDecoration(
-                color: active ? kSignal : Colors.transparent,
+                shape: BoxShape.circle,
+                color: kWhite,
                 border: Border.all(color: active ? kSignal : kInk, width: 2),
               ),
               child: active
-                  ? const Icon(Icons.check, size: 12, color: kWhite)
+                  ? const DecoratedBox(
+                      decoration:
+                          BoxDecoration(shape: BoxShape.circle, color: kSignal))
                   : null,
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(name, style: mono(12.5, weight: FontWeight.w800)),
-                  if (desc.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 4),
-                      child: Text(desc,
-                          style: mono(10.5, color: kInk600, height: 1.45)),
+              child: wide || ex == null
+                  ? text
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [text, const SizedBox(height: 4), ex],
                     ),
-                ],
-              ),
             ),
-            if (example != null)
-              Padding(
-                padding: const EdgeInsets.only(left: 12),
-                child: Text(example,
-                    style: mono(11, weight: FontWeight.w700, color: kInk700)),
-              ),
+            if (wide && ex != null)
+              Padding(padding: const EdgeInsets.only(left: 16), child: ex),
           ],
         ),
       ),
     );
   }
 
-  Widget _group({required String heading, String? desc, required Widget child}) {
+  // Flat group: grey caps heading, optional description, content, heavy rule below.
+  Widget _group({
+    required bool wide,
+    required String heading,
+    String? desc,
+    required Widget child,
+  }) {
     return Container(
-      decoration: slabDecoration(shadow: 4),
-      padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.only(bottom: wide ? 40 : 24),
+      padding: EdgeInsets.only(bottom: wide ? 40 : 24),
+      decoration: const BoxDecoration(
+          border: Border(bottom: BorderSide(color: kInk, width: 2))),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(heading.toUpperCase(),
-              style: mono(12, weight: FontWeight.w800, letterSpacing: 1.8)),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 9.6),
+            child: Text(heading.toUpperCase(),
+                style: mono(wide ? 10.4 : 11.5,
+                    weight: FontWeight.w700,
+                    color: kInk400,
+                    letterSpacing: 1.25)),
+          ),
           if (desc != null && desc.isNotEmpty)
             Padding(
-              padding: const EdgeInsets.only(top: 6),
-              child: Text(desc, style: mono(10.5, color: kInk600, height: 1.45)),
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Text(desc,
+                  style: mono(wide ? 12.8 : 14, color: kInk500, height: 1.5)),
             ),
-          const SizedBox(height: 12),
           child,
         ],
       ),
     );
   }
 
-  Widget _pill(String label, bool active, VoidCallback onTap) {
+  Widget _pill(String label, bool active, bool wide, VoidCallback onTap) {
     return InkWell(
       onTap: onTap,
       child: Container(
-        constraints: const BoxConstraints(minHeight: 44),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        padding: wide
+            ? const EdgeInsets.symmetric(horizontal: 9.5, vertical: 4.5)
+            : const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
-          color: active ? kSignal : kSurface,
-          border: Border.all(color: active ? kSignal : kInk, width: 2),
+          color: active ? kSignal : kSurface2,
+          border: Border.all(color: active ? kSignal : kInk400),
         ),
-        alignment: Alignment.center,
         child: Text(
           label,
-          style: mono(12.5,
-              weight: FontWeight.w700, color: active ? kWhite : kInk),
+          style: mono(wide ? 11.2 : 14.4,
+              weight: FontWeight.w600, color: active ? kWhite : kInk500),
         ),
       ),
     );

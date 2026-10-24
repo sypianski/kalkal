@@ -1,4 +1,6 @@
 // Subpage screens — calendars.html, methodology.html, about.html ports.
+// Calendars and Methodology follow the prod web look (css/style.css): no title
+// banner, numbered side contents, 3px-bordered cards with offset shadow.
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -8,85 +10,57 @@ import 'package:url_launcher/url_launcher.dart';
 import '../i18n/i18n.dart';
 import '../i18n/pages_i18n.dart';
 import 'tokens.dart';
-import 'widgets.dart';
 
-class _PageHeader extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  const _PageHeader(this.title, this.subtitle);
+// Page-only greys of the web (--parchment tints used by asides and formulas).
+const _kAside = Color(0xFFF8F8F5);
+const _kAsideWarn = Color(0xFFF0F0EC);
+const _kRuleGrey = Color(0xFFCCCCCC);
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: kInk,
-      padding: const EdgeInsets.fromLTRB(16, 18, 16, 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title.toUpperCase(),
-              style: mono(17,
-                  weight: FontWeight.w800, color: kWhite, letterSpacing: 2)),
-          const SizedBox(height: 4),
-          Text(subtitle, style: mono(10.5, color: kNavText, height: 1.4)),
-        ],
-      ),
-    );
-  }
-}
-
-/// Contents link row: signal-coloured marker + underlined label.
-class _TocLink extends StatelessWidget {
-  final String label;
-  final VoidCallback onTap;
-  final double size;
-  const _TocLink(this.label, this.onTap, {this.size = 12});
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('▪ ', style: mono(size, color: kSignal)),
-            Expanded(
-              child: Text(label,
-                  style: mono(size, weight: FontWeight.w600)
-                      .copyWith(decoration: TextDecoration.underline)),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// Collapsible "Contents" box — the `<details>` of the phone layout.
-class _ContentsBox extends StatefulWidget {
-  final String title;
+/// Wide pages sit in the web's 1100px `main-content--prose` column.
+class _PageFrame extends StatelessWidget {
+  final bool wide;
   final Widget child;
-  const _ContentsBox({required this.title, required this.child});
+  const _PageFrame({required this.wide, required this.child});
 
   @override
-  State<_ContentsBox> createState() => _ContentsBoxState();
-}
-
-class _ContentsBoxState extends State<_ContentsBox> {
-  bool _open = false;
-
-  @override
-  Widget build(BuildContext context) => TileToggle(
-        title: widget.title,
-        expanded: _open,
-        onTap: () => setState(() => _open = !_open),
-        child: widget.child,
+  Widget build(BuildContext context) => Align(
+        alignment: Alignment.topCenter,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1100),
+          child: Padding(
+            padding: wide
+                ? const EdgeInsets.fromLTRB(40, 40, 40, 0)
+                : const EdgeInsets.fromLTRB(10, 10, 10, 0),
+            child: child,
+          ),
+        ),
       );
 }
 
-/// Wide layout: contents column with a 4px rule on its left, like the
-/// sticky side list of the web.
+/// Heading with a heavy rule only as wide as its text (`h2` inline-block).
+class _UnderlinedTitle extends StatelessWidget {
+  final String text;
+  final double size;
+  final double letterSpacing;
+  const _UnderlinedTitle(this.text, {required this.size, required this.letterSpacing});
+
+  @override
+  Widget build(BuildContext context) => Align(
+        alignment: Alignment.centerLeft,
+        child: Container(
+          padding: const EdgeInsets.only(bottom: 4),
+          decoration: const BoxDecoration(
+              border: Border(bottom: BorderSide(color: kInk, width: 3))),
+          child: Text(text.toUpperCase(),
+              style: mono(size,
+                  weight: FontWeight.w900,
+                  letterSpacing: letterSpacing,
+                  height: 1.25)),
+        ),
+      );
+}
+
+/// Side contents column: 4px black rule on the left, sticky in the web.
 class _SideContents extends StatelessWidget {
   final double width;
   final Widget child;
@@ -98,15 +72,87 @@ class _SideContents extends StatelessWidget {
         child: Container(
           decoration: const BoxDecoration(
               border: Border(left: BorderSide(color: kInk, width: 4))),
-          padding: const EdgeInsets.only(left: 14),
+          padding: const EdgeInsets.only(left: 16),
           child: SingleChildScrollView(child: child),
         ),
       );
 }
 
+/// Phone contents: white box with a thick left rule, collapsed `<details>`.
+class _MobileContents extends StatefulWidget {
+  final String title;
+  final Widget child;
+  final double titleSize;
+  const _MobileContents(
+      {required this.title, required this.child, this.titleSize = 14.4});
+
+  @override
+  State<_MobileContents> createState() => _MobileContentsState();
+}
+
+class _MobileContentsState extends State<_MobileContents> {
+  bool _open = false;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        decoration: const BoxDecoration(
+          color: kSurface,
+          border: Border(
+            top: BorderSide(color: kInk, width: 3),
+            bottom: BorderSide(color: kInk, width: 3),
+            right: BorderSide(color: kInk, width: 3),
+            left: BorderSide(color: kInk, width: 6),
+          ),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            InkWell(
+              onTap: () => setState(() => _open = !_open),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(widget.title.toUpperCase(),
+                        style: mono(widget.titleSize,
+                            weight: FontWeight.w900, letterSpacing: 0.86)),
+                  ),
+                  Text(_open ? '▴' : '▾', style: mono(14)),
+                ],
+              ),
+            ),
+            if (_open) ...[
+              const SizedBox(height: 8),
+              widget.child,
+            ],
+          ],
+        ),
+      );
+}
+
+/// Which of [order] is the current one: the last whose top has passed [limit]
+/// (viewport y of the scroll area + a little slack) — drives the active TOC link.
+String? _activeOf(List<String> order, Map<String, GlobalKey> keys, double limit) {
+  String? active;
+  for (final id in order) {
+    final ctx = keys[id]?.currentContext;
+    final box = ctx?.findRenderObject();
+    if (box is! RenderBox || !box.attached) continue;
+    if (box.localToGlobal(Offset.zero).dy <= limit) active = id;
+  }
+  return active ?? (order.isEmpty ? null : order.first);
+}
+
 // ---------------------------------------------------------------------------
 // Calendars page — one card per calendar, grouped like pages.js regroups.
 // ---------------------------------------------------------------------------
+
+const _seasonBand = [
+  (band: Color(0xFF2D5A27), label: Color(0xFF5A7A4A)), // spring
+  (band: Color(0xFFB8860B), label: Color(0xFF333333)), // summer
+  (band: Color(0xFF8B2500), label: Color(0xFF000000)), // autumn
+  (band: Color(0xFF1A3A4A), label: Color(0xFF4A6070)), // winter
+];
 
 class CalendarsScreen extends StatefulWidget {
   final String lang;
@@ -120,6 +166,8 @@ class CalendarsScreen extends StatefulWidget {
 class _CalendarsScreenState extends State<CalendarsScreen> {
   final _scrollCtl = ScrollController();
   final _cardKeys = <String, GlobalKey>{};
+  final _order = <String>[];
+  String? _active;
 
   @override
   void initState() {
@@ -127,19 +175,34 @@ class _CalendarsScreenState extends State<CalendarsScreen> {
     for (final g in PagesI18n.calGroups) {
       for (final id in g.calendarIds) {
         _cardKeys[id] = GlobalKey();
+        _order.add(id);
       }
     }
+    _scrollCtl.addListener(_onScroll);
     if (widget.anchorCalId != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => _scrollTo(widget.anchorCalId!));
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => _scrollTo(widget.anchorCalId!));
     }
   }
 
+  @override
+  void dispose() {
+    _scrollCtl.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    final ctx = _scrollCtl.hasClients ? _scrollCtl.position.context.notificationContext : null;
+    final box = ctx?.findRenderObject();
+    final top = box is RenderBox ? box.localToGlobal(Offset.zero).dy : 0.0;
+    final a = _activeOf(_order, _cardKeys, top + 80);
+    if (a != _active) setState(() => _active = a);
+  }
+
   void _scrollTo(String calId) {
-    final key = _cardKeys[calId];
-    final ctx = key?.currentContext;
+    final ctx = _cardKeys[calId]?.currentContext;
     if (ctx != null) {
-      Scrollable.ensureVisible(ctx,
-          duration: const Duration(milliseconds: 300));
+      Scrollable.ensureVisible(ctx, duration: const Duration(milliseconds: 300));
     }
   }
 
@@ -147,56 +210,69 @@ class _CalendarsScreenState extends State<CalendarsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           for (final g in PagesI18n.calGroups) ...[
-            Padding(
-              padding: const EdgeInsets.only(top: 8, bottom: 4),
-              child: Text(
-                I18n.calendarGroup(lang, g.id).toUpperCase(),
-                style: mono(9,
-                    weight: FontWeight.w700, color: kInk500, letterSpacing: 1.5),
-              ),
+            Container(
+              margin: const EdgeInsets.only(top: 6, bottom: 3),
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3.5),
+              color: kInk800,
+              child: Text(I18n.calendarGroup(lang, g.id).toUpperCase(),
+                  style: mono(11.5,
+                      weight: FontWeight.w700,
+                      color: kWhite,
+                      letterSpacing: 0.69,
+                      height: 1.6)),
             ),
             for (final id in g.calendarIds)
-              _TocLink(
-                PagesI18n.calT(lang, id, 'name') ?? I18n.calendarName(lang, id),
-                () => _scrollTo(id),
-                size: 11.5,
+              InkWell(
+                onTap: () => _scrollTo(id),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 2.5),
+                  child: Text(
+                    (PagesI18n.calT(lang, id, 'name') ?? I18n.calendarName(lang, id))
+                        .toUpperCase(),
+                    style: mono(11.5,
+                        weight: FontWeight.w700,
+                        color: id == _active ? kSignal : kInk700,
+                        letterSpacing: 0.69,
+                        height: 1.6),
+                  ),
+                ),
               ),
           ],
         ],
       );
 
-  // Group heading: thin 4px rule with the calendar count (`.cal-group-heading`).
-  Widget _groupHeading(String lang, PageCalGroup g, {required bool first}) =>
+  // Group heading: heavy 4px rule with the calendar count (`.cal-group-heading`).
+  Widget _groupHeading(String lang, PageCalGroup g,
+          {required bool first, required bool wide}) =>
       Container(
-        margin: EdgeInsets.only(top: first ? 0 : 28, bottom: 14),
-        padding: const EdgeInsets.only(bottom: 6),
+        margin: EdgeInsets.only(top: first ? 0 : (wide ? 40 : 28), bottom: 16),
+        padding: const EdgeInsets.symmetric(vertical: 5.6),
         decoration: const BoxDecoration(
             border: Border(bottom: BorderSide(color: kInk, width: 4))),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.baseline,
           textBaseline: TextBaseline.alphabetic,
           children: [
             Flexible(
-              child: Text(
-                I18n.calendarGroup(lang, g.id).toUpperCase(),
-                style: mono(13, weight: FontWeight.w800, letterSpacing: 1.6),
-              ),
+              child: Text(I18n.calendarGroup(lang, g.id).toUpperCase(),
+                  style: mono(16, weight: FontWeight.w700, letterSpacing: 1.92)),
             ),
+            const SizedBox(width: 12),
             Text('${g.calendarIds.length}',
-                style: mono(11, color: kInk600, letterSpacing: 1)),
+                style: mono(12.5, weight: FontWeight.w700, color: kInk600)),
           ],
         ),
       );
 
-  Widget _cards(String lang) => Column(
+  Widget _cards(String lang, bool wide) => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           for (var gi = 0; gi < PagesI18n.calGroups.length; gi++) ...[
-            _groupHeading(lang, PagesI18n.calGroups[gi], first: gi == 0),
+            _groupHeading(lang, PagesI18n.calGroups[gi],
+                first: gi == 0, wide: wide),
             for (final id in PagesI18n.calGroups[gi].calendarIds) ...[
-              _CalCard(key: _cardKeys[id], lang: lang, calId: id),
-              const SizedBox(height: 14),
+              _CalCard(key: _cardKeys[id], lang: lang, calId: id, wide: wide),
+              SizedBox(height: wide ? 32 : 20),
             ],
           ],
         ],
@@ -205,49 +281,41 @@ class _CalendarsScreenState extends State<CalendarsScreen> {
   @override
   Widget build(BuildContext context) {
     final lang = widget.lang;
-    final header = _PageHeader(
-        PagesI18n.t(lang, 'calPageTitle'), PagesI18n.t(lang, 'calPageSubtitle'));
     // From 901px the contents sit in a side column next to the cards.
     if (MediaQuery.sizeOf(context).width >= 901) {
-      return Padding(
-        padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+      return _PageFrame(
+        wide: true,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            header,
-            const SizedBox(height: 20),
+            _SideContents(width: 230, child: _toc(lang)),
+            const SizedBox(width: 40),
             Expanded(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _SideContents(width: 230, child: _toc(lang)),
-                  const SizedBox(width: 40),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      controller: _scrollCtl,
-                      padding: const EdgeInsets.only(bottom: 20),
-                      child: _cards(lang),
-                    ),
-                  ),
-                ],
+              child: SingleChildScrollView(
+                controller: _scrollCtl,
+                padding: const EdgeInsets.only(right: 8, bottom: 40),
+                child: _cards(lang, true),
               ),
             ),
           ],
         ),
       );
     }
-    return SingleChildScrollView(
-      controller: _scrollCtl,
-      padding: const EdgeInsets.fromLTRB(10, 10, 10, 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          header,
-          const SizedBox(height: 14),
-          _ContentsBox(title: PagesI18n.t(lang, 'tocTitle'), child: _toc(lang)),
-          const SizedBox(height: 14),
-          _cards(lang),
-        ],
+    final wide = isWide(context);
+    return _PageFrame(
+      wide: wide,
+      child: SingleChildScrollView(
+        controller: _scrollCtl,
+        padding: const EdgeInsets.only(bottom: 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _MobileContents(
+                title: PagesI18n.t(lang, 'tocTitle'), child: _toc(lang)),
+            const SizedBox(height: 20),
+            _cards(lang, wide),
+          ],
+        ),
       ),
     );
   }
@@ -256,152 +324,258 @@ class _CalendarsScreenState extends State<CalendarsScreen> {
 class _CalCard extends StatefulWidget {
   final String lang;
   final String calId;
-  const _CalCard({super.key, required this.lang, required this.calId});
+  final bool wide;
+  const _CalCard(
+      {super.key, required this.lang, required this.calId, required this.wide});
 
   @override
   State<_CalCard> createState() => _CalCardState();
 }
 
 class _CalCardState extends State<_CalCard> {
-  bool _formulaOpen = false; // <details> collapsed on mobile
+  bool _formulaOpen = false; // <details> collapsed
 
   @override
   Widget build(BuildContext context) {
     final lang = widget.lang;
     final id = widget.calId;
+    final wide = widget.wide;
     final d = PagesI18n.calendarDescription(lang, id);
     final variants = PagesI18n.variantItems(lang, id);
     final variantLabels = PagesI18n.variantLabels[id] ?? const [];
     final meta = PagesI18n.calMonthMeta[id];
 
-    Widget para(String? text, {Color color = kInk, double size = 11.5}) =>
+    Widget para(String? text,
+            {Color color = kInk700,
+            double size = 13.12,
+            FontWeight weight = FontWeight.w400,
+            double height = 1.8}) =>
         text == null || text.isEmpty
             ? const SizedBox.shrink()
             : Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(text, style: mono(size, color: color, height: 1.5)),
+                padding: const EdgeInsets.only(bottom: 16),
+                child: Text(text,
+                    style: mono(size, color: color, weight: weight, height: height)),
               );
 
     return Container(
-      decoration: slabDecoration(shadow: 4),
-      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: kSurface,
+        border: Border.all(color: kInk, width: 3),
+        boxShadow: brutShadow(wide ? 6 : 4),
+      ),
+      padding: EdgeInsets.all(wide ? 24 : 16),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(d['name'] ?? I18n.calendarName(lang, id),
-              style: mono(16, weight: FontWeight.w800)),
-          const SizedBox(height: 6),
-          if (d['type'] != null)
-            Text(d['type']!, style: mono(10.5, color: kInk600)),
-          if (d['epoch'] != null)
-            Text(d['epoch']!, style: mono(10.5, color: kInk600)),
-          para(d['intro']),
+          _UnderlinedTitle(d['name'] ?? I18n.calendarName(lang, id),
+              size: wide ? 20.8 : 17.6, letterSpacing: wide ? 2.08 : 1.76),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 6,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              if (d['type'] != null)
+                Container(
+                  color: kInk,
+                  padding: const EdgeInsets.symmetric(horizontal: 6.2, vertical: 2.6),
+                  child: Text(d['type']!.toUpperCase(),
+                      style: mono(10.4,
+                          weight: FontWeight.w900,
+                          color: kWhite,
+                          letterSpacing: 0.62,
+                          height: 1.6)),
+                ),
+              if (d['epoch'] != null)
+                Text(d['epoch']!, style: mono(11.5, color: kInk600)),
+            ],
+          ),
+          const SizedBox(height: 16),
+          para(d['intro'],
+              color: kInk600, size: 15.2, weight: FontWeight.w900, height: 1.8),
           para(d['body']),
           para(d['adoption']),
           para(d['usage']),
-          para(d['tabular'], color: kInk700, size: 10.5),
-          para(d['arithmetic'], color: kInk700, size: 10.5),
-          // Month-season strip.
-          if (meta != null) _monthTable(lang, id, meta),
-          // Variants list.
+          para(d['tabular']),
+          para(d['arithmetic']),
           if (variants.isNotEmpty) ...[
-            const SizedBox(height: 10),
             for (var i = 0; i < variants.length; i++)
               Padding(
-                padding: const EdgeInsets.only(bottom: 6),
+                padding: const EdgeInsets.only(bottom: 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (i < variantLabels.length)
                       Text(variantLabels[i].label,
-                          style: mono(11, weight: FontWeight.w700)),
-                    if (i < variantLabels.length &&
-                        variantLabels[i].note.isNotEmpty)
+                          style: mono(13.12, weight: FontWeight.w700, height: 1.6)),
+                    if (i < variantLabels.length && variantLabels[i].note.isNotEmpty)
                       Text(variantLabels[i].note,
-                          style: mono(10, color: kInk500)),
-                    Text(variants[i], style: mono(10.5, height: 1.45)),
+                          style: mono(11.5, color: kInk500, height: 1.6)),
+                    Text(variants[i],
+                        style: mono(13.12, color: kInk700, height: 1.7)),
                   ],
                 ),
               ),
+            const SizedBox(height: 6),
           ],
-          para(d['variantsDivergence'], color: kInk700, size: 10.5),
-          // Formula (collapsed <details> on mobile).
-          if (d['formula'] != null || d['source'] != null) ...[
-            const SizedBox(height: 8),
-            InkWell(
-              onTap: () => setState(() => _formulaOpen = !_formulaOpen),
-              child: Row(
-                children: [
-                  Text(
-                    PagesI18n.t(lang, 'formulaLabel').toUpperCase(),
-                    style: mono(10,
-                        weight: FontWeight.w700,
-                        letterSpacing: 1.5,
-                        color: kInk600),
-                  ),
-                  const SizedBox(width: 6),
-                  Text(_formulaOpen ? '▴' : '▾', style: mono(10)),
-                ],
-              ),
-            ),
-            if (_formulaOpen) ...[
-              para(d['formula'], color: kInk700, size: 10.5),
-              if (d['source'] != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 6),
-                  child: Text(
-                    '${PagesI18n.t(lang, 'sourceLabel')}: ${d['source']}',
-                    style: mono(10, color: kInk500, height: 1.4),
-                  ),
-                ),
-            ],
-          ],
-          para(d['warning'], color: kInk600, size: 10.5),
+          para(d['variantsDivergence']),
+          para(d['warning'], color: kInk600),
+          if (d['formula'] != null || d['source'] != null) _formula(d, lang),
+          if (meta != null) _seasons(lang, meta, wide),
         ],
       ),
     );
   }
 
-  Widget _monthTable(String lang, String id, CalMonthMeta meta) {
-    final names = I18n.monthList(lang, meta.monthsKey) ?? const <String>[];
-    final seasons = PagesI18n.seasonLabelsFor(lang);
-    if (names.isEmpty) return const SizedBox.shrink();
-    return Padding(
-      padding: const EdgeInsets.only(top: 10),
-      child: Column(
-        children: [
-          for (var i = 0; i < names.length && i < meta.days.length; i++)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 1.5),
-              child: Row(
-                children: [
-                  SizedBox(
-                      width: 20,
-                      child: Text('${i + 1}',
-                          style: mono(9.5, color: kInk500))),
-                  Expanded(
-                      child: Text(names[i],
-                          style: mono(11, weight: FontWeight.w600))),
-                  SizedBox(
-                      width: 46,
-                      child: Text(meta.days[i],
-                          textAlign: TextAlign.right,
-                          style: mono(10, color: kInk600))),
-                  SizedBox(
-                    width: 74,
-                    child: Text(
-                      meta.seasons != null && i < meta.seasons!.length
-                          ? seasons[meta.seasons![i]]
-                          : '',
-                      textAlign: TextAlign.right,
-                      style: mono(9.5, color: kInk500),
-                    ),
-                  ),
-                ],
-              ),
+  // `<details>`: bordered uppercase summary, then math block and source line.
+  Widget _formula(Map<String, String> d, String lang) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const SizedBox(height: 8),
+        InkWell(
+          onTap: () => setState(() => _formulaOpen = !_formulaOpen),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14.4, vertical: 9.6),
+            decoration: BoxDecoration(
+                color: kSurface, border: Border.all(color: kInk, width: 2)),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(PagesI18n.t(lang, 'formulaLabel').toUpperCase(),
+                      style: mono(12.5,
+                          weight: FontWeight.w700, letterSpacing: 1.5, height: 1.6)),
+                ),
+                Text(_formulaOpen ? '▴' : '▾', style: mono(12.5)),
+              ],
             ),
-        ],
-      ),
+          ),
+        ),
+        if (_formulaOpen)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (d['formula'] != null)
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: const BoxDecoration(
+                      color: _kAside,
+                      border: Border(left: BorderSide(color: _kRuleGrey, width: 3)),
+                    ),
+                    child: Text(d['formula']!,
+                        style: mono(12.5, color: kInk, height: 1.8)),
+                  ),
+                if (d['source'] != null)
+                  Container(
+                    margin: const EdgeInsets.only(top: 12),
+                    padding: const EdgeInsets.only(top: 6),
+                    decoration: const BoxDecoration(
+                        border: Border(top: BorderSide(color: _kRuleGrey))),
+                    child: Text('${PagesI18n.t(lang, 'sourceLabel')}: ${d['source']}',
+                        style: mono(12.5, color: kInk400, height: 1.8)),
+                  ),
+              ],
+            ),
+          ),
+        const SizedBox(height: 16),
+      ],
+    );
+  }
+
+  Widget _monthRow(int i, String name, String days) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 1.25),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
+          children: [
+            SizedBox(
+                width: 20,
+                child: Text('${i + 1}',
+                    style: mono(10.4, weight: FontWeight.w900))),
+            Expanded(
+                child: Text(name,
+                    style: mono(12.5, weight: FontWeight.w700, color: kInk700))),
+            Text(days, style: mono(10.4, color: kInk600)),
+          ],
+        ),
+      );
+
+  // Months grouped into coloured season bands (4 columns wide, 1 on phone);
+  // calendars without a fixed season mapping get a plain list.
+  Widget _seasons(String lang, CalMonthMeta meta, bool wide) {
+    final names = I18n.monthList(lang, meta.monthsKey) ?? const <String>[];
+    final labels = PagesI18n.seasonLabelsFor(lang);
+    final n = names.length < meta.days.length ? names.length : meta.days.length;
+    if (n == 0) return const SizedBox.shrink();
+    final container = Container(
+      margin: const EdgeInsets.only(top: 8),
+      padding: const EdgeInsets.only(top: 16),
+      decoration: const BoxDecoration(
+          border: Border(top: BorderSide(color: kInk, width: 3))),
+    );
+    if (meta.seasons == null) {
+      return Container(
+        margin: container.margin,
+        padding: container.padding,
+        decoration: container.decoration,
+        child: Column(children: [
+          for (var i = 0; i < n; i++) _monthRow(i, names[i], meta.days[i]),
+        ]),
+      );
+    }
+    final bands = <Widget>[];
+    for (var s = 0; s < 4; s++) {
+      final idx = [
+        for (var i = 0; i < n && i < meta.seasons!.length; i++)
+          if (meta.seasons![i] == s) i
+      ];
+      if (idx.isEmpty) continue;
+      bands.add(Container(
+        padding: const EdgeInsets.only(top: 4),
+        decoration: BoxDecoration(
+            border: Border(top: BorderSide(color: _seasonBand[s].band, width: 5))),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 3),
+              child: Text(labels[s].toUpperCase(),
+                  style: mono(9.3,
+                      weight: FontWeight.w900,
+                      color: _seasonBand[s].label,
+                      letterSpacing: 0.93)),
+            ),
+            for (final i in idx) _monthRow(i, names[i], meta.days[i]),
+          ],
+        ),
+      ));
+    }
+    return Container(
+      margin: container.margin,
+      padding: container.padding,
+      decoration: container.decoration,
+      child: wide
+          ? Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (var i = 0; i < bands.length; i++) ...[
+                  if (i > 0) const SizedBox(width: 16),
+                  Expanded(child: bands[i]),
+                ],
+              ],
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (var i = 0; i < bands.length; i++) ...[
+                  if (i > 0) const SizedBox(height: 14),
+                  bands[i],
+                ],
+              ],
+            ),
     );
   }
 }
@@ -419,117 +593,146 @@ class MethodologyScreen extends StatefulWidget {
 }
 
 class _MethodologyScreenState extends State<MethodologyScreen> {
+  final _scrollCtl = ScrollController();
   final _keys = {for (final s in PagesI18n.methSectionOrder) s: GlobalKey()};
+  String? _active;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollCtl.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollCtl.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    final ctx = _scrollCtl.hasClients ? _scrollCtl.position.context.notificationContext : null;
+    final box = ctx?.findRenderObject();
+    final top = box is RenderBox ? box.localToGlobal(Offset.zero).dy : 0.0;
+    final a = _activeOf(PagesI18n.methSectionOrder, _keys, top + 80);
+    if (a != _active) setState(() => _active = a);
+  }
 
   void _scrollTo(String sec) {
     final ctx = _keys[sec]?.currentContext;
     if (ctx != null) {
-      Scrollable.ensureVisible(ctx,
-          duration: const Duration(milliseconds: 300));
+      Scrollable.ensureVisible(ctx, duration: const Duration(milliseconds: 300));
     }
   }
 
-  Widget _toc(String lang) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          for (final sec in PagesI18n.methSectionOrder)
-            if (PagesI18n.methT(lang, sec, 'title') != null)
-              _TocLink(PagesI18n.methT(lang, sec, 'title')!,
-                  () => _scrollTo(sec),
-                  size: 11.5),
-        ],
-      );
+  Widget _toc(String lang) {
+    final secs = [
+      for (final s in PagesI18n.methSectionOrder)
+        if (PagesI18n.methT(lang, s, 'title') != null) s
+    ];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (var i = 0; i < secs.length; i++)
+          InkWell(
+            onTap: () => _scrollTo(secs[i]),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              child: Text.rich(TextSpan(children: [
+                TextSpan(
+                    text: '${(i + 1).toString().padLeft(2, '0')}  ',
+                    style: mono(12, weight: FontWeight.w700, color: kSignal)),
+                TextSpan(
+                    text: PagesI18n.methT(lang, secs[i], 'title')!,
+                    style: mono(14.08,
+                        weight: FontWeight.w600,
+                        color: secs[i] == _active ? kSignal : kInk700,
+                        height: 1.4)),
+              ])),
+            ),
+          ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final lang = widget.lang;
     final wide = MediaQuery.sizeOf(context).width >= 801;
-    final header = _PageHeader(PagesI18n.t(lang, 'methPageTitle'),
-        PagesI18n.t(lang, 'methPageSubtitle'));
     final intro = wide
         // Wide: plain bold paragraph, no box.
         ? Text(PagesI18n.t(lang, 'methIntro'),
-            style: mono(13, weight: FontWeight.w700, height: 1.55))
-        // Phone: mono block, 4px left black border + offset shadow.
+            style: mono(16, weight: FontWeight.w700, height: 1.8))
+        // Phone: white block, heavy border + offset shadow.
         : Container(
             decoration: BoxDecoration(
               color: kSurface,
-              border: const Border(
-                left: BorderSide(color: kInk, width: 4),
-                top: BorderSide(color: kInk, width: 2),
-                right: BorderSide(color: kInk, width: 2),
-                bottom: BorderSide(color: kInk, width: 2),
-              ),
+              border: Border.all(color: kInk, width: 4),
               boxShadow: brutShadow(4),
             ),
-            padding: const EdgeInsets.all(14),
+            padding: const EdgeInsets.all(20),
             child: Text(PagesI18n.t(lang, 'methIntro'),
-                style: mono(11.5, height: 1.55)),
+                style: mono(15.2, weight: FontWeight.w600, height: 1.6)),
           );
     final sections = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         for (final sec in PagesI18n.methSectionOrder) ...[
-          _MethSection(
-              key: _keys[sec], lang: lang, sectionId: sec, flat: wide),
-          SizedBox(height: wide ? 28 : 14),
+          _MethSection(key: _keys[sec], lang: lang, sectionId: sec, flat: wide),
+          SizedBox(height: wide ? 40 : 20),
         ],
       ],
     );
 
     if (wide) {
-      return Padding(
-        padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+      return _PageFrame(
+        wide: true,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            header,
-            const SizedBox(height: 20),
+            _SideContents(width: 200, child: _toc(lang)),
+            const SizedBox(width: 48),
             Expanded(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _SideContents(width: 200, child: _toc(lang)),
-                  const SizedBox(width: 48),
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.topLeft,
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 620),
-                        child: SingleChildScrollView(
-                          padding: const EdgeInsets.only(bottom: 20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              intro,
-                              const SizedBox(height: 28),
-                              sections,
-                            ],
-                          ),
-                        ),
-                      ),
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 680),
+                  child: SingleChildScrollView(
+                    controller: _scrollCtl,
+                    padding: const EdgeInsets.only(bottom: 40),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        intro,
+                        const SizedBox(height: 40),
+                        sections,
+                      ],
                     ),
                   ),
-                ],
+                ),
               ),
             ),
           ],
         ),
       );
     }
-    return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(10, 10, 10, 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          header,
-          const SizedBox(height: 14),
-          _ContentsBox(title: PagesI18n.t(lang, 'tocTitle'), child: _toc(lang)),
-          const SizedBox(height: 14),
-          intro,
-          const SizedBox(height: 14),
-          sections,
-        ],
+    return _PageFrame(
+      wide: false,
+      child: SingleChildScrollView(
+        controller: _scrollCtl,
+        padding: const EdgeInsets.only(bottom: 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _MobileContents(
+                title: PagesI18n.t(lang, 'tocTitle'),
+                titleSize: 18.4,
+                child: _toc(lang)),
+            const SizedBox(height: 20),
+            intro,
+            const SizedBox(height: 20),
+            sections,
+          ],
+        ),
       ),
     );
   }
@@ -538,12 +741,29 @@ class _MethodologyScreenState extends State<MethodologyScreen> {
 class _MethSection extends StatelessWidget {
   final String lang;
   final String sectionId;
-  final bool flat; // wide: a 4px top rule instead of a slab
+  final bool flat; // wide: a 4px top rule instead of a bordered card
   const _MethSection(
       {super.key,
       required this.lang,
       required this.sectionId,
       this.flat = false});
+
+  Widget _para(String text) => Padding(
+        padding: const EdgeInsets.only(bottom: 16),
+        child: Text(text, style: mono(13.12, color: kInk700, height: 1.9)),
+      );
+
+  // `.meth-aside`: grey block with a left rule; the warning variant is black-ruled.
+  Widget _aside(String text, {bool warning = false}) => Container(
+        margin: const EdgeInsets.symmetric(vertical: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        decoration: BoxDecoration(
+          color: warning ? _kAsideWarn : _kAside,
+          border: Border(
+              left: BorderSide(color: warning ? kInk : _kRuleGrey, width: 4)),
+        ),
+        child: Text(text, style: mono(13.12, color: kInk700, height: 1.6)),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -553,56 +773,49 @@ class _MethSection extends StatelessWidget {
     final warning = PagesI18n.methT(lang, sectionId, 'warning');
     final note = PagesI18n.methT(lang, sectionId, 'note');
     final isSources = sectionId == 'methSources';
+    final sources = isSources ? PagesI18n.methSources(lang) : const <List<String>>[];
     return Container(
       decoration: flat
           ? const BoxDecoration(
               border: Border(top: BorderSide(color: kInk, width: 4)))
-          : slabDecoration(shadow: 4),
-      padding: flat
-          ? const EdgeInsets.only(top: 22)
-          : const EdgeInsets.all(16),
+          : BoxDecoration(
+              color: kSurface,
+              border: Border.all(color: kInk, width: 3),
+              boxShadow: brutShadow(4),
+            ),
+      padding: flat ? const EdgeInsets.only(top: 22) : const EdgeInsets.all(20),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (title != null)
-            Text(title.toUpperCase(),
-                style: mono(13, weight: FontWeight.w800, letterSpacing: 1.5)),
-          if (body != null)
+          if (title != null) ...[
+            _UnderlinedTitle(title, size: 18.4, letterSpacing: 2.2),
+            const SizedBox(height: 16),
+          ],
+          if (body != null) _para(body),
+          if (note != null) _aside(note),
+          if (body2 != null) _para(body2),
+          if (warning != null) _aside(warning, warning: true),
+          for (var i = 0; i < sources.length; i++)
             Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: Text(body, style: mono(11.5, height: 1.55)),
-            ),
-          if (body2 != null)
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: Text(body2, style: mono(11.5, height: 1.55)),
-            ),
-          if (isSources)
-            for (final triple in PagesI18n.methSources(lang))
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text.rich(
-                  TextSpan(children: [
-                    TextSpan(text: triple[0], style: mono(11, height: 1.5)),
-                    TextSpan(
-                        text: triple.length > 1 ? triple[1] : '',
-                        style: mono(11, height: 1.5)
-                            .copyWith(fontStyle: FontStyle.italic)),
-                    TextSpan(
-                        text: triple.length > 2 ? triple[2] : '',
-                        style: mono(11, height: 1.5)),
-                  ]),
-                ),
+              padding: const EdgeInsets.only(bottom: 6),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                      width: 26,
+                      child: Text('${i + 1}.',
+                          style: mono(13.6, color: kInk600, height: 1.8))),
+                  Expanded(
+                    child: Text.rich(TextSpan(children: [
+                      TextSpan(text: sources[i][0]),
+                      TextSpan(
+                          text: sources[i].length > 1 ? sources[i][1] : '',
+                          style: const TextStyle(fontStyle: FontStyle.italic)),
+                      TextSpan(text: sources[i].length > 2 ? sources[i][2] : ''),
+                    ], style: mono(13.6, color: kInk600, height: 1.8))),
+                  ),
+                ],
               ),
-          if (warning != null)
-            Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: Text(warning, style: mono(10.5, color: kInk600, height: 1.5)),
-            ),
-          if (note != null)
-            Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: Text(note, style: mono(10.5, color: kInk600, height: 1.5)),
             ),
         ],
       ),

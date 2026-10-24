@@ -1,6 +1,5 @@
 .playwright-mcp/
 *.png
-!beta/**/*.png
 
 # Flutter app
 flutter_app/build/

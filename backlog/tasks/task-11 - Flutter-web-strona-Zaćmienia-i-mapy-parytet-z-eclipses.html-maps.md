@@ -1,10 +1,12 @@
 ---
 id: TASK-11
-title: 'Flutter web: strona Zaćmienia i mapy (parytet z eclipses.html, maps/)'
+title: >-
+  Flutter (iOS/Android): strona Zaćmienia i mapy (parytet z eclipses.html,
+  maps/)
 status: To Do
 assignee: []
 created_date: '2026-10-24 12:26'
-updated_date: '2026-10-24 12:27'
+updated_date: '2026-10-24 13:12'
 labels:
   - flutter
   - web

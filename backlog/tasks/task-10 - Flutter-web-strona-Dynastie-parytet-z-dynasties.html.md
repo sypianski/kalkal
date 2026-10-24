@@ -1,10 +1,10 @@
 ---
 id: TASK-10
-title: 'Flutter web: strona Dynastie (parytet z dynasties.html)'
+title: 'Flutter (iOS/Android): strona Dynastie (parytet z dynasties.html)'
 status: To Do
 assignee: []
 created_date: '2026-10-24 12:26'
-updated_date: '2026-10-24 12:27'
+updated_date: '2026-10-24 13:12'
 labels:
   - flutter
   - web

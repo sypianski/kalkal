@@ -1,5 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" fill="#f0f0ec"/>
-  <rect x="16" y="16" width="480" height="480" fill="none" stroke="#000" stroke-width="24"/>
-  <text x="48" y="388" font-family="'Courier New', Courier, monospace" font-size="340" font-weight="bold" fill="#000" letter-spacing="-20">kk</text>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><style>.p{fill:#f0f0ec}.i{fill:#0a0a0a}.s{fill:#1b3dff}@media (prefers-color-scheme:dark){.p{fill:#161616}.i{fill:#f0f0ec}.s{fill:#7088ff}}</style><rect class="p" width="1024" height="1024"/><polygon class="i" points="30.0,232.0 180.0,232.0 180.0,792.0 30.0,792.0"/><polygon class="i" points="300.0,402.0 470.0,402.0 350.0,632.0 180.0,632.0"/><polygon class="i" points="210.0,562.0 365.0,562.0 500.0,792.0 345.0,792.0"/><polygon class="s" points="994.0,232.0 844.0,232.0 844.0,792.0 994.0,792.0"/><polygon class="s" points="724.0,402.0 554.0,402.0 674.0,632.0 844.0,632.0"/><polygon class="s" points="814.0,562.0 659.0,562.0 524.0,792.0 679.0,792.0"/></svg>

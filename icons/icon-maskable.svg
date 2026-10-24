@@ -1,6 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <!-- Maskable: safe zone is inner 80% (102..410). Content kept within. -->
-  <rect width="512" height="512" fill="#f0f0ec"/>
-  <rect x="40" y="40" width="432" height="432" fill="none" stroke="#000" stroke-width="20"/>
-  <text x="68" y="370" font-family="'Courier New', Courier, monospace" font-size="290" font-weight="bold" fill="#000" letter-spacing="-16">kk</text>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><rect width="1024" height="1024" fill="#f0f0ec"/><polygon fill="#0a0a0a" points="212.8,321.6 287.6,321.6 287.6,702.4 212.8,702.4"/><polygon fill="#0a0a0a" points="369.2,437.2 464.4,437.2 382.8,593.6 287.6,593.6"/><polygon fill="#0a0a0a" points="321.6,546.0 407.3,546.0 491.6,702.4 403.2,702.4"/><polygon fill="#1b3dff" points="811.2,321.6 736.4,321.6 736.4,702.4 811.2,702.4"/><polygon fill="#1b3dff" points="654.8,437.2 559.6,437.2 641.2,593.6 736.4,593.6"/><polygon fill="#1b3dff" points="702.4,546.0 616.7,546.0 532.4,702.4 620.8,702.4"/></svg>

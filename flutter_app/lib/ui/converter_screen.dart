@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../engine/registry.dart';
 import '../i18n/i18n.dart';
+import '../i18n/mobile_i18n.dart';
 import '../logic/convert.dart';
 import '../state/prefs.dart';
 import 'calendar_picker.dart';
@@ -38,6 +39,10 @@ class ConverterScreenState extends State<ConverterScreen> {
   String? _tab; // active tab of the wide tile box: ctx | astro | bd | hist
   String? _error;
   bool _historyExpanded = false;
+  // Phone only: after a convert the form folds into a one-line summary strip
+  // so the result starts at the top of the screen; "Change" unfolds it.
+  bool _formCollapsed = false;
+  final _scroll = ScrollController();
 
   String get _lang => widget.lang;
 
@@ -53,6 +58,7 @@ class ConverterScreenState extends State<ConverterScreen> {
   void dispose() {
     _yearCtl.dispose();
     _dayCtl.dispose();
+    _scroll.dispose();
     super.dispose();
   }
 
@@ -93,6 +99,10 @@ class ConverterScreenState extends State<ConverterScreen> {
         _error = null;
         // History auto-collapses when a result is on screen (§5).
         _historyExpanded = false;
+        _formCollapsed = true;
+      });
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_scroll.hasClients) _scroll.jumpTo(0);
       });
       Prefs.instance.saveHistory(HistoryEntry(
         fromCal: _src.id,
@@ -137,28 +147,37 @@ class ConverterScreenState extends State<ConverterScreen> {
   @override
   Widget build(BuildContext context) {
     if (isWide(context)) return _wideBuild();
+    return _phoneBuild();
+  }
+
+  // Phone layout (< 601 px): one form card with labels above the fields, the
+  // signal Convert button, and — once there is a result — the form folded into
+  // a summary strip so the result and its tabs start at the top (TASK-1).
+  Widget _phoneBuild() {
     final history = Prefs.instance.history;
     final showIntro = history.isEmpty;
+    final folded = _hasResult && _formCollapsed;
     const gap = SizedBox(height: 14);
 
     return ListView(
+      controller: _scroll,
       padding: const EdgeInsets.fromLTRB(10, 10, 10, 20),
       children: [
-        if (showIntro) ...[_titleBox(), gap, _introCard(), gap],
-        _fromSlab(),
-        gap,
-        _yearSlab(),
-        if (_hasResult) ...[gap, _refineRow(), gap, _toSlab()],
-        if (_error != null) ...[gap, _errorStrip()],
-        gap,
-        ConvertButton(label: I18n.t(_lang, 'convert'), onPressed: _convert),
+        if (showIntro) ...[_titleBox(), gap, _introCard(withDesc: false), gap],
+        if (folded)
+          _summaryStrip()
+        else ...[
+          _phoneForm(),
+          if (_error != null) ...[gap, _errorStrip()],
+          gap,
+          ConvertButton(label: I18n.t(_lang, 'convert'), onPressed: _convert),
+        ],
         if (_out != null) ...[
           gap,
           ResultPanel(lang: _lang, out: _out!, onVariantTap: _onVariantTap),
           gap,
-          AstroCard(lang: _lang, items: _out!.astro),
-        ],
-        if (history.isNotEmpty) ...[
+          _tabBox(history, compact: true),
+        ] else if (history.isNotEmpty) ...[
           gap,
           HistoryPanel(
             lang: _lang,
@@ -190,8 +209,9 @@ class ConverterScreenState extends State<ConverterScreen> {
     );
   }
 
-  // Intro card — #history-empty-instruction: description + three numbered steps.
-  Widget _introCard() {
+  // Intro card — #history-empty-instruction: optional description + three
+  // numbered steps. The phone drops the description (it is in Methodology).
+  Widget _introCard({bool withDesc = true}) {
     final wide = isWide(context);
     return Container(
       decoration: slabDecoration(shadow: 4),
@@ -199,13 +219,17 @@ class ConverterScreenState extends State<ConverterScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(I18n.t(_lang, 'introDesc'), style: mono(11.5, height: 1.5)),
-          const SizedBox(height: 12),
+          if (withDesc) ...[
+            Text(I18n.t(_lang, 'introDesc'), style: mono(11.5, height: 1.5)),
+            const SizedBox(height: 12),
+          ],
           Container(
-            decoration: const BoxDecoration(
-              border: Border(top: BorderSide(color: kSurface2, width: 2)),
-            ),
-            padding: const EdgeInsets.only(top: 12),
+            decoration: withDesc
+                ? const BoxDecoration(
+                    border: Border(top: BorderSide(color: kSurface2, width: 2)),
+                  )
+                : null,
+            padding: EdgeInsets.only(top: withDesc ? 12 : 0),
             child: Column(
               children: [
                 for (var i = 1; i <= 3; i++)
@@ -239,42 +263,135 @@ class ConverterScreenState extends State<ConverterScreen> {
     );
   }
 
-  Widget _fromSlab() {
-    return Slab(
-      tag: '01 • FROM',
-      child: _calField(
-        calId: _fromId,
-        onPick: () async {
-          final id =
-              await showCalendarPicker(context, _lang, selectedId: _fromId);
-          if (id == null) return;
-          setState(() {
-            _fromId = id;
-            _month = null;
-            _dayCtl.clear();
-          });
-          Prefs.instance.fromCal = id;
-          _clearError();
-        },
+  // Small caps label above a phone form field.
+  Widget _phoneLabel(String key) => Padding(
+        padding: const EdgeInsets.only(bottom: 2),
+        child: Text(
+          I18n.t(_lang, key).toUpperCase(),
+          style: mono(9.5,
+              weight: FontWeight.w700, color: kInk600, letterSpacing: 2),
+        ),
+      );
+
+  Widget _phoneForm() {
+    const gap = SizedBox(height: 14);
+    return Container(
+      decoration: slabDecoration(),
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _phoneLabel('labelFrom'),
+          _fromField(),
+          gap,
+          _phoneLabel('year'),
+          _yearField(),
+          gap,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: 2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _phoneLabel('month'),
+                    _monthField(vPad: 8, size: 18),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                flex: 1,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _phoneLabel('day'),
+                    _dayField(size: 18),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          gap,
+          _phoneLabel('toLabel'),
+          _toField(),
+        ],
       ),
     );
   }
 
-  Widget _toSlab() {
-    return Slab(
-      tag: '05 • TO',
-      child: _calField(
-        calId: _toId ?? 'gregorian',
-        onPick: () async {
-          final id = await showCalendarPicker(context, _lang,
-              selectedId: _toId ?? 'gregorian');
-          if (id == null) return;
-          setState(() => _toId = id);
-          _clearError();
-          // Selecting TO re-converts immediately when a result shows (§B).
-          if (_hasResult) _convert();
-        },
+  // Folded form: "Hijri · 1445 · Ramaḍān · 10 → AD   [CHANGE ▾]".
+  Widget _summaryStrip() {
+    final names = _src.monthNames(_lang);
+    final parts = <String>[
+      I18n.calendarName(_lang, _fromId),
+      _yearCtl.text.trim(),
+      if (_month != null && _month! - 1 < names.length) names[_month! - 1],
+      if (_day != null) '$_day',
+    ];
+    final text =
+        '${parts.join(' · ')} → ${I18n.calendarName(_lang, _toId ?? 'gregorian')}';
+    return InkWell(
+      onTap: () => setState(() => _formCollapsed = false),
+      child: Container(
+        decoration: slabDecoration(shadow: 4),
+        constraints: const BoxConstraints(minHeight: 58),
+        padding: const EdgeInsets.fromLTRB(14, 8, 8, 8),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(text,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: mono(12.5, weight: FontWeight.w700, height: 1.35)),
+            ),
+            const SizedBox(width: 10),
+            Container(
+              color: kInk,
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
+              child: Text(
+                '${MobileI18n.t(_lang, 'change').toUpperCase()} ▾',
+                style: mono(10.5,
+                    weight: FontWeight.w800, color: kWhite, letterSpacing: 1.2),
+              ),
+            ),
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _fromField() {
+    return _calField(
+      calId: _fromId,
+      onPick: () async {
+        final id =
+            await showCalendarPicker(context, _lang, selectedId: _fromId);
+        if (id == null) return;
+        setState(() {
+          _fromId = id;
+          _month = null;
+          _dayCtl.clear();
+        });
+        Prefs.instance.fromCal = id;
+        _clearError();
+      },
+    );
+  }
+
+  Widget _toField() {
+    return _calField(
+      calId: _toId ?? 'gregorian',
+      onPick: () async {
+        final id = await showCalendarPicker(context, _lang,
+            selectedId: _toId ?? 'gregorian');
+        if (id == null) return;
+        setState(() => _toId = id);
+        _clearError();
+        // Selecting TO re-converts immediately when a result shows (§B).
+        if (_hasResult) _convert();
+      },
     );
   }
 
@@ -316,36 +433,34 @@ class ConverterScreenState extends State<ConverterScreen> {
     );
   }
 
-  Widget _yearSlab() {
-    return Slab(
-      tag: '02 • YEAR',
-      child: TextField(
-        controller: _yearCtl,
-        keyboardType: TextInputType.number,
-        style: mono(24, weight: FontWeight.w800),
-        decoration: slabInputDecoration(),
-        onTap: () => _yearCtl.selection = TextSelection(
-            baseOffset: 0, extentOffset: _yearCtl.text.length),
-        onChanged: (_) {
-          // Year edit clears month + day (§C).
-          setState(() {
-            _month = null;
-            _dayCtl.clear();
-          });
-          _clearError();
-        },
-        onSubmitted: (_) => _convert(),
+  Widget _yearField() {
+    return TextField(
+      controller: _yearCtl,
+      keyboardType: TextInputType.number,
+      style: mono(20, weight: FontWeight.w800),
+      decoration: slabInputDecoration().copyWith(
+        hintText: '1445',
+        hintStyle: mono(20, weight: FontWeight.w800, color: kInk300),
       ),
+      onTap: () => _yearCtl.selection =
+          TextSelection(baseOffset: 0, extentOffset: _yearCtl.text.length),
+      onChanged: (_) {
+        // Year edit clears month + day (§C).
+        setState(() {
+          _month = null;
+          _dayCtl.clear();
+        });
+        _clearError();
+      },
+      onSubmitted: (_) => _convert(),
     );
   }
 
-  // Month picker field (underlined, ▾) — shared by the phone slab and the
+  // Month picker field (underlined, ▾) — shared by the phone form and the
   // wide card.
-  Widget _monthField({double vPad = 10}) {
+  Widget _monthField({double vPad = 10, double size = 15}) {
     final monthNames = _src.monthNames(_lang);
-    final monthLabel = (_month != null && _month! - 1 < monthNames.length)
-        ? monthNames[_month! - 1]
-        : '';
+    final hasMonth = _month != null && _month! - 1 < monthNames.length;
     return InkWell(
       onTap: () async {
         final m = await showMonthPicker(context, _lang, _src, _month);
@@ -366,8 +481,9 @@ class ConverterScreenState extends State<ConverterScreen> {
           children: [
             Expanded(
               child: Text(
-                monthLabel,
-                style: mono(15, weight: FontWeight.w700),
+                hasMonth ? monthNames[_month! - 1] : '—',
+                style: mono(size,
+                    weight: FontWeight.w700, color: hasMonth ? kInk : kInk300),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -378,12 +494,15 @@ class ConverterScreenState extends State<ConverterScreen> {
     );
   }
 
-  Widget _dayField() {
+  Widget _dayField({double size = 24}) {
     return TextField(
       controller: _dayCtl,
       keyboardType: TextInputType.number,
-      style: mono(24, weight: FontWeight.w800),
-      decoration: slabInputDecoration(),
+      style: mono(size, weight: FontWeight.w800),
+      decoration: slabInputDecoration().copyWith(
+        hintText: '—',
+        hintStyle: mono(size, weight: FontWeight.w800, color: kInk300),
+      ),
       onTap: () => _dayCtl.selection =
           TextSelection(baseOffset: 0, extentOffset: _dayCtl.text.length),
       onChanged: (_) => _clearError(),
@@ -394,24 +513,6 @@ class ConverterScreenState extends State<ConverterScreen> {
         FocusScope.of(context).unfocus();
         if (_hasResult) _convert();
       },
-    );
-  }
-
-  // Refine row: MONTH (2fr) + DAY (1fr), visible after first convert (§D).
-  Widget _refineRow() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          flex: 2,
-          child: Slab(tag: '03 • MONTH', child: _monthField()),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          flex: 1,
-          child: Slab(tag: '04 • DAY', child: _dayField()),
-        ),
-      ],
     );
   }
 
@@ -588,7 +689,7 @@ class ConverterScreenState extends State<ConverterScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (_error != null) ...[_errorStrip(), _gapW],
-          if (history.isEmpty) _introCard() else _wideTabBox(history),
+          if (history.isEmpty) _introCard() else _tabBox(history),
         ],
       );
     }
@@ -600,7 +701,7 @@ class ConverterScreenState extends State<ConverterScreen> {
         _gapW,
         ResultPanel(lang: _lang, out: _out!, onVariantTap: _onVariantTap),
         _gapW,
-        _wideTabBox(history),
+        _tabBox(history),
       ],
     );
   }
@@ -647,14 +748,24 @@ class ConverterScreenState extends State<ConverterScreen> {
     );
   }
 
-  // One tabbed box for contextual / astro / month breakdown / history.
-  Widget _wideTabBox(List<HistoryEntry> history) {
+  // One tabbed box for contextual / astro / month breakdown / history. The
+  // phone variant (compact) puts Astro first and uses short tab titles.
+  Widget _tabBox(List<HistoryEntry> history, {bool compact = false}) {
     String t(String k) => I18n.t(_lang, k);
+    final ctx = (
+      'ctx',
+      compact ? MobileI18n.t(_lang, 'tabOther') : t('contextualLabel')
+    );
+    final astro = ('astro', t('astroLabel'));
+    final bd = (
+      'bd',
+      compact ? MobileI18n.t(_lang, 'tabMonths') : t('monthBreakdown')
+    );
     final defs = <(String, String)>[
-      if (_hasResult && _ctx.isNotEmpty) ('ctx', t('contextualLabel')),
-      if (_hasResult) ('astro', t('astroLabel')),
-      if (_hasResult && _out!.breakdown.isNotEmpty)
-        ('bd', t('monthBreakdown')),
+      if (compact && _hasResult) astro,
+      if (_hasResult && _ctx.isNotEmpty) ctx,
+      if (!compact && _hasResult) astro,
+      if (_hasResult && _out!.breakdown.isNotEmpty) bd,
       if (history.isNotEmpty) ('hist', t('history')),
     ];
     if (defs.isEmpty) return const SizedBox.shrink();
@@ -689,13 +800,14 @@ class ConverterScreenState extends State<ConverterScreen> {
     }
 
     return Container(
-      decoration: _wideCard,
+      decoration: compact ? slabDecoration() : _wideCard,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
-            decoration: const BoxDecoration(
-              border: Border(bottom: BorderSide(color: kInk, width: 3)),
+            decoration: BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(color: kInk, width: compact ? 2.5 : 3)),
             ),
             child: IntrinsicHeight(
               child: Row(
@@ -707,8 +819,8 @@ class ConverterScreenState extends State<ConverterScreen> {
                       child: InkWell(
                         onTap: () => setState(() => _tab = defs[i].$1),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 14),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: compact ? 2 : 8, vertical: 14),
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                             color: defs[i].$1 == active ? kSignal : kSurface,
@@ -720,9 +832,9 @@ class ConverterScreenState extends State<ConverterScreen> {
                           child: Text(
                             defs[i].$2.toUpperCase(),
                             textAlign: TextAlign.center,
-                            style: mono(11,
+                            style: mono(compact ? 9.5 : 11,
                                 weight: FontWeight.w700,
-                                letterSpacing: 1.4,
+                                letterSpacing: compact ? 0.6 : 1.4,
                                 color: defs[i].$1 == active
                                     ? kWhite
                                     : kInk600),
@@ -735,7 +847,9 @@ class ConverterScreenState extends State<ConverterScreen> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(36, 24, 36, 28),
+            padding: compact
+                ? const EdgeInsets.fromLTRB(16, 16, 16, 18)
+                : const EdgeInsets.fromLTRB(36, 24, 36, 28),
             child: content,
           ),
         ],

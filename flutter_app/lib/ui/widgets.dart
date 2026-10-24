@@ -1,48 +1,8 @@
-// Shared brutalist widgets: numbered slab, collapsible tile, bottom nav.
+// Shared brutalist widgets: collapsible tile, bottom nav, convert button.
 
 import 'package:flutter/material.dart';
 
 import 'tokens.dart';
-
-/// Form slab — white card, black border, hard shadow, numbered corner tag
-/// (`01 • FROM` style, white-on-black, top-right). Mirrors the mobile
-/// `.form-field` slabs of css/style.css.
-class Slab extends StatelessWidget {
-  final String tag; // e.g. '01 • FROM' — English-only, as in the CSS
-  final Widget child;
-  const Slab({super.key, required this.tag, required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: slabDecoration(),
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(18, 22, 18, 16),
-            child: child,
-          ),
-          Positioned(
-            top: 0,
-            right: 0,
-            child: Container(
-              color: kInk,
-              padding: const EdgeInsets.fromLTRB(8, 4, 8, 3),
-              child: Text(
-                tag,
-                style: mono(9,
-                    weight: FontWeight.w700,
-                    color: kWhite,
-                    letterSpacing: 1.3),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 /// Underline-only input inside a slab: mono 700, 2px black bottom border.
 InputDecoration slabInputDecoration() => const InputDecoration(
@@ -201,7 +161,7 @@ class BrutBottomNav extends StatelessWidget {
   }
 }
 
-/// Full-width inverted CONVERT button — label left, arrow right, min 58px.
+/// Full-width signal-colour CONVERT button — label left, arrow right, min 58px.
 class ConvertButton extends StatelessWidget {
   final String label;
   final VoidCallback onPressed;
@@ -209,24 +169,29 @@ class ConvertButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: kInk,
-      child: InkWell(
-        onTap: onPressed,
-        child: Container(
-          constraints: const BoxConstraints(minHeight: 58),
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          decoration: BoxDecoration(boxShadow: brutShadow(5)),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                label.toUpperCase(),
-                style: mono(15,
-                    weight: FontWeight.w800, letterSpacing: 2.7, color: kWhite),
-              ),
-              const Icon(Icons.arrow_forward, color: kWhite, size: 20),
-            ],
+    // Colour + shadow on the outer box, Material on top so the ripple shows.
+    return Container(
+      decoration: BoxDecoration(color: kSignal, boxShadow: brutShadow(5)),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onPressed,
+          child: Container(
+            constraints: const BoxConstraints(minHeight: 58),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  label.toUpperCase(),
+                  style: mono(15,
+                      weight: FontWeight.w800,
+                      letterSpacing: 2.7,
+                      color: kWhite),
+                ),
+                const Icon(Icons.arrow_forward, color: kWhite, size: 20),
+              ],
+            ),
           ),
         ),
       ),

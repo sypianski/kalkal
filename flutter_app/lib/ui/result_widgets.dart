@@ -36,7 +36,7 @@ class ResultPanel extends StatelessWidget {
           Padding(
             padding: wide
                 ? const EdgeInsets.fromLTRB(36, 36, 36, 28)
-                : const EdgeInsets.fromLTRB(18, 26, 18, 18),
+                : const EdgeInsets.fromLTRB(18, 20, 18, 18),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -62,20 +62,6 @@ class ResultPanel extends StatelessWidget {
               ],
             ),
           ),
-          if (!wide)
-          Positioned(
-            top: 0,
-            right: 0,
-            child: Container(
-              color: kInk,
-              padding: const EdgeInsets.fromLTRB(8, 4, 8, 3),
-              child: Text(
-                'RESULT',
-                style: mono(9,
-                    weight: FontWeight.w700, color: kWhite, letterSpacing: 1.3),
-              ),
-            ),
-          ),
         ],
       ),
     );
@@ -85,8 +71,9 @@ class ResultPanel extends StatelessWidget {
     return [
       // Target full date — big, black 3px underline.
       Container(
-        decoration: const BoxDecoration(
-          border: Border(bottom: BorderSide(color: kInk, width: 3)),
+        decoration: BoxDecoration(
+          border: Border(
+              bottom: BorderSide(color: wide ? kInk : kSignal, width: 3)),
         ),
         padding: const EdgeInsets.only(bottom: 4),
         child: Text.rich(
@@ -102,7 +89,7 @@ class ResultPanel extends StatelessWidget {
                     child: Text(out.tgtTag,
                         style: mono(11,
                             weight: FontWeight.w700,
-                            color: wide ? kSignal : kInk500,
+                            color: kSignal,
                             letterSpacing: 0.4)),
                   ),
                 ),
@@ -142,14 +129,14 @@ class ResultPanel extends StatelessWidget {
   }
 
   // Wide layout: each range year sits on a 3px black rule (`.bridge-year`).
-  Widget _yearUnderline(bool wide, Widget year) => wide
-      ? Container(
-          decoration: const BoxDecoration(
-              border: Border(bottom: BorderSide(color: kInk, width: 3))),
-          padding: const EdgeInsets.only(bottom: 2),
-          child: year,
-        )
-      : year;
+  // Phone: same rule in the signal colour.
+  Widget _yearUnderline(bool wide, Widget year) => Container(
+        decoration: BoxDecoration(
+            border: Border(
+                bottom: BorderSide(color: wide ? kInk : kSignal, width: 3))),
+        padding: const EdgeInsets.only(bottom: 2),
+        child: year,
+      );
 
   List<Widget> _range(bool wide) {
     return [

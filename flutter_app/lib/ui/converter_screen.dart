@@ -148,8 +148,6 @@ class ConverterScreenState extends State<ConverterScreen> {
           gap,
           ResultPanel(lang: _lang, out: _out!, onVariantTap: _onVariantTap),
           gap,
-          CopyCard(lang: _lang, data: _out!.copyData),
-          gap,
           AstroCard(lang: _lang, items: _out!.astro),
         ],
         if (history.isNotEmpty) ...[
@@ -184,12 +182,9 @@ class ConverterScreenState extends State<ConverterScreen> {
     );
   }
 
-  // Intro card — #history-empty-instruction.
+  // Intro card — #history-empty-instruction: description + three numbered steps.
   Widget _introCard() {
-    const featKeys = [
-      'introFeat1', 'introFeat3', 'introFeat4', 'introFeat5',
-      'introFeat6', 'introFeat7', 'introFeat8', 'introFeat9',
-    ];
+    final wide = isWide(context);
     return Container(
       decoration: slabDecoration(shadow: 4),
       padding: const EdgeInsets.all(16),
@@ -197,35 +192,40 @@ class ConverterScreenState extends State<ConverterScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(I18n.t(_lang, 'introDesc'), style: mono(11.5, height: 1.5)),
-          const SizedBox(height: 10),
-          for (final k in featKeys)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 3),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('■ ', style: mono(9, color: kInk600)),
-                  Expanded(
-                      child: Text(I18n.t(_lang, k),
-                          style: mono(10.5, height: 1.4))),
-                ],
-              ),
+          const SizedBox(height: 12),
+          Container(
+            decoration: const BoxDecoration(
+              border: Border(top: BorderSide(color: kSurface2, width: 2)),
             ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 3),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            padding: const EdgeInsets.only(top: 12),
+            child: Column(
               children: [
-                Text('■ ', style: mono(9, color: kInk400)),
-                Expanded(
-                    child: Text(I18n.t(_lang, 'introFeatSoon'),
-                        style: mono(10.5, height: 1.4, color: kInk500))),
+                for (var i = 1; i <= 3; i++)
+                  Padding(
+                    padding: EdgeInsets.only(bottom: i < 3 ? 10 : 0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 24,
+                          height: 24,
+                          alignment: Alignment.center,
+                          color: wide ? kSignal : kInk,
+                          child: Text('$i',
+                              style: mono(12.5,
+                                  weight: FontWeight.w700, color: kWhite)),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(I18n.t(_lang, 'introStep$i'),
+                              style: mono(12.5, height: 1.5, color: kInk700)),
+                        ),
+                      ],
+                    ),
+                  ),
               ],
             ),
           ),
-          const SizedBox(height: 8),
-          Text(I18n.t(_lang, 'introStep'),
-              style: mono(11, height: 1.5, color: kInk700)),
         ],
       ),
     );

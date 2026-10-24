@@ -17,6 +17,15 @@ const kShadow = Color(0xFF242220); // --brut-shadow
 const kNavText = Color(0xFFB0B0B0);
 const kWhite = Color(0xFFFFFFFF);
 
+// Signal colour (--brut-signal): only for things you click or choose.
+const kSignal = Color(0xFF1B3DFF);
+const kSignalDark = Color(0xFF0D27B8);
+
+/// Width from which the web switches to its desktop layout (`min-width: 601px`).
+const kWideBreakpoint = 601.0;
+bool isWide(BuildContext context) =>
+    MediaQuery.sizeOf(context).width >= kWideBreakpoint;
+
 // Fonts (bundled assets — see pubspec.yaml)
 const kMono = 'NotoSansMono';
 const kSans = 'NotoSans';

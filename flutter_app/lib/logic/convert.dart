@@ -73,6 +73,9 @@ class ConvertOutput {
   // single-day bridge
   final String? tgtFullText;
   final String? srcFullText;
+  final String tgtTag; // calTag() of the target, '' when none
+  final String srcTag;
+  final String? bridgeEq; // "1445 AH = 2023–2024 AD" under a range bridge
   final List<String> altLines; // "label1, label2: alt date"
   final String? indictionLine;
   final String? animalLine;
@@ -96,6 +99,9 @@ class ConvertOutput {
     required this.isSingle,
     this.tgtFullText,
     this.srcFullText,
+    this.tgtTag = '',
+    this.srcTag = '',
+    this.bridgeEq,
     this.altLines = const [],
     this.indictionLine,
     this.animalLine,
@@ -570,6 +576,8 @@ ConvertOutput convertDate(
     isSingle: true,
     tgtFullText: tgtFullText,
     srcFullText: srcFullText,
+    tgtTag: calTag(tgt.id),
+    srcTag: calTag(src.id),
     altLines: altLines,
     indictionLine: indictionLine,
     animalLine: animalLine,
@@ -579,6 +587,12 @@ ConvertOutput convertDate(
     copyData: copyData,
     jd: primaryJd,
   );
+}
+
+// buildBridgeEq() in js/app.js.
+String _bridgeEq(String srcPart, String srcId, String tgtPart, String tgtId) {
+  final st = calTag(srcId), tt = calTag(tgtId);
+  return '$srcPart${st.isEmpty ? '' : ' $st'} = $tgtPart${tt.isEmpty ? '' : ' $tt'}';
 }
 
 class _VariantGroup {
@@ -643,6 +657,8 @@ ConvertOutput convertRange(WebCalendar src, WebCalendar tgt, int y1, int m1,
     endDetail: '${endResult.day} ${tgtNames[endResult.month - 1]}',
     spanStartStr: tgtRange.startStr,
     spanEndStr: tgtRange.endStr,
+    bridgeEq: _bridgeEq('${srcNames[m1 - 1]} $smartSrcYears', src.id,
+        smartTgtYears, tgt.id),
     breakdown: monthRows.length > 1 ? monthRows : const [],
     astro: hasEvents ? astroItems : astroItems, // JDN row always present
     astroHighlights: highlights,
@@ -706,6 +722,7 @@ ConvertOutput convertYearRange(
     endDetail: '${endResult.day} ${tgtNames[endResult.month - 1]}',
     spanStartStr: tgtRange.startStr,
     spanEndStr: tgtRange.endStr,
+    bridgeEq: _bridgeEq(smartSrcYears, src.id, smartTgtYears, tgt.id),
     breakdown: monthRows,
     astro: astroItems,
     astroHighlights: highlights,

@@ -474,9 +474,15 @@ String shortCalName(String id) {
     'seleucid': 'Sel.', 'syriac': 'Syr.', 'rumi': 'Rūmī',
     'egyptian': 'Egypt.', 'spanish': 'Span.',
     'roman': 'Rom.', 'olympiad': 'Ol.', 'macedonian': 'Mac.',
+    'ilkhani': 'Ilkh.', 'antiochene': 'Ant.', 'hebrew': 'AM',
+    'babylonian': 'Bab.', 'bp': 'BP', 'human': 'HE',
   };
   return short[id] ?? id;
 }
+
+// calTag() in js/app.js — tag shown next to a date in the result card.
+// Roman dates already carry an "AUC" suffix, so they get no extra tag.
+String calTag(String id) => id == 'roman' ? '' : shortCalName(id);
 
 // romanDayNotation() from js/hijri.js — Kalends/Nones/Ides day naming.
 String romanDayNotation(int month, int day, bool isLeap) {

@@ -26,6 +26,7 @@ class ResultPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final wide = isWide(context);
     final secondary = out.secondaryCal;
     return Container(
       decoration: slabDecoration(border: kBorderResult, shadow: 6),
@@ -53,7 +54,9 @@ class ResultPanel extends StatelessWidget {
                       ],
                     ),
                   ),
-                if (out.isSingle) ..._single() else ..._range(),
+                if (out.isSingle) ..._single(wide) else ..._range(),
+                if (out.copyData.defaultText.isNotEmpty)
+                  CopyTrio(lang: lang, data: out.copyData),
               ],
             ),
           ),
@@ -75,7 +78,7 @@ class ResultPanel extends StatelessWidget {
     );
   }
 
-  List<Widget> _single() {
+  List<Widget> _single(bool wide) {
     return [
       // Target full date — big, black 3px underline.
       Container(
@@ -83,13 +86,34 @@ class ResultPanel extends StatelessWidget {
           border: Border(bottom: BorderSide(color: kInk, width: 3)),
         ),
         padding: const EdgeInsets.only(bottom: 4),
-        child: Text(
-          out.tgtFullText!,
-          style: mono(26, weight: FontWeight.w900, height: 1.15),
+        child: Text.rich(
+          TextSpan(
+            style: mono(26, weight: FontWeight.w900, height: 1.15),
+            children: [
+              TextSpan(text: out.tgtFullText!),
+              if (out.tgtTag.isNotEmpty)
+                WidgetSpan(
+                  alignment: PlaceholderAlignment.top,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 6, top: 2),
+                    child: Text(out.tgtTag,
+                        style: mono(11,
+                            weight: FontWeight.w700,
+                            color: wide ? kSignal : kInk500,
+                            letterSpacing: 0.4)),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
       const SizedBox(height: 6),
-      Text(out.srcFullText!, style: mono(11, color: kInk400)),
+      Text(
+        out.srcTag.isEmpty
+            ? out.srcFullText!
+            : '${out.srcFullText!} ${out.srcTag}',
+        style: mono(11, color: kInk400),
+      ),
       for (final line in out.altLines)
         Padding(
           padding: const EdgeInsets.only(top: 8),
@@ -153,6 +177,11 @@ class ResultPanel extends StatelessWidget {
           ),
         ],
       ),
+      if (out.bridgeEq != null)
+        Padding(
+          padding: const EdgeInsets.only(top: 6),
+          child: Text(out.bridgeEq!, style: mono(12.5, color: kInk500)),
+        ),
       const SizedBox(height: 12),
       Text('${out.spanStartStr} – ${out.spanEndStr}',
           style: mono(12.5, color: kInk700)),
@@ -160,148 +189,101 @@ class ResultPanel extends StatelessWidget {
   }
 }
 
-/// Copy accordion — `.copy-box` (§3.3). Header copies the active mode text;
-/// body lists modes (default / year / pair) with set-default + mini-copy.
-class CopyCard extends StatefulWidget {
+/// Row of copy buttons under the result, one per format — `.copy-trio`.
+/// Formats that would repeat an earlier one are skipped.
+class CopyTrio extends StatefulWidget {
   final String lang;
   final CopyData data;
-  const CopyCard({super.key, required this.lang, required this.data});
+  const CopyTrio({super.key, required this.lang, required this.data});
 
   @override
-  State<CopyCard> createState() => _CopyCardState();
+  State<CopyTrio> createState() => _CopyTrioState();
 }
 
-class _CopyCardState extends State<CopyCard> {
-  bool _expanded = false;
-  bool _copied = false;
-  late String _active;
+class _CopyTrioState extends State<CopyTrio> {
+  String? _copiedText;
 
-  List<({String key, String text})> get _modes => [
-        (key: 'default', text: widget.data.defaultText),
-        (key: 'year', text: widget.data.yearOnlyText),
-        if (widget.data.yearPairText != null)
-          (key: 'pair', text: widget.data.yearPairText!),
-      ];
-
-  @override
-  void initState() {
-    super.initState();
-    final saved = Prefs.instance.copyMode;
-    _active = _modes.any((m) => m.key == saved) ? saved : 'default';
+  List<String> get _texts {
+    final seen = <String>{};
+    return [
+      widget.data.defaultText,
+      widget.data.yearOnlyText,
+      widget.data.yearPairText,
+    ].whereType<String>().where((t) => t.isNotEmpty && seen.add(t)).toList();
   }
-
-  @override
-  void didUpdateWidget(covariant CopyCard old) {
-    super.didUpdateWidget(old);
-    if (!_modes.any((m) => m.key == _active)) _active = 'default';
-  }
-
-  String get _activeText =>
-      _modes.firstWhere((m) => m.key == _active, orElse: () => _modes.first).text;
 
   Future<void> _copy(String text) async {
     await Clipboard.setData(ClipboardData(text: text));
     if (!mounted) return;
-    setState(() => _copied = true);
+    setState(() => _copiedText = text);
     Future.delayed(const Duration(milliseconds: 1200), () {
-      if (mounted) setState(() => _copied = false);
+      if (mounted && _copiedText == text) setState(() => _copiedText = null);
     });
-  }
-
-  void _setActive(String key) {
-    setState(() => _active = key);
-    Prefs.instance.copyMode = key;
   }
 
   @override
   Widget build(BuildContext context) {
-    String t(String k) => I18n.t(widget.lang, k);
-    return Container(
-      decoration: slabDecoration(shadow: 4),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+    return Padding(
+      padding: const EdgeInsets.only(top: 14),
+      child: Wrap(
+        spacing: 8,
+        runSpacing: 6,
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: InkWell(
-                  onTap: () => _copy(_activeText),
-                  child: Container(
-                    constraints: const BoxConstraints(minHeight: 58),
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      (_copied ? t('copied') : t('copyResult')).toUpperCase(),
-                      style: mono(13.5,
-                          weight: FontWeight.w800, letterSpacing: 2.4),
-                    ),
-                  ),
-                ),
-              ),
-              InkWell(
-                onTap: () => setState(() => _expanded = !_expanded),
-                child: Container(
-                  constraints:
-                      const BoxConstraints(minHeight: 58, minWidth: 52),
-                  alignment: Alignment.center,
-                  child: AnimatedRotation(
-                    turns: _expanded ? 0.5 : 0,
-                    duration: const Duration(milliseconds: 150),
-                    child: Text('▾', style: mono(14, weight: FontWeight.w700)),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          if (_expanded)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  for (final m in _modes)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: Row(
-                        children: [
-                          InkWell(
-                            onTap: () => _setActive(m.key),
-                            child: Container(
-                              width: 18,
-                              height: 18,
-                              decoration: BoxDecoration(
-                                color:
-                                    m.key == _active ? kInk : Colors.transparent,
-                                border: Border.all(color: kInk, width: 2),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: InkWell(
-                              onTap: () => _setActive(m.key),
-                              child: Text(m.text, style: mono(12.5)),
-                            ),
-                          ),
-                          InkWell(
-                            onTap: () => _copy(m.text),
-                            child: Padding(
-                              padding: const EdgeInsets.all(6),
-                              child: Text('⧉',
-                                  style: mono(15, weight: FontWeight.w700)),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  Text(
-                    t('copyHelp').replaceAll('{icon}', '⧉'),
-                    style: mono(10, color: kInk500),
-                  ),
-                ],
-              ),
+          for (final text in _texts)
+            _CopyTrioButton(
+              label: _copiedText == text
+                  ? I18n.t(widget.lang, 'copied')
+                  : text,
+              copied: _copiedText == text,
+              onTap: () => _copy(text),
             ),
         ],
+      ),
+    );
+  }
+}
+
+class _CopyTrioButton extends StatefulWidget {
+  final String label;
+  final bool copied;
+  final VoidCallback onTap;
+  const _CopyTrioButton(
+      {required this.label, required this.copied, required this.onTap});
+
+  @override
+  State<_CopyTrioButton> createState() => _CopyTrioButtonState();
+}
+
+class _CopyTrioButtonState extends State<_CopyTrioButton> {
+  bool _hot = false; // hover / focus / press → inverted
+
+  @override
+  Widget build(BuildContext context) {
+    final bg = widget.copied ? kSignal : (_hot ? kInk : kSurface);
+    final fg = (widget.copied || _hot) ? kWhite : kInk;
+    return InkWell(
+      onTap: widget.onTap,
+      onHover: (v) => setState(() => _hot = v),
+      onFocusChange: (v) => setState(() => _hot = v),
+      child: Container(
+        constraints: const BoxConstraints(minHeight: 40),
+        padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 6),
+        decoration: BoxDecoration(
+          color: bg,
+          border: Border.all(
+              color: widget.copied ? kSignal : kInk, width: kBorderSubtle),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.copy_rounded, size: 15, color: fg),
+            const SizedBox(width: 7),
+            Flexible(
+              child: Text(widget.label,
+                  style: mono(12.5, weight: FontWeight.w700, color: fg)),
+            ),
+          ],
+        ),
       ),
     );
   }

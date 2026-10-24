@@ -137,4 +137,22 @@ void main() {
       expect(line, contains(': '));
     }
   });
+
+  test('calTag: roman has no tag, new short names present', () {
+    expect(calTag('roman'), '');
+    expect(calTag('hijri'), 'AH');
+    expect(calTag('hebrew'), 'AM');
+    expect(calTag('bp'), 'BP');
+  });
+
+  test('year range: bridgeEq "1445 AH = 2023–2024 AD", tags on single', () {
+    final out = convertYearRange(
+        kWebCalendars['hijri']!, kWebCalendars['gregorian']!, 1445, 'en');
+    expect(out.bridgeEq, '1445 AH = 2023–2024 AD');
+    final one = convertDate(kWebCalendars['hijri']!, kWebCalendars['gregorian']!,
+        1445, 1, 1, 'en');
+    expect(one.tgtTag, 'AD');
+    expect(one.srcTag, 'AH');
+    expect(one.bridgeEq, isNull);
+  });
 }

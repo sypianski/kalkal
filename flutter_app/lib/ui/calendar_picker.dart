@@ -7,11 +7,14 @@ import 'package:flutter/material.dart';
 
 import '../engine/registry.dart';
 import '../i18n/i18n.dart';
+import '../i18n/mobile_i18n.dart';
+import '../state/prefs.dart';
 import 'tokens.dart';
 
 Future<String?> showCalendarPicker(BuildContext context, String lang,
-    {String? selectedId}) {
-  return showModalBottomSheet<String>(
+    {String? selectedId}) async {
+  final recent = Prefs.instance.recentCals;
+  final picked = await showModalBottomSheet<String>(
     context: context,
     backgroundColor: kSurface,
     shape: const RoundedRectangleBorder(), // brutalist: no radius
@@ -22,6 +25,18 @@ Future<String?> showCalendarPicker(BuildContext context, String lang,
       child: ListView(
         padding: const EdgeInsets.symmetric(vertical: 6),
         children: [
+          if (recent.isNotEmpty)
+            _GroupSection(
+              label: MobileI18n.t(lang, 'recent'),
+              children: [
+                for (final id in recent)
+                  _PickerItem(
+                    label: I18n.calendarName(lang, id),
+                    active: id == selectedId,
+                    onTap: () => Navigator.of(ctx).pop(id),
+                  ),
+              ],
+            ),
           for (final group in kCalendarGroups) ...[
             _GroupSection(
               label: I18n.calendarGroup(lang, group.group),
@@ -39,6 +54,8 @@ Future<String?> showCalendarPicker(BuildContext context, String lang,
       ),
     ),
   );
+  if (picked != null) Prefs.instance.pushRecentCal(picked);
+  return picked;
 }
 
 /// Month picker — readonly dropdown of the source calendar's month names,

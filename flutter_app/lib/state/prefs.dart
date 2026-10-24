@@ -80,6 +80,22 @@ class Prefs {
 
   set fromCal(String v) => _sp.setString('kalkal-from-cal', v);
 
+  // ---- recently picked calendars (kalkal-recent-cals), max 3, newest first.
+  // Flutter-only (TASK-1): feeds the "Recent" group of the calendar picker. ----
+  static const recentCalsMax = 3;
+
+  List<String> get recentCals {
+    final raw = _sp.getStringList('kalkal-recent-cals') ?? const <String>[];
+    return raw.where(kWebCalendars.containsKey).toList();
+  }
+
+  void pushRecentCal(String id) {
+    final list = recentCals..remove(id);
+    list.insert(0, id);
+    if (list.length > recentCalsMax) list.length = recentCalsMax;
+    _sp.setStringList('kalkal-recent-cals', list);
+  }
+
   // ---- copy mode (kalkal-copy-mode): default | year | pair ----
   String get copyMode => _sp.getString('kalkal-copy-mode') ?? 'default';
   set copyMode(String v) => _sp.setString('kalkal-copy-mode', v);

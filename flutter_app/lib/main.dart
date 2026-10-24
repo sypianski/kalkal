@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'i18n/i18n.dart';
+import 'i18n/mobile_i18n.dart';
 import 'state/prefs.dart';
 import 'ui/converter_screen.dart';
 import 'ui/pages_screens.dart';
@@ -62,12 +63,14 @@ class _KalkalAppState extends State<KalkalApp> {
       ),
       home: Builder(builder: (context) {
         final wide = isWide(context);
+        // Tab order: 0 converter, 1 calendars, 2 methodology, 3 settings,
+        // 4 author. The phone bar shows the first two plus "More" (2..4).
         final navItems = [
-          NavItem('⇄', I18n.t(_lang, 'navConverter')),
-          NavItem('▦', I18n.t(_lang, 'navCalendars')),
-          NavItem('◆', I18n.t(_lang, 'navMethodology')),
-          NavItem('☰', I18n.t(_lang, 'settings')),
-          NavItem('❖', I18n.t(_lang, 'navAuthor')),
+          NavItem(Icons.swap_horiz, I18n.t(_lang, 'navConverter')),
+          NavItem(Icons.calendar_month_outlined, I18n.t(_lang, 'navCalendars')),
+          NavItem(Icons.menu_book_outlined, I18n.t(_lang, 'navMethodology')),
+          NavItem(Icons.tune, I18n.t(_lang, 'settings')),
+          NavItem(Icons.person_outline, I18n.t(_lang, 'navAuthor')),
         ];
         void onNav(int i) => setState(() {
               if (i != 1) _calendarsAnchor = null;
@@ -120,12 +123,22 @@ class _KalkalAppState extends State<KalkalApp> {
             ),
           );
         }
+        final moreItems = navItems.sublist(2);
         return Scaffold(
           body: SafeArea(bottom: false, child: pages),
           bottomNavigationBar: BrutBottomNav(
-            items: navItems,
-            activeIndex: _tab,
-            onTap: onNav,
+            items: [
+              navItems[0],
+              navItems[1],
+              NavItem(Icons.more_horiz, MobileI18n.t(_lang, 'more')),
+            ],
+            activeIndex: _tab < 2 ? _tab : 2,
+            onTap: (i) async {
+              if (i < 2) return onNav(i);
+              final picked = await showMoreSheet(context,
+                  items: moreItems, activeIndex: _tab - 2);
+              if (picked != null) onNav(picked + 2);
+            },
           ),
         );
       }),

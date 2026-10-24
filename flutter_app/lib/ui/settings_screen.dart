@@ -70,45 +70,133 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ],
           ),
         ),
-        for (final (calId, headingKey, descKey) in _variantGroups) ...[
-          const SizedBox(height: 14),
-          Builder(builder: (context) {
-            final cal = kWebCalendars[calId]!;
-            final current =
-                Prefs.instance.variantFor(calId) ?? cal.defaultVariant;
-            final items =
-                PagesI18n.calendarVariantItems[_lang]?[calId] ??
-                    PagesI18n.calendarVariantItems['en']?[calId] ??
-                    const <String>[];
-            return _group(
+        if (isWide(context))
+          for (final (calId, headingKey, descKey) in _variantGroups) ...[
+            const SizedBox(height: 14),
+            _group(
               heading: I18n.t(_lang, headingKey),
               desc: I18n.t(_lang, descKey),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (calId == 'hijri') _hijriExample(),
-                  for (var i = 0; i < cal.variants!.length; i++)
-                    _variantRow(
-                      name: _variantName(cal.variants![i]),
-                      desc: i < items.length ? items[i] : '',
-                      example: calId == 'hijri'
-                          ? _hijriVariantExample(cal.variants![i])
-                          : null,
-                      active: cal.variants![i] == current,
-                      onTap: () {
-                        final v = cal.variants![i];
-                        Prefs.instance.setVariant(calId, v);
-                        cal.variant = v;
-                        cal.defaultVariant = v;
-                        setState(() {});
-                      },
-                    ),
-                ],
-              ),
-            );
-          }),
+              child: _variantList(calId),
+            ),
+          ]
+        else ...[
+          const SizedBox(height: 14),
+          _variantRowsCard(),
         ],
       ],
+    );
+  }
+
+  // Radio rows of one variant group (name, description, optional example).
+  // [afterPick] runs after the choice is stored — the phone sheet closes.
+  Widget _variantList(String calId, {VoidCallback? afterPick}) {
+    final cal = kWebCalendars[calId]!;
+    final current = Prefs.instance.variantFor(calId) ?? cal.defaultVariant;
+    final items = PagesI18n.calendarVariantItems[_lang]?[calId] ??
+        PagesI18n.calendarVariantItems['en']?[calId] ??
+        const <String>[];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (calId == 'hijri') _hijriExample(),
+        for (var i = 0; i < cal.variants!.length; i++)
+          _variantRow(
+            name: _variantName(cal.variants![i]),
+            desc: i < items.length ? items[i] : '',
+            example: calId == 'hijri'
+                ? _hijriVariantExample(cal.variants![i])
+                : null,
+            active: cal.variants![i] == current,
+            onTap: () {
+              final v = cal.variants![i];
+              Prefs.instance.setVariant(calId, v);
+              cal.variant = v;
+              cal.defaultVariant = v;
+              setState(() {});
+              afterPick?.call();
+            },
+          ),
+      ],
+    );
+  }
+
+  // Phone: one card, one row per variant group (heading + current variant);
+  // a tap opens a sheet with the full list and descriptions (TASK-1).
+  Widget _variantRowsCard() {
+    return Container(
+      decoration: slabDecoration(shadow: 4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (var i = 0; i < _variantGroups.length; i++) ...[
+            if (i > 0) Container(height: 2, color: kSurface2),
+            Builder(builder: (context) {
+              final (calId, headingKey, _) = _variantGroups[i];
+              final cal = kWebCalendars[calId]!;
+              final current =
+                  Prefs.instance.variantFor(calId) ?? cal.defaultVariant;
+              return InkWell(
+                onTap: () => _openVariantSheet(_variantGroups[i]),
+                child: Container(
+                  constraints: const BoxConstraints(minHeight: 64),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(I18n.t(_lang, headingKey).toUpperCase(),
+                                style: mono(11,
+                                    weight: FontWeight.w800,
+                                    letterSpacing: 1.2)),
+                            const SizedBox(height: 4),
+                            Text(_variantName(current),
+                                style: mono(12.5, color: kSignal)),
+                          ],
+                        ),
+                      ),
+                      Text('›', style: mono(20, weight: FontWeight.w700)),
+                    ],
+                  ),
+                ),
+              );
+            }),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Future<void> _openVariantSheet((String, String, String) g) {
+    final (calId, headingKey, descKey) = g;
+    return showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: kSurface,
+      shape: const RoundedRectangleBorder(),
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.85,
+      ),
+      builder: (ctx) => SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(16, 18, 16, 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(I18n.t(_lang, headingKey).toUpperCase(),
+                  style: mono(12, weight: FontWeight.w800, letterSpacing: 1.8)),
+              Padding(
+                padding: const EdgeInsets.only(top: 6, bottom: 12),
+                child: Text(I18n.t(_lang, descKey),
+                    style: mono(10.5, color: kInk600, height: 1.45)),
+              ),
+              _variantList(calId, afterPick: () => Navigator.of(ctx).pop()),
+            ],
+          ),
+        ),
+      ),
     );
   }
 

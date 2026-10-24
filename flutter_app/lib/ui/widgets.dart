@@ -82,16 +82,19 @@ class TileToggle extends StatelessWidget {
   }
 }
 
-/// Bottom navigation — fixed black bar, 72px items, Unicode glyph icons,
-/// active item gets white text + 3px white top border (`.page-nav` ≤600px).
+/// Navigation entry: Material icon + label (the old Unicode glyphs rendered
+/// as empty boxes on fonts without the symbols).
 class NavItem {
-  final String glyph;
+  final IconData icon;
   final String label;
-  const NavItem(this.glyph, this.label);
+  const NavItem(this.icon, this.label);
 }
 
+/// Phone bottom navigation — black bar, 60px, Material icons in a pill,
+/// active item gets a signal top rule and a lighter pill. The last item is
+/// "More": it opens a sheet with the remaining screens ([overflow]).
 class BrutBottomNav extends StatelessWidget {
-  final List<NavItem> items;
+  final List<NavItem> items; // main entries, the last one being "More"
   final int activeIndex;
   final ValueChanged<int> onTap;
   const BrutBottomNav({
@@ -106,7 +109,7 @@ class BrutBottomNav extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
         color: kInk,
-        border: Border(top: BorderSide(color: kInk700, width: 3)),
+        border: Border(top: BorderSide(color: kInk700, width: 1)),
       ),
       child: SafeArea(
         top: false,
@@ -117,12 +120,12 @@ class BrutBottomNav extends StatelessWidget {
                 child: InkWell(
                   onTap: () => onTap(i),
                   child: Container(
-                    constraints: const BoxConstraints(minHeight: 72),
+                    constraints: const BoxConstraints(minHeight: 60),
                     decoration: BoxDecoration(
                       border: Border(
                         top: BorderSide(
                           color: i == activeIndex
-                              ? kWhite
+                              ? kSignal
                               : Colors.transparent,
                           width: 3,
                         ),
@@ -132,21 +135,26 @@ class BrutBottomNav extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          items[i].glyph,
-                          style: TextStyle(
-                            fontSize: 22,
-                            height: 1.1,
-                            color: i == activeIndex ? kWhite : kNavText,
-                          ),
+                        Container(
+                          width: 52,
+                          height: 28,
+                          alignment: Alignment.center,
+                          color: i == activeIndex
+                              ? const Color(0xFF2A2A2A)
+                              : Colors.transparent,
+                          child: Icon(items[i].icon,
+                              size: 22,
+                              color:
+                                  i == activeIndex ? kWhite : kNavText),
                         ),
-                        const SizedBox(height: 3),
+                        const SizedBox(height: 2),
                         Text(
-                          items[i].label.toUpperCase(),
+                          items[i].label,
                           textAlign: TextAlign.center,
-                          style: mono(8.5,
-                              weight: FontWeight.w700,
-                              letterSpacing: 0.7,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: mono(10.5,
+                              weight: FontWeight.w600,
                               color: i == activeIndex ? kWhite : kNavText),
                         ),
                       ],
@@ -159,6 +167,52 @@ class BrutBottomNav extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Bottom sheet behind the "More" tab: one big row per remaining screen.
+Future<int?> showMoreSheet(BuildContext context,
+    {required List<NavItem> items, required int activeIndex}) {
+  return showModalBottomSheet<int>(
+    context: context,
+    backgroundColor: kSurface,
+    shape: const RoundedRectangleBorder(),
+    builder: (ctx) => Container(
+      decoration: const BoxDecoration(
+        border: Border(top: BorderSide(color: kInk, width: 3)),
+      ),
+      child: SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (var i = 0; i < items.length; i++)
+              InkWell(
+                onTap: () => Navigator.of(ctx).pop(i),
+                child: Container(
+                  constraints: const BoxConstraints(minHeight: 60),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  color: i == activeIndex ? kInk : Colors.transparent,
+                  child: Row(
+                    children: [
+                      Icon(items[i].icon,
+                          size: 22,
+                          color: i == activeIndex ? kWhite : kInk),
+                      const SizedBox(width: 16),
+                      Text(
+                        items[i].label.toUpperCase(),
+                        style: mono(13,
+                            weight: FontWeight.w800,
+                            letterSpacing: 1.8,
+                            color: i == activeIndex ? kWhite : kInk),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    ),
+  );
 }
 
 /// Full-width signal-colour CONVERT button — label left, arrow right, min 58px.

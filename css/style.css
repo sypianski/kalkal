@@ -7268,3 +7268,35 @@ body {
   }
   .refine-label::after { content: none; }
 }
+
+/* ---- Header: one row from 1000px (TASK-4) — title left, menu right.
+   Shared by every page; the subtitle is dropped (it stays in <title>). ---- */
+@media (min-width: 1000px) {
+  .site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-xl);
+    padding-block: var(--space-md);
+    padding-inline: max(var(--space-xl), calc((100% - 1100px) / 2 + var(--space-xl)));
+  }
+  .header-inner {
+    flex: 0 0 auto;
+    max-width: none;
+    margin: 0;
+    padding-inline: 0;
+  }
+  .site-subtitle { display: none; }
+  .page-nav {
+    flex: 0 1 auto;
+    max-width: none;
+    margin: 0;
+    padding-inline: 0;
+  }
+  .page-nav a:last-child { padding-inline-end: 0; }
+}
+@media (min-width: 1000px) and (display-mode: standalone) {
+  .site-header {
+    padding-block-start: calc(var(--space-md) + env(safe-area-inset-top, 0px));
+  }
+}

@@ -49,14 +49,14 @@
 
             <div class="form-field form-field--cal">
               <label for="from-calendar" class="form-label" data-i18n="fromCalendar">From</label>
-              <input type="text" id="from-calendar" class="input-cal" autocomplete="off" inputmode="none">
+              <input type="text" id="from-calendar" class="input-cal" autocomplete="off" inputmode="none" data-1p-ignore data-lpignore="true" data-bwignore="true" data-form-type="other">
               <a id="from-cal-desc" class="cal-desc-link" hidden></a>
               <div class="variant-bar" id="from-variants"></div>
             </div>
 
             <div class="form-field form-field--num form-field--year">
               <label for="from-year" class="form-label" data-i18n="year">Year</label>
-              <input type="number" id="from-year" min="1" dir="ltr" class="input-num" required>
+              <input autocomplete="off" type="number" id="from-year" min="1" dir="ltr" class="input-num" required data-1p-ignore data-lpignore="true" data-bwignore="true" data-form-type="other">
             </div>
 
             <div class="form-error" id="form-error" role="alert"></div>
@@ -73,11 +73,11 @@
 
         <div class="refine-card" id="refine-card" hidden>
           <div class="refine-field">
-            <input type="text" id="from-month" class="refine-input" autocomplete="off">
+            <input type="text" id="from-month" class="refine-input" autocomplete="off" data-1p-ignore data-lpignore="true" data-bwignore="true" data-form-type="other">
             <label for="from-month" class="refine-label" data-i18n="month">Month</label>
           </div>
           <div class="refine-field">
-            <input type="number" id="from-day" min="1" max="31" dir="ltr" class="refine-input">
+            <input autocomplete="off" type="number" id="from-day" min="1" max="31" dir="ltr" class="refine-input" data-1p-ignore data-lpignore="true" data-bwignore="true" data-form-type="other">
             <label for="from-day" class="refine-label" data-i18n="day">Day</label>
           </div>
         </div>
@@ -89,7 +89,7 @@
         <div class="to-calendar-field" id="to-calendar-field" hidden>
           <span class="to-label" data-i18n="toLabel">To</span>
           <div class="to-body">
-            <input type="text" id="to-calendar" class="to-calendar-input" autocomplete="off" inputmode="none">
+            <input type="text" id="to-calendar" class="to-calendar-input" autocomplete="off" inputmode="none" data-1p-ignore data-lpignore="true" data-bwignore="true" data-form-type="other">
             <a id="to-cal-desc" class="cal-desc-link" hidden></a>
             <div class="variant-bar" id="to-variants"></div>
           </div>

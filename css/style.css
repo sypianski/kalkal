@@ -7388,3 +7388,56 @@ body {
   color: #fff;
 }
 .copy-trio-icon { font-size: 0.95em; }
+
+/* ---- TASK-4 step 5: one tabbed box for contextual / astro / breakdown / history ---- */
+.tile-tabs { display: none; }
+@media (min-width: 601px) {
+  .tile-tabs:not([hidden]) {
+    display: flex;
+    flex-wrap: wrap;
+    border: 3px solid #000;
+    background: #fff;
+    box-shadow: 8px 8px 0 #242220;
+  }
+  .tile-tab {
+    flex: 1 1 auto;
+    padding: var(--space-sm) var(--space-md);
+    border: none;
+    border-inline-end: 2px solid #000;
+    background: #fff;
+    color: #666;
+    font-family: var(--brut-mono, var(--font-mono));
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .tile-tab:last-child { border-inline-end: none; }
+  .tile-tab:hover { color: #000; }
+  .tile-tab.active {
+    background: var(--brut-signal);
+    color: #fff;
+  }
+
+  /* Only the tile of the active tab is shown, and without its own header. */
+  #contextual-card, #astro-card, #breakdown-panel, #history-panel { display: none; }
+  #contextual-card.tab-active,
+  #astro-card.tab-active,
+  #breakdown-panel.tab-active,
+  #history-panel.tab-active { display: block; }
+  .tab-active > .tile-toggle { display: none; }
+  .tab-active > .tile-content.hidden { display: block; }
+  .tab-active > .tile-content { padding-block-start: var(--space-md); }
+  .action-row.tab-off { display: none; }
+
+  /* The active tile continues the tab bar: no gap, shared top edge. */
+  .converter-right > .tab-active,
+  .converter-right > .action-row:not(.tab-off) {
+    margin-block-start: calc(-1 * var(--space-lg) - 3px);
+  }
+  .converter-right > .tab-active,
+  .action-row > .tab-active {
+    border-block-start: 3px solid #000;
+  }
+}

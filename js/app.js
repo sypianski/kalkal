@@ -1965,6 +1965,58 @@
     } else {
       breakdownPanel.hidden = true;
     }
+    refreshTabs();
+  }
+
+  // ---- Tabs (desktop) ----
+  // Contextual calendars, astro, month breakdown and history share one tabbed
+  // box from 601px up. The tiles stay separate nodes; CSS shows only the one
+  // marked .tab-active and hides its own toggle. Below 601px the tab bar is
+  // hidden and the tiles behave as collapsible cards, as before.
+
+  const tileTabs = $('#tile-tabs');
+  const tabActionRow = $('#action-row');
+  let activeTab = null;
+
+  function refreshTabs() {
+    if (!tileTabs) return;
+    const t = I18N[currentLang] || I18N.en;
+    const defs = [
+      { key: 'ctx',   node: contextualCard, label: t.contextualLabel || 'Other contemporaneous calendars' },
+      { key: 'astro', node: astroCard,      label: t.astroLabel || 'Astro' },
+      { key: 'bd',    node: breakdownPanel, label: t.monthBreakdown || 'Month breakdown' },
+      { key: 'hist',  node: historyPanel,   label: t.history || 'History' },
+    ].filter(function(d) { return d.node && !d.node.hidden; });
+
+    if (!defs.some(function(d) { return d.key === activeTab; })) {
+      activeTab = defs.length ? defs[0].key : null;
+    }
+
+    while (tileTabs.firstChild) tileTabs.removeChild(tileTabs.firstChild);
+    tileTabs.hidden = defs.length === 0;
+    defs.forEach(function(d) {
+      const btn = el('button', {
+        type: 'button',
+        class: 'tile-tab' + (d.key === activeTab ? ' active' : ''),
+        role: 'tab',
+        'aria-selected': d.key === activeTab ? 'true' : 'false',
+        text: d.label
+      });
+      btn.addEventListener('click', function() {
+        activeTab = d.key;
+        refreshTabs();
+      });
+      tileTabs.appendChild(btn);
+    });
+
+    [contextualCard, astroCard, breakdownPanel, historyPanel].forEach(function(node) {
+      if (node) node.classList.remove('tab-active');
+    });
+    const active = defs.filter(function(d) { return d.key === activeTab; })[0];
+    if (active) active.node.classList.add('tab-active');
+    if (tabActionRow) {
+      tabActionRow.classList.toggle('tab-off', !(active && tabActionRow.contains(active.node)));
+    }
   }
 
   // ---- History ----
@@ -2088,6 +2140,7 @@
       if (historyEmptyInstruction) historyEmptyInstruction.hidden = false;
       if (mobileTitleBox) mobileTitleBox.hidden = false;
       if (historyClearBtn) historyClearBtn.hidden = true;
+      refreshTabs();
       return;
     }
 
@@ -2118,6 +2171,7 @@
       li.appendChild(btn);
       historyList.appendChild(li);
     });
+    refreshTabs();
   }
 
   function loadHistoryEntry(entry) {

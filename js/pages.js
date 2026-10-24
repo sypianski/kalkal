@@ -11,7 +11,7 @@ const PageI18N = {
     methPageTitle: 'Methodology',
     methPageSubtitle: 'How kalkal was built, how it calculates, and how it is verified',
     backToConverter: 'Back to converter',
-    formulaLabel: 'Formula',
+    formulaLabel: 'Formula and code',
     sourceLabel: 'Algorithm source',
 
     gregorian: {
@@ -204,7 +204,7 @@ const PageI18N = {
     methPageTitle: 'Metodologia',
     methPageSubtitle: 'Jak zbudowano kalkal, jak oblicza i jak jest weryfikowany',
     backToConverter: 'Powr\u00f3t do konwertera',
-    formulaLabel: 'Formu\u0142a',
+    formulaLabel: 'Formu\u0142a i kod',
     sourceLabel: '\u0179r\u00f3d\u0142o algorytmu',
 
     gregorian: {
@@ -379,7 +379,7 @@ const PageI18N = {
     methPageTitle: 'Metodologio',
     methPageSubtitle: 'Kiel kalkal estas konstruita, kiel \u011di kalkulas, kaj kiel \u011di estas validata',
     backToConverter: 'Reen al konvertilo',
-    formulaLabel: 'Formulo',
+    formulaLabel: 'Formulo kaj kodo',
     sourceLabel: 'Algoritma fonto',
     gregorian: { name: 'p.K. kalendaro (julia\u2192gregoria)', type: 'Suna', epoch: '1-a de januaro 1 p.K.', intro: 'La p.K. (post Kristo) datsistemo, uzanta la julian kalendaron anta\u016d la 15-a de oktobro 1582 kaj la gregorian poste. Neniu uzis la gregorian kalendaron anta\u016d \u011dia kreado.', body: 'Anta\u016d 1582: julia kalendaro (superjaro \u0109iu 4 jaroj). Ekde 15-a de oktobro 1582: gregoria reformo (superjaro se dividebla per 4, krom per 100, escepte per 400). La puraj julia kaj gregoria kalendaroj haveblas aparte por proleptikaj kalkuloj.', adoption: 'Katolikaj landoj en 1582; Brita Imperio 1752; Rusio 1918; Grekio 1923; Turkio 1926.', source: 'Meeus, Jean. Astronomical Algorithms, 2nd ed. (1998), ch. 7. Julia: eq. 7.1 kun B = 0. Gregoria: eq. 7.1 kun A = \u230aY/100\u230b, B = 2 \u2212 A + \u230aA/4\u230b. Transiro je JD 2299160.5.', months: '12 monatoj de 28\u201331 tagoj.' },
     julian: { name: 'Julia kalendaro', type: 'Suna', epoch: '1-a de januaro 1 p.K. (proleptika)', intro: 'Enkondukita de Julio Cezaro en 46 a.K. Domina en Europo dum pli ol 1600 jaroj.', body: '\u0108iu jaro dividebla per 4 estas superjaro. Mezjaro 365,25 tagoj.', adoption: 'Ankorau liturgie uzata de kelkaj ortodoksaj eklezioj.', source: 'Meeus, Jean. Astronomical Algorithms, 2nd ed. (1998), ch. 7, eq. 7.1 with B = 0 (no century correction). The Julian calendar omits the Gregorian correction term, giving a fixed mean year of exactly 365.25 days.', months: '12 monatoj kiel la gregoriaj.' },
@@ -682,7 +682,13 @@ const SEASON_LABELS = {
         var label = groupLabels[g.group] || g.group;
         var heading = document.createElement('h2');
         heading.className = 'cal-group-heading';
-        heading.textContent = label;
+        var headingLabel = document.createElement('span');
+        headingLabel.textContent = label;
+        var headingCount = document.createElement('span');
+        headingCount.className = 'cal-group-count';
+        headingCount.textContent = String(g.ids.length);
+        heading.appendChild(headingLabel);
+        heading.appendChild(headingCount);
         heading.id = 'group-' + g.group;
         calContainer.appendChild(heading);
         g.ids.forEach(function(id) {
@@ -763,11 +769,6 @@ const SEASON_LABELS = {
   }
 
   setPageLang(currentLang);
-
-  // On desktop, expand all calendar formulas by default
-  if (window.matchMedia('(min-width: 601px)').matches) {
-    document.querySelectorAll('details.cal-formula').forEach(d => { d.open = true; });
-  }
 
   // ---- Settings panel (mobile) ----
   (function() {

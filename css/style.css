@@ -7461,3 +7461,50 @@ body[data-page="methodology"] .meth-toc-list a:hover,
 body[data-page="methodology"] .meth-toc-list a:hover::before { color: var(--brut-signal); }
 body[data-page="methodology"] .meth-links a { color: var(--brut-signal); border-block-end-color: var(--brut-signal); }
 body[data-page="methodology"] .meth-links a:hover { background: var(--brut-signal); color: #fff; }
+
+/* Step 2: group headings are a thin rule with the calendar count, not a black slab */
+body[data-page="calendars"] .cal-group-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-md);
+  background: transparent;
+  color: #000;
+  font-family: var(--brut-mono, var(--font-mono));
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  padding: 0.35em 0;
+  border-block-end: 4px solid #000;
+  margin-block: var(--space-2xl) var(--space-md);
+}
+body[data-page="calendars"] .cal-group-heading:first-of-type { margin-block-start: 0; }
+.cal-group-count {
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  color: #666;
+}
+
+/* Step 3: formula, code and source sit behind one row, closed by default */
+body[data-page="calendars"] .cal-formula-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-md);
+  cursor: pointer;
+  list-style: none;
+  padding: 0.6rem 0.9rem;
+  border: 2px solid #000;
+  background: #fff;
+  color: #000;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+}
+body[data-page="calendars"] .cal-formula-heading::-webkit-details-marker { display: none; }
+body[data-page="calendars"] .cal-formula-heading::after { content: "\25BE"; }
+body[data-page="calendars"] .cal-formula[open] > .cal-formula-heading::after { content: "\25B4"; }
+body[data-page="calendars"] .cal-formula-heading:hover { background: #000; color: #fff; }
+body[data-page="calendars"] .cal-formula-heading:focus-visible {
+  outline: 3px solid var(--brut-signal);
+  outline-offset: 2px;
+}
+body[data-page="calendars"] .cal-formula[open] > .cal-formula-content { margin-block-start: var(--space-md); }

@@ -7441,3 +7441,23 @@ body {
     border-block-start: 3px solid #000;
   }
 }
+
+/* ==========================================================
+   UX 2026-10 (TASK-2) — sub-pages (Calendars, Settings, Methodology).
+   Scoped by <body data-page="…"> so the converter is untouched.
+   ========================================================== */
+
+/* Step 1: the signal colour marks what is chosen or clickable */
+body[data-page="settings"] .settings-page-btn.active {
+  background: var(--brut-signal);
+  border-color: var(--brut-signal);
+  color: #fff;
+}
+body[data-page="calendars"] .cal-toc-link::before { color: var(--brut-signal); }
+body[data-page="calendars"] .cal-toc-link:hover { background: var(--brut-signal); }
+body[data-page="calendars"] .cal-toc-link:hover::before { color: #fff; }
+body[data-page="methodology"] .meth-toc-list a::before { color: var(--brut-signal); }
+body[data-page="methodology"] .meth-toc-list a:hover,
+body[data-page="methodology"] .meth-toc-list a:hover::before { color: var(--brut-signal); }
+body[data-page="methodology"] .meth-links a { color: var(--brut-signal); border-block-end-color: var(--brut-signal); }
+body[data-page="methodology"] .meth-links a:hover { background: var(--brut-signal); color: #fff; }

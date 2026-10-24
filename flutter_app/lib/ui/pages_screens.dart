@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../i18n/i18n.dart';
 import '../i18n/pages_i18n.dart';
 import 'tokens.dart';
+import 'widgets.dart';
 
 class _PageHeader extends StatelessWidget {
   final String title;
@@ -31,6 +32,76 @@ class _PageHeader extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Contents link row: signal-coloured marker + underlined label.
+class _TocLink extends StatelessWidget {
+  final String label;
+  final VoidCallback onTap;
+  final double size;
+  const _TocLink(this.label, this.onTap, {this.size = 12});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('▪ ', style: mono(size, color: kSignal)),
+            Expanded(
+              child: Text(label,
+                  style: mono(size, weight: FontWeight.w600)
+                      .copyWith(decoration: TextDecoration.underline)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Collapsible "Contents" box — the `<details>` of the phone layout.
+class _ContentsBox extends StatefulWidget {
+  final String title;
+  final Widget child;
+  const _ContentsBox({required this.title, required this.child});
+
+  @override
+  State<_ContentsBox> createState() => _ContentsBoxState();
+}
+
+class _ContentsBoxState extends State<_ContentsBox> {
+  bool _open = false;
+
+  @override
+  Widget build(BuildContext context) => TileToggle(
+        title: widget.title,
+        expanded: _open,
+        onTap: () => setState(() => _open = !_open),
+        child: widget.child,
+      );
+}
+
+/// Wide layout: contents column with a 4px rule on its left, like the
+/// sticky side list of the web.
+class _SideContents extends StatelessWidget {
+  final double width;
+  final Widget child;
+  const _SideContents({required this.width, required this.child});
+
+  @override
+  Widget build(BuildContext context) => SizedBox(
+        width: width,
+        child: Container(
+          decoration: const BoxDecoration(
+              border: Border(left: BorderSide(color: kInk, width: 4))),
+          padding: const EdgeInsets.only(left: 14),
+          child: SingleChildScrollView(child: child),
+        ),
+      );
 }
 
 // ---------------------------------------------------------------------------
@@ -72,67 +143,112 @@ class _CalendarsScreenState extends State<CalendarsScreen> {
     }
   }
 
+  Widget _toc(String lang) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          for (final g in PagesI18n.calGroups) ...[
+            Padding(
+              padding: const EdgeInsets.only(top: 8, bottom: 4),
+              child: Text(
+                I18n.calendarGroup(lang, g.id).toUpperCase(),
+                style: mono(9,
+                    weight: FontWeight.w700, color: kInk500, letterSpacing: 1.5),
+              ),
+            ),
+            for (final id in g.calendarIds)
+              _TocLink(
+                PagesI18n.calT(lang, id, 'name') ?? I18n.calendarName(lang, id),
+                () => _scrollTo(id),
+                size: 11.5,
+              ),
+          ],
+        ],
+      );
+
+  // Group heading: thin 4px rule with the calendar count (`.cal-group-heading`).
+  Widget _groupHeading(String lang, PageCalGroup g, {required bool first}) =>
+      Container(
+        margin: EdgeInsets.only(top: first ? 0 : 28, bottom: 14),
+        padding: const EdgeInsets.only(bottom: 6),
+        decoration: const BoxDecoration(
+            border: Border(bottom: BorderSide(color: kInk, width: 4))),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
+          children: [
+            Flexible(
+              child: Text(
+                I18n.calendarGroup(lang, g.id).toUpperCase(),
+                style: mono(13, weight: FontWeight.w800, letterSpacing: 1.6),
+              ),
+            ),
+            Text('${g.calendarIds.length}',
+                style: mono(11, color: kInk600, letterSpacing: 1)),
+          ],
+        ),
+      );
+
+  Widget _cards(String lang) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (var gi = 0; gi < PagesI18n.calGroups.length; gi++) ...[
+            _groupHeading(lang, PagesI18n.calGroups[gi], first: gi == 0),
+            for (final id in PagesI18n.calGroups[gi].calendarIds) ...[
+              _CalCard(key: _cardKeys[id], lang: lang, calId: id),
+              const SizedBox(height: 14),
+            ],
+          ],
+        ],
+      );
+
   @override
   Widget build(BuildContext context) {
     final lang = widget.lang;
-    return ListView(
-      controller: _scrollCtl,
-      padding: const EdgeInsets.fromLTRB(10, 10, 10, 20),
-      children: [
-        _PageHeader(
-            PagesI18n.t(lang, 'calPageTitle'), PagesI18n.t(lang, 'calPageSubtitle')),
-        const SizedBox(height: 14),
-        // TOC — grouped list of anchor links.
-        Container(
-          decoration: slabDecoration(shadow: 4),
-          padding: const EdgeInsets.all(14),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              for (final g in PagesI18n.calGroups) ...[
-                Padding(
-                  padding: const EdgeInsets.only(top: 6, bottom: 4),
-                  child: Text(
-                    I18n.calendarGroup(lang, g.id).toUpperCase(),
-                    style: mono(9,
-                        weight: FontWeight.w700,
-                        color: kInk500,
-                        letterSpacing: 1.5),
-                  ),
-                ),
-                for (final id in g.calendarIds)
-                  InkWell(
-                    onTap: () => _scrollTo(id),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: Text(
-                        PagesI18n.calT(lang, id, 'name') ??
-                            I18n.calendarName(lang, id),
-                        style: mono(12, weight: FontWeight.w600).copyWith(
-                            decoration: TextDecoration.underline),
-                      ),
+    final header = _PageHeader(
+        PagesI18n.t(lang, 'calPageTitle'), PagesI18n.t(lang, 'calPageSubtitle'));
+    // From 901px the contents sit in a side column next to the cards.
+    if (MediaQuery.sizeOf(context).width >= 901) {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            header,
+            const SizedBox(height: 20),
+            Expanded(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _SideContents(width: 230, child: _toc(lang)),
+                  const SizedBox(width: 40),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      controller: _scrollCtl,
+                      padding: const EdgeInsets.only(bottom: 20),
+                      child: _cards(lang),
                     ),
                   ),
-              ],
-            ],
-          ),
-        ),
-        const SizedBox(height: 14),
-        for (final g in PagesI18n.calGroups) ...[
-          Padding(
-            padding: const EdgeInsets.only(top: 10, bottom: 8),
-            child: Text(
-              I18n.calendarGroup(lang, g.id).toUpperCase(),
-              style: mono(12,
-                  weight: FontWeight.w800, letterSpacing: 2, color: kInk700),
+                ],
+              ),
             ),
-          ),
-          for (final id in g.calendarIds) ...[
-            _CalCard(key: _cardKeys[id], lang: lang, calId: id),
-            const SizedBox(height: 14),
           ],
+        ),
+      );
+    }
+    return SingleChildScrollView(
+      controller: _scrollCtl,
+      padding: const EdgeInsets.fromLTRB(10, 10, 10, 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          header,
+          const SizedBox(height: 14),
+          _ContentsBox(title: PagesI18n.t(lang, 'tocTitle'), child: _toc(lang)),
+          const SizedBox(height: 14),
+          _cards(lang),
         ],
-      ],
+      ),
     );
   }
 }
@@ -294,40 +410,127 @@ class _CalCardState extends State<_CalCard> {
 // Methodology page.
 // ---------------------------------------------------------------------------
 
-class MethodologyScreen extends StatelessWidget {
+class MethodologyScreen extends StatefulWidget {
   final String lang;
   const MethodologyScreen({super.key, required this.lang});
 
   @override
+  State<MethodologyScreen> createState() => _MethodologyScreenState();
+}
+
+class _MethodologyScreenState extends State<MethodologyScreen> {
+  final _keys = {for (final s in PagesI18n.methSectionOrder) s: GlobalKey()};
+
+  void _scrollTo(String sec) {
+    final ctx = _keys[sec]?.currentContext;
+    if (ctx != null) {
+      Scrollable.ensureVisible(ctx,
+          duration: const Duration(milliseconds: 300));
+    }
+  }
+
+  Widget _toc(String lang) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          for (final sec in PagesI18n.methSectionOrder)
+            if (PagesI18n.methT(lang, sec, 'title') != null)
+              _TocLink(PagesI18n.methT(lang, sec, 'title')!,
+                  () => _scrollTo(sec),
+                  size: 11.5),
+        ],
+      );
+
+  @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(10, 10, 10, 20),
-      children: [
-        _PageHeader(PagesI18n.t(lang, 'methPageTitle'),
-            PagesI18n.t(lang, 'methPageSubtitle')),
-        const SizedBox(height: 14),
-        // Intro callout — mono block, 4px left black border + offset shadow.
-        Container(
-          decoration: BoxDecoration(
-            color: kSurface,
-            border: const Border(
-              left: BorderSide(color: kInk, width: 4),
-              top: BorderSide(color: kInk, width: 2),
-              right: BorderSide(color: kInk, width: 2),
-              bottom: BorderSide(color: kInk, width: 2),
+    final lang = widget.lang;
+    final wide = MediaQuery.sizeOf(context).width >= 801;
+    final header = _PageHeader(PagesI18n.t(lang, 'methPageTitle'),
+        PagesI18n.t(lang, 'methPageSubtitle'));
+    final intro = wide
+        // Wide: plain bold paragraph, no box.
+        ? Text(PagesI18n.t(lang, 'methIntro'),
+            style: mono(13, weight: FontWeight.w700, height: 1.55))
+        // Phone: mono block, 4px left black border + offset shadow.
+        : Container(
+            decoration: BoxDecoration(
+              color: kSurface,
+              border: const Border(
+                left: BorderSide(color: kInk, width: 4),
+                top: BorderSide(color: kInk, width: 2),
+                right: BorderSide(color: kInk, width: 2),
+                bottom: BorderSide(color: kInk, width: 2),
+              ),
+              boxShadow: brutShadow(4),
             ),
-            boxShadow: brutShadow(4),
-          ),
-          padding: const EdgeInsets.all(14),
-          child: Text(PagesI18n.t(lang, 'methIntro'),
-              style: mono(11.5, height: 1.55)),
-        ),
-        const SizedBox(height: 14),
+            padding: const EdgeInsets.all(14),
+            child: Text(PagesI18n.t(lang, 'methIntro'),
+                style: mono(11.5, height: 1.55)),
+          );
+    final sections = Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
         for (final sec in PagesI18n.methSectionOrder) ...[
-          _MethSection(lang: lang, sectionId: sec),
-          const SizedBox(height: 14),
+          _MethSection(
+              key: _keys[sec], lang: lang, sectionId: sec, flat: wide),
+          SizedBox(height: wide ? 28 : 14),
         ],
       ],
+    );
+
+    if (wide) {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            header,
+            const SizedBox(height: 20),
+            Expanded(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _SideContents(width: 200, child: _toc(lang)),
+                  const SizedBox(width: 48),
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 620),
+                        child: SingleChildScrollView(
+                          padding: const EdgeInsets.only(bottom: 20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              intro,
+                              const SizedBox(height: 28),
+                              sections,
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(10, 10, 10, 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          header,
+          const SizedBox(height: 14),
+          _ContentsBox(title: PagesI18n.t(lang, 'tocTitle'), child: _toc(lang)),
+          const SizedBox(height: 14),
+          intro,
+          const SizedBox(height: 14),
+          sections,
+        ],
+      ),
     );
   }
 }
@@ -335,7 +538,12 @@ class MethodologyScreen extends StatelessWidget {
 class _MethSection extends StatelessWidget {
   final String lang;
   final String sectionId;
-  const _MethSection({required this.lang, required this.sectionId});
+  final bool flat; // wide: a 4px top rule instead of a slab
+  const _MethSection(
+      {super.key,
+      required this.lang,
+      required this.sectionId,
+      this.flat = false});
 
   @override
   Widget build(BuildContext context) {
@@ -346,8 +554,13 @@ class _MethSection extends StatelessWidget {
     final note = PagesI18n.methT(lang, sectionId, 'note');
     final isSources = sectionId == 'methSources';
     return Container(
-      decoration: slabDecoration(shadow: 4),
-      padding: const EdgeInsets.all(16),
+      decoration: flat
+          ? const BoxDecoration(
+              border: Border(top: BorderSide(color: kInk, width: 4)))
+          : slabDecoration(shadow: 4),
+      padding: flat
+          ? const EdgeInsets.only(top: 22)
+          : const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

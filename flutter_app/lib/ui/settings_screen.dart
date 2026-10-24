@@ -3,8 +3,10 @@
 
 import 'package:flutter/material.dart';
 
+import '../engine/cal.dart';
 import '../engine/registry.dart';
 import '../i18n/i18n.dart';
+import '../i18n/pages_i18n.dart';
 import '../state/prefs.dart';
 import 'tokens.dart';
 
@@ -74,26 +76,138 @@ class _SettingsScreenState extends State<SettingsScreen> {
             final cal = kWebCalendars[calId]!;
             final current =
                 Prefs.instance.variantFor(calId) ?? cal.defaultVariant;
+            final items =
+                PagesI18n.calendarVariantItems[_lang]?[calId] ??
+                    PagesI18n.calendarVariantItems['en']?[calId] ??
+                    const <String>[];
             return _group(
               heading: I18n.t(_lang, headingKey),
               desc: I18n.t(_lang, descKey),
-              child: Wrap(
-                spacing: 6,
-                runSpacing: 6,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  for (final v in cal.variants!)
-                    _pill(kVariantLabels[v] ?? v, v == current, () {
-                      Prefs.instance.setVariant(calId, v);
-                      cal.variant = v;
-                      cal.defaultVariant = v;
-                      setState(() {});
-                    }),
+                  if (calId == 'hijri') _hijriExample(),
+                  for (var i = 0; i < cal.variants!.length; i++)
+                    _variantRow(
+                      name: _variantName(cal.variants![i]),
+                      desc: i < items.length ? items[i] : '',
+                      example: calId == 'hijri'
+                          ? _hijriVariantExample(cal.variants![i])
+                          : null,
+                      active: cal.variants![i] == current,
+                      onTap: () {
+                        final v = cal.variants![i];
+                        Prefs.instance.setVariant(calId, v);
+                        cal.variant = v;
+                        cal.defaultVariant = v;
+                        setState(() {});
+                      },
+                    ),
                 ],
               ),
             );
           }),
         ],
       ],
+    );
+  }
+
+  static const _variantNameKeys = {
+    'IIa': 'variantEastCivil',
+    'IIIa': 'variantWestCivil',
+    'IVa': 'variantHabash',
+    'Constantinople': 'variantConstantinople',
+    'Alexandrian': 'variantAlexandrian',
+    'Macedonian': 'variantMacedonian',
+    'Babylonian': 'variantBabylonian',
+    'Shahenshahi': 'variantShahenshahi',
+    'Qadimi': 'variantQadimi',
+    'Fasli': 'variantFasli',
+  };
+
+  String _variantName(String v) {
+    if (v == 'IIc') return 'Wüstenfeld (IIc)';
+    if (v == 'ChronPasch') return 'Chron. Paschale';
+    final key = _variantNameKeys[v];
+    return key == null ? (kVariantLabels[v] ?? v) : I18n.t(_lang, key);
+  }
+
+  // 1 Muharram 8 AH by each tabular variant, as a Julian date — makes the
+  // one-day differences visible (settings.html fillHijriExample).
+  String _hijriVariantExample(String variant) {
+    final d = Cal.jdToJulian(Cal.hijriToJD(8, 1, 1, variant));
+    final months = I18n.monthList(_lang, 'gregorianMonthsGen') ??
+        I18n.monthNames(_lang, 'gregorian');
+    final name = d.month - 1 < months.length ? months[d.month - 1] : '${d.month}';
+    return '${d.day} $name ${d.year}';
+  }
+
+  Widget _hijriExample() {
+    final m = I18n.monthNames(_lang, 'hijri').first;
+    final tpl = PagesI18n.t(_lang, 'settingsExample');
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Text(tpl.replaceAll('{m}', m),
+          style: mono(10.5, color: kInk500, height: 1.4)),
+    );
+  }
+
+  // Radio row: square, name + description, optional example on the right.
+  Widget _variantRow({
+    required String name,
+    required String desc,
+    required bool active,
+    required VoidCallback onTap,
+    String? example,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: kSurface,
+          border: Border.all(color: active ? kSignal : kInk, width: 2),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 18,
+              height: 18,
+              margin: const EdgeInsets.only(top: 1),
+              decoration: BoxDecoration(
+                color: active ? kSignal : Colors.transparent,
+                border: Border.all(color: active ? kSignal : kInk, width: 2),
+              ),
+              child: active
+                  ? const Icon(Icons.check, size: 12, color: kWhite)
+                  : null,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(name, style: mono(12.5, weight: FontWeight.w800)),
+                  if (desc.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Text(desc,
+                          style: mono(10.5, color: kInk600, height: 1.45)),
+                    ),
+                ],
+              ),
+            ),
+            if (example != null)
+              Padding(
+                padding: const EdgeInsets.only(left: 12),
+                child: Text(example,
+                    style: mono(11, weight: FontWeight.w700, color: kInk700)),
+              ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -125,8 +239,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         constraints: const BoxConstraints(minHeight: 44),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
-          color: active ? kInk : kSurface,
-          border: Border.all(color: kInk, width: 2),
+          color: active ? kSignal : kSurface,
+          border: Border.all(color: active ? kSignal : kInk, width: 2),
         ),
         alignment: Alignment.center,
         child: Text(

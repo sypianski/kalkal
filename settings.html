@@ -49,48 +49,98 @@
       </div>
 
       <div class="settings-page-group">
-        <h2 class="settings-page-heading" data-i18n="settingsHijriHeading">Hijri calendar variant</h2>
+        <h2 class="settings-page-heading" id="set-hijri" data-i18n="settingsHijriHeading">Hijri calendar variant</h2>
         <p class="settings-page-desc" data-i18n="settingsHijriDesc">Tabular variants differ in which years of the 30-year cycle are leap. Wüstenfeld (IIc) is the standard for historical scholarship.</p>
-        <div class="settings-page-row">
-          <button class="settings-page-btn" data-var-cal="hijri" data-var-val="IIc">Wüstenfeld (IIc)</button>
-          <button class="settings-page-btn" data-var-cal="hijri" data-var-val="IIa" data-i18n="variantEastCivil">East civil (IIa)</button>
-          <button class="settings-page-btn" data-var-cal="hijri" data-var-val="IIIa" data-i18n="variantWestCivil">West civil (IIIa)</button>
-          <button class="settings-page-btn" data-var-cal="hijri" data-var-val="IVa" data-i18n="variantHabash">Ḥabash (IVa)</button>
+        <p class="settings-example" id="hijri-example" hidden></p>
+        <div class="settings-variants" role="radiogroup" aria-labelledby="set-hijri">
+          <button type="button" class="settings-variant" role="radio" aria-checked="false" data-var-cal="hijri" data-var-val="IIc">
+            <span class="settings-radio" aria-hidden="true"></span>
+            <span class="settings-variant-text"><span class="settings-variant-name">Wüstenfeld (IIc)</span><span class="settings-variant-desc"></span></span>
+            <span class="settings-variant-example"></span>
+          </button>
+          <button type="button" class="settings-variant" role="radio" aria-checked="false" data-var-cal="hijri" data-var-val="IIa">
+            <span class="settings-radio" aria-hidden="true"></span>
+            <span class="settings-variant-text"><span class="settings-variant-name" data-i18n="variantEastCivil">East civil (IIa)</span><span class="settings-variant-desc"></span></span>
+            <span class="settings-variant-example"></span>
+          </button>
+          <button type="button" class="settings-variant" role="radio" aria-checked="false" data-var-cal="hijri" data-var-val="IIIa">
+            <span class="settings-radio" aria-hidden="true"></span>
+            <span class="settings-variant-text"><span class="settings-variant-name" data-i18n="variantWestCivil">West civil (IIIa)</span><span class="settings-variant-desc"></span></span>
+            <span class="settings-variant-example"></span>
+          </button>
+          <button type="button" class="settings-variant" role="radio" aria-checked="false" data-var-cal="hijri" data-var-val="IVa">
+            <span class="settings-radio" aria-hidden="true"></span>
+            <span class="settings-variant-text"><span class="settings-variant-name" data-i18n="variantHabash">Ḥabash (IVa)</span><span class="settings-variant-desc"></span></span>
+            <span class="settings-variant-example"></span>
+          </button>
         </div>
       </div>
 
       <div class="settings-page-group">
-        <h2 class="settings-page-heading" data-i18n="settingsByzantineHeading">Byzantine calendar variant</h2>
+        <h2 class="settings-page-heading" id="set-byzantine" data-i18n="settingsByzantineHeading">Byzantine calendar variant</h2>
         <p class="settings-page-desc" data-i18n="settingsByzantineDesc">Variants differ in the epoch of Creation (Anno Mundi) and the start of the new year.</p>
-        <div class="settings-page-row">
-          <button class="settings-page-btn" data-var-cal="byzantine" data-var-val="Constantinople" data-i18n="variantConstantinople">Constantinople</button>
-          <button class="settings-page-btn" data-var-cal="byzantine" data-var-val="Alexandrian" data-i18n="variantAlexandrian">Alexandrian</button>
-          <button class="settings-page-btn" data-var-cal="byzantine" data-var-val="ChronPasch">Chron. Paschale</button>
+        <div class="settings-variants" role="radiogroup" aria-labelledby="set-byzantine">
+          <button type="button" class="settings-variant" role="radio" aria-checked="false" data-var-cal="byzantine" data-var-val="Constantinople">
+            <span class="settings-radio" aria-hidden="true"></span>
+            <span class="settings-variant-text"><span class="settings-variant-name" data-i18n="variantConstantinople">Constantinople</span><span class="settings-variant-desc"></span></span>
+            <span class="settings-variant-example"></span>
+          </button>
+          <button type="button" class="settings-variant" role="radio" aria-checked="false" data-var-cal="byzantine" data-var-val="Alexandrian">
+            <span class="settings-radio" aria-hidden="true"></span>
+            <span class="settings-variant-text"><span class="settings-variant-name" data-i18n="variantAlexandrian">Alexandrian</span><span class="settings-variant-desc"></span></span>
+            <span class="settings-variant-example"></span>
+          </button>
+          <button type="button" class="settings-variant" role="radio" aria-checked="false" data-var-cal="byzantine" data-var-val="ChronPasch">
+            <span class="settings-radio" aria-hidden="true"></span>
+            <span class="settings-variant-text"><span class="settings-variant-name">Chron. Paschale</span><span class="settings-variant-desc"></span></span>
+            <span class="settings-variant-example"></span>
+          </button>
         </div>
       </div>
 
       <div class="settings-page-group">
-        <h2 class="settings-page-heading" data-i18n="settingsSeleucidHeading">Seleucid calendar variant</h2>
+        <h2 class="settings-page-heading" id="set-seleucid" data-i18n="settingsSeleucidHeading">Seleucid calendar variant</h2>
         <p class="settings-page-desc" data-i18n="settingsSeleucidDesc">Macedonian and Babylonian variants use the same era but differ in the month order.</p>
-        <div class="settings-page-row">
-          <button class="settings-page-btn" data-var-cal="seleucid" data-var-val="Macedonian" data-i18n="variantMacedonian">Macedonian</button>
-          <button class="settings-page-btn" data-var-cal="seleucid" data-var-val="Babylonian" data-i18n="variantBabylonian">Babylonian</button>
+        <div class="settings-variants" role="radiogroup" aria-labelledby="set-seleucid">
+          <button type="button" class="settings-variant" role="radio" aria-checked="false" data-var-cal="seleucid" data-var-val="Macedonian">
+            <span class="settings-radio" aria-hidden="true"></span>
+            <span class="settings-variant-text"><span class="settings-variant-name" data-i18n="variantMacedonian">Macedonian</span><span class="settings-variant-desc"></span></span>
+            <span class="settings-variant-example"></span>
+          </button>
+          <button type="button" class="settings-variant" role="radio" aria-checked="false" data-var-cal="seleucid" data-var-val="Babylonian">
+            <span class="settings-radio" aria-hidden="true"></span>
+            <span class="settings-variant-text"><span class="settings-variant-name" data-i18n="variantBabylonian">Babylonian</span><span class="settings-variant-desc"></span></span>
+            <span class="settings-variant-example"></span>
+          </button>
         </div>
       </div>
 
       <div class="settings-page-group">
-        <h2 class="settings-page-heading" data-i18n="settingsYazdgerdiHeading">Yazdgerdi (Zoroastrian) calendar variant</h2>
+        <h2 class="settings-page-heading" id="set-yazdgerdi" data-i18n="settingsYazdgerdiHeading">Yazdgerdi (Zoroastrian) calendar variant</h2>
         <p class="settings-page-desc" data-i18n="settingsYazdgerdiDesc">Three calendar systems sharing the Zoroastrian wandering year but starting from different reform epochs.</p>
-        <div class="settings-page-row">
-          <button class="settings-page-btn" data-var-cal="yazdgerdi" data-var-val="Shahenshahi" data-i18n="variantShahenshahi">Shahenshahi</button>
-          <button class="settings-page-btn" data-var-cal="yazdgerdi" data-var-val="Qadimi" data-i18n="variantQadimi">Qadimi</button>
-          <button class="settings-page-btn" data-var-cal="yazdgerdi" data-var-val="Fasli" data-i18n="variantFasli">Fasli</button>
+        <div class="settings-variants" role="radiogroup" aria-labelledby="set-yazdgerdi">
+          <button type="button" class="settings-variant" role="radio" aria-checked="false" data-var-cal="yazdgerdi" data-var-val="Shahenshahi">
+            <span class="settings-radio" aria-hidden="true"></span>
+            <span class="settings-variant-text"><span class="settings-variant-name" data-i18n="variantShahenshahi">Shahenshahi</span><span class="settings-variant-desc"></span></span>
+            <span class="settings-variant-example"></span>
+          </button>
+          <button type="button" class="settings-variant" role="radio" aria-checked="false" data-var-cal="yazdgerdi" data-var-val="Qadimi">
+            <span class="settings-radio" aria-hidden="true"></span>
+            <span class="settings-variant-text"><span class="settings-variant-name" data-i18n="variantQadimi">Qadimi</span><span class="settings-variant-desc"></span></span>
+            <span class="settings-variant-example"></span>
+          </button>
+          <button type="button" class="settings-variant" role="radio" aria-checked="false" data-var-cal="yazdgerdi" data-var-val="Fasli">
+            <span class="settings-radio" aria-hidden="true"></span>
+            <span class="settings-variant-text"><span class="settings-variant-name" data-i18n="variantFasli">Fasli</span><span class="settings-variant-desc"></span></span>
+            <span class="settings-variant-example"></span>
+          </button>
         </div>
       </div>
 
     </section>
   </main>
 
+  <script src="js/hijri.js?v=46"></script>
   <script src="js/i18n.js?v=46"></script>
   <script src="js/pages.js?v=46"></script>
   <script>
@@ -106,7 +156,9 @@
       document.querySelectorAll('[data-var-cal]').forEach(function(btn) {
         var cal = btn.dataset.varCal;
         var stored = localStorage.getItem(VARIANTS[cal].key) || VARIANTS[cal].def;
-        btn.classList.toggle('active', btn.dataset.varVal === stored);
+        var on = btn.dataset.varVal === stored;
+        btn.classList.toggle('active', on);
+        btn.setAttribute('aria-checked', String(on));
       });
       var lang = localStorage.getItem('kalkal-lang') || 'en';
       document.querySelectorAll('[data-lang-pick]').forEach(function(btn) {
@@ -130,6 +182,39 @@
       });
     });
 
+    // Descriptions come from the same per-variant texts the Calendars page uses.
+    function pageLang() {
+      var lang = localStorage.getItem('kalkal-lang') || 'en';
+      return (typeof PageI18N !== 'undefined' && PageI18N[lang]) ? lang : 'en';
+    }
+
+    function fillDescriptions() {
+      var t = PageI18N[pageLang()];
+      Object.keys(VARIANTS).forEach(function(cal) {
+        var items = (t[cal] && t[cal].variantsItems) || PageI18N.en[cal].variantsItems || [];
+        document.querySelectorAll('[data-var-cal="' + cal + '"]').forEach(function(btn, i) {
+          btn.querySelector('.settings-variant-desc').textContent = items[i] || '';
+        });
+      });
+    }
+
+    // The same Hijri date converted by each tabular variant, so the difference is visible.
+    // Cal is the shared engine; 1 Muharram 8 AH falls on 1 May or 30 April 629 (Julian).
+    function fillHijriExample() {
+      var note = document.getElementById('hijri-example');
+      if (typeof Cal === 'undefined' || typeof I18N === 'undefined' || !note) return;
+      var lang = pageLang(), t = I18N[lang] || I18N.en;
+      var months = t.gregorianMonthsGen || t.gregorianMonths;
+      document.querySelectorAll('[data-var-cal="hijri"]').forEach(function(btn) {
+        var d = Cal.jdToJulian(Cal.hijriToJD(8, 1, 1, btn.dataset.varVal));
+        btn.querySelector('.settings-variant-example').textContent = d.day + ' ' + months[d.month - 1] + ' ' + d.year;
+      });
+      note.textContent = (PageI18N[lang].settingsExample || PageI18N.en.settingsExample).replace('{m}', t.hijriMonths[0]);
+      note.hidden = false;
+    }
+
+    fillDescriptions();
+    fillHijriExample();
     syncActive();
   })();
   </script>

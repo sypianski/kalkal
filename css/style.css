@@ -7355,3 +7355,36 @@ body {
   .intro-steps li::before { background: var(--brut-signal); }
   .bridge-cal { color: var(--brut-signal); }
 }
+
+/* ---- TASK-4 step 4: three copy buttons inside the result card ---- */
+.copy-trio {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs) var(--space-sm);
+  margin-block-start: var(--space-md);
+}
+.copy-trio-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  padding: 0.35rem 0.7rem;
+  border: 2px solid #000;
+  background: #fff;
+  color: #000;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: start;
+}
+.copy-trio-btn:hover,
+.copy-trio-btn:focus-visible {
+  background: #000;
+  color: #fff;
+}
+.copy-trio-btn.copied {
+  background: var(--brut-signal);
+  border-color: var(--brut-signal);
+  color: #fff;
+}
+.copy-trio-icon { font-size: 0.95em; }

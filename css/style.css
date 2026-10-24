@@ -7300,3 +7300,58 @@ body {
     padding-block-start: calc(var(--space-md) + env(safe-area-inset-top, 0px));
   }
 }
+
+/* ---- TASK-4 step 3: numbered steps in the empty state, calendar tags in results ---- */
+.intro-steps {
+  list-style: none;
+  counter-reset: intro-step;
+  margin: var(--space-xs) 0 0;
+  padding: var(--space-sm) 0 0;
+  border-top: 2px solid var(--parchment-200);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+.intro-steps li {
+  counter-increment: intro-step;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--ink-700);
+}
+.intro-steps li::before {
+  content: counter(intro-step);
+  flex: 0 0 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+.bridge-cal {
+  margin-inline-start: 0.5em;
+  font-family: var(--font-mono);
+  font-size: 0.4em;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  vertical-align: 0.55em;
+  white-space: nowrap;
+  color: var(--ink-500, var(--ink-400));
+}
+.bridge-eq {
+  margin: 0;
+  padding: var(--space-xs) 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-500, var(--ink-400));
+}
+@media (min-width: 601px) {
+  .intro-steps li::before { background: var(--brut-signal); }
+  .bridge-cal { color: var(--brut-signal); }
+}

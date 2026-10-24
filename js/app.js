@@ -1127,8 +1127,12 @@
     var tgtFullText = tgtDetailSp ? (tgtDetailSp + ' ' + tgtYearStr.replace(/\u00a0/g, ' ')) : tgtYearStr.replace(/\u00a0/g, ' ');
 
     var bridge = el('div', { class: 'result-bridge bridge-single-line' });
-    bridge.appendChild(el('span', { class: 'bridge-tgt-full', text: tgtFullText }));
-    bridge.appendChild(el('span', { class: 'bridge-src-caption', text: srcFullText }));
+    var tgtFullEl = el('span', { class: 'bridge-tgt-full' }, tgtFullText);
+    var tgtTag = calTag(tgt.id);
+    if (tgtTag) tgtFullEl.appendChild(el('small', { class: 'bridge-cal', text: tgtTag }));
+    bridge.appendChild(tgtFullEl);
+    var srcTag = calTag(src.id);
+    bridge.appendChild(el('span', { class: 'bridge-src-caption', text: srcFullText + (srcTag ? ' ' + srcTag : '') }));
     elements.push(bridge);
 
     // Hidden element for legacy copy-button (full target date string)
@@ -1368,6 +1372,7 @@
 
     const rangeElements = [
       rangeBridge,
+      buildBridgeEq(srcNames[m1 - 1] + ' ' + smartSrcYears, src.id, smartTgtYears, tgt.id),
       el('p', { class: 'result-span' },
         el('span', { class: 'date-val', text: tgtStartStr }),
         ' \u2013 ',
@@ -1461,6 +1466,7 @@
 
     const yearElements = [
       rangeBridge,
+      buildBridgeEq(String(year) + ySrcSuf, src.id, smartYrTgtYears, tgt.id),
       el('p', { class: 'result-span' },
         el('span', { class: 'date-val', text: tgtStartStr }), ' – ',
         el('span', { class: 'date-val', text: tgtEndStr })
@@ -1605,6 +1611,13 @@
     bridge.appendChild(endCol);
 
     return bridge;
+  }
+
+  // "1445 AH = 2023–2024 AD" line under a range bridge
+  function buildBridgeEq(srcPart, srcId, tgtPart, tgtId) {
+    var st = calTag(srcId), tt = calTag(tgtId);
+    return el('p', { class: 'bridge-eq', text:
+      srcPart + (st ? ' ' + st : '') + ' = ' + tgtPart + (tt ? ' ' + tt : '') });
   }
 
   function fmtDateRange(names, s, e) {
@@ -2074,9 +2087,17 @@
       solarHijri: 'SH', byzantine: 'Byz.', alexandrian: 'Alex.',
       seleucid: 'Sel.', syriac: 'Syr.', rumi: 'R\u016bm\u012b',
       egyptian: 'Egypt.', spanish: 'Span.',
-      roman: 'Rom.', olympiad: 'Ol.', macedonian: 'Mac.'
+      roman: 'Rom.', olympiad: 'Ol.', macedonian: 'Mac.',
+      ilkhani: 'Ilkh.', antiochene: 'Ant.', hebrew: 'AM', babylonian: 'Bab.',
+      bp: 'BP', human: 'HE'
     };
     return SHORT[id] || id;
+  }
+
+  // Tag shown next to a date in the result card. Roman dates already carry
+  // an "AUC" suffix, so they get no extra tag.
+  function calTag(id) {
+    return id === 'roman' ? '' : shortCalName(id);
   }
 
   function fmtDate(cal, t, y, m, d, omitYear) {

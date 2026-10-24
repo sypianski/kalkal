@@ -4,6 +4,7 @@ title: Podmiana głównej strony webowej na Flutter web (etap 3)
 status: To Do
 assignee: []
 created_date: '2026-10-24 12:26'
+updated_date: '2026-10-24 12:27'
 labels:
   - flutter
   - web
@@ -14,5 +15,5 @@ ordinal: 13000
 ## Description
 
 <!-- SECTION:DESCRIPTION:BEGIN -->
-Po zadaniach Dynastie, Zaćmienia, AI: Flutter pod /, stary web pod /classic/, przekierowania starych adresów (calendars.html, methodology.html itd.), sw.js który wyrejestruje się i wyczyści cache u obecnych użytkowników, privacy.html i android.html zostają. Wymaga osobnej zgody przed deployem.
+Etap 3. Dynastie i Zaćmienia są odroczone (TASK-10, TASK-11) i nie blokują. Przed podmianą zostaje decyzja o AI (TASK-12). Plan: Flutter pod /, stary web pod /classic/ (tam zostają dynasties.html, eclipses.html i maps/), przekierowania starych adresów, sw.js który wyrejestruje się i wyczyści cache u obecnych użytkowników, privacy.html i android.html zostają. Wymaga osobnej zgody przed deployem.
 <!-- SECTION:DESCRIPTION:END -->

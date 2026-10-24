@@ -7602,3 +7602,59 @@ body[data-page="settings"] .settings-variant-example { grid-column: 3; grid-row:
   }
 }
 body[data-page="settings"] .settings-variant:last-child { border-block-end: 0; }
+
+/* UX 2026-10 (TASK-2 step 5): Methodology — one column with a sticky contents list */
+body[data-page="methodology"] .meth-toc-list a.active { color: var(--brut-signal); padding-inline-start: 0.4em; }
+body[data-page="methodology"] .meth-toc-list a.active::before { color: var(--brut-signal); }
+body[data-page="methodology"] .meth-toc-title { cursor: pointer; }
+@media (min-width: 801px) {
+  body[data-page="methodology"] .meth-layout {
+    display: grid;
+    grid-template-columns: 200px minmax(0, 62ch);
+    column-gap: 48px;
+    justify-content: start;
+    align-items: start;
+  }
+  body[data-page="methodology"] .meth-toc {
+    position: sticky;
+    top: var(--space-lg);
+    background: transparent;
+    border: 0;
+    border-inline-start: 4px solid #000;
+    box-shadow: none;
+    margin-block-end: 0;
+    padding: 0 0 0 var(--space-md);
+    overflow: visible;
+  }
+  body[data-page="methodology"] .meth-toc-title { display: none; }
+  body[data-page="methodology"] .meth-toc-list li { border-block-end: 0; }
+  body[data-page="methodology"] .meth-toc-list a { padding-block: 0.35em; font-size: 0.88rem; }
+  body[data-page="methodology"] .meth-intro {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+    margin-block-end: var(--space-xl);
+    font-size: 1rem;
+    font-weight: 700;
+  }
+  body[data-page="methodology"] .meth-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+  body[data-page="methodology"] .meth-section {
+    background: transparent;
+    border: 0;
+    border-block-start: 4px solid #000;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 22px 0 0;
+    margin-block-end: var(--space-xl);
+    scroll-margin-top: var(--space-lg);
+  }
+}
+@media (max-width: 800px) {
+  body[data-page="methodology"] .meth-toc { margin-block-end: var(--space-lg); padding: var(--space-md) var(--space-lg); }
+  body[data-page="methodology"] .meth-toc-title { margin: 0; }
+  body[data-page="methodology"] .meth-toc[open] .meth-toc-title { margin-block-end: var(--space-sm); }
+}

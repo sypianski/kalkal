@@ -36,12 +36,9 @@
     </nav>
   </header>
 
-  <main class="main-content main-content--prose">
-
-    <p class="meth-intro">kalkal is a zero-dependency, client-side date converter built entirely with arithmetic algorithms. All conversions are deterministic, reproducible, and independently verifiable.</p>
-
-    <nav class="meth-toc">
-      <h2 class="meth-toc-title">Contents</h2>
+  <main class="main-content main-content--prose meth-layout">
+    <details class="meth-toc" open>
+      <summary class="meth-toc-title">Contents</summary>
       <ol class="meth-toc-list">
         <li><a href="#methJDN">Julian Day Number as Universal Pivot</a></li>
         <li><a href="#methArchitecture">Architecture and Construction</a></li>
@@ -50,7 +47,10 @@
         <li><a href="#methSources">Sources and References</a></li>
         <li><a href="#methLinks">Coverage and Similar Tools</a></li>
       </ol>
-    </nav>
+    </details>
+
+    <div class="meth-main">
+    <p class="meth-intro">kalkal is a zero-dependency, client-side date converter built entirely with arithmetic algorithms. All conversions are deterministic, reproducible, and independently verifiable.</p>
 
     <div class="meth-grid">
 
@@ -175,6 +175,9 @@
     </section>
 
 
+  
+    </div>
+
   </main>
 
 
@@ -243,6 +246,33 @@
     t.appendChild(tbody);
 
     orig.parentNode.appendChild(t);
+  })();
+  </script>
+  <script>
+  // Contents: open on desktop, collapsed on phones; highlight the section in view
+  (function() {
+    var toc = document.querySelector('.meth-toc');
+    var links = document.querySelectorAll('.meth-toc-list a');
+    if (!toc || !links.length) return;
+    var mq = window.matchMedia('(min-width: 801px)');
+    function sync() { toc.open = mq.matches; }
+    sync();
+    if (mq.addEventListener) mq.addEventListener('change', sync);
+    if (!('IntersectionObserver' in window)) return;
+    var sections = document.querySelectorAll('[data-meth]');
+    var visible = {};
+    function mark() {
+      var cur = null;
+      sections.forEach(function(s) { if (visible[s.id] && !cur) cur = s.id; });
+      links.forEach(function(a) {
+        a.classList.toggle('active', !!cur && a.getAttribute('href') === '#' + cur);
+      });
+    }
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) { visible[e.target.id] = e.isIntersecting; });
+      mark();
+    }, { rootMargin: '0px 0px -60% 0px' });
+    sections.forEach(function(s) { if (s.id) io.observe(s); });
   })();
   </script>
 </body>

@@ -14,6 +14,9 @@
   --brut-dim: #888;
   --brut-border: #000;
   --brut-mono: 'Noto Sans Mono', 'Courier New', monospace;
+  /* Signal colour: only for things you click or choose (desktop) */
+  --brut-signal: #1b3dff;
+  --brut-signal-dark: #0d27b8;
 
   --parchment-100: var(--brut-surface);
   --parchment-200: #e8e8e4;
@@ -7215,4 +7218,53 @@ body {
     align-items: center !important;
     justify-content: center !important;
   }
+}
+
+/* ==========================================================
+   UX 2026-10 (TASK-4) — desktop only (> 600px).
+   Mobile (<= 600px) keeps its own numbered "slab" layout above.
+   ========================================================== */
+
+.to-label { display: none; }
+
+@media (min-width: 601px) {
+  /* Signal colour on the main action */
+  .btn-convert { background: var(--brut-signal); }
+  .btn-convert:hover { background: var(--brut-signal-dark); }
+
+  /* Target calendar: signal "To" cell on the left, field on the right */
+  .to-calendar-field {
+    display: flex;
+    align-items: stretch;
+    padding: 0;
+  }
+  .to-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 4.5rem;
+    background: var(--brut-signal);
+    color: #fff;
+    font-family: var(--brut-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .to-body {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: var(--space-md) var(--space-xl);
+  }
+
+  /* Month / Day: label above the field, like From and Year */
+  .refine-field {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+  .refine-label {
+    margin-block-start: 0;
+    margin-block-end: 0.3em;
+  }
+  .refine-label::after { content: none; }
 }

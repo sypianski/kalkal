@@ -87,9 +87,12 @@
       <div class="converter-right">
 
         <div class="to-calendar-field" id="to-calendar-field" hidden>
-          <input type="text" id="to-calendar" class="to-calendar-input" autocomplete="off" inputmode="none">
-          <a id="to-cal-desc" class="cal-desc-link" hidden></a>
-          <div class="variant-bar" id="to-variants"></div>
+          <span class="to-label" data-i18n="toLabel">To</span>
+          <div class="to-body">
+            <input type="text" id="to-calendar" class="to-calendar-input" autocomplete="off" inputmode="none">
+            <a id="to-cal-desc" class="cal-desc-link" hidden></a>
+            <div class="variant-bar" id="to-variants"></div>
+          </div>
         </div>
 
         <section class="result-card result-panel" id="result-panel" aria-live="polite" hidden>

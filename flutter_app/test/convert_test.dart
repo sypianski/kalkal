@@ -165,4 +165,19 @@ void main() {
     expect(ids, containsAll(['hebrew', 'coptic', 'solarHijri']));
     expect(rows.firstWhere((r) => r.calId == 'hebrew').yearStr, '5783');
   });
+
+  test('contextualRows: whole-year range ending in Yazdgerdi epagomenal days '
+      'does not throw (TASK-14)', () {
+    final out = convert(
+      src: kWebCalendars['hijri']!,
+      tgt: kWebCalendars['gregorian']!,
+      year: 656,
+      month: null,
+      day: null,
+      lang: 'en',
+    );
+    final rows = contextualRows(out.jd, out.jdEnd, 'hijri', 'gregorian', 'en');
+    expect(rows.any((r) => r.calId == 'yazdgerdi'), isFalse);
+    expect(rows, isNotEmpty);
+  });
 }

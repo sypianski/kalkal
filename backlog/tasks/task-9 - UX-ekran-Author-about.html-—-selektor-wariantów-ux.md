@@ -1,10 +1,10 @@
 ---
 id: TASK-9
 title: 'UX: ekran Author (about.html) — selektor wariantów (/ux)'
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-10-24 10:46'
-updated_date: '2026-10-24 10:53'
+updated_date: '2026-10-24 11:07'
 labels:
   - ux
   - web

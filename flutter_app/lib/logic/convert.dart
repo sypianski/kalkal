@@ -771,9 +771,14 @@ List<ContextRow> contextualRows(
     if (jd < range[0] || jd > range[1]) continue;
     final r = cal.fromJD(jd);
     final names = cal.monthNamesGen(lang);
+    final e = jdEnd != null ? cal.fromJD(jdEnd) : null;
+    // Skip calendars whose month has no name (Yazdgerdi's 13th month, TASK-14):
+    // an index error here would abort the whole setState and hide the result.
+    if (r.month > names.length || (e != null && e.month > names.length)) {
+      continue;
+    }
     String yearStr, datesStr;
-    if (jdEnd != null) {
-      final e = cal.fromJD(jdEnd);
+    if (e != null) {
       yearStr = r.year == e.year ? '${r.year}' : '${r.year}–${e.year}';
       datesStr =
           '${r.day} ${names[r.month - 1]} – ${e.day} ${names[e.month - 1]}';

@@ -158,6 +158,33 @@ platform :ios do
       force: true
     )
   end
+  desc "Metadane + zrzuty + wersja z pubspec dla juz wgranego builda — BEZ submitu do App Review"
+  lane :prepare do |options|
+    # Wersja/build z argumentow (np. `fastlane ios prepare version:1.0.4 build:7`), zeby celowac
+    # w build faktycznie wgrany do TestFlight; bez argumentow — z pubspec.yaml.
+    version = options[:version]
+    build = options[:build]
+    if version.nil? || build.nil?
+      pubspec = File.read(File.join(ROOT_DIR, "pubspec.yaml"))
+      pubspec =~ /^version:\s*(\d+\.\d+\.\d+)\+(\d+)/
+      raise "nie znaleziono `version: X.Y.Z+B` w pubspec.yaml" unless $1
+      version ||= $1
+      build ||= $2
+    end
+    UI.important("prepare: wersja #{version}, build #{build} (bez submitu do App Review)")
+    deliver(
+      api_key: api_key,
+      app_version: version.to_s,
+      build_number: build.to_s,
+      skip_binary_upload: true,
+      skip_screenshots: false,
+      skip_metadata: false,
+      submit_for_review: false,
+      automatic_release: false,
+      force: true
+    )
+  end
+
   desc "Tylko deliver: metadane+zrzuty+submit na juz wgranym buildzie (bez rebuildu)"
   lane :submit do
     deliver(

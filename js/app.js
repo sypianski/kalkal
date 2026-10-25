@@ -1670,6 +1670,8 @@
       if (jd < lo || jd > hi) continue;
       const result = cal.fromJD(jd);
       const names = genNames(cal, t);
+      // Skip calendars whose month has no name (Yazdgerdi's 13th month, TASK-14)
+      if (result.month > names.length || (isRange && cal.fromJD(jdEnd).month > names.length)) continue;
       let yearStr, datesStr;
       if (isRange) {
         const endResult = cal.fromJD(jdEnd);
@@ -1722,6 +1724,8 @@
       if (jd >= lo && jd <= hi) continue;
       const result = cal.fromJD(jd);
       const names = genNames(cal, t);
+      // Skip calendars whose month has no name (Yazdgerdi's 13th month, TASK-14)
+      if (result.month > names.length || (isRange && cal.fromJD(jdEnd).month > names.length)) continue;
       let yearStr, datesStr;
       if (isRange) {
         const endResult = cal.fromJD(jdEnd);

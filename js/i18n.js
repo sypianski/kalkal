@@ -431,7 +431,11 @@ const I18N = {
     settingsSeleucidHeading: 'Seleucid calendar variant',
     settingsSeleucidDesc: 'Macedonian and Babylonian variants use the same era but differ in the month order.',
     settingsYazdgerdiHeading: 'Yazdgerdi (Zoroastrian) calendar variant',
-    settingsYazdgerdiDesc: 'Three calendar systems sharing the Zoroastrian wandering year but starting from different reform epochs.'
+    settingsYazdgerdiDesc: 'Three calendar systems sharing the Zoroastrian wandering year but starting from different reform epochs.',
+    settingsDisplayHeading: 'Display mode (e-ink)',
+    settingsDisplayDesc: 'E-ink mode: pure black on white, larger text, no grey tones, animations or colour. It switches on by itself on screens that report slow refresh; choose here to force it on or off.',
+    displayStandard: 'Standard',
+    displayEink: 'E-ink'
   },
 
   pl: {
@@ -866,7 +870,11 @@ const I18N = {
     settingsSeleucidHeading: 'Wariant kalendarza seleucydzkiego',
     settingsSeleucidDesc: 'Warianty macedo\u0144ski i babilo\u0144ski u\u017cywaj\u0105 tej samej ery, lecz r\u00f3\u017cni\u0105 si\u0119 kolejno\u015bci\u0105 miesi\u0119cy.',
     settingsYazdgerdiHeading: 'Wariant kalendarza jazdegerdiego (zaratusztria\u0144skiego)',
-    settingsYazdgerdiDesc: 'Trzy systemy kalendarzowe oparte na zoroastryjskim roku w\u0119drownym, lecz z r\u00f3\u017cnymi epochami reformy.'
+    settingsYazdgerdiDesc: 'Trzy systemy kalendarzowe oparte na zoroastryjskim roku w\u0119drownym, lecz z r\u00f3\u017cnymi epochami reformy.',
+    settingsDisplayHeading: 'Tryb wy\u015bwietlania (e-ink)',
+    settingsDisplayDesc: 'Tryb e-ink: czysta czer\u0144 na bieli, wi\u0119kszy tekst, bez szaro\u015bci, animacji i kolor\u00f3w. W\u0142\u0105cza si\u0119 sam na ekranach zg\u0142aszaj\u0105cych wolne od\u015bwie\u017canie; tutaj mo\u017cesz go wymusi\u0107 lub wy\u0142\u0105czy\u0107.',
+    displayStandard: 'Standardowy',
+    displayEink: 'E-ink'
   },
 
   eo: {
@@ -1297,6 +1305,10 @@ const I18N = {
     settingsSeleucidHeading: 'Varianto de la seleŭkida kalendaro',
     settingsSeleucidDesc: 'Makedonaj kaj babilonaj variantoj uzas la saman epokon sed diferencas laŭ la monata ordo.',
     settingsYazdgerdiHeading: 'Varianto de la jazdegerda (zoroastra) kalendaro',
-    settingsYazdgerdiDesc: 'Tri kalendaraj sistemoj, kiuj dividas la zoroastan vagajaron, sed komenciĝas de malsamaj reformaj epokoj.'
+    settingsYazdgerdiDesc: 'Tri kalendaraj sistemoj, kiuj dividas la zoroastan vagajaron, sed komenciĝas de malsamaj reformaj epokoj.',
+    settingsDisplayHeading: 'Montra reĝimo (e-ink)',
+    settingsDisplayDesc: 'E-ink-reĝimo: pura nigro sur blanko, pli granda teksto, sen grizoj, animacioj kaj koloroj. Ĝi ŝaltiĝas mem sur ekranoj kun malrapida refreŝigo; ĉi tie vi povas devigi aŭ malŝalti ĝin.',
+    displayStandard: 'Norma',
+    displayEink: 'E-ink'
   }
 };

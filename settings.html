@@ -4,8 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>kalkal — Settings</title>
+  <script src="js/display.js?v=49"></script>
   <link rel="stylesheet" href="css/fonts.css">
   <link rel="stylesheet" href="css/style.css?v=49">
+  <link rel="stylesheet" href="css/eink.css?v=49">
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#f0f0ec">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -45,6 +47,15 @@
           <button class="settings-page-btn" data-lang-pick="en">EN — English</button>
           <button class="settings-page-btn" data-lang-pick="pl">PL — Polski</button>
           <button class="settings-page-btn" data-lang-pick="eo">EO — Esperanto</button>
+        </div>
+      </div>
+
+      <div class="settings-page-group">
+        <h2 class="settings-page-heading" data-i18n="settingsDisplayHeading">Display mode (e-ink)</h2>
+        <p class="settings-page-desc" data-i18n="settingsDisplayDesc">E-ink mode: pure black on white, larger text, no grey tones, animations or colour. It switches on by itself on screens that report slow refresh; choose here to force it on or off.</p>
+        <div class="settings-page-row">
+          <button class="settings-page-btn" data-display-pick="normal" data-i18n="displayStandard">Standard</button>
+          <button class="settings-page-btn" data-display-pick="eink" data-i18n="displayEink">E-ink</button>
         </div>
       </div>
 
@@ -164,7 +175,23 @@
       document.querySelectorAll('[data-lang-pick]').forEach(function(btn) {
         btn.classList.toggle('active', btn.dataset.langPick === lang);
       });
+      // Stan faktyczny (uwzględnia autodetekcję), nie tylko zapisany wybór.
+      var display = document.documentElement.getAttribute('data-display') === 'eink' ? 'eink' : 'normal';
+      document.querySelectorAll('[data-display-pick]').forEach(function(btn) {
+        btn.classList.toggle('active', btn.dataset.displayPick === display);
+      });
     }
+
+    document.querySelectorAll('[data-display-pick]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var mode = btn.dataset.displayPick;
+        try { localStorage.setItem('kalkal-display', mode); } catch (e) {}
+        // Bez przeładowania: na e-ink każde przeładowanie to pełny flash panelu.
+        if (mode === 'eink') document.documentElement.setAttribute('data-display', 'eink');
+        else document.documentElement.removeAttribute('data-display');
+        syncActive();
+      });
+    });
 
     document.querySelectorAll('[data-var-cal]').forEach(function(btn) {
       btn.addEventListener('click', function() {

@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'kalkal-v54';
+const CACHE_VERSION = 'kalkal-v55';
 // Relative to the SW scope so it works under a subdirectory mount
 // (e.g. /kalkal/). Absolute '/...' paths pointed at the origin root and
 // 404'd here, which aborted addAll and left the old SW serving stale builds.
@@ -13,6 +13,8 @@ const CORE_ASSETS = [
   './android.html',
   './css/fonts.css',
   './css/style.css',
+  './css/eink.css',
+  './js/display.js',
   './js/hijri.js',
   './js/app.js',
   './js/i18n.js',

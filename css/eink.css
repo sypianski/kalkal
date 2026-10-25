@@ -1,0 +1,429 @@
+/* kalkal — tryb e-ink
+   ================================================
+   Aktywny tylko, gdy <html data-display="eink"> (ustawia js/display.js:
+   wybór w Settings, ?eink=1 albo autodetekcja `update: slow`).
+   Ładowany PO style.css; wszystkie reguły są pod atrybutem, więc w trybie
+   standardowym nic nie zmieniają.
+
+   Zasady, na których to stoi:
+   - e-ink = czerń na bieli. Szarości są dithero­wane (kropkowane) i przy
+     małym kroju rozpadają się, więc cały tekst jest #000 albo #fff.
+   - hierarchię niesie rozmiar, grubość i wersaliki, nie odcień szarości;
+   - kolor "sygnałowy" (niebieski) → czerń; stan aktywny = negatyw (biały na czarnym);
+   - żadnych animacji, cieni rozmywanych ani przejść (każda klatka to flash panelu);
+   - minimalny rozmiar fontu wymusza sekcja GENERATED na dole pliku.
+   ================================================ */
+
+html[data-display="eink"] {
+  font-size: 20px;           /* style.css: 16px; wszystko w rem rośnie o 25% */
+  color-scheme: light;
+
+  /* papier i tusz */
+  --brut-bg: #fff;
+  --brut-surface: #fff;
+  --brut-ink: #000;
+  --brut-muted: #000;
+  --brut-dim: #000;
+  --brut-border: #000;
+  --brut-shadow: #000;
+
+  /* kolor sygnałowy: czerń (aktywne = negatyw) */
+  --brut-signal: #000;
+  --brut-signal-dark: #000;
+
+  /* skale szarości używane w style.css jako kolory tekstu i linii */
+  --parchment-100: #fff;
+  --parchment-200: #fff;
+  --parchment-300: #000;
+  --parchment-400: #000;
+  --ink-300: #000;
+  --ink-400: #000;
+  --ink-500: #000;
+  --ink-600: #000;
+  --ink-700: #000;
+  --gold: #000;
+  --gold-dim: #000;
+  --rust-light: #000;
+  --teal: #000;
+}
+
+html[data-display="eink"] body {
+  background: #fff;
+  color: #000;
+}
+
+/* ---- Bez ruchu, rozmycia i faktury ---- */
+html[data-display="eink"] *,
+html[data-display="eink"] *::before,
+html[data-display="eink"] *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+  text-shadow: none !important;
+  backdrop-filter: none !important;
+}
+html[data-display="eink"] .page-grain { display: none !important; }
+
+/* ---- Tekst: wszystko czarne ---- */
+/* Reguły z twardo wpisanymi szarościami (#999, #666…), których nie łapią zmienne. */
+html[data-display="eink"] .site-subtitle,
+html[data-display="eink"] .form-label,
+html[data-display="eink"] .refine-label,
+html[data-display="eink"] .cal-desc-link,
+html[data-display="eink"] .bridge-eq,
+html[data-display="eink"] .bridge-cal,
+html[data-display="eink"] .contextual-dates,
+html[data-display="eink"] .contextual-cal-link,
+html[data-display="eink"] .contextual-heading,
+html[data-display="eink"] .contextual-list dt,
+html[data-display="eink"] .result-dow,
+html[data-display="eink"] .result-header-src,
+html[data-display="eink"] .result-panel .result-label,
+html[data-display="eink"] .result-panel .result-variant-label,
+html[data-display="eink"] .result-panel .result-secondary,
+html[data-display="eink"] .result-panel .result-meta dt,
+html[data-display="eink"] .astro-title,
+html[data-display="eink"] .astro-hints,
+html[data-display="eink"] .astro-content .result-meta,
+html[data-display="eink"] .astro-content .result-meta dt,
+html[data-display="eink"] .tile-toggle,
+html[data-display="eink"] .tile-tab,
+html[data-display="eink"] .breakdown-toggle,
+html[data-display="eink"] .copy-btn,
+html[data-display="eink"] .copy-box-title,
+html[data-display="eink"] .copy-box-toggle,
+html[data-display="eink"] .copy-box-help,
+html[data-display="eink"] .variant-btn,
+html[data-display="eink"] .history-title,
+html[data-display="eink"] .history-clear,
+html[data-display="eink"] .history-src,
+html[data-display="eink"] .result-placeholder,
+html[data-display="eink"] .eclipse-note,
+html[data-display="eink"] .ecl-map-note,
+html[data-display="eink"] .ecl-stat-label,
+html[data-display="eink"] .ecl-featured p,
+html[data-display="eink"] .ecl-source,
+html[data-display="eink"] .footer-note,
+html[data-display="eink"] .footer-note a,
+html[data-display="eink"] .meth-link-desc,
+html[data-display="eink"] .meth-coverage .cov-n::before,
+html[data-display="eink"] .meth-coverage .cov-p::before,
+html[data-display="eink"] .cal-formula-heading,
+html[data-display="eink"] .cal-month-days,
+html[data-display="eink"] .cal-month-num,
+html[data-display="eink"] .cal-season-label,
+html[data-display="eink"] .cal-source-label,
+html[data-display="eink"] .cal-source-text,
+html[data-display="eink"] .cal-group-count,
+html[data-display="eink"] .cal-toc-link,
+html[data-display="eink"] .cal-toc-link::before,
+html[data-display="eink"] .dyn-table th,
+html[data-display="eink"] .dyn-section-label,
+html[data-display="eink"] .dyn-table td:first-child,
+html[data-display="eink"] .dyn-laqab,
+html[data-display="eink"] .dyn-note,
+html[data-display="eink"] .dyn-source,
+html[data-display="eink"] .settings-page-heading,
+html[data-display="eink"] .settings-page-desc,
+html[data-display="eink"] .settings-page-btn,
+html[data-display="eink"] .settings-example,
+html[data-display="eink"] .settings-variant-example,
+html[data-display="eink"] .about-cite-title,
+html[data-display="eink"] .flow-arrow,
+html[data-display="eink"] .divider-ornament {
+  color: #000 !important;
+}
+
+/* Linki treściowe: czerń, ale rozpoznawalne po podkreśleniu (bez koloru i hovera). */
+html[data-display="eink"] main a:not([class]),
+html[data-display="eink"] .cal-desc-link,
+html[data-display="eink"] .contextual-cal-link,
+html[data-display="eink"] .meth-links a,
+html[data-display="eink"] .footer-note a {
+  color: #000 !important;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+  border-block-end-color: transparent !important;
+}
+
+/* ---- Ciemne pasy: biały tekst na czerni ---- */
+html[data-display="eink"] .site-header,
+html[data-display="eink"] .site-header .site-title,
+html[data-display="eink"] .site-header .site-subtitle,
+html[data-display="eink"] .page-nav a,
+html[data-display="eink"] .nav-settings-btn,
+html[data-display="eink"] .lang-btn,
+html[data-display="eink"] .cal-toc-group,
+html[data-display="eink"] .cal-toc-group .cal-group-count,
+html[data-display="eink"] body:not([data-page="calendars"]) .cal-group-heading .cal-group-count,
+html[data-display="eink"] .cal-formula-code,
+html[data-display="eink"] .cal-formula-code * {
+  color: #fff !important;
+}
+html[data-display="eink"] .site-header { background: #000 !important; }
+
+/* Nawigacja: przy foncie 125% sześć pozycji z rozstrzelonymi literami nie mieści
+   się w jednym wierszu i wypychała stronę w poziomie. Na wąskich ekranach
+   (≤600px) nawigacja to dolny pasek ze style.css — tam nic nie ruszamy. */
+@media (min-width: 601px) {
+  html[data-display="eink"] .page-nav {
+    flex-wrap: wrap;
+    padding-inline: var(--space-lg);
+  }
+  html[data-display="eink"] .page-nav a {
+    letter-spacing: 0.08em;
+    padding: 0.5em 0.7em;
+  }
+  html[data-display="eink"] .header-inner { padding-inline: var(--space-lg); flex-wrap: wrap; }
+}
+
+/* Aktywna pozycja nawigacji: grubsze podkreślenie zamiast jaśniejszego odcienia. */
+html[data-display="eink"] .page-nav a.active,
+html[data-display="eink"] .page-nav a[aria-current] {
+  font-weight: 900;
+  border-block-end: 4px solid #fff !important;
+}
+
+/* ---- Stan aktywny / wybrany = negatyw (białe na czarnym) ---- */
+html[data-display="eink"] .btn-convert,
+html[data-display="eink"] .btn-convert *,
+html[data-display="eink"] .to-label,
+html[data-display="eink"] .tile-tab.active,
+html[data-display="eink"] .settings-page-btn.active,
+html[data-display="eink"] .variant-btn.active {
+  color: #fff !important;
+}
+html[data-display="eink"] .btn-convert,
+html[data-display="eink"] .tile-tab.active,
+html[data-display="eink"] .settings-page-btn.active,
+html[data-display="eink"] .variant-btn.active {
+  background: #000 !important;
+  border-color: #000 !important;
+}
+
+/* Wskaźnik wyboru w ustawieniach: nie polegaj na wypełnieniu szarością. */
+html[data-display="eink"] .settings-variant { border-width: 2px; border-color: #000 !important; }
+html[data-display="eink"] .settings-variant.active { border-width: 4px; }
+html[data-display="eink"] .settings-variant.active .settings-radio {
+  background: #000;
+  box-shadow: inset 0 0 0 3px #fff;
+}
+
+/* ---- Podświetlenia i plakietki: biel + ramka zamiast kolorów ---- */
+html[data-display="eink"] mark,
+html[data-display="eink"] .cal-variants-list mark {
+  background: #fff;
+  color: #000;
+  font-weight: 900;
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+}
+html[data-display="eink"] .ecl-type-badge {
+  background: #fff !important;
+  color: #000 !important;
+  border: 2px solid #000;
+}
+/* Wiersze "notable" w zaćmieniach: oryginał barwi je na kremowo — tu biel,
+   a wyróżnienie niesie czarny pasek z lewej (box-shadow inset ze style.css). */
+html[data-display="eink"] .ecl-featured,
+html[data-display="eink"] .ecl-table tr.notable td {
+  background: #fff;
+}
+
+/* ---- Hover/fokus: na dotykowym e-ink :hover "przykleja się" po tapnięciu ----
+   style.css odwraca te elementy na czarne tło + biały tekst; powyższe
+   `color: #000 !important` by to zepsuło (czarne na czarnym), więc negatyw
+   deklarujemy jawnie, ze specyficznością wyższą niż reguły wymuszające czerń. */
+html[data-display="eink"] :is(
+  .cal-toc-link, .cal-formula-heading, .settings-page-btn, .copy-btn,
+  .history-clear, .meth-links a, .ecl-convert-link, .ecl-nasa,
+  .eclipse-map-link, .ecl-map-note a, .copy-trio-btn, .cal-item,
+  .astro-pill .astro-btn, [class*="about-link"]
+):is(:hover, :focus-visible, :active),
+html[data-display="eink"] .ecl-table tbody tr:is(:hover, :focus-within) td,
+html[data-display="eink"] .ecl-table tr.notable:hover td {
+  background: #000 !important;
+  border-color: #000 !important;
+  color: #fff !important;
+}
+html[data-display="eink"] .cal-toc-link:hover::before,
+html[data-display="eink"] .cal-toc-link:hover *,
+html[data-display="eink"] .ecl-table tbody tr:is(:hover, :focus-within) td * {
+  color: #fff !important;
+}
+
+/* Plakietka typu zaćmienia w najechanym wierszu: czarne tło, biała ramka. */
+html[data-display="eink"] .ecl-table tbody tr:is(:hover, :focus-within) .ecl-type-badge {
+  background: #000 !important;
+  border-color: #fff;
+}
+
+/* Aktywna pozycja spisu treści: pogrubienie + podkreślenie (bez koloru). */
+html[data-display="eink"] .cal-toc-link.active {
+  font-weight: 900;
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 0.2em;
+}
+
+/* ---- Układ przy większym foncie: nic nie może wypychać strony w poziomie ---- */
+/* Pory roku: repeat(4, 1fr) ma min-szerokość = min-content, więc długie nazwy
+   miesięcy rozpychały siatkę. Dwie kolumny + minmax(0,…) + łamanie wyrazów. */
+@media (min-width: 601px) {
+  html[data-display="eink"] .cal-seasons:not(.cal-seasons--flat),
+  html[data-display="eink"] .cal-season-row--flat {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+html[data-display="eink"] .cal-month-item { overflow-wrap: anywhere; }
+html[data-display="eink"] .cal-season-band { border-color: #000 !important; }
+/* Szerokie wzory przewijają się w swoim polu zamiast poszerzać stronę. */
+html[data-display="eink"] .katex-display {
+  max-inline-size: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* ---- Rozmiary spoza style.css ---- */
+html[data-display="eink"] .katex { font-size: 1.45em; }   /* indeksy KaTeX schodziły do 13 px */
+/* Inline style="font-size:…" (np. android.html) — generator ich nie widzi;
+   !important, bo atrybut style inaczej wygrywa. */
+html[data-display="eink"] [style*="font-size"] { font-size: max(0.78rem, 1em) !important; }
+
+/* ---- Linie: pełna czerń, nie przerywane beżem ---- */
+html[data-display="eink"] hr,
+html[data-display="eink"] [class*="history"],
+html[data-display="eink"] .contextual-list,
+html[data-display="eink"] .contextual-heading {
+  border-color: #000;
+}
+
+/* ---- Fokus: widoczny bez koloru i bez dotyku myszy (czytniki z klawiszami) ---- */
+html[data-display="eink"] :focus-visible {
+  outline: 4px solid #000;
+  outline-offset: 2px;
+}
+
+/* ---- Pola formularzy: wyraźna ramka, duże pole dotyku ---- */
+html[data-display="eink"] input,
+html[data-display="eink"] select,
+html[data-display="eink"] textarea {
+  color: #000;
+  background: #fff;
+}
+html[data-display="eink"] button,
+html[data-display="eink"] .tile-tab,
+html[data-display="eink"] .settings-page-btn {
+  min-block-size: 2.75rem;
+}
+
+/* BEGIN GENERATED: min-font-size (node tools/gen_eink_css.js) */
+html[data-display="eink"] .settings-page-heading { font-size: 0.72rem; }
+html[data-display="eink"] .settings-page-btn { font-size: 0.72rem; }
+html[data-display="eink"] .cal-tag { font-size: 0.72rem; }
+html[data-display="eink"] .cal-season-label { font-size: 0.72rem; }
+html[data-display="eink"] .cal-month-num { font-size: 0.72rem; }
+html[data-display="eink"] .cal-month-days { font-size: 0.72rem; }
+html[data-display="eink"] .cal-variants th { font-size: 0.72rem; }
+html[data-display="eink"] .meth-coverage th { font-size: 0.72rem; }
+html[data-display="eink"] .meth-coverage .cov-y,
+html[data-display="eink"] .meth-coverage .cov-p { font-size: 0.72rem; }
+html[data-display="eink"] .meth-coverage .cov-var { font-size: 0.72rem; }
+@media (max-width: 600px) {
+  html[data-display="eink"] .cal-formula-code { font-size: 0.72rem; }
+}
+html[data-display="eink"] .refine-label { font-size: 0.72rem; }
+html[data-display="eink"] .form-label { font-size: 0.72rem; }
+html[data-display="eink"] .variant-btn { font-size: 0.72rem; }
+html[data-display="eink"] .cal-group-label { font-size: 0.72rem; }
+html[data-display="eink"] .contextual-heading { font-size: 0.72rem; }
+html[data-display="eink"] .contextual-list dt { font-size: 0.72rem; }
+html[data-display="eink"] .ecl-table th { font-size: 0.72rem; }
+html[data-display="eink"] .result-header-src { font-size: 0.72rem; }
+html[data-display="eink"] .astro-hints { font-size: 0.72rem; }
+html[data-display="eink"] .astro-content .astro-detail { font-size: 0.72rem; }
+html[data-display="eink"] .astro-content .astro-note { font-size: 0.72rem; }
+html[data-display="eink"] .astro-content .result-eclipse .eclipse-note { font-size: 0.72rem; }
+html[data-display="eink"] .astro-content .result-eclipse .eclipse-map-link { font-size: 0.72rem; }
+html[data-display="eink"] .astro-content .result-meta { font-size: 0.72rem; }
+html[data-display="eink"] .bridge-label { font-size: 0.72rem; }
+html[data-display="eink"] .bridge-src-detail { font-size: 0.72rem; }
+html[data-display="eink"] .bridge-src-caption { font-size: 0.72rem; }
+html[data-display="eink"] .cal-desc-link { font-size: 0.72rem; }
+html[data-display="eink"] .copy-box-help { font-size: 0.72rem; }
+html[data-display="eink"] .range-cal-label { font-size: 0.72rem; }
+html[data-display="eink"] .result-panel .result-meta dt { font-size: 0.72rem; }
+html[data-display="eink"] .result-panel .result-variant-label { font-size: 0.72rem; }
+html[data-display="eink"] .result-panel .result-variant-bar .variant-btn { font-size: 0.72rem; }
+html[data-display="eink"] .result-panel .year-table th { font-size: 0.72rem; }
+html[data-display="eink"] .result-panel .calendar-tag { font-size: 0.72rem; }
+html[data-display="eink"] .history-clear-btn { font-size: 0.72rem; }
+html[data-display="eink"] .history-clear { font-size: 0.72rem; }
+html[data-display="eink"] .install-text { font-size: 0.72rem; }
+html[data-display="eink"] .site-subtitle { font-size: 0.72rem; }
+html[data-display="eink"] .lang-btn { font-size: 0.72rem; }
+html[data-display="eink"] .form-label { font-size: 0.72rem; }
+html[data-display="eink"] .variant-btn { font-size: 0.72rem; }
+html[data-display="eink"] .astro-hints { font-size: 0.72rem; }
+html[data-display="eink"] .contextual-heading { font-size: 0.72rem; }
+html[data-display="eink"] .result-dow { font-size: 0.72rem; }
+html[data-display="eink"] .result-panel .result-label { font-size: 0.72rem; }
+html[data-display="eink"] .result-panel .result-variant-label { font-size: 0.72rem; }
+html[data-display="eink"] .copy-btn { font-size: 0.72rem; }
+html[data-display="eink"] .year-table th { font-size: 0.72rem; }
+html[data-display="eink"] .ecl-source { font-size: 0.72rem; }
+html[data-display="eink"] .astro-pill-summary { font-size: 0.72rem; }
+html[data-display="eink"] .result-panel .calendar-tag { font-size: 0.72rem; }
+html[data-display="eink"] .footer-note { font-size: 0.72rem; }
+html[data-display="eink"] .history-clear { font-size: 0.72rem; }
+html[data-display="eink"] .page-nav a { font-size: 0.72rem; }
+html[data-display="eink"] .cal-season-label { font-size: 0.72rem; }
+html[data-display="eink"] .dyn-table th { font-size: 0.72rem; }
+html[data-display="eink"] .dyn-laqab { font-size: max(0.72rem, 0.8em); }
+@media (max-width: 600px) {
+  html[data-display="eink"] .variant-btn { font-size: 0.72rem; }
+  html[data-display="eink"] .cal-group-label { font-size: 0.72rem; }
+}
+@media (max-width: 600px) {
+  html[data-display="eink"] .form-label { font-size: 0.72rem !important; }
+  html[data-display="eink"] .refine-label { font-size: 0.72rem !important; }
+  html[data-display="eink"] .result-panel .result-dow { font-size: 0.72rem !important; }
+  html[data-display="eink"] .result-meta { font-size: 0.72rem !important; }
+  html[data-display="eink"] .result-meta dt { font-size: 0.72rem !important; }
+  html[data-display="eink"] .copy-btn { font-size: 0.72rem !important; }
+  html[data-display="eink"] .contextual-list dt { font-size: 0.72rem !important; }
+  html[data-display="eink"] .contextual-list dd { font-size: 0.72rem !important; }
+  html[data-display="eink"] .contextual-heading { font-size: 0.72rem !important; }
+  html[data-display="eink"] .history-title { font-size: 0.72rem !important; }
+  html[data-display="eink"] .footer-note { font-size: 0.72rem !important; }
+  html[data-display="eink"] .variant-btn { font-size: 0.72rem !important; }
+  html[data-display="eink"] .page-nav a { font-size: 0.72rem !important; }
+  html[data-display="eink"] .nav-settings-btn { font-size: 0.72rem !important; }
+  html[data-display="eink"] .settings-label { font-size: 0.72rem; }
+  html[data-display="eink"] .settings-lang-btn,
+  html[data-display="eink"] .settings-variant-btn { font-size: 0.72rem; }
+  html[data-display="eink"] .settings-row--variants .settings-variant-btn { font-size: 0.72rem; }
+}
+@media (max-width: 600px) {
+  html[data-display="eink"] .form-field--cal::before,
+  html[data-display="eink"] .form-field--year::before,
+  html[data-display="eink"] .refine-field:first-child::before,
+  html[data-display="eink"] .refine-field:nth-child(2)::before,
+  html[data-display="eink"] .to-calendar-field::before { font-size: 0.72rem; }
+  html[data-display="eink"] .variant-btn { font-size: 0.72rem !important; }
+  html[data-display="eink"] .form-error:not(:empty) { font-size: 0.72rem !important; }
+  html[data-display="eink"] .result-panel::before { font-size: 0.72rem; }
+  html[data-display="eink"] .result-placeholder { font-size: 0.72rem !important; }
+  html[data-display="eink"] .result-panel .result-dow { font-size: 0.72rem !important; }
+  html[data-display="eink"] .result-panel .result-meta { font-size: 0.72rem !important; }
+  html[data-display="eink"] .result-panel .result-meta dt { font-size: 0.72rem !important; }
+  html[data-display="eink"] .result-panel .copy-btn { font-size: 0.72rem !important; }
+  html[data-display="eink"] .footer-note { font-size: 0.72rem !important; }
+}
+html[data-display="eink"] .colophon-band { font-size: 0.72rem; }
+html[data-display="eink"] .about-cite-title { font-size: 0.72rem; }
+html[data-display="eink"] .meth-toc-list a::before { font-size: 0.72rem; }
+html[data-display="eink"] .bridge-cal { font-size: max(0.72rem, 0.4em); }
+html[data-display="eink"] .copy-trio-icon { font-size: max(0.72rem, 0.95em); }
+/* END GENERATED: min-font-size */

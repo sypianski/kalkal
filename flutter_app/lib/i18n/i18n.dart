@@ -136,6 +136,10 @@ class I18n {
       'settingsSeleucidDesc': 'Macedonian and Babylonian variants use the same era but differ in the month order.',
       'settingsYazdgerdiHeading': 'Yazdgerdi (Zoroastrian) calendar variant',
       'settingsYazdgerdiDesc': 'Three calendar systems sharing the Zoroastrian wandering year but starting from different reform epochs.',
+      'settingsDisplayHeading': 'Display mode (e-ink)',
+      'settingsDisplayDesc': 'E-ink mode: pure black on white, larger text, no grey tones, animations or colour. It switches on by itself on screens that report slow refresh; choose here to force it on or off.',
+      'displayStandard': 'Standard',
+      'displayEink': 'E-ink',
     },
     'pl': {
       'appTitle': 'Kalkulator kalendarzy',
@@ -246,6 +250,10 @@ class I18n {
       'settingsSeleucidDesc': 'Warianty macedoński i babiloński używają tej samej ery, lecz różnią się kolejnością miesięcy.',
       'settingsYazdgerdiHeading': 'Wariant kalendarza jazdegerdiego (zaratusztriańskiego)',
       'settingsYazdgerdiDesc': 'Trzy systemy kalendarzowe oparte na zoroastryjskim roku wędrownym, lecz z różnymi epochami reformy.',
+      'settingsDisplayHeading': 'Tryb wyświetlania (e-ink)',
+      'settingsDisplayDesc': 'Tryb e-ink: czysta czerń na bieli, większy tekst, bez szarości, animacji i kolorów. Włącza się sam na ekranach zgłaszających wolne odświeżanie; tutaj możesz go wymusić lub wyłączyć.',
+      'displayStandard': 'Standardowy',
+      'displayEink': 'E-ink',
     },
     'ar': {
       'appTitle': 'حاسبة التقاويم',
@@ -437,6 +445,10 @@ class I18n {
       'settingsSeleucidDesc': 'Makedonaj kaj babilonaj variantoj uzas la saman epokon sed diferencas laŭ la monata ordo.',
       'settingsYazdgerdiHeading': 'Varianto de la jazdegerda (zoroastra) kalendaro',
       'settingsYazdgerdiDesc': 'Tri kalendaraj sistemoj, kiuj dividas la zoroastan vagajaron, sed komenciĝas de malsamaj reformaj epokoj.',
+      'settingsDisplayHeading': 'Montra reĝimo (e-ink)',
+      'settingsDisplayDesc': 'E-ink-reĝimo: pura nigro sur blanko, pli granda teksto, sen grizoj, animacioj kaj koloroj. Ĝi ŝaltiĝas mem sur ekranoj kun malrapida refreŝigo; ĉi tie vi povas devigi aŭ malŝalti ĝin.',
+      'displayStandard': 'Norma',
+      'displayEink': 'E-ink',
     },
   };
 

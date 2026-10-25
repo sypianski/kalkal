@@ -266,7 +266,7 @@ class ResultPanel extends StatelessWidget {
                 child: Text(year,
                     style: mono(38, weight: FontWeight.w900, color: kWhite, height: 1.05)),
               ),
-              Text(detail, style: sans(12, color: kInk300)),
+              Text(detail, style: sans(12, color: kSurface2)),
             ],
           ),
         );

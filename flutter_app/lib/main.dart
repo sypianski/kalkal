@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 
 import 'i18n/i18n.dart';
 import 'i18n/mobile_i18n.dart';
+import 'state/display.dart';
 import 'state/prefs.dart';
 import 'ui/converter_screen.dart';
 import 'ui/pages_screens.dart';
@@ -17,6 +18,7 @@ import 'ui/widgets.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Prefs.init();
+  await DisplayMode.init();
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: kBg,
     statusBarIconBrightness: Brightness.dark,
@@ -49,6 +51,11 @@ class _KalkalAppState extends State<KalkalApp> {
     return MaterialApp(
       title: 'kalkal — ${I18n.t(_lang, 'appTitle')}',
       debugShowCheckedModeBanner: false,
+      builder: (context, child) => ValueListenableBuilder<bool>(
+        valueListenable: DisplayMode.eink,
+        builder: (context, eink, _) =>
+            eink ? EinkFrame(child: child!) : child!,
+      ),
       theme: ThemeData(
         useMaterial3: true,
         scaffoldBackgroundColor: kBg,

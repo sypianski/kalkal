@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../state/display.dart';
 import 'tokens.dart';
 
 /// Underline-only input inside a slab: mono 700, 2px black bottom border.
@@ -105,7 +106,15 @@ class BrutBottomNav extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) =>
+      ValueListenableBuilder<bool>(
+        valueListenable: DisplayMode.eink,
+        builder: (context, eink, _) => _bar(eink ? kWhite : kNavText),
+      );
+
+  // [idle] is the colour of inactive entries — light grey on black would turn
+  // black in the e-ink threshold, so e-ink passes white.
+  Widget _bar(Color idle) {
     return Container(
       decoration: const BoxDecoration(
         color: kInk,
@@ -145,7 +154,7 @@ class BrutBottomNav extends StatelessWidget {
                           child: Icon(items[i].icon,
                               size: 22,
                               color:
-                                  i == activeIndex ? kWhite : kNavText),
+                                  i == activeIndex ? kWhite : idle),
                         ),
                         const SizedBox(height: 2),
                         Text(
@@ -155,7 +164,7 @@ class BrutBottomNav extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           style: mono(10.5,
                               weight: FontWeight.w600,
-                              color: i == activeIndex ? kWhite : kNavText),
+                              color: i == activeIndex ? kWhite : idle),
                         ),
                       ],
                     ),
@@ -329,7 +338,9 @@ class WideHeader extends StatelessWidget {
                 style: mono(9.5,
                     weight: FontWeight.w700,
                     letterSpacing: 1.8,
-                    color: i == activeIndex ? kWhite : kInk500),
+                    color: i == activeIndex
+                        ? kWhite
+                        : (DisplayMode.eink.value ? kWhite : kInk500)),
               ),
             ),
           ),

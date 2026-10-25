@@ -8,11 +8,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:kalkal/main.dart';
+import 'package:kalkal/ui/tokens.dart';
+import 'package:kalkal/state/display.dart';
 import 'package:kalkal/state/prefs.dart';
 
 Future<void> boot(WidgetTester t, {Map<String, Object> prefs = const {}}) async {
   SharedPreferences.setMockInitialValues({'kalkal-lang': 'en', ...prefs});
   await Prefs.init();
+  await DisplayMode.init(detect: () async => false);
+  addTearDown(() => DisplayMode.choose(false));
   t.view.physicalSize = const Size(390, 844);
   t.view.devicePixelRatio = 1.0;
   addTearDown(t.view.reset);
@@ -159,6 +163,46 @@ void main() {
     await t.pump(const Duration(milliseconds: 300));
     expect(find.text('2023'), findsWidgets);
     expect(find.textContaining('14 December – 11 January 2024'), findsOneWidget);
+  });
+
+  testWidgets('e-ink: stored choice turns the black-and-white frame on',
+      (t) async {
+    t.view.physicalSize = const Size(390, 1800);
+    await boot(t, prefs: {
+      'kalkal-display': 'eink',
+      'kalkal-history': hist({'year': 1445, 'month': 9, 'day': 10}),
+    });
+    t.view.physicalSize = const Size(390, 1800);
+    expect(DisplayMode.eink.value, isTrue);
+    expect(find.byType(EinkFrame), findsOneWidget);
+    // Text is 25% larger and the result still lays out without overflow.
+    final scale = MediaQuery.of(t.element(find.byType(Scaffold).first)).textScaler;
+    expect(scale.scale(10), 12.5);
+    await openFromHistory(t, 'Ram');
+    expect(find.text('20 March'), findsOneWidget);
+    expect(t.takeException(), isNull);
+    // The binding checks timeDilation before tear-downs run.
+    DisplayMode.choose(false);
+  });
+
+  testWidgets('e-ink: Settings pills switch the mode and store the choice',
+      (t) async {
+    await boot(t);
+    expect(DisplayMode.eink.value, isFalse);
+    expect(find.byType(EinkFrame), findsNothing);
+    await t.tap(find.text('More'));
+    await t.pumpAndSettle();
+    await t.tap(find.text('SETTINGS').last);
+    await t.pumpAndSettle();
+    await t.tap(find.text('E-ink'));
+    await t.pump();
+    expect(DisplayMode.eink.value, isTrue);
+    expect(Prefs.instance.displayChoice, 'eink');
+    expect(find.byType(EinkFrame), findsOneWidget);
+    await t.tap(find.text('Standard'));
+    await t.pump();
+    expect(DisplayMode.eink.value, isFalse);
+    expect(Prefs.instance.displayChoice, 'normal');
   });
 
   test('recentCals keeps 3, newest first, no duplicates', () async {

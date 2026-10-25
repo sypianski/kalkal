@@ -96,3 +96,38 @@ TextStyle mono(double size,
       // Arabic script to Amiri — mirrors css/fonts.css stacks.
       fontFamilyFallback: const [kCharis, kAmiri, kSans],
     );
+
+/// E-ink look (TASK-17), the Flutter side of css/eink.css: the whole app is
+/// drawn as usual and then pushed through a luminance threshold, so every
+/// grey and the signal blue become black and every light tone becomes white
+/// (white-on-blue buttons turn into white-on-black). Text is 25% larger —
+/// the web does 16 → 20 px — and animations are off.
+class EinkFrame extends StatelessWidget {
+  final Widget child;
+  const EinkFrame({super.key, required this.child});
+
+  // Luma weights, gain 60 around 0.8: #BBB and darker → black, #E8E8E4 → white.
+  static const _k = 60.0;
+  static const _t = 0.8;
+  static const _filter = ColorFilter.matrix(<double>[
+    _k * 0.2126, _k * 0.7152, _k * 0.0722, 0, -_k * _t * 255,
+    _k * 0.2126, _k * 0.7152, _k * 0.0722, 0, -_k * _t * 255,
+    _k * 0.2126, _k * 0.7152, _k * 0.0722, 0, -_k * _t * 255,
+    0, 0, 0, 1, 0,
+  ]);
+
+  @override
+  Widget build(BuildContext context) {
+    final mq = MediaQuery.of(context);
+    return MediaQuery(
+      data: mq.copyWith(
+        textScaler: TextScaler.linear(mq.textScaler.scale(1) * 1.25),
+        disableAnimations: true,
+      ),
+      child: ColoredBox(
+        color: kWhite,
+        child: ColorFiltered(colorFilter: _filter, child: child),
+      ),
+    );
+  }
+}

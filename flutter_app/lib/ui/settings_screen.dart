@@ -7,6 +7,7 @@ import '../engine/cal.dart';
 import '../engine/registry.dart';
 import '../i18n/i18n.dart';
 import '../i18n/pages_i18n.dart';
+import '../state/display.dart';
 import '../state/prefs.dart';
 import 'tokens.dart';
 
@@ -65,6 +66,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       widget.onLangChanged(code);
                     }),
                 ],
+              ),
+            ),
+            _group(
+              wide: wide,
+              heading: I18n.t(_lang, 'settingsDisplayHeading'),
+              desc: I18n.t(_lang, 'settingsDisplayDesc'),
+              child: ValueListenableBuilder<bool>(
+                valueListenable: DisplayMode.eink,
+                builder: (context, eink, _) => Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: [
+                    _pill(I18n.t(_lang, 'displayStandard'), !eink, wide,
+                        () => DisplayMode.choose(false)),
+                    _pill(I18n.t(_lang, 'displayEink'), eink, wide,
+                        () => DisplayMode.choose(true)),
+                  ],
+                ),
               ),
             ),
             if (wide)

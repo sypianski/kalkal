@@ -72,6 +72,16 @@ class Prefs {
 
   set lang(String v) => _sp.setString('kalkal-lang', v);
 
+  // ---- display mode (kalkal-display): 'eink' | 'normal' | null = auto ----
+  String? get displayChoice {
+    final v = _sp.getString('kalkal-display');
+    return (v == 'eink' || v == 'normal') ? v : null;
+  }
+
+  set displayChoice(String? v) => v == null
+      ? _sp.remove('kalkal-display')
+      : _sp.setString('kalkal-display', v);
+
   // ---- last source calendar (kalkal-from-cal), default hijri ----
   String get fromCal {
     final v = _sp.getString('kalkal-from-cal');

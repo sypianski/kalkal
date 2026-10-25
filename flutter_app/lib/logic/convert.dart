@@ -691,6 +691,8 @@ ConvertOutput convertRange(WebCalendar src, WebCalendar tgt, int y1, int m1,
 
   return ConvertOutput(
     isSingle: false,
+    srcFullText: '${srcNames[m1 - 1]} $smartSrcYears',
+    srcTag: calTag(src.id),
     startYearStr:
         tgt.id == 'roman' ? '${startResult.year} AUC' : '${startResult.year}',
     endYearStr: tgt.id == 'roman' ? '${endResult.year} AUC' : '${endResult.year}',
@@ -764,6 +766,8 @@ ConvertOutput convertYearRange(
 
   return ConvertOutput(
     isSingle: false,
+    srcFullText: smartSrcYears,
+    srcTag: calTag(src.id),
     startYearStr:
         tgt.id == 'roman' ? '${startResult.year} AUC' : '${startResult.year}',
     endYearStr: tgt.id == 'roman' ? '${endResult.year} AUC' : '${endResult.year}',

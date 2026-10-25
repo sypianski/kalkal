@@ -14,15 +14,29 @@ import 'tokens.dart';
 import 'widgets.dart';
 
 /// RESULT slab — heavier border (3px) + 6px shadow + corner badge.
+///
+/// Phone (TASK-16): one card. When the form is folded the card starts with
+/// the source ("FROM · Hijri", the date, a CHANGE button), then a rule, then
+/// the result on a black block — each date appears once. Wide stays as it was.
 class ResultPanel extends StatelessWidget {
   final String lang;
   final ConvertOutput out;
   final void Function(WebCalendar cal, String variant)? onVariantTap;
+
+  /// Phone only: name of the source calendar and of the target ("AD") for the
+  /// FROM / TO captions, and the CHANGE action. A null [onChange] means the
+  /// form is open above the card, so the source part is left out.
+  final String? srcLabel;
+  final String? tgtLabel;
+  final VoidCallback? onChange;
   const ResultPanel({
     super.key,
     required this.lang,
     required this.out,
     this.onVariantTap,
+    this.srcLabel,
+    this.tgtLabel,
+    this.onChange,
   });
 
   @override
@@ -37,7 +51,7 @@ class ResultPanel extends StatelessWidget {
           Padding(
             padding: wide
                 ? const EdgeInsets.fromLTRB(36, 36, 36, 28)
-                : const EdgeInsets.fromLTRB(18, 20, 18, 18),
+                : const EdgeInsets.fromLTRB(18, 18, 18, 18),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -48,10 +62,10 @@ class ResultPanel extends StatelessWidget {
                     padding: const EdgeInsets.only(bottom: 12),
                     child: _variantButtons(secondary),
                   ),
-                if (out.isSingle)
-                  ...(wide ? _single(wide) : _singlePhone())
+                if (wide)
+                  ...(out.isSingle ? _single() : _range())
                 else
-                  ..._range(wide),
+                  ..._phoneBody(),
                 if (!wide && secondary != null && onVariantTap != null)
                   Padding(
                     padding: const EdgeInsets.only(top: 12),
@@ -62,10 +76,10 @@ class ResultPanel extends StatelessWidget {
                           '${I18n.calendarName(lang, secondary.id)} · '
                                   '${kVariantLabels[secondary.variant] ?? secondary.variant}'
                               .toUpperCase(),
-                          style: mono(9.5,
+                          style: sans(10,
                               weight: FontWeight.w700,
                               color: kInk600,
-                              letterSpacing: 1.5),
+                              letterSpacing: 1.2),
                         ),
                         const SizedBox(height: 4),
                         _variantButtons(secondary),
@@ -99,86 +113,185 @@ class ResultPanel extends StatelessWidget {
 
   // Lines under the date that belong to the target calendar (variants,
   // indiction, animal year, Babylonian note) — shared by both layouts.
-  List<Widget> _extras() => [
+  List<Widget> _extras({bool useSans = false}) => [
         for (final line in out.altLines)
           Padding(
             padding: const EdgeInsets.only(top: 8),
-            child: Text(line, style: mono(11.5, color: kInk600)),
+            child: Text(line, style: face(useSans, 11.5, color: kInk600)),
           ),
         if (out.indictionLine != null)
           Padding(
             padding: const EdgeInsets.only(top: 8),
-            child: Text(out.indictionLine!, style: mono(12, color: kInk700)),
+            child:
+                Text(out.indictionLine!, style: face(useSans, 12, color: kInk700)),
           ),
         if (out.animalLine != null)
           Padding(
             padding: const EdgeInsets.only(top: 8),
-            child: Text(out.animalLine!, style: mono(12, color: kInk700)),
+            child: Text(out.animalLine!, style: face(useSans, 12, color: kInk700)),
           ),
         if (out.babylonianNote != null)
           Padding(
             padding: const EdgeInsets.only(top: 10),
             child: Text(out.babylonianNote!,
-                style: mono(10.5, color: kInk600, height: 1.4)),
+                style: face(useSans, 10.5, color: kInk600, height: 1.4)),
           ),
       ];
 
-  // Phone, single day: day + month on one line, the year (with a black
-  // calendar tag) under it on the signal rule, then the source date in a
-  // readable colour. A long Hijri month name shrinks instead of wrapping.
-  List<Widget> _singlePhone() {
-    final detail = out.tgtDetail ?? '';
-    final year = out.tgtYearStr ?? out.tgtFullText!;
+  // ---- phone ----
+
+  List<Widget> _phoneBody() {
     return [
-      if (detail.isNotEmpty)
-        FittedBox(
-          fit: BoxFit.scaleDown,
-          alignment: Alignment.centerLeft,
-          child: Text(detail, style: mono(30, weight: FontWeight.w900, height: 1.05)),
+      if (onChange != null) ..._phoneSource(),
+      if (onChange != null && tgtLabel != null)
+        Padding(
+          padding: const EdgeInsets.only(bottom: 6),
+          child: Text(
+            '${I18n.t(lang, 'toLabel')} · $tgtLabel'.toUpperCase(),
+            style: sans(10,
+                weight: FontWeight.w700, color: kInk600, letterSpacing: 1.4),
+          ),
         ),
       Container(
-        decoration: const BoxDecoration(
-            border: Border(bottom: BorderSide(color: kSignal, width: 3))),
-        padding: const EdgeInsets.only(bottom: 4),
-        child: Row(
+        width: double.infinity,
+        color: kInk,
+        padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+        child: out.isSingle ? _phoneSingle() : _phoneRange(),
+      ),
+      ..._extras(useSans: true),
+    ];
+  }
+
+  // "FROM · Hijri / 10 Ramaḍān 1445 AH   [CHANGE ▾]", then a rule.
+  List<Widget> _phoneSource() {
+    final src =
+        '${out.srcFullText ?? ''}${out.srcTag.isEmpty ? '' : ' ${out.srcTag}'}';
+    return [
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${I18n.t(lang, 'labelFrom')}${srcLabel == null ? '' : ' · $srcLabel'}'
+                      .toUpperCase(),
+                  style: sans(10,
+                      weight: FontWeight.w700,
+                      color: kInk600,
+                      letterSpacing: 1.4),
+                ),
+                const SizedBox(height: 3),
+                Text(src,
+                    style: sans(18, weight: FontWeight.w700, height: 1.25)),
+              ],
+            ),
+          ),
+          const SizedBox(width: 10),
+          InkWell(
+            onTap: onChange,
+            child: Container(
+              color: kSignal,
+              constraints: const BoxConstraints(minHeight: 44),
+              padding: const EdgeInsets.symmetric(horizontal: 14),
+              alignment: Alignment.center,
+              child: Text(
+                '${MobileI18n.t(lang, 'change').toUpperCase()} ▾',
+                style: sans(11,
+                    weight: FontWeight.w700, color: kWhite, letterSpacing: 1.2),
+              ),
+            ),
+          ),
+        ],
+      ),
+      Container(
+        margin: const EdgeInsets.symmetric(vertical: 12),
+        height: kBorderSlab,
+        color: kInk,
+      ),
+    ];
+  }
+
+  // Single day on the black block: day + month (shrinks instead of wrapping),
+  // then the year with its calendar tag as a white chip.
+  Widget _phoneSingle() {
+    final detail = out.tgtDetail ?? '';
+    final year = out.tgtYearStr ?? out.tgtFullText!;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (detail.isNotEmpty)
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(detail,
+                style: sans(30, weight: FontWeight.w700, color: kWhite, height: 1.1)),
+          ),
+        Row(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Flexible(
               child: Text(year,
-                  style: mono(30, weight: FontWeight.w900, height: 1.1)),
+                  style: sans(30, weight: FontWeight.w700, color: kWhite, height: 1.15)),
             ),
             if (out.tgtTag.isNotEmpty) ...[
               const SizedBox(width: 8),
               Container(
-                color: kInk,
+                color: kWhite,
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 child: Text(out.tgtTag,
-                    style: mono(11,
-                        weight: FontWeight.w700,
-                        color: kWhite,
-                        letterSpacing: 0.6)),
+                    style: sans(11,
+                        weight: FontWeight.w700, color: kInk, letterSpacing: 0.6)),
               ),
             ],
           ],
         ),
-      ),
-      const SizedBox(height: 8),
-      Text(
-        '← ${out.srcFullText!}${out.srcTag.isEmpty ? '' : ' ${out.srcTag}'}',
-        style: mono(12.5, color: kInk700),
-      ),
-      ..._extras(),
-    ];
+      ],
+    );
   }
 
-  List<Widget> _single(bool wide) {
+  // Year / month range on the black block: the two years with their day and
+  // month. The equation and the full span are left out — the source is in the
+  // card above and the whole span is one tap away in the copy menu.
+  Widget _phoneRange() {
+    Widget end(String year, String detail) => Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Text(year,
+                    style: mono(38, weight: FontWeight.w900, color: kWhite, height: 1.05)),
+              ),
+              Text(detail, style: sans(12, color: kInk300)),
+            ],
+          ),
+        );
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        end(out.startYearStr!, out.startDetail!),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+          child: Text('→',
+              style: sans(22, weight: FontWeight.w700, color: kWhite)),
+        ),
+        end(out.endYearStr!, out.endDetail!),
+      ],
+    );
+  }
+
+  // ---- wide ----
+
+  List<Widget> _single() {
     return [
       // Target full date — big, black 3px underline.
       Container(
-        decoration: BoxDecoration(
-          border: Border(
-              bottom: BorderSide(color: wide ? kInk : kSignal, width: 3)),
+        decoration: const BoxDecoration(
+          border: Border(bottom: BorderSide(color: kInk, width: 3)),
         ),
         padding: const EdgeInsets.only(bottom: 4),
         child: Text.rich(
@@ -213,17 +326,15 @@ class ResultPanel extends StatelessWidget {
     ];
   }
 
-  // Wide layout: each range year sits on a 3px black rule (`.bridge-year`).
-  // Phone: same rule in the signal colour.
-  Widget _yearUnderline(bool wide, Widget year) => Container(
-        decoration: BoxDecoration(
-            border: Border(
-                bottom: BorderSide(color: wide ? kInk : kSignal, width: 3))),
+  // Each range year sits on a 3px black rule (`.bridge-year`).
+  Widget _yearUnderline(Widget year) => Container(
+        decoration: const BoxDecoration(
+            border: Border(bottom: BorderSide(color: kInk, width: 3))),
         padding: const EdgeInsets.only(bottom: 2),
         child: year,
       );
 
-  List<Widget> _range(bool wide) {
+  List<Widget> _range() {
     return [
       Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -233,7 +344,6 @@ class ResultPanel extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _yearUnderline(
-                  wide,
                   FittedBox(
                     fit: BoxFit.scaleDown,
                     alignment: Alignment.centerLeft,
@@ -251,15 +361,12 @@ class ResultPanel extends StatelessWidget {
           ),
           Expanded(
             child: Column(
-              // Phone: the end year starts at its column's left edge (TASK-15).
-              crossAxisAlignment:
-                  wide ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 _yearUnderline(
-                  wide,
                   FittedBox(
                     fit: BoxFit.scaleDown,
-                    alignment: wide ? Alignment.centerRight : Alignment.centerLeft,
+                    alignment: Alignment.centerRight,
                     child: Text(out.endYearStr!,
                         style: mono(38, weight: FontWeight.w900, height: 1.05)),
                   ),
@@ -389,8 +496,14 @@ class AstroCard extends StatefulWidget {
   final List<AstroItem> items;
   /// Only the content, without the collapsible tile (used inside wide tabs).
   final bool bare;
+  /// Phone: Noto Sans for the text, mono only for the JDN (TASK-16).
+  final bool phone;
   const AstroCard(
-      {super.key, required this.lang, required this.items, this.bare = false});
+      {super.key,
+      required this.lang,
+      required this.items,
+      this.bare = false,
+      this.phone = false});
 
   @override
   State<AstroCard> createState() => _AstroCardState();
@@ -430,7 +543,7 @@ class _AstroCardState extends State<AstroCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('${I18n.t(widget.lang, 'jdn').toUpperCase()}  ',
-                        style: mono(9,
+                        style: face(widget.phone, 9,
                             color: kInk500,
                             weight: FontWeight.w700,
                             letterSpacing: 1)),
@@ -450,24 +563,24 @@ class _AstroCardState extends State<AstroCard> {
                         if (it.icon != null)
                           Padding(
                             padding: const EdgeInsets.only(right: 8),
-                            child: Text(it.icon!, style: mono(14)),
+                            child: Text(it.icon!, style: face(widget.phone, 14)),
                           ),
                         Expanded(
                             child:
-                                Text(it.text, style: mono(12.5, height: 1.4))),
+                                Text(it.text, style: face(widget.phone, 12.5, height: 1.4))),
                       ],
                     ),
                     if (it.detail != null)
                       Padding(
                         padding: const EdgeInsets.only(top: 2, left: 22),
                         child: Text(it.detail!,
-                            style: mono(10.5, color: kInk500)),
+                            style: face(widget.phone, 10.5, color: kInk500)),
                       ),
                     if (it.note != null)
                       Padding(
                         padding: const EdgeInsets.only(top: 4, left: 22),
                         child: Text(it.note!,
-                            style: mono(10.5, color: kInk600, height: 1.4)),
+                            style: face(widget.phone, 10.5, color: kInk600, height: 1.4)),
                       ),
                     if (it.linkHref != null)
                       Padding(
@@ -477,7 +590,7 @@ class _AstroCardState extends State<AstroCard> {
                               mode: LaunchMode.externalApplication),
                           child: Text(
                             it.linkLabel ?? it.linkHref!,
-                            style: mono(11,
+                            style: face(widget.phone, 11,
                                     weight: FontWeight.w700, color: kInk)
                                 .copyWith(
                                     decoration: TextDecoration.underline),
@@ -504,6 +617,7 @@ class HistoryPanel extends StatelessWidget {
   final ValueChanged<HistoryEntry> onRestore;
   final VoidCallback onClear;
   final bool bare;
+  final bool phone; // Noto Sans for the entries (TASK-16)
   const HistoryPanel({
     super.key,
     required this.lang,
@@ -513,6 +627,7 @@ class HistoryPanel extends StatelessWidget {
     required this.onRestore,
     required this.onClear,
     this.bare = false,
+    this.phone = false,
   });
 
   @override
@@ -539,11 +654,11 @@ class HistoryPanel extends StatelessWidget {
                       SizedBox(
                         width: 126,
                         child: Text(s.src,
-                            style: mono(10.5, weight: FontWeight.w700)),
+                            style: face(phone, 10.5, weight: FontWeight.w700)),
                       ),
                       Expanded(
                         child:
-                            Text(s.res, style: mono(10.5, color: kInk600)),
+                            Text(s.res, style: face(phone, 10.5, color: kInk600)),
                       ),
                     ],
                   ),
@@ -561,16 +676,16 @@ class HistoryPanel extends StatelessWidget {
                     shape: const RoundedRectangleBorder(
                         side: BorderSide(color: kInk, width: 2.5)),
                     content: Text(I18n.t(lang, 'clearHistoryConfirm'),
-                        style: mono(13)),
+                        style: face(phone, 13)),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(ctx, false),
-                        child: Text('✕', style: mono(14, color: kInk600)),
+                        child: Text('✕', style: face(phone, 14, color: kInk600)),
                       ),
                       TextButton(
                         onPressed: () => Navigator.pop(ctx, true),
                         child: Text('OK',
-                            style: mono(14, weight: FontWeight.w800)),
+                            style: face(phone, 14, weight: FontWeight.w800)),
                       ),
                     ],
                   ),
@@ -579,7 +694,7 @@ class HistoryPanel extends StatelessWidget {
               },
               child: Text(
                 I18n.t(lang, 'clearHistory').toUpperCase(),
-                style: mono(10.5,
+                style: face(phone, 10.5,
                     weight: FontWeight.w700,
                     color: kInk600,
                     letterSpacing: 1.2),
@@ -755,7 +870,7 @@ class _CopyMenuState extends State<CopyMenu> {
                 padding: const EdgeInsets.fromLTRB(18, 14, 18, 6),
                 child: Text(
                   MobileI18n.t(widget.lang, 'copyAs').toUpperCase(),
-                  style: mono(11,
+                  style: sans(11,
                       weight: FontWeight.w800,
                       color: kInk600,
                       letterSpacing: 1.4),
@@ -775,12 +890,12 @@ class _CopyMenuState extends State<CopyMenu> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(label.toUpperCase(),
-                                  style: mono(10,
+                                  style: sans(10,
                                       color: kInk500,
                                       weight: FontWeight.w700,
                                       letterSpacing: 1)),
                               const SizedBox(height: 2),
-                              Text(text, style: mono(14, weight: FontWeight.w700)),
+                              Text(text, style: sans(14, weight: FontWeight.w700)),
                             ],
                           ),
                         ),
@@ -823,7 +938,7 @@ class _CopyMenuState extends State<CopyMenu> {
                                 ? I18n.t(widget.lang, 'copied')
                                 : MobileI18n.t(widget.lang, 'copy'))
                             .toUpperCase(),
-                        style: mono(13,
+                        style: sans(13,
                             weight: FontWeight.w800,
                             color: kWhite,
                             letterSpacing: 1.6),
@@ -846,7 +961,7 @@ class _CopyMenuState extends State<CopyMenu> {
                   color: kSurface,
                   border: Border.all(color: kInk, width: kBorderSubtle),
                 ),
-                child: Text('▾', style: mono(15, weight: FontWeight.w700)),
+                child: Text('▾', style: sans(15, weight: FontWeight.w700)),
               ),
             ),
           ],
@@ -856,61 +971,141 @@ class _CopyMenuState extends State<CopyMenu> {
   }
 }
 
-/// Phone version of the "Other calendars" list (TASK-15): two columns of
-/// tiles — small calendar name, big year, date — so nothing is squeezed into
-/// a fixed-width column. A tile opens the calendar's page.
-class ContextualTiles extends StatelessWidget {
+/// Phone version of the "Other calendars" list (TASK-16): two columns, no
+/// frames — thin rules between rows, small calendar name, big year, date. A
+/// cell opens the calendar's page.
+class ContextualPlain extends StatelessWidget {
   final List<ContextRow> rows;
   final void Function(String calId)? onOpenCalendarPage;
-  const ContextualTiles({super.key, required this.rows, this.onOpenCalendarPage});
+  const ContextualPlain({super.key, required this.rows, this.onOpenCalendarPage});
 
-  Widget _tile(ContextRow r) => InkWell(
-        onTap: () => onOpenCalendarPage?.call(r.calId),
-        child: Container(
-          decoration:
-              BoxDecoration(border: Border.all(color: kInk, width: 1.5)),
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(r.label.toUpperCase(),
-                  style: mono(9,
-                      color: kInk600,
-                      weight: FontWeight.w700,
-                      letterSpacing: 0.5)),
-              const SizedBox(height: 2),
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                alignment: Alignment.centerLeft,
-                child: Text(r.yearStr,
-                    style: mono(20, weight: FontWeight.w900, height: 1.15)),
-              ),
-              Text(r.datesStr, style: mono(11.5, color: kInk600)),
-            ],
-          ),
+  Widget _cell(ContextRow? r) {
+    if (r == null) return const SizedBox.shrink();
+    return InkWell(
+      onTap: () => onOpenCalendarPage?.call(r.calId),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 9),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(r.label.toUpperCase(),
+                style: sans(9.5,
+                    color: kInk600, weight: FontWeight.w700, letterSpacing: 0.5)),
+            const SizedBox(height: 2),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Text(r.yearStr,
+                  style: sans(18, weight: FontWeight.w700, height: 1.15)),
+            ),
+            Text(r.datesStr, style: sans(12, color: kInk600)),
+          ],
         ),
-      );
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         for (var i = 0; i < rows.length; i += 2)
-          Padding(
-            padding: EdgeInsets.only(bottom: i + 2 < rows.length ? 8 : 0),
+          Container(
+            decoration: BoxDecoration(
+                border: i == 0
+                    ? null
+                    : const Border(top: BorderSide(color: kSurface2, width: 1.5))),
             child: IntrinsicHeight(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Expanded(child: _tile(rows[i])),
-                  const SizedBox(width: 8),
-                  Expanded(
-                      child: i + 1 < rows.length
-                          ? _tile(rows[i + 1])
-                          : const SizedBox.shrink()),
+                  Expanded(child: _cell(rows[i])),
+                  const SizedBox(width: 18),
+                  Expanded(child: _cell(i + 1 < rows.length ? rows[i + 1] : null)),
                 ],
               ),
             ),
+          ),
+      ],
+    );
+  }
+}
+
+/// Section heading of the phone result box: "OTHER CALENDARS ......... 6".
+class PhoneSectionHeading extends StatelessWidget {
+  final String title;
+  final String? hint;
+  const PhoneSectionHeading({super.key, required this.title, this.hint});
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.only(bottom: 4),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
+          children: [
+            Expanded(
+              child: Text(title.toUpperCase(),
+                  style: sans(11,
+                      weight: FontWeight.w700, color: kInk700, letterSpacing: 1.3)),
+            ),
+            if (hint != null && hint!.isNotEmpty)
+              Text(hint!, style: sans(11, color: kInk500)),
+          ],
+        ),
+      );
+}
+
+/// Collapsed row of the phone result box (TASK-16): title, a short hint and a
+/// ▸ / ▴ chevron. The body shows under it while [open].
+class PhoneFoldRow extends StatelessWidget {
+  final String title;
+  final String? hint;
+  final bool open;
+  final VoidCallback onTap;
+  final Widget body;
+  const PhoneFoldRow({
+    super.key,
+    required this.title,
+    this.hint,
+    required this.open,
+    required this.onTap,
+    required this.body,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        InkWell(
+          onTap: onTap,
+          child: Container(
+            constraints: const BoxConstraints(minHeight: 52),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            decoration: const BoxDecoration(
+                border: Border(top: BorderSide(color: kInk, width: kBorderSlab))),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(title.toUpperCase(),
+                      style: sans(12,
+                          weight: FontWeight.w700, letterSpacing: 1.4)),
+                ),
+                if (hint != null && hint!.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: Text(hint!, style: sans(12, color: kInk500)),
+                  ),
+                Text(open ? '▴' : '▸', style: sans(13, weight: FontWeight.w700)),
+              ],
+            ),
+          ),
+        ),
+        if (open)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
+            child: body,
           ),
       ],
     );
@@ -950,9 +1145,9 @@ class BreakdownGroups extends StatelessWidget {
           children: [
             SizedBox(
               width: 118,
-              child: Text(r.srcName, style: mono(12, weight: FontWeight.w700)),
+              child: Text(r.srcName, style: sans(12.5, weight: FontWeight.w700)),
             ),
-            Expanded(child: Text('${r.startDM} – $end', style: mono(12))),
+            Expanded(child: Text('${r.startDM} – $end', style: sans(12.5))),
             const SizedBox(width: 8),
             Text('${r.days}', style: mono(11, color: kInk500)),
           ],

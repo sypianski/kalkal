@@ -1,4 +1,4 @@
-// Phone layout (< 601 px) behaviour from the TASK-1 UX round.
+// Phone layout (< 601 px) behaviour from the TASK-1 / TASK-15 / TASK-16 UX rounds.
 
 import 'dart:convert';
 
@@ -21,7 +21,7 @@ Future<void> boot(WidgetTester t, {Map<String, Object> prefs = const {}}) async 
 }
 
 void main() {
-  testWidgets('convert folds the form into a strip, Change unfolds it',
+  testWidgets('convert folds the form into the result card, Change unfolds it',
       (t) async {
     await boot(t);
     expect(find.text('CONVERT'), findsOneWidget);
@@ -70,25 +70,37 @@ void main() {
     await t.pump(const Duration(milliseconds: 500));
   }
 
-  testWidgets('day result: Other tab first, tiles, strip with short target',
+  testWidgets('day result: one card, source once, Other list open (TASK-16)',
       (t) async {
+    t.view.physicalSize = const Size(390, 1600);
     await boot(t, prefs: {
       'kalkal-history': hist({'year': 1445, 'month': 9, 'day': 10})
     });
+    t.view.physicalSize = const Size(390, 1600);
     await openFromHistory(t, 'Ram');
-    // Strip: FROM label, short target "AD", signal CHANGE button.
-    expect(find.text('FROM'), findsOneWidget);
-    expect(find.textContaining('10\u00A0→\u00A0AD'), findsOneWidget);
-    // Date split over two lines: "20 March" and the year with the AD tag.
+    // The card opens with the source (caption + date) and the CHANGE button.
+    expect(find.textContaining('FROM'), findsOneWidget);
+    expect(find.textContaining('TO · AD'), findsOneWidget);
+    // The source date is stated once and is 18 px, not the old 12.5 px line.
+    final src = find.textContaining('1445 AH');
+    expect(src, findsOneWidget);
+    expect(t.widget<Text>(src).style!.fontSize, 18);
+    expect(find.textContaining('←'), findsNothing);
+    // Result: "20 March" and the year with its AD tag on the black block.
     expect(find.text('20 March'), findsOneWidget);
     expect(find.text('2024'), findsOneWidget);
-    // Tabs: OTHER is the first one and is open (calendar tiles on screen).
-    final other = t.getTopLeft(find.text('OTHER'));
-    final astro = t.getTopLeft(find.text('ASTRO'));
-    expect(other.dx < astro.dx, isTrue);
+    // Other calendars sit open under a heading, without a tab bar.
+    expect(find.text('OTHER CONTEMPORANEOUS CALENDARS'), findsOneWidget);
     expect(find.text('HEBREW'), findsOneWidget);
-    // A tile keeps its date in one piece (no letter-by-letter wrapping).
-    expect(t.getSize(find.text('10 Adar II')).height, lessThan(30));
+    expect(find.text('10 Adar II'), findsOneWidget);
+    expect(find.text('OTHER'), findsNothing);
+    // Astro and History are collapsed rows; opening one shows its body.
+    expect(find.text('ASTRO'), findsOneWidget);
+    expect(find.text('Waxing Moon'), findsNothing);
+    await t.tap(find.text('ASTRO'));
+    await t.pump(const Duration(milliseconds: 300));
+    expect(find.textContaining('Pisces'), findsOneWidget);
+    expect(find.text('HISTORY'), findsOneWidget);
   });
 
   testWidgets('copy: one button, the arrow opens a "Copy as" sheet',
@@ -127,20 +139,25 @@ void main() {
     expect(find.text('COPIED!'), findsNothing);
   });
 
-  testWidgets('year result: months grouped under their year', (t) async {
-    t.view.physicalSize = const Size(390, 1600);
+  testWidgets('year result: years only, months in a row that opens', (t) async {
+    t.view.physicalSize = const Size(390, 1800);
     await boot(t, prefs: {'kalkal-history': hist({'year': 1445})});
-    t.view.physicalSize = const Size(390, 1600);
+    t.view.physicalSize = const Size(390, 1800);
     await openFromHistory(t, '1445 AH');
-    // End year of the range starts at the left edge of its column.
-    final y1 = t.getTopLeft(find.text('2023').first).dx;
-    final y2 = t.getTopLeft(find.text('2024').first).dx;
+    // Only the two years — no equation and no full span line.
+    expect(find.text('2023'), findsOneWidget);
+    expect(find.text('2024'), findsOneWidget);
+    expect(find.textContaining('1445 AH = '), findsNothing);
+    expect(find.textContaining('July 2023 – '), findsNothing);
+    // End year starts at the left edge of its column.
+    final y1 = t.getTopLeft(find.text('2023')).dx;
+    final y2 = t.getTopLeft(find.text('2024')).dx;
     expect(y2 > y1, isTrue);
+    // Months are a collapsed row; open it for the groups.
+    expect(find.textContaining('14 December – 11 January 2024'), findsNothing);
     await t.tap(find.text('MONTHS'));
     await t.pump(const Duration(milliseconds: 300));
-    // Group headings, printed once per year.
     expect(find.text('2023'), findsWidgets);
-    expect(find.text('2024'), findsWidgets);
     expect(find.textContaining('14 December – 11 January 2024'), findsOneWidget);
   });
 

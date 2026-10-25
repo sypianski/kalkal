@@ -37,6 +37,7 @@ class ConverterScreenState extends State<ConverterScreen> {
   ConvertOutput? _out;
   List<ContextRow> _ctx = const [];
   String? _tab; // active tab of the wide tile box: ctx | astro | bd | hist
+  String? _fold; // open row of the phone result box: bd | astro | hist
   String? _error;
   bool _historyExpanded = false;
   // Phone only: after a convert the form folds into a one-line summary strip
@@ -164,9 +165,7 @@ class ConverterScreenState extends State<ConverterScreen> {
       padding: const EdgeInsets.fromLTRB(10, 10, 10, 20),
       children: [
         if (showIntro) ...[_titleBox(), gap, _introCard(withDesc: false), gap],
-        if (folded)
-          _summaryStrip()
-        else ...[
+        if (!folded) ...[
           _phoneForm(),
           if (_error != null) ...[gap, _errorStrip()],
           gap,
@@ -174,9 +173,18 @@ class ConverterScreenState extends State<ConverterScreen> {
         ],
         if (_out != null) ...[
           gap,
-          ResultPanel(lang: _lang, out: _out!, onVariantTap: _onVariantTap),
+          ResultPanel(
+            lang: _lang,
+            out: _out!,
+            onVariantTap: _onVariantTap,
+            srcLabel: I18n.calendarName(_lang, _fromId),
+            tgtLabel: shortCalName(_toId ?? 'gregorian'),
+            onChange: folded
+                ? () => setState(() => _formCollapsed = false)
+                : null,
+          ),
           gap,
-          _tabBox(history, compact: true),
+          _foldBox(history),
         ] else if (history.isNotEmpty) ...[
           gap,
           HistoryPanel(
@@ -317,64 +325,6 @@ class ConverterScreenState extends State<ConverterScreen> {
           _phoneLabel('toLabel'),
           _toField(),
         ],
-      ),
-    );
-  }
-
-  // Folded form: "FROM / Hijri · 1445 · Ramaḍān · 10 → AD   [CHANGE ▾]". The
-  // target is the short name ("AD"), the change button is a signal-colour
-  // 44 px action — it is the one thing here you tap (TASK-15).
-  Widget _summaryStrip() {
-    final names = _src.monthNames(_lang);
-    final parts = <String>[
-      I18n.calendarName(_lang, _fromId),
-      _yearCtl.text.trim(),
-      if (_month != null && _month! - 1 < names.length) names[_month! - 1],
-      if (_day != null) '$_day',
-    ];
-    // Non-breaking spaces keep "10 → AD" together when the strip wraps.
-    final text =
-        '${parts.join(' · ')}\u00A0→\u00A0${shortCalName(_toId ?? 'gregorian')}';
-    return InkWell(
-      onTap: () => setState(() => _formCollapsed = false),
-      child: Container(
-        decoration: slabDecoration(shadow: 4),
-        constraints: const BoxConstraints(minHeight: 64),
-        padding: const EdgeInsets.fromLTRB(14, 8, 8, 8),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(I18n.t(_lang, 'labelFrom').toUpperCase(),
-                      style: mono(9.5,
-                          weight: FontWeight.w700,
-                          color: kInk600,
-                          letterSpacing: 2)),
-                  const SizedBox(height: 2),
-                  Text(text,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: mono(12.5, weight: FontWeight.w700, height: 1.35)),
-                ],
-              ),
-            ),
-            const SizedBox(width: 10),
-            Container(
-              color: kSignal,
-              constraints: const BoxConstraints(minHeight: 44),
-              padding: const EdgeInsets.symmetric(horizontal: 14),
-              alignment: Alignment.center,
-              child: Text(
-                '${MobileI18n.t(_lang, 'change').toUpperCase()} ▾',
-                style: mono(11,
-                    weight: FontWeight.w800, color: kWhite, letterSpacing: 1.2),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -765,21 +715,86 @@ class ConverterScreenState extends State<ConverterScreen> {
     );
   }
 
-  // One tabbed box for contextual / astro / month breakdown / history. The
-  // phone variant (compact) uses short tab titles, 48 px tabs and tile/group
-  // layouts for the lists (TASK-15).
-  Widget _tabBox(List<HistoryEntry> history, {bool compact = false}) {
+  // Phone result box (TASK-16): "Other calendars" always open under a heading,
+  // then Months (year results), Astro and History as collapsed rows — one
+  // open at a time. All text in Noto Sans, mono only for numerals.
+  Widget _foldBox(List<HistoryEntry> history) {
     String t(String k) => I18n.t(_lang, k);
-    final ctx = (
-      'ctx',
-      compact ? MobileI18n.t(_lang, 'tabOther') : t('contextualLabel')
+    void toggle(String id) => setState(() => _fold = _fold == id ? null : id);
+    final glyphs = _out!.astro
+        .where((it) => it.icon != null)
+        .map((it) => it.icon!)
+        .take(3)
+        .join(' ');
+    final rows = <Widget>[
+      if (_out!.breakdown.isNotEmpty)
+        PhoneFoldRow(
+          title: MobileI18n.t(_lang, 'tabMonths'),
+          hint: '${_out!.breakdown.length}',
+          open: _fold == 'bd',
+          onTap: () => toggle('bd'),
+          body: BreakdownGroups(rows: _out!.breakdown),
+        ),
+      PhoneFoldRow(
+        title: t('astroLabel'),
+        hint: glyphs,
+        open: _fold == 'astro',
+        onTap: () => toggle('astro'),
+        body: AstroCard(lang: _lang, items: _out!.astro, bare: true, phone: true),
+      ),
+      if (history.isNotEmpty)
+        PhoneFoldRow(
+          title: t('history'),
+          hint: '${history.length}',
+          open: _fold == 'hist',
+          onTap: () => toggle('hist'),
+          body: HistoryPanel(
+            lang: _lang,
+            entries: history,
+            expanded: true,
+            onToggle: () {},
+            onRestore: _restoreHistory,
+            onClear: () {
+              Prefs.instance.clearHistory();
+              setState(() => _fold = null);
+            },
+            bare: true,
+            phone: true,
+          ),
+        ),
+    ];
+    return Container(
+      decoration: slabDecoration(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (_ctx.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 14, 16, 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  PhoneSectionHeading(
+                      title: t('contextualLabel'), hint: '${_ctx.length}'),
+                  ContextualPlain(
+                      rows: _ctx, onOpenCalendarPage: widget.onOpenCalendarPage),
+                ],
+              ),
+            ),
+          ...rows,
+        ],
+      ),
     );
+  }
+
+  // Wide layout: one tabbed box for contextual / astro / month breakdown /
+  // history. The phone has its own box, [_foldBox].
+  Widget _tabBox(List<HistoryEntry> history) {
+    String t(String k) => I18n.t(_lang, k);
+    final ctx = ('ctx', t('contextualLabel'));
     final astro = ('astro', t('astroLabel'));
-    final bd = (
-      'bd',
-      compact ? MobileI18n.t(_lang, 'tabMonths') : t('monthBreakdown')
-    );
-    // Other calendars first, then Astro — the same order on phone and wide.
+    final bd = ('bd', t('monthBreakdown'));
+    // Other calendars first, then Astro.
     final defs = <(String, String)>[
       if (_hasResult && _ctx.isNotEmpty) ctx,
       if (_hasResult) astro,
@@ -792,21 +807,16 @@ class ConverterScreenState extends State<ConverterScreen> {
     Widget content;
     switch (active) {
       case 'ctx':
-        content = compact
-            ? ContextualTiles(
-                rows: _ctx, onOpenCalendarPage: widget.onOpenCalendarPage)
-            : ContextualList(
-                rows: _ctx, onOpenCalendarPage: widget.onOpenCalendarPage);
+        content = ContextualList(
+            rows: _ctx, onOpenCalendarPage: widget.onOpenCalendarPage);
       case 'astro':
         content = AstroCard(lang: _lang, items: _out!.astro, bare: true);
       case 'bd':
-        content = compact
-            ? BreakdownGroups(rows: _out!.breakdown)
-            : BreakdownTable(
-                lang: _lang,
-                srcId: _src.id,
-                tgtId: _tgt.id,
-                rows: _out!.breakdown);
+        content = BreakdownTable(
+            lang: _lang,
+            srcId: _src.id,
+            tgtId: _tgt.id,
+            rows: _out!.breakdown);
       default:
         content = HistoryPanel(
           lang: _lang,
@@ -823,14 +833,14 @@ class ConverterScreenState extends State<ConverterScreen> {
     }
 
     return Container(
-      decoration: compact ? slabDecoration() : _wideCard,
+      decoration: _wideCard,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
             decoration: BoxDecoration(
               border: Border(
-                  bottom: BorderSide(color: kInk, width: compact ? 2.5 : 3)),
+                  bottom: BorderSide(color: kInk, width: 3)),
             ),
             child: IntrinsicHeight(
               child: Row(
@@ -842,10 +852,8 @@ class ConverterScreenState extends State<ConverterScreen> {
                       child: InkWell(
                         onTap: () => setState(() => _tab = defs[i].$1),
                         child: Container(
-                          constraints:
-                              BoxConstraints(minHeight: compact ? 48 : 0),
-                          padding: EdgeInsets.symmetric(
-                              horizontal: compact ? 4 : 8, vertical: 14),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 14),
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                             color: defs[i].$1 == active ? kSignal : kSurface,
@@ -857,9 +865,9 @@ class ConverterScreenState extends State<ConverterScreen> {
                           child: Text(
                             defs[i].$2.toUpperCase(),
                             textAlign: TextAlign.center,
-                            style: mono(compact ? 11.5 : 11,
+                            style: mono(11,
                                 weight: FontWeight.w700,
-                                letterSpacing: compact ? 0.5 : 1.4,
+                                letterSpacing: 1.4,
                                 color: defs[i].$1 == active
                                     ? kWhite
                                     : kInk600),
@@ -872,9 +880,7 @@ class ConverterScreenState extends State<ConverterScreen> {
             ),
           ),
           Padding(
-            padding: compact
-                ? const EdgeInsets.fromLTRB(16, 16, 16, 18)
-                : const EdgeInsets.fromLTRB(36, 24, 36, 28),
+            padding: const EdgeInsets.fromLTRB(36, 24, 36, 28),
             child: content,
           ),
         ],

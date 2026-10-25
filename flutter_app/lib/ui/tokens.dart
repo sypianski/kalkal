@@ -50,6 +50,36 @@ BoxDecoration slabDecoration({double border = kBorderSlab, double shadow = 5}) =
       boxShadow: brutShadow(shadow),
     );
 
+/// Noto Sans (regular + a real bold) — the phone result screen's face for
+/// labels, dates and names; [mono] stays for numerals (TASK-16). Bold weights
+/// above 700 map to the bold file, so 800/900 look the same as 700.
+TextStyle sans(double size,
+        {FontWeight weight = FontWeight.w400,
+        Color color = kInk,
+        double? letterSpacing,
+        double? height}) =>
+    TextStyle(
+      fontFamily: kSans,
+      fontSize: size,
+      fontWeight: weight,
+      color: color,
+      letterSpacing: letterSpacing,
+      height: height,
+      fontFamilyFallback: const [kCharis, kAmiri, kMono],
+    );
+
+/// Phone result widgets pick sans or mono per call site; wide stays mono.
+TextStyle face(bool useSans, double size,
+        {FontWeight weight = FontWeight.w400,
+        Color color = kInk,
+        double? letterSpacing,
+        double? height}) =>
+    useSans
+        ? sans(size,
+            weight: weight, color: color, letterSpacing: letterSpacing, height: height)
+        : mono(size,
+            weight: weight, color: color, letterSpacing: letterSpacing, height: height);
+
 TextStyle mono(double size,
         {FontWeight weight = FontWeight.w400,
         Color color = kInk,

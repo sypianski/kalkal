@@ -321,7 +321,9 @@ class ConverterScreenState extends State<ConverterScreen> {
     );
   }
 
-  // Folded form: "Hijri · 1445 · Ramaḍān · 10 → AD   [CHANGE ▾]".
+  // Folded form: "FROM / Hijri · 1445 · Ramaḍān · 10 → AD   [CHANGE ▾]". The
+  // target is the short name ("AD"), the change button is a signal-colour
+  // 44 px action — it is the one thing here you tap (TASK-15).
   Widget _summaryStrip() {
     final names = _src.monthNames(_lang);
     final parts = <String>[
@@ -330,29 +332,44 @@ class ConverterScreenState extends State<ConverterScreen> {
       if (_month != null && _month! - 1 < names.length) names[_month! - 1],
       if (_day != null) '$_day',
     ];
+    // Non-breaking spaces keep "10 → AD" together when the strip wraps.
     final text =
-        '${parts.join(' · ')} → ${I18n.calendarName(_lang, _toId ?? 'gregorian')}';
+        '${parts.join(' · ')}\u00A0→\u00A0${shortCalName(_toId ?? 'gregorian')}';
     return InkWell(
       onTap: () => setState(() => _formCollapsed = false),
       child: Container(
         decoration: slabDecoration(shadow: 4),
-        constraints: const BoxConstraints(minHeight: 58),
+        constraints: const BoxConstraints(minHeight: 64),
         padding: const EdgeInsets.fromLTRB(14, 8, 8, 8),
         child: Row(
           children: [
             Expanded(
-              child: Text(text,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: mono(12.5, weight: FontWeight.w700, height: 1.35)),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(I18n.t(_lang, 'labelFrom').toUpperCase(),
+                      style: mono(9.5,
+                          weight: FontWeight.w700,
+                          color: kInk600,
+                          letterSpacing: 2)),
+                  const SizedBox(height: 2),
+                  Text(text,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: mono(12.5, weight: FontWeight.w700, height: 1.35)),
+                ],
+              ),
             ),
             const SizedBox(width: 10),
             Container(
-              color: kInk,
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
+              color: kSignal,
+              constraints: const BoxConstraints(minHeight: 44),
+              padding: const EdgeInsets.symmetric(horizontal: 14),
+              alignment: Alignment.center,
               child: Text(
                 '${MobileI18n.t(_lang, 'change').toUpperCase()} ▾',
-                style: mono(10.5,
+                style: mono(11,
                     weight: FontWeight.w800, color: kWhite, letterSpacing: 1.2),
               ),
             ),
@@ -749,7 +766,8 @@ class ConverterScreenState extends State<ConverterScreen> {
   }
 
   // One tabbed box for contextual / astro / month breakdown / history. The
-  // phone variant (compact) puts Astro first and uses short tab titles.
+  // phone variant (compact) uses short tab titles, 48 px tabs and tile/group
+  // layouts for the lists (TASK-15).
   Widget _tabBox(List<HistoryEntry> history, {bool compact = false}) {
     String t(String k) => I18n.t(_lang, k);
     final ctx = (
@@ -761,10 +779,10 @@ class ConverterScreenState extends State<ConverterScreen> {
       'bd',
       compact ? MobileI18n.t(_lang, 'tabMonths') : t('monthBreakdown')
     );
+    // Other calendars first, then Astro — the same order on phone and wide.
     final defs = <(String, String)>[
-      if (compact && _hasResult) astro,
       if (_hasResult && _ctx.isNotEmpty) ctx,
-      if (!compact && _hasResult) astro,
+      if (_hasResult) astro,
       if (_hasResult && _out!.breakdown.isNotEmpty) bd,
       if (history.isNotEmpty) ('hist', t('history')),
     ];
@@ -774,16 +792,21 @@ class ConverterScreenState extends State<ConverterScreen> {
     Widget content;
     switch (active) {
       case 'ctx':
-        content = ContextualList(
-            rows: _ctx, onOpenCalendarPage: widget.onOpenCalendarPage);
+        content = compact
+            ? ContextualTiles(
+                rows: _ctx, onOpenCalendarPage: widget.onOpenCalendarPage)
+            : ContextualList(
+                rows: _ctx, onOpenCalendarPage: widget.onOpenCalendarPage);
       case 'astro':
         content = AstroCard(lang: _lang, items: _out!.astro, bare: true);
       case 'bd':
-        content = BreakdownTable(
-            lang: _lang,
-            srcId: _src.id,
-            tgtId: _tgt.id,
-            rows: _out!.breakdown);
+        content = compact
+            ? BreakdownGroups(rows: _out!.breakdown)
+            : BreakdownTable(
+                lang: _lang,
+                srcId: _src.id,
+                tgtId: _tgt.id,
+                rows: _out!.breakdown);
       default:
         content = HistoryPanel(
           lang: _lang,
@@ -819,8 +842,10 @@ class ConverterScreenState extends State<ConverterScreen> {
                       child: InkWell(
                         onTap: () => setState(() => _tab = defs[i].$1),
                         child: Container(
+                          constraints:
+                              BoxConstraints(minHeight: compact ? 48 : 0),
                           padding: EdgeInsets.symmetric(
-                              horizontal: compact ? 2 : 8, vertical: 14),
+                              horizontal: compact ? 4 : 8, vertical: 14),
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                             color: defs[i].$1 == active ? kSignal : kSurface,
@@ -832,9 +857,9 @@ class ConverterScreenState extends State<ConverterScreen> {
                           child: Text(
                             defs[i].$2.toUpperCase(),
                             textAlign: TextAlign.center,
-                            style: mono(compact ? 9.5 : 11,
+                            style: mono(compact ? 11.5 : 11,
                                 weight: FontWeight.w700,
-                                letterSpacing: compact ? 0.6 : 1.4,
+                                letterSpacing: compact ? 0.5 : 1.4,
                                 color: defs[i].$1 == active
                                     ? kWhite
                                     : kInk600),

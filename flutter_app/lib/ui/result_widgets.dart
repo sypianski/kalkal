@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../engine/registry.dart';
 import '../i18n/i18n.dart';
+import '../i18n/mobile_i18n.dart';
 import '../logic/convert.dart';
 import '../state/prefs.dart';
 import 'tokens.dart';
@@ -40,31 +41,135 @@ class ResultPanel extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (secondary != null && onVariantTap != null)
+                // Wide layout: variant toggles on top. Phone: under the date,
+                // with a caption saying whose variant it is (TASK-15).
+                if (wide && secondary != null && onVariantTap != null)
                   Padding(
                     padding: const EdgeInsets.only(bottom: 12),
-                    child: Wrap(
-                      spacing: 4,
-                      runSpacing: 4,
+                    child: _variantButtons(secondary),
+                  ),
+                if (out.isSingle)
+                  ...(wide ? _single(wide) : _singlePhone())
+                else
+                  ..._range(wide),
+                if (!wide && secondary != null && onVariantTap != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        for (final v in secondary.variants!)
-                          VariantButton(
-                            label: kVariantLabels[v] ?? v,
-                            active: v == secondary.variant,
-                            onTap: () => onVariantTap!(secondary, v),
-                          ),
+                        Text(
+                          '${I18n.calendarName(lang, secondary.id)} · '
+                                  '${kVariantLabels[secondary.variant] ?? secondary.variant}'
+                              .toUpperCase(),
+                          style: mono(9.5,
+                              weight: FontWeight.w700,
+                              color: kInk600,
+                              letterSpacing: 1.5),
+                        ),
+                        const SizedBox(height: 4),
+                        _variantButtons(secondary),
                       ],
                     ),
                   ),
-                if (out.isSingle) ..._single(wide) else ..._range(wide),
                 if (out.copyData.defaultText.isNotEmpty)
-                  CopyTrio(lang: lang, data: out.copyData),
+                  wide
+                      ? CopyTrio(lang: lang, data: out.copyData)
+                      : CopyMenu(lang: lang, data: out.copyData),
               ],
             ),
           ),
         ],
       ),
     );
+  }
+
+  Widget _variantButtons(WebCalendar secondary) => Wrap(
+        spacing: 4,
+        runSpacing: 4,
+        children: [
+          for (final v in secondary.variants!)
+            VariantButton(
+              label: kVariantLabels[v] ?? v,
+              active: v == secondary.variant,
+              onTap: () => onVariantTap!(secondary, v),
+            ),
+        ],
+      );
+
+  // Lines under the date that belong to the target calendar (variants,
+  // indiction, animal year, Babylonian note) — shared by both layouts.
+  List<Widget> _extras() => [
+        for (final line in out.altLines)
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Text(line, style: mono(11.5, color: kInk600)),
+          ),
+        if (out.indictionLine != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Text(out.indictionLine!, style: mono(12, color: kInk700)),
+          ),
+        if (out.animalLine != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Text(out.animalLine!, style: mono(12, color: kInk700)),
+          ),
+        if (out.babylonianNote != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: Text(out.babylonianNote!,
+                style: mono(10.5, color: kInk600, height: 1.4)),
+          ),
+      ];
+
+  // Phone, single day: day + month on one line, the year (with a black
+  // calendar tag) under it on the signal rule, then the source date in a
+  // readable colour. A long Hijri month name shrinks instead of wrapping.
+  List<Widget> _singlePhone() {
+    final detail = out.tgtDetail ?? '';
+    final year = out.tgtYearStr ?? out.tgtFullText!;
+    return [
+      if (detail.isNotEmpty)
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerLeft,
+          child: Text(detail, style: mono(30, weight: FontWeight.w900, height: 1.05)),
+        ),
+      Container(
+        decoration: const BoxDecoration(
+            border: Border(bottom: BorderSide(color: kSignal, width: 3))),
+        padding: const EdgeInsets.only(bottom: 4),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Flexible(
+              child: Text(year,
+                  style: mono(30, weight: FontWeight.w900, height: 1.1)),
+            ),
+            if (out.tgtTag.isNotEmpty) ...[
+              const SizedBox(width: 8),
+              Container(
+                color: kInk,
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                child: Text(out.tgtTag,
+                    style: mono(11,
+                        weight: FontWeight.w700,
+                        color: kWhite,
+                        letterSpacing: 0.6)),
+              ),
+            ],
+          ],
+        ),
+      ),
+      const SizedBox(height: 8),
+      Text(
+        '← ${out.srcFullText!}${out.srcTag.isEmpty ? '' : ' ${out.srcTag}'}',
+        style: mono(12.5, color: kInk700),
+      ),
+      ..._extras(),
+    ];
   }
 
   List<Widget> _single(bool wide) {
@@ -104,27 +209,7 @@ class ResultPanel extends StatelessWidget {
             : '${out.srcFullText!} ${out.srcTag}',
         style: mono(11, color: kInk400),
       ),
-      for (final line in out.altLines)
-        Padding(
-          padding: const EdgeInsets.only(top: 8),
-          child: Text(line, style: mono(11.5, color: kInk600)),
-        ),
-      if (out.indictionLine != null)
-        Padding(
-          padding: const EdgeInsets.only(top: 8),
-          child: Text(out.indictionLine!, style: mono(12, color: kInk700)),
-        ),
-      if (out.animalLine != null)
-        Padding(
-          padding: const EdgeInsets.only(top: 8),
-          child: Text(out.animalLine!, style: mono(12, color: kInk700)),
-        ),
-      if (out.babylonianNote != null)
-        Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: Text(out.babylonianNote!,
-              style: mono(10.5, color: kInk600, height: 1.4)),
-        ),
+      ..._extras(),
     ];
   }
 
@@ -166,13 +251,15 @@ class ResultPanel extends StatelessWidget {
           ),
           Expanded(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+              // Phone: the end year starts at its column's left edge (TASK-15).
+              crossAxisAlignment:
+                  wide ? CrossAxisAlignment.end : CrossAxisAlignment.start,
               children: [
                 _yearUnderline(
                   wide,
                   FittedBox(
                     fit: BoxFit.scaleDown,
-                    alignment: Alignment.centerRight,
+                    alignment: wide ? Alignment.centerRight : Alignment.centerLeft,
                     child: Text(out.endYearStr!,
                         style: mono(38, weight: FontWeight.w900, height: 1.05)),
                   ),
@@ -607,5 +694,271 @@ class BreakdownTable extends StatelessWidget {
           ),
       ],
     );
+  }
+}
+
+/// Phone copy control (TASK-15): one signal "Copy" button for the full text
+/// plus a ▾ button that opens a "Copy as" sheet with every distinct format
+/// and what it is called. Replaces the row of text-labelled buttons.
+class CopyMenu extends StatefulWidget {
+  final String lang;
+  final CopyData data;
+  const CopyMenu({super.key, required this.lang, required this.data});
+
+  @override
+  State<CopyMenu> createState() => _CopyMenuState();
+}
+
+class _CopyMenuState extends State<CopyMenu> {
+  bool _copied = false;
+
+  /// (label, text) pairs, formats that repeat an earlier one are skipped.
+  List<(String, String)> get _items {
+    final single = widget.data.kind == 'single';
+    String l(String k) => MobileI18n.t(widget.lang, k);
+    final all = <(String, String?)>[
+      (single ? l('fmtFull') : l('fmtRange'), widget.data.defaultText),
+      (single ? l('fmtYear') : l('fmtYears'), widget.data.yearOnlyText),
+      (l('fmtPair'), widget.data.yearPairText),
+    ];
+    final seen = <String>{};
+    return [
+      for (final (label, text) in all)
+        if (text != null && text.isNotEmpty && seen.add(text)) (label, text),
+    ];
+  }
+
+  Future<void> _copy(String text) async {
+    await Clipboard.setData(ClipboardData(text: text));
+    if (!mounted) return;
+    setState(() => _copied = true);
+    Future.delayed(const Duration(milliseconds: 1200), () {
+      if (mounted) setState(() => _copied = false);
+    });
+  }
+
+  Future<void> _openSheet(List<(String, String)> items) async {
+    final text = await showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: kSurface,
+      shape: const RoundedRectangleBorder(),
+      builder: (ctx) => Container(
+        decoration: const BoxDecoration(
+          border: Border(top: BorderSide(color: kInk, width: 3)),
+        ),
+        child: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(18, 14, 18, 6),
+                child: Text(
+                  MobileI18n.t(widget.lang, 'copyAs').toUpperCase(),
+                  style: mono(11,
+                      weight: FontWeight.w800,
+                      color: kInk600,
+                      letterSpacing: 1.4),
+                ),
+              ),
+              for (final (label, text) in items)
+                InkWell(
+                  onTap: () => Navigator.of(ctx).pop(text),
+                  child: Container(
+                    constraints: const BoxConstraints(minHeight: 58),
+                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(label.toUpperCase(),
+                                  style: mono(10,
+                                      color: kInk500,
+                                      weight: FontWeight.w700,
+                                      letterSpacing: 1)),
+                              const SizedBox(height: 2),
+                              Text(text, style: mono(14, weight: FontWeight.w700)),
+                            ],
+                          ),
+                        ),
+                        const Icon(Icons.copy_rounded, size: 18, color: kInk),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+    if (text != null) _copy(text);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final items = _items;
+    if (items.isEmpty) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(top: 14),
+      child: Row(
+        children: [
+          Expanded(
+            child: Material(
+              color: kSignal,
+              child: InkWell(
+                onTap: () => _copy(items.first.$2),
+                child: Container(
+                  constraints: const BoxConstraints(minHeight: 46),
+                  alignment: Alignment.center,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.copy_rounded, size: 16, color: kWhite),
+                      const SizedBox(width: 8),
+                      Text(
+                        (_copied
+                                ? I18n.t(widget.lang, 'copied')
+                                : MobileI18n.t(widget.lang, 'copy'))
+                            .toUpperCase(),
+                        style: mono(13,
+                            weight: FontWeight.w800,
+                            color: kWhite,
+                            letterSpacing: 1.6),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          if (items.length > 1) ...[
+            const SizedBox(width: 8),
+            InkWell(
+              onTap: () => _openSheet(items),
+              child: Container(
+                width: 46,
+                height: 46,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: kSurface,
+                  border: Border.all(color: kInk, width: kBorderSubtle),
+                ),
+                child: Text('▾', style: mono(15, weight: FontWeight.w700)),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+/// Phone version of the "Other calendars" list (TASK-15): two columns of
+/// tiles — small calendar name, big year, date — so nothing is squeezed into
+/// a fixed-width column. A tile opens the calendar's page.
+class ContextualTiles extends StatelessWidget {
+  final List<ContextRow> rows;
+  final void Function(String calId)? onOpenCalendarPage;
+  const ContextualTiles({super.key, required this.rows, this.onOpenCalendarPage});
+
+  Widget _tile(ContextRow r) => InkWell(
+        onTap: () => onOpenCalendarPage?.call(r.calId),
+        child: Container(
+          decoration:
+              BoxDecoration(border: Border.all(color: kInk, width: 1.5)),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(r.label.toUpperCase(),
+                  style: mono(9,
+                      color: kInk600,
+                      weight: FontWeight.w700,
+                      letterSpacing: 0.5)),
+              const SizedBox(height: 2),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Text(r.yearStr,
+                    style: mono(20, weight: FontWeight.w900, height: 1.15)),
+              ),
+              Text(r.datesStr, style: mono(11.5, color: kInk600)),
+            ],
+          ),
+        ),
+      );
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        for (var i = 0; i < rows.length; i += 2)
+          Padding(
+            padding: EdgeInsets.only(bottom: i + 2 < rows.length ? 8 : 0),
+            child: IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(child: _tile(rows[i])),
+                  const SizedBox(width: 8),
+                  Expanded(
+                      child: i + 1 < rows.length
+                          ? _tile(rows[i + 1])
+                          : const SizedBox.shrink()),
+                ],
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+/// Phone version of the month breakdown (TASK-15): the target year is a group
+/// heading printed once; rows hold month name, day range and length. A month
+/// that runs into the next year carries that year after its end date.
+class BreakdownGroups extends StatelessWidget {
+  final List<BreakdownRow> rows;
+  const BreakdownGroups({super.key, required this.rows});
+
+  @override
+  Widget build(BuildContext context) {
+    final children = <Widget>[];
+    int? group;
+    for (final r in rows) {
+      if (r.startYear != group) {
+        group = r.startYear;
+        children.add(Container(
+          width: double.infinity,
+          padding: EdgeInsets.fromLTRB(0, children.isEmpty ? 0 : 10, 0, 4),
+          decoration: const BoxDecoration(
+              border: Border(bottom: BorderSide(color: kInk, width: 2))),
+          child: Text('$group', style: mono(15, weight: FontWeight.w900)),
+        ));
+      }
+      final end = r.endYear == group ? r.endDM : '${r.endDM} ${r.endYear}';
+      children.add(Container(
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        decoration: const BoxDecoration(
+            border: Border(bottom: BorderSide(color: kSurface2, width: 1.5))),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
+          children: [
+            SizedBox(
+              width: 118,
+              child: Text(r.srcName, style: mono(12, weight: FontWeight.w700)),
+            ),
+            Expanded(child: Text('${r.startDM} – $end', style: mono(12))),
+            const SizedBox(width: 8),
+            Text('${r.days}', style: mono(11, color: kInk500)),
+          ],
+        ),
+      ));
+    }
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: children);
   }
 }

@@ -74,13 +74,33 @@ class BreakdownRow {
   final int days;
   final String startStr;
   final String endStr;
-  const BreakdownRow(this.srcName, this.days, this.startStr, this.endStr);
+  // Year-less day + month and the bare years: the phone table groups rows by
+  // start year and prints the end year only when it differs from the group.
+  final String startDM;
+  final String endDM;
+  final int startYear;
+  final int endYear;
+  const BreakdownRow(
+    this.srcName,
+    this.days,
+    this.startStr,
+    this.endStr, {
+    required this.startDM,
+    required this.endDM,
+    required this.startYear,
+    required this.endYear,
+  });
 }
+
+/// "19 July" — day + month name without the year.
+String _dayMonth(List<String> names, YMD d) => '${d.day} ${names[d.month - 1]}';
 
 class ConvertOutput {
   final bool isSingle;
   // single-day bridge
   final String? tgtFullText;
+  final String? tgtDetail; // "20 March" — the line above the year on phones
+  final String? tgtYearStr; // "2024" / "7532 AUC"
   final String? srcFullText;
   final String tgtTag; // calTag() of the target, '' when none
   final String srcTag;
@@ -107,6 +127,8 @@ class ConvertOutput {
   const ConvertOutput({
     required this.isSingle,
     this.tgtFullText,
+    this.tgtDetail,
+    this.tgtYearStr,
     this.srcFullText,
     this.tgtTag = '',
     this.srcTag = '',
@@ -584,6 +606,8 @@ ConvertOutput convertDate(
   return ConvertOutput(
     isSingle: true,
     tgtFullText: tgtFullText,
+    tgtDetail: tgtDetail,
+    tgtYearStr: tgtYearStr,
     srcFullText: srcFullText,
     tgtTag: calTag(tgt.id),
     srcTag: calTag(src.id),
@@ -633,7 +657,15 @@ ConvertOutput convertRange(WebCalendar src, WebCalendar tgt, int y1, int m1,
     final mEndTgt = tgt.fromJD(src.toJD(cy, cm, mLastDay));
     final rowRange = fmtDateRange(tgtNames, mStartTgt, mEndTgt);
     monthRows.add(BreakdownRow(
-        '${srcNames[cm - 1]} $cy', mDays, rowRange.startStr, rowRange.endStr));
+      '${srcNames[cm - 1]} $cy',
+      mDays,
+      rowRange.startStr,
+      rowRange.endStr,
+      startDM: _dayMonth(tgtNames, mStartTgt),
+      endDM: _dayMonth(tgtNames, mEndTgt),
+      startYear: mStartTgt.year,
+      endYear: mEndTgt.year,
+    ));
     cm++;
     if (cm > src.monthCount) {
       cm = 1;
@@ -703,8 +735,16 @@ ConvertOutput convertYearRange(
     final mStartTgt = tgt.fromJD(src.toJD(year, m, 1));
     final mEndTgt = tgt.fromJD(src.toJD(year, m, mLen));
     final rowRange = fmtDateRange(tgtNames, mStartTgt, mEndTgt);
-    monthRows.add(
-        BreakdownRow(srcNames[m - 1], mLen, rowRange.startStr, rowRange.endStr));
+    monthRows.add(BreakdownRow(
+      srcNames[m - 1],
+      mLen,
+      rowRange.startStr,
+      rowRange.endStr,
+      startDM: _dayMonth(tgtNames, mStartTgt),
+      endDM: _dayMonth(tgtNames, mEndTgt),
+      startYear: mStartTgt.year,
+      endYear: mEndTgt.year,
+    ));
   }
 
   final (astroItems, highlights) =

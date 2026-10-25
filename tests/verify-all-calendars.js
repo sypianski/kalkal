@@ -437,6 +437,18 @@ if (crossOk === crossTotal) pass++; else fail++;
 console.log();
 
 // ═══════════════════════════════════════════════════════
+// i18n: 13-month calendars name every month (TASK-14)
+// ═══════════════════════════════════════════════════════
+const I18N = (new Function(fs.readFileSync(path.join(__dirname, '..', 'js', 'i18n.js'), 'utf8') + '; return I18N;'))(); // eslint-disable-line no-new-func
+for (const lang of ['en', 'pl', 'eo']) {
+  for (const key of ['yazdgerdiMonths', 'armenianMonths', 'copticMonths', 'ethiopianMonths', 'egyptianMonths']) {
+    eq('i18n ' + lang + '.' + key + ' has 13 names', (I18N[lang][key] || []).length, 13);
+  }
+  eq('i18n ' + lang + '.persianMonths stays 12 (Solar Hijri / Ilkhani)', I18N[lang].persianMonths.length, 12);
+}
+console.log();
+
+// ═══════════════════════════════════════════════════════
 // SUMMARY
 // ═══════════════════════════════════════════════════════
 console.log('════════════════════════════════════════════════════════');

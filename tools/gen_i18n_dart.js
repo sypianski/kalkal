@@ -32,6 +32,9 @@ for (const k of RECOVER) {
   ar[k] = new Function('return ' + m[1])();
   console.error(`recovered ar.${k} = ${JSON.stringify(ar[k])}`);
 }
+// Yazdgerdi's 13th "month" (epagomenal days, TASK-14): same as the JS keys,
+// Arabic recovered from persianMonths + أندرگاه (Andargāh).
+ar.yazdgerdiMonths = [...ar.persianMonths, '\u0623\u0646\u062f\u0631\u06af\u0627\u0647'];
 const I18N = { en: cur.en, pl: cur.pl, ar, eo: cur.eo };
 
 // ---- report key coverage ----
@@ -241,9 +244,9 @@ out.push(`  // -----------------------------------------------------------------
     'solarHijri': 'persianMonths',
     'coptic': 'copticMonths',
     'ethiopian': 'ethiopianMonths',
-    'yazdgerdi': 'persianMonths',
-    'qadimi': 'persianMonths',
-    'fasli': 'persianMonths',
+    'yazdgerdi': 'yazdgerdiMonths',
+    'qadimi': 'yazdgerdiMonths',
+    'fasli': 'yazdgerdiMonths',
     'armenian': 'armenianMonths',
     'egyptian': 'egyptianMonths',
     'byzantine': 'byzantineMonths',

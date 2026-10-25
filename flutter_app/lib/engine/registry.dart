@@ -173,7 +173,7 @@ final Map<String, WebCalendar> kWebCalendars = {
     yearLength: (c, y) =>
         c.variant == 'Fasli' ? Cal.fasliYearLength(y) : Cal.yazdgerdiYearLength(),
     isLeap: (c, y) => c.variant == 'Fasli' ? Cal.isFasliLeapYear(y) : false,
-    monthsKey: (c) => 'persianMonths',
+    monthsKey: (c) => 'yazdgerdiMonths',
   ),
   'armenian': WebCalendar(
     id: 'armenian',

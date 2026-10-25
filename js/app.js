@@ -118,7 +118,7 @@
         return false;
       },
       monthCount: 13,
-      monthNames: (t) => t.persianMonths,
+      monthNames: (t) => t.yazdgerdiMonths,
       historicalRange: [1952063, Infinity]
     },
     armenian: {

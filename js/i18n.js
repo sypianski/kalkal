@@ -91,6 +91,11 @@ const I18N = {
       'Farvardin', 'Ordibehe\u0161t', '\u1e2aord\u0101d', 'Tir', 'Mord\u0101d', '\u0160ahrivar',
       'Mehr', '\u0100b\u0101n', '\u0100\u1e0far', 'Dey', 'Bahman', 'Esfand'
     ],
+    // 12 Persian months + the 5 epagomenal (Gāthā) days as a 13th "month"
+    yazdgerdiMonths: [
+      'Farvardin', 'Ordibehe\u0161t', '\u1e2aord\u0101d', 'Tir', 'Mord\u0101d', '\u0160ahrivar',
+      'Mehr', '\u0100b\u0101n', '\u0100\u1e0far', 'Dey', 'Bahman', 'Esfand', 'Andarg\u0101h'
+    ],
     armenianMonths: [
       'Navasard', 'Ho\u1e59i', 'Sahmi', 'Tr\u0113', 'K\u2019alo\u010b', 'Arac\u2019',
       'Mehekan', 'Areg', 'Ahekan', 'Mareri', 'Margac\u2019', 'Hrotic\u2019', 'Aweleac\u2019'
@@ -522,6 +527,10 @@ const I18N = {
       'farwardin', 'ordibeheszt', 'chord\u0101d', 'tir', 'mord\u0101d', 'szahriwar',
       'mehr', '\u0100b\u0101n', '\u0100sar', 'd\u00e9i', 'bahman', 'esfand'
     ],
+    yazdgerdiMonths: [
+      'farwardin', 'ordibeheszt', 'chord\u0101d', 'tir', 'mord\u0101d', 'szahriwar',
+      'mehr', '\u0100b\u0101n', '\u0100sar', 'd\u00e9i', 'bahman', 'esfand', 'andargah'
+    ],
     armenianMonths: [
       'nawasard', 'hori', 'sahmi', 'tre', 'kaloc\u2019', 'arac\u2019',
       'mehekan', 'areg', 'ahekan', 'mareri', 'margac\u2019', 'hrotic\u2019', 'aweleac\u2019'
@@ -948,6 +957,10 @@ const I18N = {
     persianMonths: [
       'farvardino', 'ordibehi\u015dto', '\u0125ordado', 'tiro', 'mordado', '\u015dahrivaro',
       'mehro', 'abano', 'azaro', 'dejo', 'bahmano', 'esfando'
+    ],
+    yazdgerdiMonths: [
+      'farvardino', 'ordibehi\u015dto', '\u0125ordado', 'tiro', 'mordado', '\u015dahrivaro',
+      'mehro', 'abano', 'azaro', 'dejo', 'bahmano', 'esfando', 'andargaho'
     ],
     armenianMonths: [
       'navasardo', 'horio', 'sahmo', 'treo', 'kalo\u0109o', 'ara\u0109o',

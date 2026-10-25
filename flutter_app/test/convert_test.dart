@@ -4,9 +4,27 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kalkal/engine/cal.dart';
 import 'package:kalkal/engine/registry.dart';
+import 'package:kalkal/i18n/i18n.dart';
 import 'package:kalkal/logic/convert.dart';
 
 void main() {
+  test('registry: every calendar names all its months in every language', () {
+    for (final cal in kWebCalendars.values) {
+      for (final lang in supportedLangs) {
+        expect(cal.monthNames(lang).length, greaterThanOrEqualTo(cal.monthCount),
+            reason: '${cal.id}/$lang');
+      }
+    }
+  });
+
+  test('yazdgerdi: 13th month (epagomenal days) is Andargah, not a RangeError', () {
+    final yz = kWebCalendars['yazdgerdi']!;
+    final r = yz.fromJD(yz.toJD(656, 13, 3));
+    expect((r.month, r.day), (13, 3));
+    expect(yz.monthNames('en')[12], 'Andargāh');
+    expect(yz.monthNamesGen('pl')[12], 'andargah');
+  });
+
   test('registry: hijri 9 Jumada I 10 AH -> civil 13 Aug 631 (Julian rules)', () {
     final hijri = kWebCalendars['hijri']!;
     final greg = kWebCalendars['gregorian']!;
@@ -167,7 +185,7 @@ void main() {
   });
 
   test('contextualRows: whole-year range ending in Yazdgerdi epagomenal days '
-      'does not throw (TASK-14)', () {
+      'shows Andargāh instead of throwing (TASK-14)', () {
     final out = convert(
       src: kWebCalendars['hijri']!,
       tgt: kWebCalendars['gregorian']!,
@@ -177,7 +195,9 @@ void main() {
       lang: 'en',
     );
     final rows = contextualRows(out.jd, out.jdEnd, 'hijri', 'gregorian', 'en');
-    expect(rows.any((r) => r.calId == 'yazdgerdi'), isFalse);
     expect(rows, isNotEmpty);
+    // Since TASK-14 the epagomenal days are named (Andargāh), so the row stays.
+    final yz = rows.firstWhere((r) => r.calId == 'yazdgerdi');
+    expect(yz.datesStr, contains('Andargāh'));
   });
 }

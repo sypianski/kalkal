@@ -14,7 +14,7 @@ app_review_information(
   email_address: "dev@sypian.ski",
   notes: <<~NOTES
     Purpose and audience: Kalkal converts a date between 20 historical and modern calendar systems (Gregorian, Julian, Hijri in four tabular variants, Solar Hijri, Coptic, Ethiopian, Byzantine, Armenian, Syriac and others). It is aimed at historians, orientalists, genealogists and students who need to read dates in sources dated by another calendar, a task for which no single mainstream calendar app is accurate.
-    Setup: no account, login or sample files are needed. Open the app, pick a source calendar, type a date (or use the current date), and the result appears in the other calendars at once. Settings offers the Hijri variant, language (English, Polish, Esperanto, Arabic) and display mode.
+    Setup: no account, login or sample files are needed. Open the app, pick a source calendar, type a date (or use the current date), and the result appears in the other calendars at once. Settings offers the Hijri variant, language (English, Polish, Esperanto) and display mode.
     External services: none. All conversion is computed on-device from a Julian Day Number engine; the app makes no network requests. Links on the About/Eclipses screens open kalkal.online in the system browser.
     Regional differences: none. The app behaves identically in all regions; only the UI language differs.
     Not applicable: no accounts, user-generated content, in-app purchases, subscriptions, ads, analytics, or regulated content.

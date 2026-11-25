@@ -803,7 +803,11 @@
       } else if (e.key === 'Enter' && input.value.trim() && items.length === 0) {
         // Wpis bez dopasowania: nie przeliczaj po cichu całego roku, tylko powiedz, co jest nie tak.
         e.preventDefault();
-        showError(I18N[currentLang].errInvalidMonth, input);
+        var monthCal = resolveCalendar(fromCalInput.value);
+        showError(fmt(I18N[currentLang].errUnknownMonth, {
+          cal: monthCal ? (I18N[currentLang].calendars[monthCal.id] || monthCal.id) : '',
+          text: input.value.trim()
+        }), input);
       } else if (e.key === 'Escape') {
         hide();
       }
@@ -1053,6 +1057,61 @@
     });
   }
 
+  // ---- Komunikaty błędów: szablony z podpowiedzią, co poprawić ----
+
+  // Zdanie zaczyna się od nazwy miesiąca, a w PL nazwy miesięcy są pisane małą literą
+  function upperFirst(str) { return str ? str.charAt(0).toLocaleUpperCase(currentLang) + str.slice(1) : str; }
+
+  function fmt(tpl, vars) {
+    return tpl.replace(/\{(\w+)\}/g, function(m, k) { return k in vars ? vars[k] : m; });
+  }
+
+  function editDistance(a, b) {
+    var prev = [], cur = [], i, j;
+    for (j = 0; j <= b.length; j++) prev[j] = j;
+    for (i = 1; i <= a.length; i++) {
+      cur = [i];
+      for (j = 1; j <= b.length; j++) {
+        cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      }
+      prev = cur;
+    }
+    return prev[b.length];
+  }
+
+  // Do trzech kalendarzy, o które mogło chodzić: najpierw nazwa zawierająca wpisany fragment,
+  // potem literówka. Literówka = odległość edycyjna od pierwszego słowa nazwy (całego albo
+  // obciętego do długości wpisu, żeby „julan" pasowało do „juliański") nie większa niż 1 na 4 znaki.
+  function suggestCalendars(text) {
+    var t = I18N[currentLang];
+    var q = text.trim().toLowerCase();
+    if (!q) return [];
+    var ids = Object.keys(t.calendars);
+    var hits = ids.filter(function(id) {
+      return t.calendars[id].toLowerCase().indexOf(q) !== -1 || id.toLowerCase().indexOf(q) !== -1;
+    });
+    if (!hits.length) {
+      var limit = Math.max(1, Math.floor(q.length / 4));
+      var plain = function(x) { return x.toLowerCase().replace(/\u0142/g, 'l').normalize('NFD').replace(/[\u0300-\u036f]/g, ''); };
+      var pq = plain(q);
+      hits = ids.map(function(id) {
+        var word = plain(t.calendars[id]).split(/[\s(]/)[0];
+        var d = Math.min(editDistance(pq, word), editDistance(pq, word.slice(0, pq.length)), editDistance(pq, word.slice(0, pq.length + 1)));
+        return { id: id, d: d };
+      }).filter(function(x) { return x.d <= limit; })
+        .sort(function(a, b) { return a.d - b.d; })
+        .map(function(x) { return x.id; });
+    }
+    return hits.slice(0, 3).map(function(id) { return t.calendars[id]; });
+  }
+
+  function unknownCalendarMessage(text) {
+    var t = I18N[currentLang];
+    var s = suggestCalendars(text);
+    if (s.length) return fmt(t.errUnknownCalHint, { text: text, list: s.join(', ') });
+    return fmt(t.errUnknownCalNone, { text: text });
+  }
+
   // ---- Validation & Conversion ----
 
   function convert() {
@@ -1062,14 +1121,17 @@
     // Validate source calendar (default: gregorian)
     const fromCalVal = fromCalInput.value.trim();
     const srcCal = fromCalVal ? resolveCalendar(fromCalVal) : CALENDARS.gregorian;
-    if (!srcCal) { showError(t.errUnknownCal + fromCalVal, fromCalInput); return; }
+    if (!srcCal) { showError(unknownCalendarMessage(fromCalVal), fromCalInput); return; }
 
     // Validate target calendar (default: gregorian / Christian Era)
     const toCalVal = toCalInput.value.trim();
     const tgtCal = toCalVal ? resolveCalendar(toCalVal) : CALENDARS.gregorian;
-    if (!tgtCal) { showError(t.errUnknownCal + toCalVal, toCalInput); return; }
+    if (!tgtCal) { showError(unknownCalendarMessage(toCalVal), toCalInput); return; }
 
-    if (srcCal.id === tgtCal.id) { showError(t.errSameCal); return; }
+    if (srcCal.id === tgtCal.id) {
+      showError(fmt(t.errSameCalNamed, { cal: t.calendars[srcCal.id] || srcCal.id }), toCalInput);
+      return;
+    }
 
     // Ensure default variants for validation & range conversions
     if (srcCal.variants) srcCal._variant = srcCal.defaultVariant;
@@ -1077,21 +1139,27 @@
 
     // Validate year
     const fromYear = parseInt($('#from-year').value, 10);
-    if (!fromYear || fromYear < 1) { showError(t.errNoYear, $('#from-year')); return; }
+    if (!fromYear || fromYear < 1) { showError(t.errNoYearHint, $('#from-year')); return; }
 
     const fromMonth = getMonthValue();
     const fromDay = parseInt($('#from-day').value, 10) || null;
 
     // Validate month
     if (fromMonth && (fromMonth < 1 || fromMonth > srcCal.monthCount)) {
-      showError(t.errInvalidMonth, $('#from-month')); return;
+      showError(fmt(t.errMonthRange, { cal: t.calendars[srcCal.id] || srcCal.id, n: srcCal.monthCount }), $('#from-month'));
+      return;
     }
 
-    // Validate day
+    // Validate day: komunikat podaje nazwę miesiąca i liczbę jego dni (różna zależnie od roku i wariantu)
     if (fromDay && fromMonth) {
       const maxDay = srcCal.monthLength(fromYear, fromMonth);
       if (fromDay < 1 || fromDay > maxDay) {
-        showError(t.errInvalidDay, $('#from-day')); return;
+        showError(fmt(t.errDayRange, {
+          month: upperFirst(genNames(srcCal, t)[fromMonth - 1] || String(fromMonth)),
+          year: fromYear,
+          n: maxDay
+        }), $('#from-day'));
+        return;
       }
     }
 

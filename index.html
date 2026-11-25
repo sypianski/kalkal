@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>kalkal — Kalendara Kalkulilo</title>
-  <script src="js/display.js?v=58"></script>
+  <script src="js/display.js?v=59"></script>
   <link rel="stylesheet" href="css/fonts.css">
-  <link rel="stylesheet" href="css/style.css?v=58">
-  <link rel="stylesheet" href="css/eink.css?v=58">
+  <link rel="stylesheet" href="css/style.css?v=59">
+  <link rel="stylesheet" href="css/eink.css?v=59">
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#131311">
   <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f0f0ec">
@@ -139,7 +139,7 @@
           <p class="install-text" data-i18n="installPrompt">Install kalkal for offline use</p>
           <div class="install-actions">
             <button class="install-btn" id="install-btn" data-i18n="install">Install</button>
-            <button class="install-dismiss" id="install-dismiss" aria-label="Dismiss">&times;</button>
+            <button class="install-dismiss" id="install-dismiss" data-i18n-aria-label="installDismiss" aria-label="Dismiss">&times;</button>
           </div>
         </div>
 
@@ -165,11 +165,11 @@
 
   </main>
 
-  <script src="js/hijri.js?v=58"></script>
-  <script src="js/eclipses.js?v=58"></script>
-  <script src="js/astronomy.js?v=58"></script>
-  <script src="js/i18n.js?v=58"></script>
-  <script src="js/app.js?v=58"></script>
+  <script src="js/hijri.js?v=59"></script>
+  <script src="js/eclipses.js?v=59"></script>
+  <script src="js/astronomy.js?v=59"></script>
+  <script src="js/i18n.js?v=59"></script>
+  <script src="js/app.js?v=59"></script>
   <script>
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js');
@@ -195,7 +195,9 @@
     if (isIOS && isSafari) {
       const textEl = banner.querySelector('.install-text');
       textEl.textContent = '';
-      textEl.append('Install kalkal: tap ');
+      // Teksty z i18n (język strony ustawia app.js na <html lang>); angielski jako zapas
+      const L = (typeof I18N !== 'undefined' && (I18N[document.documentElement.lang] || I18N.en)) || {};
+      textEl.append(L.installIosTap || 'Install kalkal: tap ');
       const shareIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
       shareIcon.setAttribute('class', 'ios-share-icon');
       shareIcon.setAttribute('width', '18');
@@ -214,9 +216,9 @@
       line.setAttribute('x1', '12'); line.setAttribute('y1', '2');
       line.setAttribute('x2', '12'); line.setAttribute('y2', '15');
       shareIcon.append(path1, polyline, line);
-      textEl.append(' ', shareIcon, ' then ');
+      textEl.append(shareIcon, L.installIosThen || ' then ');
       const strong = document.createElement('strong');
-      strong.textContent = 'Add to Home Screen';
+      strong.textContent = L.installIosAdd || 'Add to Home Screen';
       textEl.append(strong);
       btnInstall.hidden = true;
       banner.hidden = false;

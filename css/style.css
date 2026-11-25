@@ -6260,11 +6260,11 @@ body {
     text-transform: uppercase;
     pointer-events: none;
   }
-  .form-field--cal::before            { content: "01 \2022 FROM"; }
-  .form-field--year::before           { content: "02 \2022 YEAR"; }
-  .refine-field:first-child::before   { content: "03 \2022 MONTH"; }
-  .refine-field:nth-child(2)::before  { content: "04 \2022 DAY"; }
-  .to-calendar-field::before          { content: "05 \2022 TO"; }
+  .form-field--cal::before            { content: "01 FROM"; }
+  .form-field--year::before           { content: "02 YEAR"; }
+  .refine-field:first-child::before   { content: "03 MONTH"; }
+  .refine-field:nth-child(2)::before  { content: "04 DAY"; }
+  .to-calendar-field::before          { content: "05 TO"; }
 
   /* ---- TEMPLATE.md ordering ---- */
   .form-field--cal            { order: 1 !important; }

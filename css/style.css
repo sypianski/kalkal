@@ -8167,3 +8167,119 @@ input:focus-visible,
   .page-nav a::before { font-size: 1.1rem; margin-bottom: 0; }
   body { padding-bottom: calc(44px + env(safe-area-inset-bottom, 0px)); }
 }
+
+/* ============================================================
+   KRYTYKA 2: spójność koloru sygnałowego i układ „Od → Do → Convert"
+   Niebieski oznacza wyłącznie to, co klikalne (Convert, aktywny wybór, linki); etykieta „Do" jest zwykłą
+   etykietą pola. „Do" mieszka w formularzu (kolejność Tab = kolejność czytania) i ma przycisk ⇄.
+   ============================================================ */
+.swap-cal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  background: transparent;
+  color: var(--signal-ink);
+  border: 2px solid var(--signal-ink);
+  border-radius: 0;
+  font-family: var(--brut-mono);
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+.swap-cal:hover { background: var(--brut-signal); color: var(--on-signal); }
+.swap-cal:active { transform: translate(2px, 2px); }
+
+/* Convert: zawsze niebieski z białym tekstem (na telefonie dotąd czarny lub odwrócony z motywem) */
+.btn-convert,
+.converter-form .btn-convert {
+  background: var(--brut-signal) !important;
+  color: var(--on-signal) !important;
+  border-color: var(--brut-ink) !important;
+}
+.btn-convert:hover,
+.converter-form .btn-convert:hover { background: var(--brut-signal-dark) !important; }
+.btn-convert span, .btn-convert svg { color: var(--on-signal) !important; }
+
+/* Spis treści w „Calendars": tekst na niebieskim tle zawsze biały (dotąd niebieski na niebieskim) */
+body[data-page="calendars"] .cal-toc-link:hover { color: var(--on-signal); }
+body[data-page="calendars"] .cal-toc-link:hover::before { color: var(--on-signal); }
+
+/* Desktop: „Do" jako zwykłe pole formularza, jak „Od" */
+@media (min-width: 601px) {
+  .converter-form .to-calendar-field {
+    display: block;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+  }
+  .to-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    margin-block-end: 4px;
+  }
+  .converter-form .to-label {
+    display: block;
+    flex: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: var(--brut-mono);
+    font-size: var(--text-label);
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .converter-form .to-body { padding: 0; }
+  .converter-form .to-calendar-input {
+    width: 100%;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.5em 0;
+    border-block-end: 3px solid var(--brut-ink);
+  }
+  .swap-cal { min-width: 36px; min-height: 36px; font-size: 1rem; }
+}
+
+/* Telefon: pole „Do" to karta z numerem 05; ⇄ stoi obok pola kalendarza (44 px) */
+@media (max-width: 600px) {
+  .to-calendar-field {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 10px;
+    align-items: start;
+  }
+  .to-calendar-field .to-body { grid-column: 1; grid-row: 1; padding: 0; }
+  .to-calendar-field .to-head { grid-column: 2; grid-row: 1; display: flex; align-items: flex-start; }
+  .to-calendar-field .to-label { display: none; }
+}
+
+/* Telefon: dolny pasek ma 5 pozycji po 11 px (dotąd 6 po 10 px, napisy się ściskały); „Author" jest w Ustawieniach */
+.settings-about-link { margin-block: var(--space-xl) 0; font-family: var(--brut-mono); font-size: var(--text-label); letter-spacing: 0.2em; text-transform: uppercase; }
+.settings-about-link a { color: var(--signal-ink); border-block-end: 1px solid var(--signal-ink); text-decoration: none; padding-block: 12px; }
+@media (max-width: 600px) {
+  .page-nav .nav-author-link { display: none !important; }
+  .page-nav a {
+    font-size: 0.6875rem !important;   /* 11 px */
+    letter-spacing: 0.02em !important;
+    min-width: 0;
+    overflow: hidden;
+  }
+}
+/* Desktop: długa nazwa „AD (Julian→Gregorian)" mieści się w wąskiej karcie */
+@media (min-width: 601px) {
+  .converter-form .to-calendar-input { font-size: 0.85rem; letter-spacing: 0.02em; }
+}
+
+/* Data wyniku jest najważniejszą informacją na ekranie: na desktopie ok. 2,8 rem (dotąd 1,8 rem) */
+@media (min-width: 801px) {
+  .result-panel .result-main { font-size: 2.8rem; line-height: 1.1; margin-block-end: var(--space-md); }
+  .result-panel .result-main .result-era,
+  .result-panel .result-main small { font-size: 0.9rem; }
+}

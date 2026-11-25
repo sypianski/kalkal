@@ -856,6 +856,15 @@
       if (t[key]) node.placeholder = t[key];
     });
 
+    $$('[data-i18n-aria-label]').forEach(node => {
+      const key = node.dataset.i18nAriaLabel;
+      if (t[key]) node.setAttribute('aria-label', t[key]);
+    });
+    $$('[data-i18n-title]').forEach(node => {
+      const key = node.dataset.i18nTitle;
+      if (t[key]) node.title = t[key];
+    });
+
     $$('.lang-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.lang === lang);
     });
@@ -1224,6 +1233,9 @@
     } catch (e) { /* file:// albo osadzenie bez History API: adres po prostu się nie zmienia */ }
   }
 
+  // Pierwszy (domyślny) wynik ostatniej konwersji: zamiana kalendarzy ⇄ przenosi go do pola źródłowego
+  var lastResult = null;
+
   function convertDate(src, tgt, y, m, d, t) {
     var hasSrcVars = !!src.variants;
     var hasTgtVars = !!tgt.variants;
@@ -1436,6 +1448,7 @@
     }
 
     var primaryResult = groupList[0].result;
+    lastResult = { tgtId: tgt.id, year: primaryResult.year, month: primaryResult.month, day: primaryResult.day };
     if (tgt.id === 'ilkhani') {
       var animal = Cal.ilkhaniAnimalYear(primaryResult.year);
       var animalName = (t.ilkhaniAnimals && t.ilkhaniAnimals[animal]) || animal;
@@ -2498,6 +2511,36 @@
     });
     refreshTabs();
   }
+
+  // ⇄ : kalendarz docelowy staje się źródłowym i odwrotnie. Przy świeżym wyniku jego data trafia do pól
+  // Rok/Miesiąc/Dzień i konwersja liczy się od razu (przeliczenie „w tył"); bez wyniku zamieniają się tylko
+  // kalendarze, a data zostaje do uzupełnienia.
+  function swapCalendars() {
+    const srcCal = resolveCalendar(fromCalInput.value);
+    const tgtCal = resolveCalendar(toCalInput.value);
+    if (!srcCal || !tgtCal) return;
+    const t = I18N[currentLang];
+    const panel = $('#result-panel');
+    const carry = !!lastResult && lastResult.tgtId === tgtCal.id && !!panel && !panel.hidden;
+    fromCalInput.value = t.calendars[tgtCal.id] || fromCalInput.value;
+    toCalInput.value = t.calendars[srcCal.id] || toCalInput.value;
+    onCalendarChange(fromCalInput);
+    updateVariantBar(toVariantsBar, toCalInput);
+    updateCalDescLink(toCalInput, 'to-cal-desc');
+    if (carry) {
+      $('#from-year').value = lastResult.year;
+      setMonthByNumber(lastResult.month || null);
+      $('#from-day').value = lastResult.day || '';
+      convert();
+    } else {
+      $('#from-year').value = '';
+      setMonthByNumber(null);
+      $('#from-day').value = '';
+      $('#from-year').focus();
+    }
+  }
+
+  $('#swap-cal').addEventListener('click', swapCalendars);
 
   function loadHistoryEntry(entry) {
     const t = I18N[currentLang];

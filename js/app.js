@@ -471,7 +471,6 @@
   const fromMonthSelect = $('#from-month');
   const fromVariantsBar = $('#from-variants');
   const toVariantsBar = $('#to-variants');
-  const refineCard = $('#refine-card');
 
   // ---- Variant bar (disabled — variants now shown in results) ----
 

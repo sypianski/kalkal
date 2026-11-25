@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>kalkal — Settings</title>
-  <script src="js/display.js?v=51"></script>
+  <script src="js/display.js?v=52"></script>
   <link rel="stylesheet" href="css/fonts.css">
-  <link rel="stylesheet" href="css/style.css?v=51">
-  <link rel="stylesheet" href="css/eink.css?v=51">
+  <link rel="stylesheet" href="css/style.css?v=52">
+  <link rel="stylesheet" href="css/eink.css?v=52">
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#f0f0ec">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -16,8 +16,6 @@
   <link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
 </head>
 <body data-page="settings">
-
-  <div class="page-grain"></div>
 
   <header class="site-header">
     <div class="header-inner">
@@ -47,6 +45,16 @@
           <button class="settings-page-btn" data-lang-pick="en">EN — English</button>
           <button class="settings-page-btn" data-lang-pick="pl">PL — Polski</button>
           <button class="settings-page-btn" data-lang-pick="eo">EO — Esperanto</button>
+        </div>
+      </div>
+
+      <div class="settings-page-group">
+        <h2 class="settings-page-heading" data-i18n="settingsThemeHeading">Theme</h2>
+        <p class="settings-page-desc" data-i18n="settingsThemeDesc">Light or dark colours. Automatic follows your device setting.</p>
+        <div class="settings-page-row" role="radiogroup" aria-label="Theme">
+          <button class="settings-page-btn" role="radio" data-theme-pick="auto" data-i18n="themeAuto">Automatic</button>
+          <button class="settings-page-btn" role="radio" data-theme-pick="light" data-i18n="themeLight">Light</button>
+          <button class="settings-page-btn" role="radio" data-theme-pick="dark" data-i18n="themeDark">Dark</button>
         </div>
       </div>
 
@@ -151,9 +159,9 @@
     </section>
   </main>
 
-  <script src="js/hijri.js?v=51"></script>
-  <script src="js/i18n.js?v=51"></script>
-  <script src="js/pages.js?v=51"></script>
+  <script src="js/hijri.js?v=52"></script>
+  <script src="js/i18n.js?v=52"></script>
+  <script src="js/pages.js?v=52"></script>
   <script>
   (function() {
     var VARIANTS = {
@@ -180,7 +188,29 @@
       document.querySelectorAll('[data-display-pick]').forEach(function(btn) {
         btn.classList.toggle('active', btn.dataset.displayPick === display);
       });
+      var theme = 'auto';
+      try { theme = localStorage.getItem('kalkal-theme') || 'auto'; } catch (e) {}
+      document.querySelectorAll('[data-theme-pick]').forEach(function(btn) {
+        var on = btn.dataset.themePick === theme;
+        btn.classList.toggle('active', on);
+        btn.setAttribute('aria-checked', String(on));
+      });
     }
+
+    document.querySelectorAll('[data-theme-pick]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var pick = btn.dataset.themePick;
+        try {
+          if (pick === 'auto') localStorage.removeItem('kalkal-theme');
+          else localStorage.setItem('kalkal-theme', pick);
+        } catch (e) {}
+        // E-ink zawsze jasny; poza nim wybór działa od razu, bez przeładowania.
+        var eink = document.documentElement.getAttribute('data-display') === 'eink';
+        if (!eink && pick !== 'auto') document.documentElement.setAttribute('data-theme', pick);
+        else document.documentElement.removeAttribute('data-theme');
+        syncActive();
+      });
+    });
 
     document.querySelectorAll('[data-display-pick]').forEach(function(btn) {
       btn.addEventListener('click', function() {

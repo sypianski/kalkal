@@ -1,4 +1,4 @@
-// Tryb wyświetlania: standardowy albo e-ink (css/eink.css).
+// Tryb wyświetlania: standardowy albo e-ink (css/eink.css) oraz motyw jasny/ciemny.
 // Ładowany synchronnie w <head> przed CSS, żeby atrybut był ustawiony przed
 // pierwszym malowaniem (inaczej na e-ink widać migotanie przy przeładowaniu).
 //
@@ -18,4 +18,11 @@
     mode = (window.matchMedia && matchMedia('(update: slow)').matches) ? 'eink' : 'normal';
   }
   if (mode === 'eink') document.documentElement.setAttribute('data-display', 'eink');
+
+  // Motyw: localStorage 'kalkal-theme' = 'light' | 'dark'. Bez wyboru decyduje system
+  // (prefers-color-scheme w CSS). E-ink jest zawsze jasny.
+  var theme = null;
+  try { theme = localStorage.getItem('kalkal-theme'); } catch (e) { /* zostaje motyw systemu */ }
+  if (mode === 'eink') theme = 'light';
+  if (theme === 'light' || theme === 'dark') document.documentElement.setAttribute('data-theme', theme);
 })();

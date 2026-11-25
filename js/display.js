@@ -6,6 +6,29 @@
 // Bez wyboru: e-ink, jeśli przeglądarka zgłasza wolny ekran (update: slow).
 // ?eink=1 / ?eink=0 w adresie zapisuje wybór — wygodne na czytniku, gdzie
 // klikanie po ustawieniach jest uciążliwe.
+// Bezpieczny magazyn: localStorage bywa zablokowany (Safari z blokadą ciasteczek, osadzenie w ramce,
+// niektóre tryby prywatne) i wtedy już samo odwołanie rzuca wyjątek. Zamiast wywracać całą aplikację,
+// przechodzimy na pamięć w obrębie karty (ustawienia nie przetrwają przeładowania, ale wszystko działa).
+window.kkStore = (function () {
+  var mem = {};
+  var ok = true;
+  try { localStorage.setItem('__kk', '1'); localStorage.removeItem('__kk'); } catch (e) { ok = false; }
+  return {
+    get: function (k) {
+      if (ok) { try { return localStorage.getItem(k); } catch (e) { /* spadamy do pamięci */ } }
+      return Object.prototype.hasOwnProperty.call(mem, k) ? mem[k] : null;
+    },
+    set: function (k, v) {
+      if (ok) { try { localStorage.setItem(k, v); return; } catch (e) { /* np. brak miejsca: pamięć */ } }
+      mem[k] = String(v);
+    },
+    remove: function (k) {
+      if (ok) { try { localStorage.removeItem(k); } catch (e) {} }
+      delete mem[k];
+    }
+  };
+})();
+
 (function () {
   var KEY = 'kalkal-display';
   var mode = null;

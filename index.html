@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>kalkal — Kalendara Kalkulilo</title>
-  <script src="js/display.js?v=54"></script>
+  <script src="js/display.js?v=55"></script>
   <link rel="stylesheet" href="css/fonts.css">
-  <link rel="stylesheet" href="css/style.css?v=54">
-  <link rel="stylesheet" href="css/eink.css?v=54">
+  <link rel="stylesheet" href="css/style.css?v=55">
+  <link rel="stylesheet" href="css/eink.css?v=55">
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#131311">
   <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f0f0ec">
@@ -57,7 +57,7 @@
 
             <div class="form-field form-field--num form-field--year">
               <label for="from-year" class="form-label" data-i18n="year">Year</label>
-              <input autocomplete="off" type="number" id="from-year" min="1" dir="ltr" class="input-num" required data-i18n-placeholder="yearPlaceholder" placeholder="e.g. 1445" data-1p-ignore data-lpignore="true" data-bwignore="true" data-form-type="other">
+              <input autocomplete="off" type="number" id="from-year" min="1" max="999999" step="1" inputmode="numeric" dir="ltr" class="input-num" required data-i18n-placeholder="yearPlaceholder" placeholder="e.g. 1445" data-1p-ignore data-lpignore="true" data-bwignore="true" data-form-type="other">
             </div>
 
             <!-- Miesiąc i dzień: od początku widoczne, w tej samej karcie co Rok (wpisanie ich nie jest „zaawansowane") -->
@@ -67,7 +67,7 @@
                 <label for="from-month" class="refine-label" data-i18n="month">Month</label>
               </div>
               <div class="refine-field">
-                <input autocomplete="off" type="number" id="from-day" min="1" max="31" dir="ltr" class="refine-input" placeholder="—" data-1p-ignore data-lpignore="true" data-bwignore="true" data-form-type="other">
+                <input autocomplete="off" type="number" id="from-day" min="1" max="31" step="1" inputmode="numeric" dir="ltr" class="refine-input" placeholder="—" data-1p-ignore data-lpignore="true" data-bwignore="true" data-form-type="other">
                 <label for="from-day" class="refine-label" data-i18n="day">Day</label>
               </div>
             </div>
@@ -155,11 +155,11 @@
 
   </main>
 
-  <script src="js/hijri.js?v=54"></script>
-  <script src="js/eclipses.js?v=54"></script>
-  <script src="js/astronomy.js?v=54"></script>
-  <script src="js/i18n.js?v=54"></script>
-  <script src="js/app.js?v=54"></script>
+  <script src="js/hijri.js?v=55"></script>
+  <script src="js/eclipses.js?v=55"></script>
+  <script src="js/astronomy.js?v=55"></script>
+  <script src="js/i18n.js?v=55"></script>
+  <script src="js/app.js?v=55"></script>
   <script>
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js');

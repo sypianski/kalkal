@@ -13,10 +13,10 @@
     return 'en';
   }
 
-  let currentLang = localStorage.getItem('kalkal-lang') || detectLang();
+  let currentLang = kkStore.get('kalkal-lang') || detectLang();
 
   // Preferred Hijri variant (persisted across sessions)
-  const storedHijriVariant = localStorage.getItem('kalkal-hijri-variant');
+  const storedHijriVariant = kkStore.get('kalkal-hijri-variant');
 
   // Calendar registry
   const CALENDARS = {
@@ -374,7 +374,7 @@
     CALENDARS.hijri.defaultVariant = storedHijriVariant;
   }
   ['byzantine', 'seleucid', 'yazdgerdi'].forEach(calId => {
-    const stored = localStorage.getItem(`kalkal-${calId}-variant`);
+    const stored = kkStore.get(`kalkal-${calId}-variant`);
     const cal = CALENDARS[calId];
     if (stored && cal && cal.variants && cal.variants.includes(stored)) {
       cal._variant = stored;
@@ -412,6 +412,9 @@
   // Variant priority: lower number = more important (shown as groups, not toggle)
   // Kalendarze, których wariant wybiera się w Ustawieniach (kotwice #set-<id> w settings.html)
   const SETTINGS_VARIANT_CALS = ['hijri', 'byzantine', 'seleucid', 'yazdgerdi'];
+
+  // Największy rok, który kalkulator przyjmuje (powyżej niektóre silniki liczą bardzo długo)
+  const MAX_YEAR = 999999;
 
   const VARIANT_PRIORITY = {
     byzantine: 1,
@@ -511,7 +514,7 @@
       updateVariantBar(fromVariantsBar, fromCalInput);
       updateMonthSelects();
       updateCalDescLink(fromCalInput, 'from-cal-desc');
-      if (srcCal) localStorage.setItem('kalkal-from-cal', srcCal.id);
+      if (srcCal) kkStore.set('kalkal-from-cal', srcCal.id);
     } else {
       updateVariantBar(toVariantsBar, toCalInput);
       updateCalDescLink(toCalInput, 'to-cal-desc');
@@ -692,6 +695,8 @@
         bindItemActivate(clearItem, function() {
           input.value = '';
           input.dataset.monthValue = '';
+          // Bez miesiąca dzień nie ma sensu: zerujemy go razem z miesiącem (wynik wraca do „cały rok")
+          $('#from-day').value = '';
           hide();
           input.classList.remove('has-error');
           if (resultPanel.classList.contains('has-result')) convert();
@@ -777,8 +782,13 @@
     }
 
     input.addEventListener('blur', function() {
-      if (!input.dataset.monthValue) {
-        input.value = '';
+      if (input.dataset.monthValue || !input.value.trim()) { if (!input.dataset.monthValue) input.value = ''; return; }
+      // Wpisany tekst bez wybranej pozycji: jedno dopasowanie przyjmujemy, inaczej zostawiamy tekst,
+      // żeby Convert mógł powiedzieć, co jest nie tak (dawniej pole czyściło się po cichu).
+      var matches = getFiltered(input.value);
+      if (matches.length === 1) {
+        input.value = matches[0].name;
+        input.dataset.monthValue = String(matches[0].num);
       }
     });
 
@@ -827,7 +837,7 @@
     const prevTgtCal = resolveCalendar(toCalInput.value);
 
     currentLang = lang;
-    localStorage.setItem('kalkal-lang', lang);
+    kkStore.set('kalkal-lang', lang);
 
     const t = I18N[lang];
     document.documentElement.lang = lang;
@@ -1137,12 +1147,30 @@
     if (srcCal.variants) srcCal._variant = srcCal.defaultVariant;
     if (tgtCal.variants) tgtCal._variant = tgtCal.defaultVariant;
 
-    // Validate year
-    const fromYear = parseInt($('#from-year').value, 10);
-    if (!fromYear || fromYear < 1) { showError(t.errNoYearHint, $('#from-year')); return; }
+    // Validate year: liczba całkowita w zakresie, który silnik liczy szybko i bez zawieszeń
+    // (powyżej ~10^7 niektóre kalendarze, np. babiloński, wpadają w bardzo długie pętle).
+    // Number() zamiast parseInt(): „1e3" ma być 1000, a „1445.5" błędem, nie cichym 1445.
+    const yearRaw = $('#from-year').value.trim();
+    const fromYear = Number(yearRaw);
+    if (!yearRaw || !Number.isInteger(fromYear) || fromYear < 1) {
+      showError(t.errNoYearHint, $('#from-year')); return;
+    }
+    if (fromYear > MAX_YEAR) {
+      showError(fmt(t.errYearTooBig, { max: MAX_YEAR.toLocaleString(currentLang) }), $('#from-year')); return;
+    }
+
+    // Miesiąc wpisany tekstem, ale niedopasowany do żadnego: błąd, nie ciche przeliczenie całego roku
+    const monthText = fromMonthSelect.value.trim();
+    if (monthText && !getMonthValue()) {
+      showError(fmt(t.errUnknownMonth, { cal: t.calendars[srcCal.id] || srcCal.id, text: monthText }), fromMonthSelect);
+      return;
+    }
 
     const fromMonth = getMonthValue();
-    const fromDay = parseInt($('#from-day').value, 10) || null;
+    // Dzień: puste pole = brak; 0, ułamek albo tekst = błąd (dawniej 0 było traktowane jak puste)
+    const dayRaw = $('#from-day').value.trim();
+    const dayNum = dayRaw === '' ? null : Number(dayRaw);
+    const fromDay = dayNum;
 
     // Validate month
     if (fromMonth && (fromMonth < 1 || fromMonth > srcCal.monthCount)) {
@@ -1150,10 +1178,15 @@
       return;
     }
 
+    // Dzień bez miesiąca nie ma sensu: nie ignorujemy go po cichu
+    if (fromDay !== null && !fromMonth) {
+      showError(t.errDayNeedsMonth, fromMonthSelect); return;
+    }
+
     // Validate day: komunikat podaje nazwę miesiąca i liczbę jego dni (różna zależnie od roku i wariantu)
-    if (fromDay && fromMonth) {
+    if (fromDay !== null) {
       const maxDay = srcCal.monthLength(fromYear, fromMonth);
-      if (fromDay < 1 || fromDay > maxDay) {
+      if (!Number.isInteger(fromDay) || fromDay < 1 || fromDay > maxDay) {
         showError(fmt(t.errDayRange, {
           month: upperFirst(genNames(srcCal, t)[fromMonth - 1] || String(fromMonth)),
           year: fromYear,
@@ -2021,6 +2054,30 @@
   // Row of copy buttons under the result, one per format. data shape:
   //   { defaultText, yearOnlyText, yearPairText (or null), ... }
   // Formats that would repeat an earlier one are skipped.
+  // Kopiowanie do schowka z zapasową metodą: Clipboard API wymaga HTTPS i zgody przeglądarki,
+  // a bez obsługi błędu przycisk po cichu nie działa. Zwraca Promise (odrzucony, gdy się nie uda).
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text).catch(function() { return legacyCopy(text); });
+    }
+    return legacyCopy(text);
+  }
+
+  function legacyCopy(text) {
+    return new Promise(function(resolve, reject) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;pointer-events:none';
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      ta.remove();
+      if (ok) resolve(); else reject(new Error('copy failed'));
+    });
+  }
+
   function buildCopyTrio(data, t) {
     var row = el('div', { class: 'copy-trio' });
     var seen = {};
@@ -2032,14 +2089,14 @@
       var label = el('span', { class: 'copy-trio-text', text: text });
       btn.appendChild(label);
       btn.addEventListener('click', function() {
-        navigator.clipboard.writeText(text).then(function() {
+        copyText(text).then(function() {
           label.textContent = t.copied || 'Copied!';
           btn.classList.add('copied');
           setTimeout(function() {
             label.textContent = text;
             btn.classList.remove('copied');
           }, 1200);
-        });
+        }, function() { window.prompt('', text); });
       });
       row.appendChild(btn);
     });
@@ -2059,10 +2116,8 @@
           linkBtn.classList.remove('copied');
         }, 1200);
       };
-      // Starsze przeglądarki mogą odrzucić clipboard: pokaż wtedy adres do skopiowania ręcznie
-      var p = navigator.clipboard && navigator.clipboard.writeText(location.href);
-      if (p && p.then) p.then(done, function() { window.prompt('', location.href); });
-      else window.prompt('', location.href);
+      // Gdy nie da się skopiować (ani API, ani zapasowo): pokaż adres do skopiowania ręcznie
+      copyText(location.href).then(done, function() { window.prompt('', location.href); });
     });
     row.appendChild(linkBtn);
     return row;
@@ -2080,10 +2135,10 @@
       copyBtn.addEventListener('click', function () {
         const mainEl = resultBody.querySelector('.result-main');
         const text = mainEl ? mainEl.textContent.trim() : resultBody.innerText.trim();
-        navigator.clipboard.writeText(text).then(function () {
+        copyText(text).then(function () {
           copyBtn.textContent = t.copied;
           setTimeout(function () { copyBtn.textContent = t.copyResult; }, 1500);
-        });
+        }, function() { window.prompt('', text); });
       });
       resultBody.appendChild(copyBtn);
     }
@@ -2313,13 +2368,13 @@
       const t = I18N[currentLang];
       const msg = t.clearHistoryConfirm || 'Clear conversion history?';
       if (!confirm(msg)) return;
-      localStorage.removeItem(HISTORY_KEY);
+      kkStore.remove(HISTORY_KEY);
       renderHistory();
     });
   }
 
   function getHistory() {
-    try { return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; }
+    try { return JSON.parse(kkStore.get(HISTORY_KEY)) || []; }
     catch { return []; }
   }
 
@@ -2333,7 +2388,7 @@
     if (dominated >= 0) hist.splice(dominated, 1);
     hist.unshift(entry);
     if (hist.length > HISTORY_MAX) hist.length = HISTORY_MAX;
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(hist));
+    kkStore.set(HISTORY_KEY, JSON.stringify(hist));
     renderHistory();
   }
 
@@ -2588,7 +2643,7 @@
         if (!cal) return;
         cal._variant = v;
         cal.defaultVariant = v;
-        localStorage.setItem(`kalkal-${calId}-variant`, v);
+        kkStore.set(`kalkal-${calId}-variant`, v);
         panel.querySelectorAll(`.settings-variant-btn[data-cal="${calId}"]`).forEach(x => x.classList.toggle('active', x.dataset.variant === v));
         if (resultPanel.classList.contains('has-result')) convert();
       });
@@ -2626,7 +2681,7 @@
   } else {
     // Default: last-selected source (or Hijri), Christian Era / Gregorian target (implicit)
     var t = I18N[currentLang] || I18N.en;
-    var storedFrom = localStorage.getItem('kalkal-from-cal');
+    var storedFrom = kkStore.get('kalkal-from-cal');
     var defaultFromId = (storedFrom && CALENDARS[storedFrom]) ? storedFrom : 'hijri';
     fromCalInput.value = t.calendars[defaultFromId] || t.calendars.hijri || 'Hijri';
     // „Do" od początku widoczne i wypełnione (dawniej puste = domyślne AD)

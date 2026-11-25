@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>kalkal — Settings</title>
-  <script src="js/display.js?v=54"></script>
+  <script src="js/display.js?v=55"></script>
   <link rel="stylesheet" href="css/fonts.css">
-  <link rel="stylesheet" href="css/style.css?v=54">
-  <link rel="stylesheet" href="css/eink.css?v=54">
+  <link rel="stylesheet" href="css/style.css?v=55">
+  <link rel="stylesheet" href="css/eink.css?v=55">
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#131311">
   <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f0f0ec">
@@ -160,9 +160,9 @@
     </section>
   </main>
 
-  <script src="js/hijri.js?v=54"></script>
-  <script src="js/i18n.js?v=54"></script>
-  <script src="js/pages.js?v=54"></script>
+  <script src="js/hijri.js?v=55"></script>
+  <script src="js/i18n.js?v=55"></script>
+  <script src="js/pages.js?v=55"></script>
   <script>
   (function() {
     var VARIANTS = {
@@ -175,12 +175,12 @@
     function syncActive() {
       document.querySelectorAll('[data-var-cal]').forEach(function(btn) {
         var cal = btn.dataset.varCal;
-        var stored = localStorage.getItem(VARIANTS[cal].key) || VARIANTS[cal].def;
+        var stored = kkStore.get(VARIANTS[cal].key) || VARIANTS[cal].def;
         var on = btn.dataset.varVal === stored;
         btn.classList.toggle('active', on);
         btn.setAttribute('aria-checked', String(on));
       });
-      var lang = localStorage.getItem('kalkal-lang') || 'en';
+      var lang = kkStore.get('kalkal-lang') || 'en';
       document.querySelectorAll('[data-lang-pick]').forEach(function(btn) {
         btn.classList.toggle('active', btn.dataset.langPick === lang);
       });
@@ -190,7 +190,7 @@
         btn.classList.toggle('active', btn.dataset.displayPick === display);
       });
       var theme = 'auto';
-      try { theme = localStorage.getItem('kalkal-theme') || 'auto'; } catch (e) {}
+      try { theme = kkStore.get('kalkal-theme') || 'auto'; } catch (e) {}
       document.querySelectorAll('[data-theme-pick]').forEach(function(btn) {
         var on = btn.dataset.themePick === theme;
         btn.classList.toggle('active', on);
@@ -202,8 +202,8 @@
       btn.addEventListener('click', function() {
         var pick = btn.dataset.themePick;
         try {
-          if (pick === 'auto') localStorage.removeItem('kalkal-theme');
-          else localStorage.setItem('kalkal-theme', pick);
+          if (pick === 'auto') kkStore.remove('kalkal-theme');
+          else kkStore.set('kalkal-theme', pick);
         } catch (e) {}
         // E-ink zawsze jasny; poza nim wybór działa od razu, bez przeładowania.
         var eink = document.documentElement.getAttribute('data-display') === 'eink';
@@ -216,7 +216,7 @@
     document.querySelectorAll('[data-display-pick]').forEach(function(btn) {
       btn.addEventListener('click', function() {
         var mode = btn.dataset.displayPick;
-        try { localStorage.setItem('kalkal-display', mode); } catch (e) {}
+        try { kkStore.set('kalkal-display', mode); } catch (e) {}
         // Bez przeładowania: na e-ink każde przeładowanie to pełny flash panelu.
         if (mode === 'eink') document.documentElement.setAttribute('data-display', 'eink');
         else document.documentElement.removeAttribute('data-display');
@@ -227,7 +227,7 @@
     document.querySelectorAll('[data-var-cal]').forEach(function(btn) {
       btn.addEventListener('click', function() {
         var cal = btn.dataset.varCal;
-        localStorage.setItem(VARIANTS[cal].key, btn.dataset.varVal);
+        kkStore.set(VARIANTS[cal].key, btn.dataset.varVal);
         syncActive();
       });
     });
@@ -235,14 +235,14 @@
     document.querySelectorAll('[data-lang-pick]').forEach(function(btn) {
       btn.addEventListener('click', function() {
         if (typeof setPageLang === 'function') setPageLang(btn.dataset.langPick);
-        else { localStorage.setItem('kalkal-lang', btn.dataset.langPick); location.reload(); }
+        else { kkStore.set('kalkal-lang', btn.dataset.langPick); location.reload(); }
         syncActive();
       });
     });
 
     // Descriptions come from the same per-variant texts the Calendars page uses.
     function pageLang() {
-      var lang = localStorage.getItem('kalkal-lang') || 'en';
+      var lang = kkStore.get('kalkal-lang') || 'en';
       return (typeof PageI18N !== 'undefined' && PageI18N[lang]) ? lang : 'en';
     }
 

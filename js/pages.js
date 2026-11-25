@@ -520,10 +520,10 @@ const SEASON_LABELS = {
     return 'en';
   }
 
-  const currentLang = localStorage.getItem('kalkal-lang') || detectLang();
+  const currentLang = kkStore.get('kalkal-lang') || detectLang();
 
   function setPageLang(lang) {
-    localStorage.setItem('kalkal-lang', lang);
+    kkStore.set('kalkal-lang', lang);
     const t = PageI18N[lang];
     document.documentElement.lang = lang;
     document.documentElement.dir = 'ltr';
@@ -817,7 +817,7 @@ const SEASON_LABELS = {
     var backdrop = document.getElementById('settings-backdrop');
     if (!btn || !panel) return;
 
-    var storedVariant = localStorage.getItem('kalkal-hijri-variant') || 'IIc';
+    var storedVariant = kkStore.get('kalkal-hijri-variant') || 'IIc';
 
     function openSettings() {
       panel.classList.add('open');
@@ -852,7 +852,7 @@ const SEASON_LABELS = {
     panel.querySelectorAll('.settings-variant-btn').forEach(function(b) {
       b.addEventListener('click', function() {
         storedVariant = b.dataset.variant;
-        localStorage.setItem('kalkal-hijri-variant', storedVariant);
+        kkStore.set('kalkal-hijri-variant', storedVariant);
         panel.querySelectorAll('.settings-variant-btn').forEach(function(x) {
           x.classList.toggle('active', x.dataset.variant === storedVariant);
         });

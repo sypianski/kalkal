@@ -8283,3 +8283,26 @@ body[data-page="calendars"] .cal-toc-link:hover::before { color: var(--on-signal
   .result-panel .result-main .result-era,
   .result-panel .result-main small { font-size: 0.9rem; }
 }
+
+/* Era (AD / p.n.e.) przy roku: tylko dla źródła AD lub juliańskiego */
+.year-row { display: flex; align-items: flex-end; gap: var(--space-sm); }
+.year-row .input-num { flex: 1 1 auto; min-width: 0; }
+.era-select {
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding: 0 0.5em;
+  font-family: var(--brut-mono);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--brut-ink);
+  background: var(--brut-surface);
+  border: 2px solid var(--brut-ink);
+  border-radius: 0;
+}
+.era-select[hidden] { display: none; }
+.era-select:focus-visible { outline: 3px solid var(--signal-ink); outline-offset: 2px; }
+
+/* Desktop: pole „Od" ma ten sam rozmiar co „Do", żeby „AD (Julian→Gregorian)" mieściło się w wąskiej karcie */
+@media (min-width: 601px) {
+  .converter-form .input-cal { font-size: 0.85rem; letter-spacing: 0.02em; }
+}

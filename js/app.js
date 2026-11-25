@@ -502,6 +502,7 @@
 
   function onCalendarChange(calInput) {
     if (calInput === fromCalInput) {
+      updateEraToggle();
       const srcCal = resolveCalendar(fromCalInput.value);
       // Zmiana kalendarza źródłowego unieważnia miesiąc i dzień (numer 7 to Raǧab w hidżri,
       // lipiec w gregoriańskim). Przy zwykłym pisaniu nazwy (to samo id) nic nie czyścimy.
@@ -1192,13 +1193,19 @@
       showError(t.errDayNeedsMonth, fromMonthSelect); return;
     }
 
+    // Rok dla silnika: astronomiczny (1 p.n.e. = 0), gdy przy źródle AD/juliańskim wybrano p.n.e.
+    const engineYear = engineYearFromFields();
+
     // Validate day: komunikat podaje nazwę miesiąca i liczbę jego dni (różna zależnie od roku i wariantu)
     if (fromDay !== null) {
-      const maxDay = srcCal.monthLength(fromYear, fromMonth);
+      const maxDay = srcCal.monthLength(engineYear, fromMonth);
+      if (srcCal.id === 'gregorian' && engineYear === 1582 && fromMonth === 10 && fromDay >= 5 && fromDay <= 14) {
+        showError(t.errCutoverGap, $('#from-day')); return;
+      }
       if (!Number.isInteger(fromDay) || fromDay < 1 || fromDay > maxDay) {
         showError(fmt(t.errDayRange, {
           month: upperFirst(genNames(srcCal, t)[fromMonth - 1] || String(fromMonth)),
-          year: fromYear,
+          year: fmtYr(srcCal.id, engineYear),
           n: maxDay
         }), $('#from-day'));
         return;
@@ -1206,16 +1213,16 @@
     }
 
     if (fromDay && fromMonth) {
-      convertDate(srcCal, tgtCal, fromYear, fromMonth, fromDay, t);
+      convertDate(srcCal, tgtCal, engineYear, fromMonth, fromDay, t);
     } else if (fromMonth) {
       const startD = 1;
-      const endD = srcCal.monthLength(fromYear, fromMonth);
-      convertRange(srcCal, tgtCal, fromYear, fromMonth, startD, fromYear, fromMonth, endD, t);
+      const endD = srcCal.monthLength(engineYear, fromMonth);
+      convertRange(srcCal, tgtCal, engineYear, fromMonth, startD, engineYear, fromMonth, endD, t);
     } else {
-      convertYearRange(srcCal, tgtCal, fromYear, t);
+      convertYearRange(srcCal, tgtCal, engineYear, t);
     }
 
-    syncUrl(srcCal, tgtCal, fromYear, fromMonth, fromDay);
+    syncUrl(srcCal, tgtCal, engineYear, fromMonth, fromDay);
     recordConversion();
   }
 
@@ -1344,7 +1351,7 @@
     var srcMonthName = srcNames[m - 1] || '';
     var srcDetail = srcMonthName ? (d + '\u00a0' + srcMonthName) : String(d);
     var tgtMonth0 = g0.tgtNames[g0.result.month - 1] || '';
-    var tgtYearStr = tgt.id === 'roman' ? (g0.result.year + '\u00a0AUC') : String(g0.result.year);
+    var tgtYearStr = tgt.id === 'roman' ? (g0.result.year + '\u00a0AUC') : fmtYr(tgt.id, g0.result.year);
     var tgtDetail;
     if (tgt.id === 'roman' && g0.result.day) {
       tgtDetail = Cal.romanDayNotation(g0.result.month, g0.result.day, tgt.isLeap(g0.result.year));
@@ -1355,15 +1362,15 @@
     // Single-day bridge \u2014 one line per side (full date inline)
     var srcDetailSp = srcDetail.replace(/\u00a0/g, ' ');
     var tgtDetailSp = tgtDetail.replace(/\u00a0/g, ' ');
-    var srcFullText = srcDetailSp ? (srcDetailSp + ' ' + y) : String(y);
+    var srcFullText = srcDetailSp ? (srcDetailSp + ' ' + fmtYr(src.id, y)) : fmtYr(src.id, y);
     var tgtFullText = tgtDetailSp ? (tgtDetailSp + ' ' + tgtYearStr.replace(/\u00a0/g, ' ')) : tgtYearStr.replace(/\u00a0/g, ' ');
 
     var bridge = el('div', { class: 'result-bridge bridge-single-line' });
     var tgtFullEl = el('span', { class: 'bridge-tgt-full' }, tgtFullText);
-    var tgtTag = calTag(tgt.id);
+    var tgtTag = eraTag(tgt.id, g0.result);
     if (tgtTag) tgtFullEl.appendChild(el('small', { class: 'bridge-cal', text: tgtTag }));
     bridge.appendChild(tgtFullEl);
-    var srcTag = calTag(src.id);
+    var srcTag = (src.id === 'gregorian' && y <= 0) ? '' : calTag(src.id);   // przed rokiem 1 era jest już w roku (p.n.e.)
     bridge.appendChild(el('span', { class: 'bridge-src-caption', text: srcFullText + (srcTag ? ' ' + srcTag : '') }));
     elements.push(bridge);
 
@@ -1396,8 +1403,8 @@
     elements.push(copyEl);
 
     // Copy data for accordion copy box
-    var tgtYearOnlyText = String(g0.result.year) + (tgt.id === 'roman' ? ' AUC' : '');
-    var srcYearOnlyText = String(y) + (src.id === 'roman' ? ' AUC' : '');
+    var tgtYearOnlyText = fmtYr(tgt.id, g0.result.year) + (tgt.id === 'roman' ? ' AUC' : '');
+    var srcYearOnlyText = fmtYr(src.id, y) + (src.id === 'roman' ? ' AUC' : '');
     var tgtShort = shortCalName(tgt.id);
     var srcShort = shortCalName(src.id);
     var singleCopyData = {
@@ -1426,7 +1433,7 @@
         if (tgt.id === 'roman' && g.result.day) {
           altText = Cal.romanDayNotation(g.result.month, g.result.day, tgt.isLeap(g.result.year)) + ' ' + g.result.year + ' AUC';
         } else {
-          altText = g.result.day + ' ' + g.tgtNames[g.result.month - 1] + ' ' + g.result.year;
+          altText = g.result.day + ' ' + g.tgtNames[g.result.month - 1] + ' ' + fmtYr(tgt.id, g.result.year);
         }
         if (t.weekdays && t.weekdays[g.dow]) altText += ', ' + t.weekdays[g.dow];
         // Nazwa wariantu (etykieta) i jego data (dane) jako osobne elementy,
@@ -1715,7 +1722,7 @@
     yearCopyEl.style.display = 'none';
 
     var tgtShort3 = shortCalName(tgt.id);
-    var smartYrSrcYears = String(year) + ySrcSuf;
+    var smartYrSrcYears = fmtYr(src.id, year) + ySrcSuf;
     var yearCopyData = {
       kind: 'year-range',
       defaultText: smartYrTgtRange,
@@ -1733,7 +1740,7 @@
 
     const yearElements = [
       rangeBridge,
-      buildBridgeEq(String(year) + ySrcSuf, src.id, smartYrTgtYears, tgt.id),
+      buildBridgeEq(fmtYr(src.id, year) + ySrcSuf, src.id, smartYrTgtYears, tgt.id),
       el('p', { class: 'result-scope', text: t.wholeYear || 'Whole year' }),
       el('p', { class: 'result-span' },
         el('span', { class: 'date-val', text: tgtStartStr }), ' – ',
@@ -1856,8 +1863,8 @@
   function buildRangeBridge(startResult, endResult, tgtNames, tgt, t) {
     var tgtCalName = t.calendars[tgt.id] || tgt.id;
 
-    var startYear = tgt.id === 'roman' ? (startResult.year + '\u00a0AUC') : String(startResult.year);
-    var endYear = tgt.id === 'roman' ? (endResult.year + '\u00a0AUC') : String(endResult.year);
+    var startYear = tgt.id === 'roman' ? (startResult.year + '\u00a0AUC') : fmtYr(tgt.id, startResult.year);
+    var endYear = tgt.id === 'roman' ? (endResult.year + '\u00a0AUC') : fmtYr(tgt.id, endResult.year);
     var startDetail = startResult.day + '\u00a0' + (tgtNames[startResult.month - 1] || '');
     var endDetail = endResult.day + '\u00a0' + (tgtNames[endResult.month - 1] || '');
 
@@ -1944,15 +1951,15 @@
       if (isRange) {
         const endResult = cal.fromJD(jdEnd);
         yearStr = (result.year === endResult.year)
-          ? String(result.year)
-          : result.year + '\u2013' + endResult.year;
+          ? fmtYr(cal.id, result.year)
+          : fmtYr(cal.id, result.year) + '\u2013' + fmtYr(cal.id, endResult.year);
         datesStr = result.day + ' ' + names[result.month - 1]
           + ' \u2013 ' + endResult.day + ' ' + names[endResult.month - 1];
       } else if (id === 'roman' && result.day) {
         yearStr = result.year + ' AUC';
         datesStr = Cal.romanDayNotation(result.month, result.day, cal.isLeap(result.year));
       } else {
-        yearStr = String(result.year);
+        yearStr = fmtYr(cal.id, result.year);
         datesStr = result.day + ' ' + names[result.month - 1];
       }
       matches.push([id, t.calendars[id], yearStr, datesStr]);
@@ -1998,15 +2005,15 @@
       if (isRange) {
         const endResult = cal.fromJD(jdEnd);
         yearStr = (result.year === endResult.year)
-          ? String(result.year)
-          : result.year + '\u2013' + endResult.year;
+          ? fmtYr(cal.id, result.year)
+          : fmtYr(cal.id, result.year) + '\u2013' + fmtYr(cal.id, endResult.year);
         datesStr = result.day + ' ' + names[result.month - 1]
           + ' \u2013 ' + endResult.day + ' ' + names[endResult.month - 1];
       } else if (id === 'roman' && result.day) {
         yearStr = result.year + ' AUC';
         datesStr = Cal.romanDayNotation(result.month, result.day, cal.isLeap(result.year));
       } else {
-        yearStr = String(result.year);
+        yearStr = fmtYr(cal.id, result.year);
         datesStr = result.day + ' ' + names[result.month - 1];
       }
       matches.push([id, t.calendars[id], yearStr, datesStr]);
@@ -2405,6 +2412,50 @@
     renderHistory();
   }
 
+  // Rok do wyświetlenia. Silnik liczy lata astronomicznie (1 p.n.e. = 0), więc dla AD/juliańskiego
+  // rok <= 0 pokazujemy jako „N p.n.e."; inne kalendarze zostają bez zmian.
+  function fmtYr(calId, y) {
+    if ((calId === 'gregorian' || calId === 'julian') && y <= 0) {
+      const t = I18N[currentLang];
+      return (1 - y) + '\u00a0' + (t.eraBce || 'BCE');
+    }
+    return String(y);
+  }
+
+  // Znacznik przy roku wyniku. Dla „AD (Julian→Gregorian)" mówi, którym kalendarzem liczono tę datę
+  // (silnik zwraca calendar: julian/gregorian), a przed rokiem 1 zastępuje „AD" przez „p.n.e." w roku.
+  function eraTag(calId, result) {
+    if (calId !== 'gregorian') return calTag(calId);
+    const t = I18N[currentLang];
+    const style = result && result.calendar === 'julian' ? t.styleJulian : (result && result.calendar === 'gregorian' ? t.styleGregorian : '');
+    const era = result && result.year <= 0 ? '' : calTag(calId);
+    return [era, style].filter(Boolean).join(' \u00b7 ');
+  }
+
+  // Era wybierana przy roku: tylko dla źródła AD/juliańskiego (tam są daty przed rokiem 1)
+  function updateEraToggle() {
+    const eraSelect = document.getElementById('from-era');
+    const src = resolveCalendar(fromCalInput.value);
+    const on = !!src && (src.id === 'gregorian' || src.id === 'julian');
+    eraSelect.hidden = !on;
+    if (!on) eraSelect.value = 'ad';
+  }
+  function engineYearFromFields() {
+    const eraSelect = document.getElementById('from-era');
+    const n = Number(document.getElementById('from-year').value);
+    return (!eraSelect.hidden && eraSelect.value === 'bce') ? 1 - n : n;
+  }
+  function setYearFields(engineYear) {
+    const eraSelect = document.getElementById('from-era');
+    const yearEl = document.getElementById('from-year');
+    if (engineYear <= 0 && !eraSelect.hidden) {
+      eraSelect.value = 'bce';
+      yearEl.value = 1 - engineYear;
+    } else {
+      eraSelect.value = 'ad';
+      yearEl.value = engineYear;
+    }
+  }
   function shortCalName(id) {
     const SHORT = {
       hijri: 'AH', julian: 'Jul.', gregorian: 'AD', coptic: 'Copt.',
@@ -2426,13 +2477,13 @@
   }
 
   function fmtDate(cal, t, y, m, d, omitYear) {
-    if (!m) return String(y);
+    if (!m) return fmtYr(cal.id, y);
     const names = genNames(cal, t);
     const mName = names[m - 1] || String(m);
     // Abbreviate month to 3 chars if > 5 chars
     const shortM = mName.length > 5 ? mName.slice(0, 3) + '.' : mName;
     if (omitYear) return d ? (d + ' ' + shortM) : shortM;
-    return d ? (d + ' ' + shortM + ' ' + y) : (shortM + ' ' + y);
+    return d ? (d + ' ' + shortM + ' ' + fmtYr(cal.id, y)) : (shortM + ' ' + fmtYr(cal.id, y));
   }
 
   function buildHistorySummary(entry) {
@@ -2521,14 +2572,16 @@
     if (!srcCal || !tgtCal) return;
     const t = I18N[currentLang];
     const panel = $('#result-panel');
-    const carry = !!lastResult && lastResult.tgtId === tgtCal.id && !!panel && !panel.hidden;
+    const fresh = !!lastResult && lastResult.tgtId === tgtCal.id && !!panel && !panel.hidden;
     fromCalInput.value = t.calendars[tgtCal.id] || fromCalInput.value;
     toCalInput.value = t.calendars[srcCal.id] || toCalInput.value;
     onCalendarChange(fromCalInput);
     updateVariantBar(toVariantsBar, toCalInput);
     updateCalDescLink(toCalInput, 'to-cal-desc');
+    // Rok <= 0 da się przenieść tylko do źródła z wyborem ery (AD / juliański)
+    const carry = fresh && (lastResult.year >= 1 || !document.getElementById('from-era').hidden);
     if (carry) {
-      $('#from-year').value = lastResult.year;
+      setYearFields(lastResult.year);
       setMonthByNumber(lastResult.month || null);
       $('#from-day').value = lastResult.day || '';
       convert();
@@ -2550,7 +2603,7 @@
     onCalendarChange(fromCalInput);
 
     // Set date fields
-    $('#from-year').value = entry.year;
+    setYearFields(entry.year);
     setMonthByNumber(entry.month || null);
     $('#from-day').value = entry.day || '';
 
@@ -2565,12 +2618,12 @@
     const entry = {
       fromCal: srcCal.id,
       toCal: tgtCal.id,
-      year: parseInt($('#from-year').value, 10) || null,
+      year: Number.isFinite(engineYearFromFields()) ? engineYearFromFields() : null,
       month: getMonthValue(),
       day: parseInt($('#from-day').value, 10) || null,
       ts: Date.now()
     };
-    if (entry.year) {
+    if (entry.year !== null) {
       saveHistory(entry);
     }
   }
@@ -2717,7 +2770,9 @@
     updateVariantBar(toVariantsBar, toCalInput);
     updateVariantBar(fromVariantsBar, fromCalInput);
     updateMonthSelects();
-    $('#from-year').value = params.get('y');
+    updateEraToggle();
+    var yParam = Number(params.get('y'));
+    if (Number.isFinite(yParam)) setYearFields(yParam); else $('#from-year').value = params.get('y');
     if (params.get('m')) setMonthByNumber(parseInt(params.get('m'), 10));
     if (params.get('d')) $('#from-day').value = params.get('d');
     convert();

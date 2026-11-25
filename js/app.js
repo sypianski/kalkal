@@ -410,6 +410,9 @@
   };
 
   // Variant priority: lower number = more important (shown as groups, not toggle)
+  // Kalendarze, których wariant wybiera się w Ustawieniach (kotwice #set-<id> w settings.html)
+  const SETTINGS_VARIANT_CALS = ['hijri', 'byzantine', 'seleucid', 'yazdgerdi'];
+
   const VARIANT_PRIORITY = {
     byzantine: 1,
     hijri: 2,
@@ -492,12 +495,23 @@
     }
   }
 
+  // Id ostatnio wybranego kalendarza źródłowego: miesiąc i dzień mają sens tylko w jego obrębie.
+  var lastFromCalId = null;
+
   function onCalendarChange(calInput) {
     if (calInput === fromCalInput) {
+      const srcCal = resolveCalendar(fromCalInput.value);
+      // Zmiana kalendarza źródłowego unieważnia miesiąc i dzień (numer 7 to Raǧab w hidżri,
+      // lipiec w gregoriańskim). Przy zwykłym pisaniu nazwy (to samo id) nic nie czyścimy.
+      if (srcCal && lastFromCalId && srcCal.id !== lastFromCalId) {
+        fromMonthSelect.dataset.monthValue = '';
+        fromMonthSelect.value = '';
+        $('#from-day').value = '';
+      }
+      if (srcCal) lastFromCalId = srcCal.id;
       updateVariantBar(fromVariantsBar, fromCalInput);
       updateMonthSelects();
       updateCalDescLink(fromCalInput, 'from-cal-desc');
-      const srcCal = resolveCalendar(fromCalInput.value);
       if (srcCal) localStorage.setItem('kalkal-from-cal', srcCal.id);
     } else {
       updateVariantBar(toVariantsBar, toCalInput);
@@ -591,8 +605,56 @@
     return parseInt(fromMonthSelect.dataset.monthValue, 10) || null;
   }
 
+  // ---- ARIA dla list podpowiedzi (wzorzec combobox + listbox) ----
+  // Pole zachowuje fokus, a „aktywną" opcję czytnik ekranu dostaje przez aria-activedescendant.
+
+  var ariaListSeq = 0;
+
+  function ariaInitCombobox(input) {
+    input.setAttribute('role', 'combobox');
+    input.setAttribute('aria-autocomplete', 'list');
+    input.setAttribute('aria-haspopup', 'listbox');
+    input.setAttribute('aria-expanded', 'false');
+  }
+
+  function ariaOpenList(input, dropdown) {
+    var listId = 'cal-list-' + (++ariaListSeq);
+    dropdown.id = listId;
+    dropdown.setAttribute('role', 'listbox');
+    var n = 0;
+    Array.prototype.forEach.call(dropdown.querySelectorAll('.cal-item'), function(item) {
+      if (item.classList.contains('cal-item--empty')) { item.setAttribute('role', 'presentation'); return; }
+      item.setAttribute('role', 'option');
+      item.id = listId + '-o' + (n++);
+      item.setAttribute('aria-selected', 'false');
+    });
+    // Grupy kalendarzy: etykieta grupy jest nazwą grupy dla czytnika, wizualny nagłówek się nie powtarza.
+    Array.prototype.forEach.call(dropdown.querySelectorAll('.cal-group'), function(g) {
+      var lab = g.querySelector('.cal-group-label');
+      g.setAttribute('role', 'group');
+      if (lab) { g.setAttribute('aria-label', lab.textContent); lab.setAttribute('aria-hidden', 'true'); }
+      var wrap = g.querySelector('.cal-group-items');
+      if (wrap) wrap.setAttribute('role', 'presentation');
+    });
+    input.setAttribute('aria-controls', listId);
+    input.setAttribute('aria-expanded', 'true');
+  }
+
+  function ariaCloseList(input) {
+    input.setAttribute('aria-expanded', 'false');
+    input.removeAttribute('aria-controls');
+    input.removeAttribute('aria-activedescendant');
+  }
+
+  function ariaSetActive(input, items, index) {
+    items.forEach(function(li, i) { li.setAttribute('aria-selected', i === index ? 'true' : 'false'); });
+    if (index >= 0 && index < items.length) input.setAttribute('aria-activedescendant', items[index].id);
+    else input.removeAttribute('aria-activedescendant');
+  }
+
   function setupMonthDropdown(input) {
     var dropdown = null;
+    ariaInitCombobox(input);
     var activeIndex = -1;
     var outsideHandler = null;
     var isMobileDevice = 'ontouchstart' in window;
@@ -603,11 +665,20 @@
 
     function reposition() { if (dropdown) placeFixedDropdown(dropdown, input); }
 
+    // Filtr ignoruje transliterację: „raj" znajdzie „Raǧab", „dhu" znajdzie „Ḏū al-Ḥiǧǧa".
+    // Zamiany liter z ISO 233 na zwyczajowy zapis najpierw, potem zdjęcie znaków diakrytycznych.
+    function fold(s) {
+      return s.toLowerCase()
+        .replace(/ǧ/g, 'j').replace(/š/g, 'sh').replace(/ḫ/g, 'kh')
+        .replace(/ḏ/g, 'dh').replace(/ṯ/g, 'th').replace(/ġ/g, 'gh')
+        .normalize('NFD').replace(/[̀-ͯʻʾʿʼ]/g, '');
+    }
+
     function getFiltered(query) {
       if (!query || isMobileDevice) return monthData;
-      var lower = query.toLowerCase();
+      var lower = fold(query);
       return monthData.filter(function(m) {
-        return m.name.toLowerCase().indexOf(lower) !== -1;
+        return fold(m.name).indexOf(lower) !== -1;
       });
     }
 
@@ -648,6 +719,7 @@
       document.body.appendChild(dropdown);
       placeFixedDropdown(dropdown, input);
       activeIndex = -1;
+      ariaOpenList(input, dropdown);
 
       outsideHandler = function(ev) {
         if (dropdown && !dropdown.contains(ev.target) && ev.target !== input) hide();
@@ -664,6 +736,7 @@
 
     function hide() {
       if (dropdown) { dropdown.remove(); dropdown = null; activeIndex = -1; }
+      ariaCloseList(input);
       if (outsideHandler) {
         document.removeEventListener('pointerdown', outsideHandler, true);
         window.removeEventListener('resize', reposition);
@@ -685,10 +758,17 @@
         items[activeIndex].classList.add('active');
         items[activeIndex].scrollIntoView({ block: 'nearest' });
       }
+      ariaSetActive(input, items, activeIndex);
     }
 
-    input.addEventListener('focus', function() { show(isMobileDevice ? '' : input.value); });
-    input.addEventListener('click', function() { show(isMobileDevice ? '' : input.value); });
+    // Gdy miesiąc jest już wybrany (pole pokazuje jego pełną nazwę), lista ma pokazać wszystkie
+    // miesiące, nie tylko ten jeden; filtr działa dopiero, gdy użytkownik coś wpisuje.
+    function openQuery() { return (isMobileDevice || input.dataset.monthValue) ? '' : input.value; }
+    input.addEventListener('focus', function() {
+      if (!isMobileDevice && input.dataset.monthValue) input.select();
+      show(openQuery());
+    });
+    input.addEventListener('click', function() { show(openQuery()); });
 
     if (!isMobileDevice) {
       input.addEventListener('input', function() {
@@ -715,6 +795,16 @@
       } else if (e.key === 'Enter' && activeIndex >= 0) {
         e.preventDefault();
         items[activeIndex].click();
+      } else if (e.key === 'Enter' && input.value.trim() && items.length > 0) {
+        // Wpisane „raj" + Enter: przyjmij pierwszą podpowiedź, zamiast po cichu
+        // zignorować wpis (blur czyści pole bez wybranego miesiąca) i przeliczyć cały rok.
+        e.preventDefault();
+        items[0].click();
+        if (!resultPanel.classList.contains('has-result')) convert();
+      } else if (e.key === 'Enter' && input.value.trim() && items.length === 0) {
+        // Wpis bez dopasowania: nie przeliczaj po cichu całego roku, tylko powiedz, co jest nie tak.
+        e.preventDefault();
+        showError(I18N[currentLang].errInvalidMonth, input);
       } else if (e.key === 'Escape') {
         hide();
       }
@@ -766,6 +856,7 @@
     updateVariantBar(toVariantsBar, toCalInput);
     updateCalDescLink(fromCalInput, 'from-cal-desc');
     updateCalDescLink(toCalInput, 'to-cal-desc');
+    renderIntroExample();
     document.title = 'kalkal \u2014 ' + t.appTitle;
     // Re-run conversion so result panel + copy box rebuild in new language
     if (resultPanel.classList.contains('has-result')) convert();
@@ -777,6 +868,8 @@
     let dropdown = null;
     let activeIndex = -1;
     let outsideHandler = null;
+
+    ariaInitCombobox(input);
 
     if ('ontouchstart' in window) {
       input.setAttribute('readonly', 'readonly');
@@ -835,6 +928,7 @@
       document.body.appendChild(dropdown);
       positionDropdown();
       activeIndex = -1;
+      ariaOpenList(input, dropdown);
 
       outsideHandler = ev => {
         if (dropdown && !dropdown.contains(ev.target) && ev.target !== input) hide();
@@ -863,6 +957,7 @@
         dropdown = null;
         activeIndex = -1;
       }
+      ariaCloseList(input);
       if (outsideHandler) {
         document.removeEventListener('pointerdown', outsideHandler, true);
         window.removeEventListener('resize', positionDropdown);
@@ -885,6 +980,7 @@
         items[activeIndex].classList.add('active');
         items[activeIndex].scrollIntoView({ block: 'nearest' });
       }
+      ariaSetActive(input, items, activeIndex);
     }
 
     input.addEventListener('focus', () => {
@@ -941,12 +1037,21 @@
 
   function showError(msg, inputEl) {
     errorPanel.textContent = msg;
-    if (inputEl) inputEl.classList.add('has-error');
+    if (inputEl) {
+      inputEl.classList.add('has-error');
+      // Czytnik ekranu: pole jest błędne, a powód jest w panelu błędu (role="alert")
+      inputEl.setAttribute('aria-invalid', 'true');
+      inputEl.setAttribute('aria-describedby', 'form-error');
+    }
   }
 
   function clearError() {
     errorPanel.textContent = '';
-    $$('.has-error', form).forEach(el => el.classList.remove('has-error'));
+    document.querySelectorAll('.has-error').forEach(el => {
+      el.classList.remove('has-error');
+      el.removeAttribute('aria-invalid');
+      el.removeAttribute('aria-describedby');
+    });
   }
 
   // ---- Validation & Conversion ----
@@ -1001,7 +1106,22 @@
       convertYearRange(srcCal, tgtCal, fromYear, t);
     }
 
+    syncUrl(srcCal, tgtCal, fromYear, fromMonth, fromDay);
     recordConversion();
+  }
+
+  // Adres strony odzwierciedla bieżące zapytanie (?cal=&y=&m=&d=&to=), żeby dało się je
+  // zacytować, zapisać w zakładkach i wrócić do niego. Czytane przy starcie (niżej, „Handle URL parameters").
+  function syncUrl(src, tgt, y, m, d) {
+    try {
+      var q = new URLSearchParams();
+      q.set('cal', src.id);
+      q.set('y', String(y));
+      if (m) q.set('m', String(m));
+      if (m && d) q.set('d', String(d));
+      q.set('to', tgt.id);
+      history.replaceState(null, '', location.pathname + '?' + q.toString());
+    } catch (e) { /* file:// albo osadzenie bez History API: adres po prostu się nie zmienia */ }
   }
 
   function convertDate(src, tgt, y, m, d, t) {
@@ -1135,6 +1255,28 @@
     bridge.appendChild(el('span', { class: 'bridge-src-caption', text: srcFullText + (srcTag ? ' ' + srcTag : '') }));
     elements.push(bridge);
 
+    // Proweniencja wyniku: dzień tygodnia (najszybszy test poprawności daty historycznej)
+    // oraz informacja, czy sprawdzone warianty kalendarza dają ten sam wynik.
+    var provenance = el('p', { class: 'result-provenance' });
+    // Gdy warianty dają różne daty, dzień tygodnia jest różny dla każdej z nich:
+    // wtedy pokazujemy go przy wierszach wariantów, nie raz nad wszystkimi.
+    var dowName = !showVarLabels && t.weekdays && t.weekdays[g0.dow];
+    if (dowName) provenance.appendChild(el('strong', { class: 'result-provenance-dow', text: dowName }));
+    var varCal = srcVars.length > 1 ? src : (tgtVars.length > 1 ? tgt : null);
+    if (varCal) {
+      var varCalName = t.calendars[varCal.id] || varCal.id;
+      var varTpl = (showVarLabels ? t.variantsDiffer : t.variantsAgree) || '{cal}';
+      var varText = varTpl.replace('{cal}', varCalName);
+      if (dowName) provenance.appendChild(document.createTextNode(' · '));
+      // Wybór wariantu mieszka w Ustawieniach: link prowadzi do właściwej sekcji
+      if (SETTINGS_VARIANT_CALS.indexOf(varCal.id) >= 0) {
+        provenance.appendChild(el('a', { class: 'result-provenance-link', href: 'settings.html#set-' + varCal.id, text: varText }));
+      } else {
+        provenance.appendChild(document.createTextNode(varText));
+      }
+    }
+    if (provenance.firstChild) elements.push(provenance);
+
     // Hidden element for legacy copy-button (full target date string)
     var copyEl = el('span', { class: 'result-main' });
     copyEl.textContent = tgtFullText;
@@ -1174,7 +1316,18 @@
         } else {
           altText = g.result.day + ' ' + g.tgtNames[g.result.month - 1] + ' ' + g.result.year;
         }
-        elements.push(el('p', { class: 'result-variant-label', text: g.labels.join(', ') + ': ' + altText }));
+        if (t.weekdays && t.weekdays[g.dow]) altText += ', ' + t.weekdays[g.dow];
+        // Nazwa wariantu (etykieta) i jego data (dane) jako osobne elementy,
+        // żeby data mogła być czytelna, a nazwa — cicha (patrz style.css, blok „TYPE SCALE").
+        var variantRow = el('p', { class: 'result-variant-label' },
+          el('span', { class: 'result-variant-name', text: g.labels.join(', ') }),
+          el('span', { class: 'result-variant-date', text: altText }));
+        // Wariant domyślny (z Ustawień) oznaczony, żeby było wiadomo, który z wyników cytować
+        var defLabel = varCal && VARIANT_LABELS[varCal.defaultVariant];
+        if (defLabel && g.labels.indexOf(defLabel) >= 0) {
+          variantRow.appendChild(el('span', { class: 'result-variant-tag', text: t.variantDefaultTag || 'default' }));
+        }
+        elements.push(variantRow);
       }
     }
     if (tgt.id === 'byzantine') {
@@ -1373,6 +1526,7 @@
     const rangeElements = [
       rangeBridge,
       buildBridgeEq(srcNames[m1 - 1] + ' ' + smartSrcYears, src.id, smartTgtYears, tgt.id),
+      el('p', { class: 'result-scope', text: t.wholeMonth || 'Whole month' }),
       el('p', { class: 'result-span' },
         el('span', { class: 'date-val', text: tgtStartStr }),
         ' \u2013 ',
@@ -1467,6 +1621,7 @@
     const yearElements = [
       rangeBridge,
       buildBridgeEq(String(year) + ySrcSuf, src.id, smartYrTgtYears, tgt.id),
+      el('p', { class: 'result-scope', text: t.wholeYear || 'Whole year' }),
       el('p', { class: 'result-span' },
         el('span', { class: 'date-val', text: tgtStartStr }), ' – ',
         el('span', { class: 'date-val', text: tgtEndStr })
@@ -1821,6 +1976,28 @@
       });
       row.appendChild(btn);
     });
+
+    // Link do tego zapytania (adres strony jest aktualizowany po każdej konwersji, patrz syncUrl)
+    var linkLabel = t.copyLink || 'Link';
+    var linkBtn = el('button', { type: 'button', class: 'copy-trio-btn copy-trio-link' });
+    linkBtn.appendChild(el('span', { class: 'copy-trio-icon', text: '↗' }));
+    var linkText = el('span', { class: 'copy-trio-text', text: linkLabel });
+    linkBtn.appendChild(linkText);
+    linkBtn.addEventListener('click', function() {
+      var done = function() {
+        linkText.textContent = t.copied || 'Copied!';
+        linkBtn.classList.add('copied');
+        setTimeout(function() {
+          linkText.textContent = linkLabel;
+          linkBtn.classList.remove('copied');
+        }, 1200);
+      };
+      // Starsze przeglądarki mogą odrzucić clipboard: pokaż wtedy adres do skopiowania ręcznie
+      var p = navigator.clipboard && navigator.clipboard.writeText(location.href);
+      if (p && p.then) p.then(done, function() { window.prompt('', location.href); });
+      else window.prompt('', location.href);
+    });
+    row.appendChild(linkBtn);
     return row;
   }
 
@@ -1875,19 +2052,14 @@
     resultPanel.hidden = false;
     resultPanel.classList.add('has-result');
 
-    // Show target calendar dropdown (pre-filled) and refine card (month/day)
-    var toCalField = document.getElementById('to-calendar-field');
-    if (toCalField) {
-      toCalField.hidden = false;
-      // Pre-fill with current target calendar name
+    // Pola „To" oraz Miesiąc/Dzień są widoczne od początku (index.html); tu tylko
+    // dopilnuj, by „To" nie było puste (pusta wartość oznacza domyślne AD).
+    if (!toCalInput.value.trim()) {
       var tgtCal = resolveCalendar(toCalInput.value) || CALENDARS.gregorian;
-      if (!toCalInput.value.trim()) {
-        toCalInput.value = t.calendars[tgtCal.id] || '';
-      }
-      updateCalDescLink(toCalInput, 'to-cal-desc');
+      toCalInput.value = t.calendars[tgtCal.id] || '';
     }
+    updateCalDescLink(toCalInput, 'to-cal-desc');
     updateCalDescLink(fromCalInput, 'from-cal-desc');
-    if (refineCard) refineCard.hidden = false;
 
     // Contextual calendars tile (expanded, with tile toggle header)
     while (contextualCard.firstChild) contextualCard.removeChild(contextualCard.firstChild);
@@ -1996,22 +2168,49 @@
       activeTab = defs.length ? defs[0].key : null;
     }
 
+    // Fokus w pasku zakładek przeżywa przebudowę: po strzałce odtwarzamy go na nowej aktywnej zakładce.
+    const hadFocus = tileTabs.contains(document.activeElement);
     while (tileTabs.firstChild) tileTabs.removeChild(tileTabs.firstChild);
     tileTabs.hidden = defs.length === 0;
-    defs.forEach(function(d) {
+    tileTabs.setAttribute('aria-label', t.resultTabsLabel || 'Result details');
+    defs.forEach(function(d, i) {
+      const isActive = d.key === activeTab;
       const btn = el('button', {
         type: 'button',
-        class: 'tile-tab' + (d.key === activeTab ? ' active' : ''),
+        id: 'tab-' + d.key,
+        class: 'tile-tab' + (isActive ? ' active' : ''),
         role: 'tab',
-        'aria-selected': d.key === activeTab ? 'true' : 'false',
+        'aria-selected': isActive ? 'true' : 'false',
+        'aria-controls': d.node.id || '',
+        // Roving tabindex: Tab wchodzi do paska raz (na aktywną zakładkę), strzałki zmieniają zakładkę
+        tabindex: isActive ? '0' : '-1',
         text: d.label
       });
       btn.addEventListener('click', function() {
         activeTab = d.key;
         refreshTabs();
       });
+      btn.addEventListener('keydown', function(e) {
+        let to = -1;
+        if (e.key === 'ArrowRight') to = (i + 1) % defs.length;
+        else if (e.key === 'ArrowLeft') to = (i - 1 + defs.length) % defs.length;
+        else if (e.key === 'Home') to = 0;
+        else if (e.key === 'End') to = defs.length - 1;
+        if (to < 0) return;
+        e.preventDefault();
+        activeTab = defs[to].key;
+        refreshTabs();
+        const next = document.getElementById('tab-' + activeTab);
+        if (next) next.focus();
+      });
       tileTabs.appendChild(btn);
+      d.node.setAttribute('role', 'tabpanel');
+      d.node.setAttribute('aria-labelledby', 'tab-' + d.key);
     });
+    if (hadFocus) {
+      const cur = document.getElementById('tab-' + activeTab);
+      if (cur) cur.focus();
+    }
 
     [contextualCard, astroCard, breakdownPanel, historyPanel].forEach(function(node) {
       if (node) node.classList.remove('tab-active');
@@ -2231,12 +2430,10 @@
   $('#from-year').addEventListener('focus', function() { this.select(); });
   $('#from-day').addEventListener('focus', function() { this.select(); });
 
-  // Clear month and day when year changes
-  $('#from-year').addEventListener('input', function() {
-    setMonthByNumber(null);
-    $('#from-day').value = '';
-    clearError();
-  });
+  // Zmiana roku NIE czyści już miesiąca i dnia: pola są widoczne od początku, więc
+  // poprawienie roku nie może po cichu kasować reszty daty. Dzień nieważny w nowym
+  // roku (np. 30 w miesiącu 29-dniowym) zgłasza walidacja w convert().
+  $('#from-year').addEventListener('input', clearError);
 
   // Setup custom month dropdown
   setupMonthDropdown(fromMonthSelect);
@@ -2246,6 +2443,32 @@
 
   // Clear errors on any input change
   form.addEventListener('input', () => clearError());
+
+  // ---- Klikalny przykład w intro ----
+  // „1 Muḥarram 1445 AH → AD": wypełnia wszystkie pola i przelicza, żeby nowy
+  // użytkownik zobaczył wynik jednym kliknięciem (zamiast czytać kroki).
+  function renderIntroExample() {
+    const btn = $('#intro-example');
+    if (!btn || !CALENDARS.hijri) return;
+    const t = I18N[currentLang];
+    btn.textContent = '1 ' + CALENDARS.hijri.monthNames(t)[0] + ' 1445 ' +
+      shortCalName('hijri') + ' → ' + shortCalName('gregorian');
+  }
+
+  const introExampleBtn = $('#intro-example');
+  if (introExampleBtn) {
+    introExampleBtn.addEventListener('click', () => {
+      const t = I18N[currentLang];
+      fromCalInput.value = t.calendars.hijri;
+      toCalInput.value = t.calendars.gregorian;
+      onCalendarChange(fromCalInput);
+      updateVariantBar(toVariantsBar, toCalInput);
+      $('#from-year').value = '1445';
+      setMonthByNumber(1);
+      $('#from-day').value = '1';
+      convert();
+    });
+  }
 
   // ---- Settings panel (mobile) ----
   (function() {
@@ -2324,6 +2547,9 @@
     var calId = params.get('cal') || 'julian';
     var t = I18N[currentLang] || I18N.en;
     fromCalInput.value = t.calendars[calId] || calId;
+    var toId = params.get('to');
+    toCalInput.value = (toId && t.calendars[toId]) || t.calendars.gregorian || '';
+    updateVariantBar(toVariantsBar, toCalInput);
     updateVariantBar(fromVariantsBar, fromCalInput);
     updateMonthSelects();
     $('#from-year').value = params.get('y');
@@ -2336,8 +2562,11 @@
     var storedFrom = localStorage.getItem('kalkal-from-cal');
     var defaultFromId = (storedFrom && CALENDARS[storedFrom]) ? storedFrom : 'hijri';
     fromCalInput.value = t.calendars[defaultFromId] || t.calendars.hijri || 'Hijri';
-    toCalInput.value = '';
+    // „Do" od początku widoczne i wypełnione (dawniej puste = domyślne AD)
+    toCalInput.value = t.calendars.gregorian || '';
     onCalendarChange(fromCalInput);
+    updateVariantBar(toVariantsBar, toCalInput);
+    updateCalDescLink(toCalInput, 'to-cal-desc');
     updateMonthSelects();
   }
 

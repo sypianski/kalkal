@@ -11,7 +11,7 @@
   --brut-ink: #000;
   --brut-shadow: #242220;
   --brut-muted: #555;
-  --brut-dim: #888;
+  --brut-dim: #656565; /* było #888 (3,1:1) — tekst pomocniczy musi mieć ≥4,5:1 */
   --brut-border: #000;
   --brut-mono: 'Noto Sans Mono', 'Courier New', monospace;
   /* Signal colour: only for things you click or choose (desktop) */
@@ -26,8 +26,10 @@
   --ink-800: #111;
   --ink-700: #333;
   --ink-600: #555;
-  --ink-500: #777;
-  --ink-400: #999;
+  /* Tekst pomocniczy: dawniej #777/#999 (4,48:1 / 2,85:1 na bieli). Teraz ≥5,1:1
+     także na tle strony #f0f0ec. Hierarchię niesie rozmiar i waga, nie blady szary. */
+  --ink-500: #5c5c5c;
+  --ink-400: #656565;
   --ink-300: #bbb;
   --rust: #000;
   --rust-light: #222;
@@ -49,6 +51,17 @@
   --font-body: var(--brut-mono);
   --font-mono: 'Noto Sans Mono', 'Menlo', monospace;
   --font-arabic: 'Amiri', 'Noto Naskh Arabic', serif;
+
+  /* Skala typograficzna UI (stała, rem; krok ≈1,25). Poniżej --text-label nie schodzimy. */
+  --text-label: 0.6875rem;  /* 11px — etykiety, nawigacja, linki pomocnicze */
+  --text-data: 0.875rem;    /* 14px — podpisy niosące dane (data źródłowa, wariant) */
+  --text-lead: 1.1rem;      /* 17,6px — tytuł strony, akcje */
+  --text-title: 1.375rem;   /* 22px — nagłówki sekcji */
+  --text-result: 1.7rem;    /* 27,2px — wynik konwersji */
+
+  /* Kolory tekstu (kontrast na bieli / na #f0f0ec / na #000) */
+  --text-muted: #595959;    /* 7,0 / 6,1 / — */
+  --text-on-black: #b0b0b0; /* — / — / 9,7 */
 
   /* Borders */
   --border-subtle: 2px solid var(--brut-border);
@@ -7746,4 +7759,291 @@ body[data-page="calendars"] .cal-toc-title { cursor: pointer; font-family: var(-
   body[data-page="calendars"] .cal-toc { padding: var(--space-md) var(--space-lg); }
   body[data-page="calendars"] .cal-toc-title { margin: 0; }
   body[data-page="calendars"] .cal-toc-details[open] .cal-toc-title { margin-block-end: var(--space-sm); }
+}
+
+/* ============================================================
+   TYPE SCALE & TEXT CONTRAST
+   Jedno miejsce prawdy dla rozmiarów i szarości tekstu pomocniczego.
+   Zasady: nic poniżej --text-label (11px); tekst niosący dane
+   (data źródłowa, daty wariantów) w --text-data (14px), ciemny;
+   szary tekst ≥4,5:1 (--text-muted). Wygrywa kolejnością (koniec pliku);
+   starsze, rozproszone wartości zostają do wycięcia w /distill.
+   ============================================================ */
+
+/* Nawigacja i podtytuł na czarnym nagłówku */
+.page-nav a,
+.site-subtitle {
+  font-size: var(--text-label);
+  color: var(--text-on-black);
+}
+.page-nav a:hover,
+.page-nav a.active { color: #fff; }
+
+/* Etykiety pól */
+.form-label,
+.converter-form .form-field--cal .form-label,
+.refine-label {
+  font-size: var(--text-label);
+  color: var(--text-muted);
+  letter-spacing: 0.2em;
+}
+
+/* Link „about … calendar” i przycisk Clear */
+.cal-desc-link {
+  font-size: var(--text-label);
+  color: var(--text-muted);
+  border-bottom-color: var(--text-muted);
+}
+.cal-desc-link:hover { color: #000; border-bottom-color: #000; }
+.history-clear-btn { font-size: var(--text-label); }
+
+/* Potwierdzenie wpisanej daty (to, czego użytkownik ma nie zgadywać) */
+.bridge-src-caption {
+  font-size: var(--text-data);
+  color: var(--ink-700);
+  letter-spacing: 0.01em;
+}
+.bridge-cal { font-size: var(--text-label); }
+
+/* Rozbieżne warianty: nazwa cicho, data wyraźnie */
+.result-panel .result-variant-label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.15em 0.75em;
+  font-size: var(--text-data);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink-900);
+}
+.result-panel .result-variant-name {
+  font-size: var(--text-label);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.result-panel .result-variant-name::after { content: ':'; }
+.result-panel .result-variant-date {
+  font-size: var(--text-data);
+  font-weight: 700;
+  color: var(--ink-900);
+}
+
+/* Daty w „other contemporaneous calendars” */
+.contextual-dates { color: var(--text-muted); }
+
+/* Lista „other contemporaneous calendars": nazwy kalendarzy i nagłówek
+   (mobilna reguła miała 8px z !important) */
+.contextual-list dt,
+.contextual-heading { font-size: var(--text-label) !important; }
+
+/* Dolny pasek zakładek na telefonie: 6 etykiet na 360–390px.
+   11px się nie mieści („METHODOLOGY” ≈75px), więc 10px bez rozstrzelenia liter
+   (dawniej 8,8px + 0,08em): szerokość taka sama jak dziś, tekst o 14% większy.
+   Gdy zakładka „Android" zniknie z telefonu, można wrócić do --text-label. */
+@media (max-width: 600px) {
+  .page-nav a {
+    font-size: 0.625rem !important;
+    letter-spacing: 0 !important;
+  }
+}
+
+/* Podstrony: podłoga 11px dla drobnych znaczników i nagłówków tabel
+   (dawniej 9,3–10,9px) oraz dwa realne braki kontrastu. */
+.cal-tag,
+.cal-type,
+.cal-season-label,
+.cal-month-num,
+.cal-month-days,
+.settings-page-heading,
+.about-cite-title,
+.dyn-laqab,
+.footer-note,
+th,
+th span { font-size: var(--text-label); }
+
+.footer-note { color: var(--text-muted); }              /* było #999 na #f0f0ec: 2,5:1 */
+.cal-group-count { color: var(--text-muted); }          /* jasne tło (calendars): 6,1:1 */
+body[data-page="dynasties"] .cal-group-count { color: var(--text-on-black); } /* czarna płyta: było #666 na #111, 3,3:1 */
+.ecl-table th { font-size: var(--text-label); }
+
+/* ============================================================
+   FORM FLOW: wszystkie pola od początku, jedna karta daty (desktop)
+   Miesiąc i Dzień mieszkają w <form> obok Roku; na telefonie wrapper
+   .converter-form jest rozpuszczony (display: contents), więc kolejka
+   kart 01–05 zostaje bez zmian.
+   ============================================================ */
+
+/* Miesiąc + Dzień: dwie kolumny wewnątrz karty daty, bez własnej ramki */
+.converter-form .refine-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 76px;
+  gap: var(--space-md);
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+}
+.converter-form .refine-card .refine-field { margin-block-start: 0; min-width: 0; }
+
+/* Placeholdery: czytelne, ale wyraźnie „puste" (≥4,5:1, bez wagi pola) */
+.input-num::placeholder,
+.refine-input::placeholder {
+  color: var(--text-muted);
+  font-weight: 400;
+  opacity: 1;
+}
+/* „— whole year" musi zmieścić się w wąskiej kolumnie miesiąca (obok szewronu) */
+.refine-input::placeholder { font-size: 0.8125rem; letter-spacing: 0; }
+.converter-card .input-num { font-size: 1.4rem; }
+
+/* Szewron: pole kalendarza i miesiąca to listy, nie etykiety */
+.converter-card .input-cal,
+.to-calendar-input {
+  padding-inline-end: 1.4em;
+  background-repeat: no-repeat;
+  background-position: right 0.15em center;
+  background-size: 0.7em;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='square'%3E%3Cpath d='M1 1l4 4 4-4'/%3E%3C/svg%3E");
+}
+.converter-card .input-cal:focus,
+.to-calendar-input:focus { background-color: transparent; }
+/* Miesiąc: szewron tylko na desktopie (na telefonie rysuje go .refine-field::after) */
+@media (min-width: 601px) {
+  #from-month {
+    padding-inline-end: 1.4em;
+    background-repeat: no-repeat;
+    background-position: right 0.15em center;
+    background-size: 0.7em;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='square'%3E%3Cpath d='M1 1l4 4 4-4'/%3E%3C/svg%3E");
+  }
+}
+
+/* Lista kalendarzy: nazwy grup widoczne także na desktopie (dotąd display:none) */
+.cal-suggestions .cal-group-label {
+  display: block;
+  font-family: var(--brut-mono);
+  font-size: var(--text-label);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: transparent;
+  padding: 0.7em 0.75em 0.25em;
+}
+.cal-suggestions .cal-group + .cal-group { border-block-start: 1px solid #ddd; }
+
+/* Etykieta zakresu w wyniku: „Cały rok" / „Cały miesiąc" */
+.result-scope {
+  display: inline-block;
+  margin: 0.5em 0 0;
+  padding: 0.15em 0.6em;
+  border: 2px solid var(--ink-900);
+  font-family: var(--brut-mono);
+  font-size: var(--text-label);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+/* Intro: opis + klikalny przykład (zamiast trzech kroków) */
+.intro-example-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-sm);
+}
+.intro-example-label {
+  font-family: var(--brut-mono);
+  font-size: var(--text-label);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.intro-example {
+  font-family: var(--brut-mono);
+  font-size: var(--text-data);
+  font-weight: 700;
+  color: #000;
+  background: var(--brut-surface);
+  border: 2px solid #000;
+  padding: 0.55em 0.9em;
+  cursor: pointer;
+  text-align: left;
+}
+.intro-example:hover { background: #000; color: #fff; }
+.intro-example:focus-visible { outline: 3px solid var(--brut-signal); outline-offset: 2px; }
+
+/* ============================================================
+   PROWENIENCJA WYNIKU: dzień tygodnia, zgodność wariantów, wariant domyślny
+   ============================================================ */
+.result-provenance {
+  margin: var(--space-sm) 0 0;
+  font-family: var(--brut-mono);
+  font-size: var(--text-data);
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+.result-provenance .result-provenance-dow { color: var(--ink-900); font-weight: 700; }
+.result-provenance-link {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px dotted currentColor;
+}
+.result-provenance-link:hover { color: #000; }
+.result-provenance-link:focus-visible { outline: 3px solid var(--brut-signal); outline-offset: 2px; }
+
+.result-panel .result-variant-tag {
+  font-size: var(--text-label);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border: 1.5px solid var(--text-muted);
+  padding: 0 0.45em;
+}
+
+/* ============================================================
+   DOSTĘPNOŚĆ: fokus klawiatury i cele dotykowe
+   ============================================================ */
+/* Jeden, wyraźny pierścień fokusa dla wszystkiego, co klikalne (niebieski = klikalne, patrz .impeccable.md).
+   !important, bo wcześniejsze reguły pól zerują outline na :focus. */
+a:focus-visible,
+button:focus-visible,
+[role="tab"]:focus-visible,
+input:focus-visible,
+.cal-item.active {
+  outline: 3px solid var(--brut-signal) !important;
+  outline-offset: 2px !important;
+}
+.tile-tab:focus-visible { outline-offset: -3px !important; }
+.site-header a:focus-visible,
+.page-nav a:focus-visible { outline-color: #fff !important; }
+.cal-item.active { outline-offset: -3px !important; }
+
+@media (max-width: 600px) {
+  /* Minimum 44×44 px dla elementów dotykowych */
+  .variant-btn,
+  .copy-trio-btn,
+  .btn-convert,
+  .install-btn,
+  .install-dismiss,
+  .history-clear-btn,
+  .intro-example,
+  .tile-toggle,
+  .cal-item {
+    min-height: 44px;
+  }
+  .install-dismiss { min-width: 44px; }
+  .copy-trio-btn { display: inline-flex; align-items: center; }
+  .result-provenance-link, .cal-desc-link { position: relative; }
+  /* Powiększony obszar dotyku bez ruszania podkreślenia ani układu */
+  .result-provenance-link::after, .cal-desc-link::after { content: ''; position: absolute; inset: -14px -4px; }
+}
+
+@media (max-width: 600px) {
+  .converter-card .input-cal,
+  .to-calendar-input,
+  .input-num,
+  .refine-input { min-height: 44px; box-sizing: border-box; }
 }
